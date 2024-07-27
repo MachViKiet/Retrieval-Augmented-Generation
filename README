@@ -1,0 +1,5 @@
+Tạo môi trường ảo python : python3 -m venv venv
+Khởi động môi trường ảo : venv\Scripts\activate.bat
+
+Cài đặt thư viện : pip install -r requirements.txt
+!!! Cài đặt thêm thư viện mới nhớ ghi vào req : pip freeze > requirements.txt
