@@ -3,9 +3,9 @@
 
 ** Người thực hiện **
 <details open>
-<summary></b>🌟 Người thực hiện </b></summary>
-1. Mạch Vĩ Kiệt
-2. Nguyễn Duy Đăng Khoa
+<summary></b> Người thực hiện </b></summary>
+- Mạch Vĩ Kiệt
+- Nguyễn Duy Đăng Khoa
 </details>
 
 ## 🔧 Cài đặt môi trường
