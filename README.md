@@ -1,11 +1,10 @@
 ## 💡 Luận văn 2024
 # Xây dựng hệ thống tích hợp truy vấn và mô hình ngôn ngữ tra cứu văn bản nội bộ
 
-** Người thực hiện **
 <details open>
 <summary></b> Người thực hiện </b></summary>
-- Mạch Vĩ Kiệt
-- Nguyễn Duy Đăng Khoa
+<div>   Mạch Vĩ Kiệt</div>
+<div>  Nguyễn Duy Đăng Khoa </div>
 </details>
 
 ## 🔧 Cài đặt môi trường
