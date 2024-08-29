@@ -1,4 +1,5 @@
 venv
 **/__pycache__
 
-notebook/data/Sổ tay sinh viên/*
+notebook/data/Sổ tay sinh viên/
+notebook/data/thesis_rag_data/

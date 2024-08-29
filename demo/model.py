@@ -2,6 +2,8 @@ import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from dotenv import load_dotenv
+from ibm_watsonx_ai.foundation_models import ModelInference
+from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
 
 load_dotenv()
 
@@ -10,59 +12,41 @@ CACHE_DIR = os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models")
 )
 
-
 class ChatModel:
-    def __init__(self, model_id: str = "google/gemma-2b-it", device="cuda"):
+    def __init__(self, model_id: str = "mistralai/mistral-large", device="cuda"):
 
-        ACCESS_TOKEN = os.getenv(
-            "AIzaSyCPeOXEyxMCLO3KFX45_j_hG2rfh3_9AFE"
-        )  # reads .env file with ACCESS_TOKEN=<your hugging face access token>
+        credentials = {
+            "apikey": os.getenv("WATSONX_APIKEY"),
+            "url": "https://us-south.ml.cloud.ibm.com",
+        }
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            model_id, cache_dir=CACHE_DIR, token=ACCESS_TOKEN
+        self.model = ModelInference(
+            model_id=model_id,
+            credentials=credentials,
+            params={
+                GenParams.DECODING_METHOD: "greedy",
+                GenParams.MAX_NEW_TOKENS: 2048,
+                # GenParams.STOP_SEQUENCES: [],
+            },
+            project_id=os.getenv("WATSONX_PROJECT_ID"),
         )
-        quantization_config = BitsAndBytesConfig(
-            load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16
-        )
-
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_id,
-            device_map="auto",
-            quantization_config=quantization_config,
-            cache_dir=CACHE_DIR,
-            token=ACCESS_TOKEN,
-        )
-        self.model.eval()
         self.chat = []
-        self.device = device
 
-    def generate(self, question: str, context: str = None, max_new_tokens: int = 250):
+    def generate(self, question: str, context: str = None):
 
         if context == None or context == "":
-            prompt = f"""Give a detailed answer to the following question. Question: {question}"""
+            prompt = f"""Give a detailed answer to the following question. Always answer in Vietnamese. Question: {question}"""
         else:
-            prompt = f"""Using the information contained in the context, give a detailed answer to the question.
+            prompt = f"""[INST]Using the information contained in the context, give a detailed answer to the query. If there is no information in the context to support your answer, say so.
+Always answer in Vietnamese, make sure the entire answer is in Vietnamese. At the end, provide the source you used for your answers (ie. title, page number (if available))[/INST]
 Context: {context}.
-Question: {question}"""
+Query: {question}
+"""
 
-        chat = [{"role": "user", "content": prompt}]
-        formatted_prompt = self.tokenizer.apply_chat_template(
-            chat,
-            tokenize=False,
-            add_generation_prompt=True,
-        )
+        formatted_prompt = prompt.replace("\n", "<eos>")
         print(formatted_prompt)
-        inputs = self.tokenizer.encode(
-            formatted_prompt, add_special_tokens=False, return_tensors="pt"
-        ).to(self.device)
-        with torch.no_grad():
-            outputs = self.model.generate(
-                input_ids=inputs,
-                max_new_tokens=max_new_tokens,
-                do_sample=False,
-            )
-        response = self.tokenizer.decode(outputs[0], skip_special_tokens=False)
-        response = response[len(formatted_prompt) :]  # remove input prompt from reponse
+        
+        response = self.model.generate_text(formatted_prompt)
         response = response.replace("<eos>", "")  # remove eos token
 
         return response
