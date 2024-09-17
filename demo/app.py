@@ -1,8 +1,8 @@
 import os
 import streamlit as st
-from model import ChatModel
+from model import ChatModel, PhoQueryRouter
 import rag_util
-#from collections import descriptions
+import query_routing
 
 st.title("LLM Chatbot RAG Assistant")
 
@@ -17,6 +17,11 @@ def load_encoder():
     # TODO : Tạo embedding model
     encoder = rag_util.Encoder()
     return encoder
+
+@st.cache_resource
+def load_PhoBERT(path):
+    model = PhoQueryRouter(path)
+    return model
 #######################
 descriptions = """List of collections:
 recruitment: News about job postings, internships programs.
@@ -26,7 +31,7 @@ academic_affairs: News posted by the academic affairs faculty. Forms, subjects r
 events: Contests, Seminars.
 """
 ##INITIALIZE MODEL, DATABASE, ENCODER
-host = '158.175.181.136'
+host = '161.156.196.183'
 port = '8080'
 password = '4XYg2XK6sMU4UuBEjHq4EhYE8mSFO3Qq'
 user = 'root'
@@ -40,6 +45,10 @@ database = rag_util.MilvusDB(
     )
 database.load_collection('student_handbook', persist=True)
 model = load_model()  # load our models once and then cache it
+# PhoBERT
+path = '../static/model'
+pho_model = load_PhoBERT(path)
+# Load the encoder
 encoder = load_encoder()
 ################################
 def save_file(uploaded_file):
@@ -82,19 +91,31 @@ if prompt := st.chat_input("Ask me anything!"):
 
     with st.chat_message("assistant"):
         user_prompt = st.session_state.messages[-1]["content"]
-        
         # TODO :  Viết flow của generate dữ liệu ở đây
+        with st.status('Please wait...', expanded=True) as status:
+            st.write('Determining collection...')
         # Determine collection to search - apart from the persistent collections
-        collection_names = database._handler.list_collections()
-        context = rag_util.determine_collection(user_prompt, model, descriptions, collection_names)
-        database.load_collection(context, persist=False)
-        print("Collection to be searched: " + context)
+        ## Use LLM for query routing
+        # collection_names = database._handler.list_collections()
+        # context = rag_util.determine_collection(user_prompt, model, descriptions, collection_names)
+        ## Use PhoBERT model for query routing
+            context = pho_model.classify(query_routing.segment_vietnamese(user_prompt))[0]['label']
+            database.load_collection(context, persist=False)
+            print("Collection to be searched: " + context)
+            #st.write("Searching collection: " + context)
+            st.write('Collection to search: ' + context)
 
-        query_embeddings = encoder.embedding_function.embed_query(user_prompt)
-        search_results = database.similarity_search(context, query_embeddings)
-        context = rag_util.create_prompt_milvus(user_prompt, search_results)
-        #Generate
-        answer = model.generate(user_prompt, context)
-        response = st.write(answer)
+            st.write('Searching...')
+            query_embeddings = encoder.embedding_function.embed_query(user_prompt)
+            search_results = database.similarity_search(context, query_embeddings)
+            context = rag_util.create_prompt_milvus(user_prompt, search_results)
+
+            st.write('Generating...')
+            #answer = model.generate(user_prompt, context)
+            status.update(
+                label="Done!", state="complete", expanded=False
+            )
+        #response = st.write(answer)
+        answer = st.write_stream(model.generate(user_prompt, context, streaming=True))
         
     st.session_state.messages.append({"role": "assistant", "content": answer})

@@ -1,6 +1,6 @@
 import os
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 from dotenv import load_dotenv
 from ibm_watsonx_ai.foundation_models import ModelInference
 from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
@@ -14,7 +14,7 @@ CACHE_DIR = os.path.normpath(
 
 class ChatModel:
     def __init__(self, model_id: str = "mistralai/mistral-large", device="cuda"):
-
+    
         credentials = {
             "apikey": os.getenv("WATSONX_APIKEY"),
             "url": "https://us-south.ml.cloud.ibm.com",
@@ -32,7 +32,7 @@ class ChatModel:
         )
         self.chat = []
 
-    def generate(self, question: str, context: str = None):
+    def generate(self, question: str, context: str = None, streaming=False):
 
         if context == None or context == "":
             prompt = f"""Give a detailed answer to the following question. Always answer in Vietnamese. Question: {question}"""
@@ -45,8 +45,16 @@ Query: {question}
 
         formatted_prompt = prompt.replace("\n", "<eos>")
         print(formatted_prompt)
-        
-        response = self.model.generate_text(formatted_prompt)
-        response = response.replace("<eos>", "")  # remove eos token
+        if not streaming:
+            response = self.model.generate_text(formatted_prompt)
+            response = response.replace("<eos>", "")  # remove eos token
+            return response
+        else:
+            return self.model.generate_text_stream(formatted_prompt)
 
-        return response
+class PhoQueryRouter:
+    def __init__(self, model_dir: str = CACHE_DIR):
+        self.model = pipeline('text-classification', model=model_dir)
+
+    def classify(self, query):
+        return self.model(query)
