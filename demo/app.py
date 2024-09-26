@@ -2,7 +2,7 @@ import os
 import streamlit as st
 from model import ChatModel, PhoQueryRouter
 import rag_util
-import query_routing
+
 
 st.title("LLM Chatbot RAG Assistant")
 
@@ -31,25 +31,36 @@ academic_affairs: News posted by the academic affairs faculty. Forms, subjects r
 events: Contests, Seminars.
 """
 ##INITIALIZE MODEL, DATABASE, ENCODER
-host = '161.156.196.183'
-port = '8080'
-password = '4XYg2XK6sMU4UuBEjHq4EhYE8mSFO3Qq'
-user = 'root'
-server_pem_path =  'cert.pem'
+### MILVUS - Techzone standalone instance
+# host = '161.156.196.183'
+# port = '8080'
+# password = '4XYg2XK6sMU4UuBEjHq4EhYE8mSFO3Qq'
+# user = 'root'
+# server_pem_path = 'cert.pem'
+# server_name = 'localhost'
+### MILVUS - Techzone watsonx.data service
+host = 'useast.services.cloud.techzone.ibm.com'
+port = '28048'
+password = 'password'
+user = 'ibmlhadmin'
+server_pem_path = 'cert.pem'
+server_name = 'watsonxdata'
 database = rag_util.MilvusDB(
     host=host,
     port=port,
     password=password,
     user=user,
-    server_pem_path=server_pem_path
+    server_pem_path=server_pem_path,
+    server_name=server_name
     )
 database.load_collection('student_handbook', persist=True)
 model = load_model()  # load our models once and then cache it
 # PhoBERT
-path = '../static/model'
+path = '../static/models/phobert_queryrouting'
 pho_model = load_PhoBERT(path)
 # Load the encoder
 encoder = load_encoder()
+import query_routing #Import this last because of interactions with the JVM
 ################################
 def save_file(uploaded_file):
     """helper function to save documents to disk"""
@@ -106,8 +117,8 @@ if prompt := st.chat_input("Ask me anything!"):
             st.write('Collection to search: ' + context)
 
             st.write('Searching...')
-            query_embeddings = encoder.embedding_function.embed_query(user_prompt)
-            search_results = database.similarity_search(context, query_embeddings)
+            query_embeddings = encoder.embedding_function.embed_query("query: " + user_prompt)
+            search_results = database.similarity_search(context, query_embeddings, output_fields=['title', 'article', 'chunk_number'])
             context = rag_util.create_prompt_milvus(user_prompt, search_results)
 
             st.write('Generating...')
