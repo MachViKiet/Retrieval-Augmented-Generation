@@ -103,14 +103,15 @@ class MilvusDB:
                 "metric_type": "L2",
                 "params": {"nprobe": 5}
             }
-        for c in self.persistent_collections + [collection]: #Search from default collections + collection
+        for c in self.persistent_collections + [collection]: #Search from default collections + currently loaded collection
             search_results = Collection(c).search(
                 data=[query_embeddings],
                 anns_field="embedding",
                 param=search_params,
                 limit=k,
                 expr=None,
-                output_fields=output_fields
+                output_fields=output_fields if type(output_fields) == list else output_fields[c] #If the user specified different output fields
+                                                                                                    # for different collections
             )[0]
             for r in search_results:
                 results[r.distance] = r.entity

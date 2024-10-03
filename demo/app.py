@@ -22,6 +22,18 @@ def load_encoder():
 def load_PhoBERT(path):
     model = PhoQueryRouter(path)
     return model
+
+@st.cache_resource
+def load_MilvusDB(host, port, password, user, server_pem_path, server_name):
+    return rag_util.MilvusDB(
+    host=host,
+    port=port,
+    password=password,
+    user=user,
+    server_pem_path=server_pem_path,
+    server_name=server_name
+    )
+
 #######################
 descriptions = """List of collections:
 recruitment: News about job postings, internships programs.
@@ -43,17 +55,12 @@ host = 'useast.services.cloud.techzone.ibm.com'
 port = '28048'
 password = 'password'
 user = 'ibmlhadmin'
-server_pem_path = 'cert.pem'
+# server_pem_path = 'cert.pem'
+server_pem_path = r'C:\Users\NguyenDuyDangKhoa\Documents\vscode_playground\Retrieval-Augmented-Generation\demo\cert.pem'
 server_name = 'watsonxdata'
-database = rag_util.MilvusDB(
-    host=host,
-    port=port,
-    password=password,
-    user=user,
-    server_pem_path=server_pem_path,
-    server_name=server_name
-    )
+database = load_MilvusDB(host, port, password, user, server_pem_path, server_name)
 database.load_collection('student_handbook', persist=True)
+
 model = load_model()  # load our models once and then cache it
 # PhoBERT
 path = '../static/models/phobert_queryrouting'
@@ -85,7 +92,7 @@ with st.sidebar:
     # if uploaded_files != []:  # upload file 
         # docs = rag_util.load_and_split_pdfs(file_paths)
         # DB = rag_util.FaissDb(docs=docs, embedding_function=encoder.embedding_function)
-
+######################################
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -117,8 +124,12 @@ if prompt := st.chat_input("Ask me anything!"):
             st.write('Collection to search: ' + context)
 
             st.write('Searching...')
+            output_fields = {
+                'student_handbook': ['title', 'article', 'page_number'],
+                context: ['title', 'article']
+            }
             query_embeddings = encoder.embedding_function.embed_query("query: " + user_prompt)
-            search_results = database.similarity_search(context, query_embeddings, output_fields=['title', 'article', 'chunk_number'])
+            search_results = database.similarity_search(context, query_embeddings, output_fields=output_fields, k=k)
             context = rag_util.create_prompt_milvus(user_prompt, search_results)
 
             st.write('Generating...')
@@ -127,6 +138,6 @@ if prompt := st.chat_input("Ask me anything!"):
                 label="Done!", state="complete", expanded=False
             )
         #response = st.write(answer)
-        answer = st.write_stream(model.generate(user_prompt, context, streaming=True))
+        answer = st.write_stream(model.generate(user_prompt, context, streaming=True, max_new_tokens=max_new_tokens))
         
     st.session_state.messages.append({"role": "assistant", "content": answer})
