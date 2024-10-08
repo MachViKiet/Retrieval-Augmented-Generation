@@ -32,7 +32,7 @@ class ChatModel:
         )
         self.chat = []
 
-    def generate(self, question: str, context: str = None, streaming=False):
+    def generate(self, question: str, context: str = None, streaming=False, max_new_tokens=2048, k=3):
 
         if context == None or context == "":
             prompt = f"""Give a detailed answer to the following question. Always answer in Vietnamese. Question: {question}"""
@@ -42,15 +42,19 @@ Always answer in Vietnamese, make sure the entire answer is in Vietnamese. At th
 Context: {context}.
 Query: {question}
 """
+        params = {
+            GenParams.MAX_NEW_TOKENS: max_new_tokens
+        }
 
-        formatted_prompt = prompt.replace("\n", "<eos>")
+        # formatted_prompt = prompt.replace("\n", "<eos>")
+        formatted_prompt = prompt
         print(formatted_prompt)
         if not streaming:
-            response = self.model.generate_text(formatted_prompt)
-            response = response.replace("<eos>", "")  # remove eos token
+            response = self.model.generate_text(formatted_prompt, params=params)
+            #response = response.replace("<eos>", "")  # remove eos token
             return response
         else:
-            return self.model.generate_text_stream(formatted_prompt)
+            return self.model.generate_text_stream(formatted_prompt, params=params)
 
 class PhoQueryRouter:
     def __init__(self, model_dir: str = CACHE_DIR):

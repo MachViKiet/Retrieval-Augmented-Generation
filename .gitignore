@@ -3,5 +3,6 @@ venv
 
 notebook/data/Sổ tay sinh viên/
 notebook/data/thesis_rag_data/
-static/*
+notebook/vncorenlp
+static/models/*
 student_handbook_embedded.csv
