@@ -182,3 +182,26 @@ def determine_collection(question, model, database_descriptions, collection_name
         if idx != -1:
             result = result[idx:idx + len(collection)]
     return result
+
+def metadata_extraction(query, model, schema: list|dict):
+    '''Extract metadata from user query given a schema using a LLM call
+    schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
+
+    prompt = """Extract metadata from the user's query using the provided schema.
+    Answer in JSON format. Do not give an explanation. Do not include the metadata if not found.
+
+    User's query: {query}
+    Schema:
+    {schema}
+    Extracted metadata:
+    """
+    if type(schema) is list:
+        schema = ",".join(schema)
+    elif type(schema) is dict:
+        schema = "\n".join(k + ": " + v for k,v in schema.items())
+    else:
+        raise TypeError("Schema should be list or dict, got " + str(type(schema)))
+    
+    full_prompt = prompt.format(query=query, schema=schema)
+    result = model.model.generate_text(full_prompt)
+    return result
