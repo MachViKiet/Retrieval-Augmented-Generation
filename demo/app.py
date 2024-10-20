@@ -1,4 +1,5 @@
 import os
+import json
 import streamlit as st
 from model import ChatModel, PhoQueryRouter
 import rag_util
@@ -9,7 +10,7 @@ st.title("LLM Chatbot RAG Assistant")
 @st.cache_resource
 def load_model():
     # TODO : Tạo LLM
-    model = ChatModel()    
+    model = ChatModel(model_id='meta-llama/llama-3-1-70b-instruct')    
     return model
 
 @st.cache_resource
@@ -51,8 +52,9 @@ events: Contests, Seminars.
 # server_pem_path = 'cert.pem'
 # server_name = 'localhost'
 ### MILVUS - Techzone watsonx.data service
-host = 'useast.services.cloud.techzone.ibm.com'
-port = '28048'
+# host = 'useast.services.cloud.techzone.ibm.com'
+host = 'jp-tok.services.cloud.techzone.ibm.com'
+port = '29140'
 password = 'password'
 user = 'ibmlhadmin'
 # server_pem_path = 'cert.pem'
@@ -111,29 +113,43 @@ if prompt := st.chat_input("Ask me anything!"):
         user_prompt = st.session_state.messages[-1]["content"]
         # TODO :  Viết flow của generate dữ liệu ở đây
         with st.status('Please wait...', expanded=True) as status:
-            st.write('Determining collection...')
-        # Determine collection to search - apart from the persistent collections
+        # -------------- Determine collection to search - apart from the persistent collections -------------
+            placeholder = st.empty()
+            placeholder.write('Determining collection...')
         ## Use LLM for query routing
         # collection_names = database._handler.list_collections()
         # context = rag_util.determine_collection(user_prompt, model, descriptions, collection_names)
         ## Use PhoBERT model for query routing
-            context = pho_model.classify(query_routing.segment_vietnamese(user_prompt))[0]['label']
-            database.load_collection(context, persist=False)
-            print("Collection to be searched: " + context)
+            chosen_collection = pho_model.classify(query_routing.segment_vietnamese(user_prompt))[0]['label']
+            database.load_collection(chosen_collection, persist=False)
             #st.write("Searching collection: " + context)
-            st.write('Collection to search: ' + context)
-
+            placeholder.write('Collection to search: ' + chosen_collection)
+        # ----------------- Metadata Extraction ----------------
+            placeholder = st.empty()
+            placeholder.write('Extracting metadata...')
+            schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
+            extracted_metadata = rag_util.metadata_extraction(user_prompt, model, schema)
+            print("Extracted metadata: " + json.dumps(extracted_metadata))
+            if extracted_metadata != -1: #No metadata found
+                filter_expressions = rag_util.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+                placeholder.write("Extracted metadata: " + json.dumps(extracted_metadata))
+            else:
+                filter_expressions = None
+                placeholder.write("No metadata found in user query. Commencing no filter search.")
+        # ----------------- Searching -----------------
             st.write('Searching...')
             output_fields = {
                 'student_handbook': ['title', 'article', 'page_number'],
-                context: ['title', 'article']
+                chosen_collection: ['title', 'article']
             }
             query_embeddings = encoder.embedding_function.embed_query("query: " + user_prompt)
-            search_results = database.similarity_search(context, query_embeddings, output_fields=output_fields, k=k)
-            context = rag_util.create_prompt_milvus(user_prompt, search_results)
-
+            search_results = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields, k=k, filters=filter_expressions)
+            if search_results != -1:
+                context = rag_util.create_prompt_milvus(user_prompt, search_results)
+            else:
+                context = "No related documents found"
+        # ----------------- Generating answer -------------------------
             st.write('Generating...')
-            #answer = model.generate(user_prompt, context)
             status.update(
                 label="Done!", state="complete", expanded=False
             )
