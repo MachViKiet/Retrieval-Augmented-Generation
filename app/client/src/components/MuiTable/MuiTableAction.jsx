@@ -1,0 +1,73 @@
+import { Box, Tooltip } from '@mui/material';
+import React from 'react'
+import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+
+
+const ACTION_LIST_DEFINE = {
+    'rename': {
+        icon: <DriveFileRenameOutlineOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#ac8dff' : '#2196f3', alignSelf: 'center', fontSize: '1rem' }} />,
+        tooltip: 'Đổi Tên'
+    },
+    'delete': {
+        icon: <DeleteOutlineOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? 'red' : 'red', alignSelf: 'center', fontSize: '1rem' }} />,
+        tooltip: 'Xóa'
+    },
+    'download': {
+        icon: <CloudDownloadOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#12a94d' : '#12a94d', alignSelf: 'center', fontSize: '1rem' }} />,
+        tooltip: 'Tải Về'
+    },
+    'edit': {
+        icon: <EditOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#ac8dff' : '#2196f3', alignSelf: 'center', fontSize: '1rem' }} />,
+        tooltip: 'Chỉnh sửa'
+    },
+}
+
+const ActionContainer = ({params}) => {
+    return ( 
+    <Box sx= {{ 
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    }}>
+        {params && params.map((type,index) => (
+        <Box key = {index} 
+            sx = {{ 
+                '&:active' : {
+                    transform: 'scale(0.9)'
+                }
+             }}
+            onClick={(event) => {
+                event.stopPropagation();
+            }}>
+            <Tooltip title={ACTION_LIST_DEFINE[type].tooltip}>
+                {ACTION_LIST_DEFINE[type].icon}
+            </Tooltip>
+        </Box>))} 
+    </Box>
+)}
+
+function MuiTableAction() {
+  return (
+    <div>
+      
+    </div>
+  )
+}
+
+export const renderTableAction = (params) => {
+  if (params.value == null) {
+    return '';
+  }
+  const actionList = params.value
+  const rowData = params.row
+  const rowId = params.id
+
+  return <ActionContainer params = {actionList} id = {rowId} data = {rowData}/>
+}
+
+export default MuiTableAction
