@@ -8,6 +8,7 @@ from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames as EmbedParams
 from ibm_watsonx_ai.foundation_models import Embeddings
 
 import pymongo
+import json
 
 from pymilvus import(
     Milvus,
@@ -95,7 +96,7 @@ class MilvusDB:
                 Collection(c).release()
         return Status()
     
-    def similarity_search(self, collection:str, query_embeddings, k: int = 3, search_params=None, output_fields=['title','article']):
+    def similarity_search(self, collection:str, query_embeddings, k: int = 3, search_params=None, output_fields=['title','article'], filters: dict = None):
         results = {}
         
         if search_params is None:
@@ -103,18 +104,22 @@ class MilvusDB:
                 "metric_type": "L2",
                 "params": {"nprobe": 5}
             }
+        if filters is None:
+            filters = {}
         for c in self.persistent_collections + [collection]: #Search from default collections + currently loaded collection
             search_results = Collection(c).search(
                 data=[query_embeddings],
                 anns_field="embedding",
                 param=search_params,
                 limit=k,
-                expr=None,
+                expr=filters.get(c, None),
                 output_fields=output_fields if type(output_fields) == list else output_fields[c] #If the user specified different output fields
                                                                                                     # for different collections
             )[0]
             for r in search_results:
                 results[r.distance] = r.entity
+        if len(results) == 0: #No matching documents
+            return -1
         #Sort by distance and return only k results
         myKeys = list(results.keys())
         myKeys.sort()
@@ -182,3 +187,51 @@ def determine_collection(question, model, database_descriptions, collection_name
         if idx != -1:
             result = result[idx:idx + len(collection)]
     return result
+
+def metadata_extraction(query, model, schema: list|dict):
+    '''Extract metadata from user query given a schema using a LLM call
+    schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
+
+    prompt = prompt = """Extract metadata from the user's query using the provided schema.
+Do not include the metadata if not found.
+User's query: {query}
+Schema:
+{schema}
+Always answer in JSON format.
+Answer:
+"""
+    if type(schema) is list:
+        schema = ",".join(schema)
+    elif type(schema) is dict:
+        schema = "\n".join(k + ": " + v for k,v in schema.items())
+    else:
+        raise TypeError("Schema should be list or dict, got " + str(type(schema)))
+    
+    full_prompt = prompt.format(query=query, schema=schema)
+    result = model.model.generate_text(full_prompt)
+    try:
+        result = json.loads(result)
+    except json.JSONDecodeError: #Wrong format
+        print("Metadata Extraction: Couldn't decode JSON - " + result)
+        result = -1
+    return result
+
+def compile_filter_expression(metadata, loaded_collections: list):
+    '''Read collections schemas to compile filtering expressions for Milvus'''
+    expressions = {}
+    for c in loaded_collections:
+        expressions[c] = ""
+        short_schema = {}
+        schema = Collection(c).describe()['fields']
+        for s in schema:
+            short_schema[s['name']] = s['type']
+        for attr, val in metadata.items():
+            if val is None or val == "":
+                continue
+            if short_schema[attr] == DataType.INT8 | DataType.INT16 | DataType.INT32 | DataType.INT64 | DataType.FLOAT: #integer
+                expressions[c] += attr + ' == ' + val + " && "
+            elif short_schema[attr] == DataType.VARCHAR:
+                expressions[c] += attr + f' == "{val}"' + " && "
+        # Reformat
+        expressions[c] = expressions[c].removesuffix('&& ')
+    return expressions
