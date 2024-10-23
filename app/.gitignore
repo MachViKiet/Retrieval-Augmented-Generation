@@ -31,3 +31,5 @@ client/environment.yml
 *.njsproj
 *.sln
 *.sw?
+# Models files
+service/models/phobert_queryrouting
