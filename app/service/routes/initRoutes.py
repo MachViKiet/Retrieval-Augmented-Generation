@@ -11,6 +11,7 @@ from utils import rag_utils, query_routing
 main = Blueprint("main", __name__)
 
 load_dotenv('../.env')
+os.chdir('../..')
 
 @main.route("/", methods=["GET"])
 @cross_origin()
@@ -38,7 +39,7 @@ def preload():
     database = rag_utils.MilvusDB(
         host=os.getenv('MILVUS_HOST'), port=os.getenv('MILVUS_PORT'),
         user=os.getenv('MILVUS_USERNAME'), password=os.getenv('MILVUS_PASSWORD'),
-        server_name=os.getenv('MILVUS_SERVER_NAME'), server_pem_path='../milvus_cert.pem'
+        server_name=os.getenv('MILVUS_SERVER_NAME'), server_pem_path=os.getenv('MILVUS_SERVER_PEM')
     )
     database.load_collection('student_handbook', persist=True)
     return jsonify({})
@@ -52,7 +53,7 @@ def determine_collection():
     return jsonify({'collection': chosen_collection})
 
 @main.route("/generate/extract_meta", methods=['GET'])
-@cross_origin
+@cross_origin()
 def extract_metadata():
     query = request.args.get('query')
     chosen_collection = request.args.get('chosen_collection')
@@ -65,7 +66,7 @@ def extract_metadata():
     return jsonify(filter_expressions)
 
 @main.route("/generate/search", methods=["GET"])
-@cross_origin
+@cross_origin()
 def search():
     ##PARAMS
     query = request.args.get('query') # Tin nhắn người dùng
@@ -86,7 +87,7 @@ def search():
     return jsonify({'context': context})
 
 @main.route("/generate", methods=["GET"])
-@cross_origin
+@cross_origin()
 def generate():
     ##PARAMS
     query = request.args.get('query') # Tin nhắn người dùng
