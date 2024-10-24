@@ -12,7 +12,6 @@ dist
 dist-ssr
 *.local
 
-.env
 client/.env
 client/.env
 client/.env
@@ -31,3 +30,5 @@ client/environment.yml
 *.njsproj
 *.sln
 *.sw?
+# Models files
+service/models/phobert_queryrouting
