@@ -5,7 +5,6 @@ import Grid from '@mui/material/Grid2'
 import TextInput from '~/components/Chatbots/TextInput';
 import BubbleChatLeft from '~/components/Chatbots/BubbleChatLeft';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
-import LoadingDot from '~/components/LoadingDot';
 import Block from '~/components/Block';
 import { GoogleGenerativeAI } from '~/services/GoogleGenerativeAI';
 import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
@@ -13,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import BotChat from './components/BotChat';
 import UserChat from './components/UserChat';
-import useAnimatedText from '~/hooks/useAnimatedText';
+import LoadingDot from './components/LoadingDot';
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -59,6 +58,8 @@ function ChatGenerator() {
   const ChatAction = async (text) => {
     const res = await genAIModel.startChat(text)
     setConservation(Conservation => [...Conservation, res])
+
+    setIsLoading(false)
   }
 
   const handleClick = (text) => {
@@ -69,12 +70,6 @@ function ChatGenerator() {
             }])
     setIsLoading(true)
   }
-
-  const loading_chat = () => (
-    <BubbleChatLeft
-      text={<LoadingDot/>}
-    />
-  )
 
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
@@ -162,9 +157,11 @@ function ChatGenerator() {
 
             {Conservation.map((conservation, index) => 
               (conservation.role == 'bot' ?
-                <BotChat key = {conservation?.id} message={(conservation?.message)} isTyping = {true}/> : <UserChat key = {conservation.id} message={conservation.message} isTyping = {true}/>)
+                <BotChat key = {conservation?.id} message={(conservation?.message)} isTyping = {true}/> : <UserChat key = {conservation.id} message={conservation.message} isTyping = {false}/>)
             )}
-            {isLoading && loading_chat()}
+
+            {isLoading && <LoadingDot/>}
+
             <div ref={bottomRef} />
           </ChatBlock>
           <TextInput
