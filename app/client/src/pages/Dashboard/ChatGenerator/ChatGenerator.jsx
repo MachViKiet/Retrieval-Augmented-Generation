@@ -3,34 +3,17 @@ import { Box, Button, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import TextInput from '~/components/Chatbots/TextInput';
-import BubbleChatRight from '~/components/Chatbots/BubbleChatRight';
 import BubbleChatLeft from '~/components/Chatbots/BubbleChatLeft';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
-import { TypeAnimation } from 'react-type-animation';
 import LoadingDot from '~/components/LoadingDot';
 import Block from '~/components/Block';
-
-import {
-  GoogleGenerativeAI,
-} from "@google/generative-ai";
+import { GoogleGenerativeAI } from '~/services/GoogleGenerativeAI';
 import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
 import { useDispatch } from 'react-redux';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
-import ReactMarkdown from 'react-markdown';
-
-
-const apiKey = 'AIzaSyAD15bFYXthZiX7PoRo9P33z0M_5ZVkidI';
-const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
-});
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 8192,
-  responseMimeType: "text/plain",
-};
+import BotChat from './components/BotChat';
+import UserChat from './components/UserChat';
+import useAnimatedText from '~/hooks/useAnimatedText';
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -45,62 +28,37 @@ const Header = styled(Box) (({theme}) => ({
   paddingLeft: theme.spacing(4),
 }))
 
-const loading_chat = () => (
-  <BubbleChatLeft
-    text={<LoadingDot/>}
-  />
-)
-
 function ChatGenerator() {
 
   const History = []
   const RecommendationQuestion = [
     {
-      "id": 89734,
+      "id": 897344,
       "message": "Cho tôi biết về nội quy trường học"
     },
     {
-      "id": 49532,
+      "id": 495324,
       "message": "Mình muốn tìm hiểu kỹ hơn về quy định đồng phục, bạn có thể nói rõ không?"
     },
     {
-      "id" : 34252,
+      "id" : 342524,
       "message": "Sinh viên có thể sử dụng wifi của trường trong những khu vực nào?"
     },
     {
-      "id" : 34232,
+      "id" : 342324,
       "message": "Sinh viên sẽ bị kỷ luật như thế nào nếu vi phạm nội quy?"
     }
   ]
-  
+
   const dispatch = useDispatch()
   const [Conservation, setConservation] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const bottomRef = useRef(null);
+  const genAIModel = GoogleGenerativeAI()
 
   const ChatAction = async (text) => {
-
-    const chatSession = model.startChat({
-      generationConfig,
-      history: [],
-    });
-
-    chatSession.sendMessage(text).then(
-      (result) => {
-        setConservation(Conservation => [...Conservation,{
-                                  "id": Math.floor(10000 + Math.random() * 90000),
-                                  "role": "bot",
-                                  "message": result.response.text()
-    }])}).catch(
-      (e) => { 
-        setConservation(Conservation => [...Conservation,{
-                                    "id": Math.floor(10000 + Math.random() * 90000),
-                                    "role": "bot",
-                                    "message": `Xin lỗi, Tôi không thể kết nối với server`
-        }])
-        console.log('Error: ', e)
-      }
-    ); 
+    const res = await genAIModel.startChat(text)
+    setConservation(Conservation => [...Conservation, res])
   }
 
   const handleClick = (text) => {
@@ -112,69 +70,9 @@ function ChatGenerator() {
     setIsLoading(true)
   }
 
-  const markdownText = [
-    "Đạo hàm là một khái niệm quan trọng trong toán học, đại diện cho tốc độ thay đổi của một hàm số tại một điểm cụ thể trên đồ thị của nó.\n",
-    "**Ví dụ**: Đạo hàm của hàm số y = x² tại điểm x = 2 cho biết độ dốc của tiếp tuyến với đồ thị hàm số tại điểm có hoành độ x = 2.\n",
-    "Đạo hàm được ứng dụng rộng rãi trong nhiều lĩnh vực như vật lý, kinh tế, kỹ thuật. Ví dụ: Tính vận tốc tức thời của một vật chuyển động, tìm giá trị lớn nhất, nhỏ nhất của một hàm số.\n",
-    "Công thức tính đạo hàm cơ bản của một số hàm số đơn giản: **(x^n)' = n*x^(n-1)**"
-  ];
-  const bot_chat = (conservation, isTyping = false) => (
+  const loading_chat = () => (
     <BubbleChatLeft
-      key={conservation?.id}
-      id={conservation?.id}
-      text={
-        <Typography variant='p' 
-          sx = {{ 
-            fontSize: '0.725rem',
-            color: '#000',
-            whiteSpace: 'pre-line', 
-            textIndent: '2px', 
-            lineHeight: 'normal' 
-          }}>
-          {isTyping ? <TypeAnimation 
-            cursor = {false}
-            sequence = {
-              [
-                () => setIsLoading(false),
-                // ...markdownText.reduce((accumulator, currentValue) => {
-                //     const lastElement = accumulator[accumulator.length - 1] || '';
-                //     return [...accumulator, lastElement + currentValue];
-                // }, [])
-                conservation.message
-              ]
-            }
-            speed={99}
-          /> : (<ReactMarkdown> {conservation.message} </ReactMarkdown>)}
-        </Typography>
-      }
-    />
-  )
-
-  const user_chat = (conservation, isTyping = false) => (
-    <BubbleChatRight
-      id={conservation?.id}
-      key={conservation?.id}
-      text={
-        <Typography variant='p' 
-          sx = {{ 
-            whiteSpace: 'pre-line', 
-            textIndent: '2px', 
-            wordWrap: 'break-word' ,
-            color:'#fff',
-            fontSize:'0.725rem'
-          }}>
-          {isTyping ? <TypeAnimation
-            style = {{ whiteSpace: 'pre-line', display: 'block' }} 
-            cursor = {false}
-            sequence = {
-              [
-                conservation.message
-              ]
-            }
-            speed={80}
-          /> : conservation.message }
-        </Typography>
-      }
+      text={<LoadingDot/>}
     />
   )
 
@@ -189,7 +87,7 @@ function ChatGenerator() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [Conservation, ChatAction, isLoading]);
+  }, [Conservation, isLoading]);
 
   return (
     <Grid container  spacing={2} sx = {{ height: '100%' }}>
@@ -253,14 +151,19 @@ function ChatGenerator() {
                   </Typography>
                 </Button>
               ))}
-             <Box sx ={{ width: '100%', height: '20px' }}></Box>
-
-              
+              <Box sx ={{ width: '100%', height: '20px' }}></Box>  
             </Box>
             }
 
-            {History.map((conservation, index) => conservation.role == 'bot' ? bot_chat(conservation) : user_chat(conservation))}
-            {Conservation.map((conservation) => conservation.role == 'bot' ? bot_chat(conservation, true) : user_chat(conservation))}
+            {History.map((conservation, index) => 
+              (conservation.role == 'bot' ?
+                <BotChat key = {conservation.id} message={conservation.message} isTyping = {false}/> : <UserChat key = {conservation.id} message={conservation.message} isTyping = {false}/>)
+            )}
+
+            {Conservation.map((conservation, index) => 
+              (conservation.role == 'bot' ?
+                <BotChat key = {conservation?.id} message={(conservation?.message)} isTyping = {true}/> : <UserChat key = {conservation.id} message={conservation.message} isTyping = {true}/>)
+            )}
             {isLoading && loading_chat()}
             <div ref={bottomRef} />
           </ChatBlock>
