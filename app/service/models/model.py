@@ -58,7 +58,7 @@ Query: {question}
 
 class PhoQueryRouter:
     def __init__(self, model_dir: str = CACHE_DIR):
-        self.model = pipeline('text-classification', model=model_dir)
+        self.model = pipeline('text-classification', model=model_dir + '/phobert_queryrouting')
 
     def classify(self, query):
         return self.model(query)
