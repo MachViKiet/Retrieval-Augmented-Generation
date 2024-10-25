@@ -8,7 +8,8 @@ const MessageChat = styled(Box) (() => ({
     alignItems: 'start',
     justifyContent: 'start',
     textAlign: 'justify',
-    paddingBottom: '20px'
+    paddingBottom: '20px',
+    transition: '0.5s all ease',
 }))
 
 const BubbleChat = styled(Box) (({theme}) => ({
@@ -20,7 +21,8 @@ const BubbleChat = styled(Box) (({theme}) => ({
     borderRadius: '5px',
     position: 'relative',
     width: 'fit-content',
-    maxWidth: '70%'
+    maxWidth: '70%',
+    transition: '0.5s all ease',
 }))
 
 const BubbleChatEffect = () => ( 

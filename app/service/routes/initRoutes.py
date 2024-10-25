@@ -39,7 +39,7 @@ def preload():
     database = rag_utils.MilvusDB(
         host=os.getenv('MILVUS_HOST'), port=os.getenv('MILVUS_PORT'),
         user=os.getenv('MILVUS_USERNAME'), password=os.getenv('MILVUS_PASSWORD'),
-        server_name=os.getenv('MILVUS_SERVER_NAME'), server_pem_path='.milvus_cert.pem'
+        server_name=os.getenv('MILVUS_SERVER_NAME'), server_pem_path='milvus_cert.pem'
     )
     database.load_collection('student_handbook', persist=True)
     return jsonify({})
@@ -49,7 +49,7 @@ def preload():
 def determine_collection():
     query = request.args.get('query')
     chosen_collection = pho_queryrouter.classify(query_routing.segment_vietnamese(query))[0]['label']
-    database.load_collection(chosen_collection, persist=True)
+    # database.load_collection(chosen_collection, persist=True)
     return jsonify({'collection': chosen_collection})
 
 @main.route("/generate/extract_meta", methods=['GET'])
@@ -73,7 +73,7 @@ def search():
     chosen_collection = request.args.get('chosen_collection') #Context từ api search
     filter_expressions = json.loads(request.args.get('filter_expressions')) #
     #----------------------------------
-
+    database.load_collection(chosen_collection)
     output_fields = {
         'student_handbook': ['title', 'article', 'page_number'],
         chosen_collection: ['title', 'article']
@@ -92,7 +92,7 @@ def generate():
     ##PARAMS
     query = request.args.get('query') # Tin nhắn người dùng
     context = request.args.get('context') # Context từ api search
-    streaming = request.args.get('streaming') #True or False
+    streaming = request.args.get('streaming').lower() == "true"  #True or False 
     max_tokens = 1500 
     #-------------------------------------------
     answer = model.generate(query, context, streaming, max_tokens)

@@ -3,7 +3,7 @@ import React from 'react'
 import BubbleChatRight from '~/components/Chatbots/BubbleChatRight';
 import { motion } from "framer-motion"
 
-function UserChat({key = '12345', message, isTyping = false}) {
+function UserChat({ message}) {
   return (
     <motion.div
       initial={{ transform: "scale(0)" }}
@@ -14,8 +14,6 @@ function UserChat({key = '12345', message, isTyping = false}) {
       damping: 40,
     }}>
       <BubbleChatRight
-      key={key}
-      id={key}
       text={
         <Typography variant='p' 
         sx = {{ 
