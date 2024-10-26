@@ -47,11 +47,11 @@ const SidebarContainer = styled(Box)(({theme}) => ({
     padding: theme.spacing(2),
     transform: 'scale(1)',
     transition: '0.5s all ease', 
-    // background:  theme.palette.primary.main,
+    background:  theme.palette.primary.main,
     [theme.breakpoints.down('lg')]: {
       left: '-100%', 
     },
-    // boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
     borderRadius: '0 15px 15px 0',
     zIndex: 7,
 }))

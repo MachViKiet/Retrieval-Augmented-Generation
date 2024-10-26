@@ -318,7 +318,7 @@ function ChatGenerator() {
       </Grid>
 
       <Grid  size={{ xs: 0, md: 4 }} >
-        <Block sx = {{ paddingTop: 13 }}>
+        <Block sx = {{ paddingTop: 8.5 }}>
           <Header sx = {{ 
             display: 'flex',
             alignItems: 'center',
@@ -331,9 +331,9 @@ function ChatGenerator() {
               width: '100%',
               fontWeight: '900',
               fontFamily: 'auto'
-             }}>Tài Liệu</Typography>
+             }}></Typography>
           </Header>
-
+              hi
              { Conservation.map((data) => {
                 return (
                   data.id ==  openDetail &&<Typography sx = {{ 

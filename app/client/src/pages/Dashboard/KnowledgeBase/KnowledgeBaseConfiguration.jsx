@@ -18,7 +18,7 @@ function KnowledgeBaseConfiguration() {
   })
 
   return (
-      <MuiTable/>
+      <></>
   )
 }
 

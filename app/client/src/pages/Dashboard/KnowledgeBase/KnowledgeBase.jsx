@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux'
 import { navigate as sidebarAction } from '~/store/actions/navigateActions'
 import { Typography } from '@mui/material'
 import styled from '@emotion/styled'
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -55,20 +57,26 @@ function KnowledgeBase() {
     <Block sx = {{ paddingX: 4, paddingTop: 4, paddingRight: 1 }}>
 
       <Box>
+        <Box sx = {{ display: 'flex', gap: 1, alignItems:'center' }}>
           <Typography variant='h1' sx = {{ 
-            fontSize: '1.5rem',
-            fontFamily: 'Roboto',
-            fontWeight: '900',
-            width: 'fit-content'
-          }}>Quản Lý Tri Thức</Typography>
+              fontSize: '1.5rem',
+              fontFamily: 'Roboto',
+              fontWeight: '900',
+              width: 'fit-content'
+            }}>Danh Sách Chủ Đề</Typography>
+        </Box>
+        <Box sx = {{ display: 'flex', gap: 0.5, alignItems:'center', paddingTop: 0.5, paddingBottom: 2, color: theme => theme.palette.mode == 'dark'? '#b2b2b2' : '#727171',}}>
+          <LightbulbOutlinedIcon fontSize='small' sx = {{ color: 'inherit' }}/>
+
           <Typography variant='p' component='p' fontSize= {'0.825rem'} sx = {{ 
             fontWeight: '400',
-            color: theme => theme.palette.mode == 'dark'? '#b2b2b2' : '#727171',
+            color: 'inherit',
             width: 'fit-content',
-            paddingTop: 0.5,
-            paddingBottom: 2,
+            // paddingTop: 0.5,
+            // paddingBottom: 2,
             textAlign: 'start'
           }}>Nền tảng tổ chức, lưu trữ thông tin giúp model có thể tiếp cận kiến thức hiệu quả và cung cấp kết quả mong muốn.</Typography>
+        </Box>
       </Box>
 
       <Grid container  spacing={{ xs: 2, sm: 2, md: 4 }} columns={{ xs: 2, sm: 2, md: 4 }} sx = {{ 
@@ -85,13 +93,14 @@ function KnowledgeBase() {
           sx = {{ 
             width: '200px',
             height: '200px',
-            bgcolor: theme => theme.palette.mode == 'dark'? '#181c3291' : '#eff9ff',
+            bgcolor: theme => theme.palette.mode == 'dark'? '#181c3291' : '#b1cee166',
             borderRadius: '15px',
             p: 0,
             boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
             position: 'relative',
             padding: 2,
             paddingTop: 7,
+            // color: 
             cursor: 'pointer',
             '&:active' : {
               transform: 'scale(0.9)'
@@ -115,7 +124,7 @@ function KnowledgeBase() {
               display: '-webkit-box',
               WebkitLineClamp: '4',
               WebkitBoxOrient: 'vertical',
-              color: '#bbc6cf',
+              // color: '#bbc6cf',
               }}>{data.description}</Typography>
 
             <Box sx = {{ 
@@ -128,7 +137,7 @@ function KnowledgeBase() {
               left: 0,
               bottom: 0,
               paddingX: 2,
-              color: '#bbc6cf'
+              // color: '#bbc6cf'
              }}>
                 <Typography fontSize={'0.725rem !important'} sx = {{color: 'inherit', width: 'fit-content', textAlign: 'start', display: 'flex', gap: 1, alignItems: 'center',  justifyContent:'center'}}>
                   <DescriptionOutlinedIcon sx={{ fontSize: 18 }}/>

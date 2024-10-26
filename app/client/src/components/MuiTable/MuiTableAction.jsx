@@ -4,7 +4,7 @@ import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRen
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-
+import SyncIcon from '@mui/icons-material/Sync';
 
 const ACTION_LIST_DEFINE = {
     'rename': {
@@ -22,6 +22,10 @@ const ACTION_LIST_DEFINE = {
     'edit': {
         icon: <EditOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#ac8dff' : '#2196f3', alignSelf: 'center', fontSize: '1rem' }} />,
         tooltip: 'Chỉnh sửa'
+    },
+    'discovery': {
+        icon: <SyncIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#ffffff' : '#000000', alignSelf: 'center', fontSize: '1rem' }} />,
+        tooltip: 'Phân tích'
     },
 }
 

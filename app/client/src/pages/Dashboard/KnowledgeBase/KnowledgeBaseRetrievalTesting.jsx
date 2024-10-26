@@ -19,7 +19,7 @@ function KnowledgeBaseRetrievalTesting() {
 
   return (
     <div>
-      <Test/>
+
     </div>
   )
 }
