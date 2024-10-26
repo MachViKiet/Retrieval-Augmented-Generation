@@ -3,7 +3,7 @@ from jpype import isJVMStarted
 import os
 from dotenv import load_dotenv
 
-load_dotenv('../.env')
+load_dotenv('.env')
 #os.environ['JAVA_HOME'] = r'C:\Program Files\Java\jdk-23'
 
 if not isJVMStarted():

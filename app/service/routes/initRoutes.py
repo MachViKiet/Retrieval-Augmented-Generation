@@ -25,16 +25,21 @@ def auth():
     auth = authController()
     return jsonify(auth)
 
-@main.route("/load", methods=["GET"])
-@cross_origin()
+# @main.route("/load", methods=["GET"])
+# @cross_origin()
 def preload():
-    chat_model_id = request.args.get('model_id', default="meta-llama/llama-3-1-70b-instruct")
+    # chat_model_id = request.args.get('model_id', default="meta-llama/llama-3-1-70b-instruct")
+    print("---LOADING ASSETS---")
+    chat_model_id = "meta-llama/llama-3-1-70b-instruct"
     global model
     model = ChatModel(model_id=chat_model_id)
+    print("Chat model loaded.")
     global encoder
     encoder = rag_utils.Encoder()
+    print("Encoder loaded.")
     global pho_queryrouter
     pho_queryrouter = PhoQueryRouter()
+    print("Query Router loaded.")
     global database
     database = rag_utils.MilvusDB(
         host=os.getenv('MILVUS_HOST'), port=os.getenv('MILVUS_PORT'),
@@ -42,7 +47,10 @@ def preload():
         server_name=os.getenv('MILVUS_SERVER_NAME'), server_pem_path=os.getenv('MILVUS_SERVER_PEM')
     )
     database.load_collection('student_handbook', persist=True)
-    return jsonify({})
+    print("Database loaded.")
+    # return jsonify({})
+    print("All assets loaded.")
+    return
 
 @main.route("/generate/determine_collection", methods=["GET"])
 @cross_origin()
