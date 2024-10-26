@@ -3,34 +3,17 @@ import { Box, Button, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import TextInput from '~/components/Chatbots/TextInput';
-import BubbleChatRight from '~/components/Chatbots/BubbleChatRight';
-import BubbleChatLeft from '~/components/Chatbots/BubbleChatLeft';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
-import { TypeAnimation } from 'react-type-animation';
-import LoadingDot from '~/components/LoadingDot';
 import Block from '~/components/Block';
-
-import {
-  GoogleGenerativeAI,
-} from "@google/generative-ai";
 import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
 import { useDispatch } from 'react-redux';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
-import ReactMarkdown from 'react-markdown';
-
-
-const apiKey = 'AIzaSyAD15bFYXthZiX7PoRo9P33z0M_5ZVkidI';
-const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
-});
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 8192,
-  responseMimeType: "text/plain",
-};
+import BotChat from './components/BotChat';
+import UserChat from './components/UserChat';
+import Loading from './components/Loading';
+// import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot';
+import KHTNGenerativeAI from '~/services/KHTNGenerativeAI';
+import LoadingBotChat from './components/LoadingBotChat';
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -45,62 +28,170 @@ const Header = styled(Box) (({theme}) => ({
   paddingLeft: theme.spacing(4),
 }))
 
-const loading_chat = () => (
-  <BubbleChatLeft
-    text={<LoadingDot/>}
-  />
-)
-
 function ChatGenerator() {
 
   const History = []
   const RecommendationQuestion = [
     {
-      "id": 89734,
+      "id": 897344,
       "message": "Cho tôi biết về nội quy trường học"
     },
     {
-      "id": 49532,
+      "id": 495324,
       "message": "Mình muốn tìm hiểu kỹ hơn về quy định đồng phục, bạn có thể nói rõ không?"
     },
     {
-      "id" : 34252,
+      "id" : 342524,
       "message": "Sinh viên có thể sử dụng wifi của trường trong những khu vực nào?"
     },
     {
-      "id" : 34232,
+      "id" : 342324,
       "message": "Sinh viên sẽ bị kỷ luật như thế nào nếu vi phạm nội quy?"
     }
   ]
-  
+
   const dispatch = useDispatch()
   const [Conservation, setConservation] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState({
+    state: false,
+    noticeLoad: [],
+    timing: []
+  })
+  const [stream, setStream] = useState({
+    isTyping: false,
+    streamData: null
+  })
+  const [openDetail, setOpenDetail] = useState(null)
   const bottomRef = useRef(null);
+
+  const KHTN_Chatbot = KHTNGenerativeAI()
 
   const ChatAction = async (text) => {
 
-    const chatSession = model.startChat({
-      generationConfig,
-      history: [],
-    });
+    const getChosen_collections = async (text) => await KHTN_Chatbot.step_1(text).then((res) => {
+        // TODO : Validate
+        setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat(`Xác định nội dung câu hỏi`)}))
+        return res.collection // Return chosen_collections : string
+    })
 
-    chatSession.sendMessage(text).then(
-      (result) => {
-        setConservation(Conservation => [...Conservation,{
-                                  "id": Math.floor(10000 + Math.random() * 90000),
-                                  "role": "bot",
-                                  "message": result.response.text()
-    }])}).catch(
-      (e) => { 
-        setConservation(Conservation => [...Conservation,{
-                                    "id": Math.floor(10000 + Math.random() * 90000),
-                                    "role": "bot",
-                                    "message": `Xin lỗi, Tôi không thể kết nối với server`
-        }])
-        console.log('Error: ', e)
+    const getFilter_expressions = async (text, chosen_collections) => await KHTN_Chatbot.step_2(text, chosen_collections).then((res) => {
+      // TODO : Validate
+      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Rút trích dữ liệu trong câu hỏi')}))
+      return res
+    }) // Return filter_expressions : json
+
+    const getContext = async (text, chosen_collections, filter_expressions) => await KHTN_Chatbot.step_3(text, chosen_collections, JSON.stringify(filter_expressions)).then((res) => {
+      // TODO : Validate
+      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Tìm kiếm tài liệu trong kho')}))
+      return res.context
+    }) // Return context : string
+
+    const getGenerate = async (text, context, isStreaming) => await KHTN_Chatbot.step_4(text, context, isStreaming).then((res) => {
+      // TODO : Validate
+      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Tạo văn bản')}))
+      return res
+    }) // Return generate : streamObject
+
+    const run = async (streamObject) => {
+      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Đang soạn')}))
+      const reader = streamObject.body.getReader();
+      setStream({streamData : '', isTyping: true})
+      const decoder = new TextDecoder("utf-8");
+      let done = false;
+      let result = ''
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        // let sliceContent = decoder.decode(value, { stream: true })
+        // console.log(sliceContent)
+        result += decoder.decode(value, { stream: true })
+        setStream(prev => ({...prev, streamData : prev.streamData += decoder.decode(value, { stream: true })}))
+        // setStream(stream => stream += decoder.decode(value, { stream: true }));
       }
-    ); 
+      return result
+    }
+
+    const clear = () => {
+      setStream(prev => ({...prev, isTyping: false}))
+      setIsLoading({
+        state: false,
+        noticeLoad: [],
+        timing: []
+      })
+    }
+
+    try{
+      const startTime = Date.now()
+      let point_1, point_2, point_3, point_4, endTime
+
+      const chosen_collections = await getChosen_collections(text).then((chosen_collections) => {
+        point_1 = Date.now()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_1 - startTime)))}))
+        return chosen_collections
+      }).catch(() => {
+        throw new Error(error);
+      })
+
+      const filter_expressions = await getFilter_expressions(text, chosen_collections).then((filter_expressions) => {
+        point_2 = Date.now()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_2 - point_1)))}))
+        return filter_expressions
+      }).catch(() => {
+        throw new Error(error);
+      })
+      
+      const context = await getContext(text, chosen_collections, filter_expressions).then((context) => {
+        point_3 = Date.now()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_3 - point_2)))}))
+        return context
+      }).catch(() => {
+        throw new Error(error);
+      })
+
+      const generate = await getGenerate(text, context, true).then((generate) => {
+        point_4 = Date.now()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_4 - point_3)))}))
+        return generate
+      }).catch(() => {
+        throw new Error(error);
+      })
+      console.log(context)
+      endTime = Date.now()
+
+      await run(generate).then((finalResponse) => {
+        setConservation(Conservation => [...Conservation,{
+          "id": Math.floor(10000 + Math.random() * 900000),
+          "role": "bot",
+          "message": finalResponse,
+          "information" : {
+            "context" : context,
+            "filter_expressions" : filter_expressions,
+            "chosen_collections" : chosen_collections,
+            "timestamp" : Date.now(),
+            "duration": endTime - startTime
+          }
+        }])
+        return finalResponse
+      }).catch((error) => {
+        setConservation(Conservation => [...Conservation,{
+          "id": Math.floor(10000 + Math.random() * 900000),
+          "role": "bot",
+          "message": 'Xin Lỗi ! Xảy ra lỗi với đường truyền',
+          "information" : {}
+        }])
+        throw new Error(error);
+      }).finally(() => {
+        clear()
+      })
+    } catch (error) {
+        setConservation(Conservation => [...Conservation,{
+          "id": Math.floor(10000 + Math.random() * 900000),
+          "role": "bot",
+          "message": 'Xin Lỗi ! Server hiện không hoạt động',
+          "information" : {}
+        }])
+        clear()
+    }
   }
 
   const handleClick = (text) => {
@@ -109,74 +200,8 @@ function ChatGenerator() {
                               "role": "user",
                               "message": text
             }])
-    setIsLoading(true)
+    setIsLoading(prev => ({...prev, state: true}))
   }
-
-  const markdownText = [
-    "Đạo hàm là một khái niệm quan trọng trong toán học, đại diện cho tốc độ thay đổi của một hàm số tại một điểm cụ thể trên đồ thị của nó.\n",
-    "**Ví dụ**: Đạo hàm của hàm số y = x² tại điểm x = 2 cho biết độ dốc của tiếp tuyến với đồ thị hàm số tại điểm có hoành độ x = 2.\n",
-    "Đạo hàm được ứng dụng rộng rãi trong nhiều lĩnh vực như vật lý, kinh tế, kỹ thuật. Ví dụ: Tính vận tốc tức thời của một vật chuyển động, tìm giá trị lớn nhất, nhỏ nhất của một hàm số.\n",
-    "Công thức tính đạo hàm cơ bản của một số hàm số đơn giản: **(x^n)' = n*x^(n-1)**"
-  ];
-  const bot_chat = (conservation, isTyping = false) => (
-    <BubbleChatLeft
-      key={conservation?.id}
-      id={conservation?.id}
-      text={
-        <Typography variant='p' 
-          sx = {{ 
-            fontSize: '0.725rem',
-            color: '#000',
-            whiteSpace: 'pre-line', 
-            textIndent: '2px', 
-            lineHeight: 'normal' 
-          }}>
-          {isTyping ? <TypeAnimation 
-            cursor = {false}
-            sequence = {
-              [
-                () => setIsLoading(false),
-                // ...markdownText.reduce((accumulator, currentValue) => {
-                //     const lastElement = accumulator[accumulator.length - 1] || '';
-                //     return [...accumulator, lastElement + currentValue];
-                // }, [])
-                conservation.message
-              ]
-            }
-            speed={99}
-          /> : (<ReactMarkdown> {conservation.message} </ReactMarkdown>)}
-        </Typography>
-      }
-    />
-  )
-
-  const user_chat = (conservation, isTyping = false) => (
-    <BubbleChatRight
-      id={conservation?.id}
-      key={conservation?.id}
-      text={
-        <Typography variant='p' 
-          sx = {{ 
-            whiteSpace: 'pre-line', 
-            textIndent: '2px', 
-            wordWrap: 'break-word' ,
-            color:'#fff',
-            fontSize:'0.725rem'
-          }}>
-          {isTyping ? <TypeAnimation
-            style = {{ whiteSpace: 'pre-line', display: 'block' }} 
-            cursor = {false}
-            sequence = {
-              [
-                conservation.message
-              ]
-            }
-            speed={80}
-          /> : conservation.message }
-        </Typography>
-      }
-    />
-  )
 
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
@@ -189,7 +214,7 @@ function ChatGenerator() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [Conservation, ChatAction, isLoading]);
+  }, [Conservation, isLoading]);
 
   return (
     <Grid container  spacing={2} sx = {{ height: '100%' }}>
@@ -234,7 +259,7 @@ function ChatGenerator() {
                 fontWeight: '900',
                }}>Tôi có thể giúp gì cho bạn?</Typography>
               {RecommendationQuestion.map((question, index) => (
-                <Button key = {index} sx = {(theme) => ({ 
+                <Button key = {question.id} sx = {(theme) => ({ 
                   display: 'block',
                   width: 'fit-content',
                   background: theme.palette.primary.third,
@@ -253,15 +278,35 @@ function ChatGenerator() {
                   </Typography>
                 </Button>
               ))}
-             <Box sx ={{ width: '100%', height: '20px' }}></Box>
-
-              
+              <Box sx ={{ width: '100%', height: '20px' }}></Box>  
             </Box>
             }
 
-            {History.map((conservation, index) => conservation.role == 'bot' ? bot_chat(conservation) : user_chat(conservation))}
-            {Conservation.map((conservation) => conservation.role == 'bot' ? bot_chat(conservation, true) : user_chat(conservation))}
-            {isLoading && loading_chat()}
+            {History.map((conservation, index) => 
+              (
+                <div key = {conservation?.id}>
+                {
+                  conservation.role == 'bot' ?
+                    <BotChat message={(conservation?.message)}/> 
+                    : <UserChat message={conservation.message}/>
+                }</div>
+              )
+            )}
+
+            {Conservation.map((conservation, index) => 
+              (
+                <div key = {conservation?.id}>
+                {
+                  conservation.role == 'bot' ?
+                    <BotChat message={(conservation?.message)} metadata = {conservation} setOpenDetail = {setOpenDetail}/> 
+                    : <UserChat message={conservation.message} metadata = {conservation}/>
+                }</div>
+              )
+            )}
+
+            {<LoadingBotChat text = {stream.streamData} isHidden = {stream.isTyping}/>}  
+            {<Loading isLoading = {isLoading}/>}
+
             <div ref={bottomRef} />
           </ChatBlock>
           <TextInput
@@ -273,7 +318,7 @@ function ChatGenerator() {
       </Grid>
 
       <Grid  size={{ xs: 0, md: 4 }} >
-        <Block>
+        <Block sx = {{ paddingTop: 8.5 }}>
           <Header sx = {{ 
             display: 'flex',
             alignItems: 'center',
@@ -288,6 +333,26 @@ function ChatGenerator() {
               fontFamily: 'auto'
              }}></Typography>
           </Header>
+              hi
+             { Conservation.map((data) => {
+                return (
+                  data.id ==  openDetail &&<Typography sx = {{ 
+                    fontSize: '0.725rem',
+                    color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000',
+                    whiteSpace: 'pre-line', 
+                    textIndent: '2px', 
+                    lineHeight: 'normal',
+                    textAlign: 'justify',
+                    height: '380px',
+                    overflow: 'auto',
+                    display: 'block'
+
+                   }}>
+                    {data.information?.context}
+                  </Typography>
+                )
+              })
+            }
         </Block>
       </Grid>
     </Grid>

@@ -16,7 +16,7 @@ import {
   useGridApiContext,
   useGridRootProps,
 } from '@mui/x-data-grid';
-import { Tooltip } from '@mui/material';
+// import { Tooltip } from '@mui/material';
 
 export const STATUS_OPTIONS = ['Open', 'PartiallyFilled', 'Filled', 'Rejected', 'Success'];
 
@@ -109,11 +109,11 @@ const Status = (props) => {
   }
 
   return (
-    <Tooltip title={label}     
-    onClick={(event) => {
-        event.stopPropagation();
-        navigate(navigateAddress)
-    }}>
+    // <Tooltip title={label}     
+    // onClick={(event) => {
+    //     event.stopPropagation();
+    //     navigate(navigateAddress)
+    // }}>
       <StyledChip
         className={status}
         icon={icon}
@@ -121,7 +121,7 @@ const Status = (props) => {
         label={label}
         variant="outlined"
       />
-    </Tooltip>
+    // </Tooltip>
   );
 };
 

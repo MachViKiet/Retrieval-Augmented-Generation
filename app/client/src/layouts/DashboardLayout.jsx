@@ -71,7 +71,7 @@ const SubSidebarContainer = styled(Box)(({theme}) => ({
       left: '-100%', 
     },
     borderRadius: '0 15px 15px 0',
-    background:  theme.palette.primary.main,
+    // background:  theme.palette.primary.main,
     zIndex: 6
 }))
 

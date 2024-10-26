@@ -16,7 +16,7 @@ client/.env
 client/.env
 client/.env
 server/__pycache__
-
+package-lock.json
 server/.env
 # Editor directories and files
 .vscode/*

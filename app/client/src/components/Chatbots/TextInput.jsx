@@ -67,13 +67,13 @@ function TextInput({id,handleClick, handleSubmit}) {
     handleClick(input)
   }
 
-  const Submit = (event) => {
+  const Submit = async (event) => {
     event.preventDefault();
     // if (true) {
     //   console.log('event is prevent')
     //   return;
     // }
-    handleSubmit(input)
+    await handleSubmit(input)
   }
 
   return (
