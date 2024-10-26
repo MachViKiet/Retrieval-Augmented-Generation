@@ -83,7 +83,10 @@ def search():
         context = rag_utils.create_prompt_milvus(query, search_results)
     else:
         context = "No related documents found"
-    return jsonify({'context': context})
+    return jsonify({
+        'search_results': search_results,
+        'context': context
+        })
 
 @main.route("/generate", methods=["GET"])
 @cross_origin
