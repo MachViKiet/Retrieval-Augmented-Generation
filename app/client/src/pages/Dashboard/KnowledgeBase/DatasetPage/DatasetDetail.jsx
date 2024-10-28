@@ -17,7 +17,7 @@ function DatasetDetail() {
   const handleClick = () => {
     navigate('/knowledge_bases/student_handbook')
   }
-
+ 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
     dispatch(sidebarAction({index: 346}))

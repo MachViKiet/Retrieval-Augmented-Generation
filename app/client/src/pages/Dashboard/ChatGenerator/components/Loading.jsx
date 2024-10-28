@@ -38,30 +38,10 @@ function Loading({isLoading}) {
                 { index === array.length - 1  ? 
                   <CircularProgress size="10px" sx = {{ marginRight: '8px' }}/>
                   : <CheckIcon sx = {{fontSize:"14px", marginRight: '4px', color: '#09d953' }} />}
-                <Typography variant='p' sx = {{  fontSize: '0.5rem', color: '#000' }}>{text} { index !== array.length - 1 && isLoading.timing.length == array.length ? <span style={{ fontWeight: '900' }}>{isLoading.timing[index]}s</span> : ''} </Typography>
+                <Typography variant='p' sx = {{  fontSize: '0.725rem', color: '#000' }}>{text} { index !== array.length - 1 && isLoading.timing.length == array.length ? <span style={{ fontWeight: '900' }}>{isLoading.timing[index]}s</span> : ''} </Typography>
               </Box>
             </motion.div>
             ))}
-
-          {/* <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-            <CheckIcon sx = {{fontSize:"14px", marginRight: '4px', color: '#09d953' }} />
-            <Typography variant='p' sx = {{  fontSize: '0.5rem', color: '#000' }}>Xác định nội dung</Typography>
-          </Box>
-
-          <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-            <CheckIcon sx = {{fontSize:"14px", marginRight: '4px', color: '#09d953' }} />
-            <Typography variant='p' sx = {{  fontSize: '0.5rem', color: '#000' }}>Rút trích dữ liệu thô</Typography>
-          </Box>
-
-          <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-          <CheckIcon sx = {{fontSize:"14px", marginRight: '4px', color: '#09d953' }} />
-            <Typography variant='p' sx = {{  fontSize: '0.5rem', color: '#000' }}>Tìm kiếm tài liệu trong kho</Typography>
-          </Box>
-
-          <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-            <CircularProgress size="10px" sx = {{ marginRight: '8px' }} />
-            <Typography variant='p' sx = {{  fontSize: '0.5rem', color: '#000' }}>Tạo văn bản</Typography>
-          </Box> */}
         </>
       }
       />
