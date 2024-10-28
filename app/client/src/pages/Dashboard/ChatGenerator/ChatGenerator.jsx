@@ -115,7 +115,7 @@ function ChatGenerator() {
     }
 
     const clear = () => {
-      setStream(prev => ({...prev, isTyping: false}))
+      // setStream(prev => ({...prev, isTyping: false}))
       // setIsLoading({
       //   state: false,
       //   noticeLoad: [],
@@ -129,7 +129,7 @@ function ChatGenerator() {
 
       const chosen_collections = await getChosen_collections(text).then((chosen_collections) => {
         point_1 = (new Date()).getTime()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_1 - startTime)/1000))}))
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(("chosen_collections: " + chosen_collections + "   " + (point_1 - startTime)/1000))}))
         return chosen_collections
       }).catch(() => {
         throw new Error(error);
@@ -137,7 +137,7 @@ function ChatGenerator() {
 
       const filter_expressions = await getFilter_expressions(text, chosen_collections).then((filter_expressions) => {
         point_2 = (new Date()).getTime()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_2 - point_1)/1000))}))
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(("filter_expressions: " + JSON.stringify(filter_expressions) + "   " + (point_2 - point_1)/1000))}))
         return filter_expressions
       }).catch(() => {
         throw new Error(error);
@@ -183,7 +183,8 @@ function ChatGenerator() {
         }])
         throw new Error(error);
       }).finally(() => {
-        clear()
+        // clear()
+        setStream(prev => ({...prev, isTyping: false}))
       })
     } catch (error) {
         setConservation(Conservation => [...Conservation,{
