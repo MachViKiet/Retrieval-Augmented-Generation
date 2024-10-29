@@ -37,10 +37,11 @@ class ChatModel:
         if context == None or context == "":
             prompt = f"""Give a detailed answer to the following question. Always answer in Vietnamese. Question: {question}"""
         else:
-            prompt = f"""[INST]Using the information contained in the context, give a detailed answer to the query. If there is no information in the context to support your answer, say so.
-Always answer in Vietnamese, make sure the entire answer is in Vietnamese. At the end, provide the source you used for your answers (ie. title, page number (if available))[/INST]
+            prompt = f"""You are a chatbot assistant providing answers to students and faculty members of a university. Using the information contained in the context, give a detailed answer to the query. If there is no information in the context to support your answer, say so.
+Always answer in Vietnamese, make sure the entire answer is in Vietnamese. At the end, provide the source you used for your answers (ie. title, page number (if available)).
 Context: {context}.
 Query: {question}
+Answer: 
 """
         params = {
             GenParams.MAX_NEW_TOKENS: max_new_tokens
@@ -48,7 +49,6 @@ Query: {question}
 
         # formatted_prompt = prompt.replace("\n", "<eos>")
         formatted_prompt = prompt
-        print(formatted_prompt)
         if not streaming:
             response = self.model.generate_text(formatted_prompt, params=params)
             #response = response.replace("<eos>", "")  # remove eos token

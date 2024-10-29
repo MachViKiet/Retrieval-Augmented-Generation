@@ -12,7 +12,6 @@ main = Blueprint("main", __name__)
 os.chdir('../..')
 
 load_dotenv('../.env')
-os.chdir('../..')
 
 @main.route("/", methods=["GET"])
 @cross_origin()
@@ -93,10 +92,14 @@ def search():
         context = rag_utils.create_prompt_milvus(query, search_results)
     else:
         context = "No related documents found"
+    # print(search_results)
+    # return jsonify({
+    #     'search_results': search_results,
+    #     'context': context
+    #     })
     return jsonify({
-        'search_results': search_results,
         'context': context
-        })
+    })
 
 @main.route("/generate", methods=["GET"])
 @cross_origin()
