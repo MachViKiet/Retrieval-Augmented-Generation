@@ -1,0 +1,135 @@
+const mongoose = require('mongoose')
+import { hash as _hash, genSalt as _genSalt, compare } from 'bcrypt'
+import { isEmail } from 'validator'
+import mongoosePaginate from 'mongoose-paginate-v2'
+
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      validate: {
+        validator: (str, option) => {
+          return isEmail(str, option)
+        },
+        message: 'EMAIL_IS_NOT_VALID'
+      },
+      lowercase: true,
+      unique: true,
+      required: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    role: {
+      type: String,
+      enum: ['student', 'researcher', 'administrator', 'academic_administration'],
+      default: 'student'
+    },
+    verification: {
+      type: String
+    },
+    verified: {
+      type: Boolean,
+      default: true
+    },
+    phone: {
+      type: String
+    },
+    birth: {
+      type: Date
+    },
+    degree: {
+      type: String,
+      enum: ['Cử Nhân', 'Thạc Sĩ', 'Tiến Sĩ', 'Sinh viên chưa tốt nghiệp', 'Không có'],
+      default: 'Không có'
+    },
+    database: {
+      type: Array,
+      default: []
+    },
+    researcher_area: {
+      type: Array,
+      default: []
+    },
+    projects: {
+      type: Array,
+      default: []
+    },
+    mothods: {
+      type: Array,
+      default: []
+    },
+    technical: {
+      type: Array,
+      default: []
+    },
+    languages: {
+      type: Array,
+      default: []
+    },
+    goals: {
+      type: Array,
+      default: []
+    },
+    preferences: {
+      type: String,
+      default: 'Không có'
+    },
+    loginAttempts: {
+      type: Number,
+      default: 0,
+      select: false
+    },
+    blockExpires: {
+      type: Date,
+      default: Date.now,
+      select: false
+    }
+  },
+  {
+    versionKey: false,
+    timestamps: true
+  }
+)
+
+const hash = (user, salt, next) => {
+  _hash(user.password, salt, (error, newHash) => {
+    if (error) {
+      return next(error)
+    }
+    user.password = newHash
+    return next()
+  })
+}
+
+const genSalt = (user, SALT_FACTOR, next) => {
+  _genSalt(SALT_FACTOR, (err, salt) => {
+    if (err) {
+      return next(err)
+    }
+    return hash(user, salt, next)
+  })
+}
+
+UserSchema.pre('save', function (next) {
+  const that = this
+  const SALT_FACTOR = 5
+  if (!that.isModified('password')) {
+    return next()
+  }
+  return genSalt(that, SALT_FACTOR, next)
+})
+
+UserSchema.methods.comparePassword = function (passwordAttempt, cb) {
+  compare(passwordAttempt, this.password, (err, isMatch) =>
+    err ? cb(err) : cb(null, isMatch)
+  )
+}
+UserSchema.plugin(mongoosePaginate)
+
+module.exports = mongoose.model('User', UserSchema)
