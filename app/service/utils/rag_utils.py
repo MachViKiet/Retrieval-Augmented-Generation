@@ -232,6 +232,51 @@ def compile_filter_expression(metadata, loaded_collections: list):
                 expressions[c] += attr + ' == ' + val + " || "
             elif short_schema[attr] == DataType.VARCHAR:
                 expressions[c] += attr + f' == "{val}"' + " || "
+            elif short_schema[attr] == DataType.ARRAY:
+                expressions[c] += "array_contains_any({attr}, [{val}]) || "
         # Reformat
         expressions[c] = expressions[c].removesuffix(' || ')
     return expressions
+
+#------------------------------------#
+def metadata_extraction_v2(query, model, collection_name):
+    '''Extract metadata from user query given a schema using a LLM call
+    schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
+
+    prompt = prompt = """Extract metadata from the user's query using the provided schema.
+Do not include the metadata if not found.
+For any metadata whose value is a list, write the list as a string (surrounded by '').
+User's query: {query}
+Schema:
+{schema}
+Always answer in JSON format.
+Answer:
+"""
+    fields = Collection(collection_name).describe()['fields']
+    # if type(schema) is list:
+    #     schema = ",".join(schema)
+    # elif type(schema) is dict:
+    #     schema = "\n".join(k + ": " + v for k,v in schema.items())
+    # else:
+    #     raise TypeError("Schema should be list or dict, got " + str(type(schema)))
+    schema = {}
+    for field in fields:
+        schema[field['name']] = field['description']
+    schema = "\n".join(k + ": " + v for k,v in schema.items())
+
+    full_prompt = prompt.format(query=query, schema=schema)
+    result = model.model.generate_text(full_prompt)
+    try:
+        result = json.loads(result)
+    except json.JSONDecodeError: #Wrong format
+        print("Metadata Extraction: Couldn't decode JSON - " + result)
+        result = -1
+    return result
+
+def get_document(filename, collection_name):
+    '''Get metadata from a file'''
+    results = Collection(collection_name).query(
+        expr=f"title == '{filename}'",
+        output_fields=['title','article'],
+        top_k=1
+    )
