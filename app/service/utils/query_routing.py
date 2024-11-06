@@ -9,7 +9,8 @@ load_dotenv('.env')
 if not isJVMStarted():
     path = "./utils/vncorenlp"
     path = os.path.abspath(path)
-    path = r'{}'.format(path)
+    path = path.replace('\\', '/')
+    #path = r'{}'.format(path)
     rdrsegmenter = py_vncorenlp.VnCoreNLP(annotators=["wseg"], save_dir=path)
 
 def segment_vietnamese(text):
