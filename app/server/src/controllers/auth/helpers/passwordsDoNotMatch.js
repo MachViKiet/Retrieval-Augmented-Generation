@@ -8,7 +8,7 @@ const LOGIN_ATTEMPTS = 5
  * @param {Object} user - user object
  */
 const passwordsDoNotMatch = async (user = {}) => {
-  const res = async () => {
+  const run = async () => {
     try {
       // user.loginAttempts += 1
       // await saveLoginAttemptsToDB(user)
@@ -21,6 +21,7 @@ const passwordsDoNotMatch = async (user = {}) => {
       return error
     }
   }
+  const res = await run()
   return res
 }
 

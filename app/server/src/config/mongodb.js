@@ -4,7 +4,8 @@
  */
 
 const mongoose = require('mongoose')
-const mongoURI = 'mongodb://localhost:27017/luan_van_2024'
+// const mongoURI = 'mongodb://localhost:27017/luan_van_2024'
+const mongoURI = process.env.MONGODB_URI // 'mongodb+srv://machkiet252003:i1SsJiOcJ3aydIqB@userstorages.6akwp.mongodb.net/'
 const loadModels = require('~/models')
 
 module.exports = async function () {
@@ -14,6 +15,7 @@ module.exports = async function () {
     try {
       mongoose.set('strictQuery', false)
       mongoose.connect(mongoURI)
+      // const database = mongoose.db('luan_van_2024')
     } catch {() => {
       process.exit(1)
     }}

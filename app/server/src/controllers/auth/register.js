@@ -1,6 +1,6 @@
 const { matchedData } = require('express-validator')
 
-const { registerUser, setUserInfo, returnRegisterToken } = require('./helpers')
+const { registerUser, getUserInfo, returnRegisterToken } = require('./helpers')
 
 const { handleError } = require('../../middlewares/utils')
 const { emailExists } = require('../emailer')
@@ -22,14 +22,18 @@ const register = async (req, res) => {
     req = matchedData(req)
 
     const doesEmailExists = await emailExists(req.email)
+
     if (!doesEmailExists) {
       const item = await registerUser(req)
-      console.log('item', item)
-      const userInfo = setUserInfo(item)
+      const userInfo = getUserInfo(item)
       const response = returnRegisterToken(item, userInfo)
       // sendRegistrationEmailMessage(locale, item)
       res.status(201).json(response)
+      return
     }
+
+    handleError(res, doesEmailExists)
+
   } catch (error) {
     handleError(res, error)
   }

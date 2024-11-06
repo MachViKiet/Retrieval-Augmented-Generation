@@ -1,5 +1,5 @@
 const UserAccess = require('~/models/userAccess')
-const { setUserInfo } = require('./setUserInfo')
+const { getUserInfo } = require('./getUserInfo')
 const { generateToken } = require('./generateToken')
 const {
   getIP,
@@ -21,7 +21,7 @@ const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
   })
 
   const result = await userAccess.save().then(async () => {
-    const userInfo = setUserInfo(user)
+    const userInfo = getUserInfo(user)
     // Returns data with access token
     return ({
       token: generateToken(user._id),

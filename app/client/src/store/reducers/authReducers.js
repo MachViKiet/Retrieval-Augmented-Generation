@@ -2,8 +2,9 @@
 import { LOGIN, LOGOUT } from "../actions/authActions";
 
 const initialState = {
-  loggedIn: true,
+  loggedIn: false,
   user: null,
+  token: null
 };
 
 const authReducer = (state = initialState, action) => {
@@ -12,7 +13,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         loggedIn: true,
-        user: action.payload,
+        ...action.payload,
       };
     case LOGOUT:
       return {

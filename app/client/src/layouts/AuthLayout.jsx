@@ -1,26 +1,24 @@
 import styled from '@emotion/styled';
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import background from '~/assets/futuristic-robot.png'
 
 const AuthContainer = styled(Stack)(({ theme }) => ({
     padding: 20,
     height: '100vh',
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: theme.palette.mode == 'dark' 
+      ? '#25294a' 
+      : '#DDF3FC',//'#f9fafb',
   '&::before': {
     content: '""',
     display: 'flex',
-    position: 'absolute',
+    position: 'relative',
     zIndex: -1,
     inset: 0,
-    backgroundImage:
-      'radial-gradient(at 50% 50%, hsla(210, 100%, 97%), hsl(0, 0%, 100%))',
-    backgroundRepeat: 'no-repeat',
-    ...theme.applyStyles('dark', {
-      backgroundImage:
-        'radial-gradient(at 50% 50%, hsla(210, 100%, 16%), hsl(220, 30%, 5%))',
-    }),
+    position: 'relative'
   },
 }));
 

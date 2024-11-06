@@ -7,6 +7,7 @@ const { buildErrObject } = require('~/middlewares/utils')
  * @returns {boolean}
  */
 const checkPassword = async (password = '', user = {}) => {
+
   return new Promise((resolve, reject) => {
     user.comparePassword(password, (err, isMatch) => {
       if (err) {
@@ -18,6 +19,7 @@ const checkPassword = async (password = '', user = {}) => {
       resolve(true)
     })
   })
+  
 }
 
 module.exports = { checkPassword }

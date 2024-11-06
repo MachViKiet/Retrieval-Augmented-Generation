@@ -100,6 +100,7 @@ function ChatGenerator() {
       })
       setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Đang soạn')}))
       setIsLoading(prev => ({...prev, timing: prev.timing.concat("")}))
+
       const reader = streamObject.body.getReader();
       setStream({streamData : '', isTyping: true})
       const decoder = new TextDecoder("utf-8");
@@ -109,7 +110,7 @@ function ChatGenerator() {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         result += decoder.decode(value, { stream: true })
-        setStream(prev => ({...prev, streamData : prev.streamData += decoder.decode(value, { stream: true })}))
+        setStream(prev => ({...prev, streamData : result}))
       }
       return result
     }

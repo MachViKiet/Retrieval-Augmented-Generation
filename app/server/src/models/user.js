@@ -56,13 +56,17 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: []
     },
+    majors: {
+      type: String,
+      default: 'Công nghệ thông tin'
+    },
     projects: {
       type: Array,
       default: []
     },
-    mothods: {
+    methods: {
       type: Array,
-      default: []
+      default: ['Công văn', 'Văn bản', 'Sổ tay sinh viên']
     },
     technical: {
       type: Array,
@@ -70,15 +74,15 @@ const UserSchema = new mongoose.Schema(
     },
     languages: {
       type: Array,
-      default: []
+      default: ['Tiếng việt', 'Tiếng anh']
     },
     goals: {
       type: Array,
-      default: []
+      default: ['Tìm hiểu thông tin trường đại học Khoa Học Tự Nhiên']
     },
     preferences: {
       type: String,
-      default: 'Không có'
+      default: 'Ưu tiên văn bản chính thống, nội quy, công văn của trường học'
     },
     loginAttempts: {
       type: Number,
@@ -130,6 +134,7 @@ UserSchema.methods.comparePassword = function (passwordAttempt, cb) {
     err ? cb(err) : cb(null, isMatch)
   )
 }
+
 UserSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('User', UserSchema)

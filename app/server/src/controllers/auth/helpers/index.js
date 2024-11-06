@@ -5,7 +5,7 @@ const { saveUserAccessAndReturnToken } = require('./saveUserAccessAndReturnToken
 const { userIsBlocked } = require('./userIsBlocked')
 const { returnRegisterToken } = require('./returnRegisterToken')
 const { registerUser } = require('./registerUser')
-const { setUserInfo } = require('./setUserInfo')
+const { getUserInfo } = require('./getUserInfo')
 
 module.exports = {
   checkLoginAttemptsAndBlockExpires,
@@ -15,5 +15,5 @@ module.exports = {
   userIsBlocked,
   returnRegisterToken,
   registerUser,
-  setUserInfo
+  getUserInfo
 }

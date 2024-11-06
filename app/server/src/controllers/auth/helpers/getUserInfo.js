@@ -2,14 +2,22 @@
  * Creates an object with user info
  * @param {Object} req - request object
  */
-const setUserInfo = (req = {}) => {
+const getUserInfo = (req = {}) => {
 
   let user = {
     _id: req._id,
     name: req.name,
     email: req.email,
     role: req.role,
-    verified: req.verified
+    verified: req.verified,
+    phone: req.phone,
+    birth: req.birth,
+    degree: req.degree,
+    majors: req.majors,
+    methods: req.methods,
+    goals: req.goals,
+    preferences: req.preferences,
+    blockExpires: req.blockExpires
   }
 
   if (process.env.NODE_ENV !== 'production') {
@@ -21,4 +29,4 @@ const setUserInfo = (req = {}) => {
   return user
 }
 
-module.exports = { setUserInfo }
+module.exports = { getUserInfo }

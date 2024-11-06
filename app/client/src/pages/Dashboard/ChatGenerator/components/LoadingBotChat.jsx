@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography';
 import BubbleChatLeft from '~/components/Chatbots/BubbleChatLeft';
 import { motion } from "framer-motion"
+import ReactMarkdown from 'react-markdown';
 
 function LoadingBotChat({text, isHidden = false}) {
   
@@ -25,7 +26,9 @@ function LoadingBotChat({text, isHidden = false}) {
             textIndent: '2px', 
             lineHeight: 'normal' 
           }}>
+            <ReactMarkdown>
             {text}
+            </ReactMarkdown>
         </Typography>
       }
     />

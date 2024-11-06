@@ -22,7 +22,7 @@ const login = async (req, res) => {
     const user = await findUser(data.email)
     await userIsBlocked(user)
     const isPasswordMatch = await checkPassword(data.password, user)
-    if (!isPasswordMatch) {
+    if (!isPasswordMatch ) {
       handleError(res, await passwordsDoNotMatch(user))
     } else {
       // all ok, register access and return token
