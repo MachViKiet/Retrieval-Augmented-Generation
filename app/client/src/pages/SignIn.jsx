@@ -80,6 +80,8 @@ function SignIn() {
         {
           dispatch(login(userData))
           isSubmiting(false)
+          sessionStorage.setItem('accessToken', userData.token);
+          sessionStorage.setItem('userProfile', userData.user);
           navigate('/');
         })
       .catch((err) => {
