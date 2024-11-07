@@ -93,7 +93,14 @@ function ChatGenerator() {
     }) // Return generate : streamObject
 
     const run = async (streamObject) => {
+      setIsLoading({
+        // state: false,
+        noticeLoad: [],
+        timing: []
+      })
       setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Đang soạn')}))
+      setIsLoading(prev => ({...prev, timing: prev.timing.concat("")}))
+
       const reader = streamObject.body.getReader();
       setStream({streamData : '', isTyping: true})
       const decoder = new TextDecoder("utf-8");
@@ -102,61 +109,57 @@ function ChatGenerator() {
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
-        // let sliceContent = decoder.decode(value, { stream: true })
-        // console.log(sliceContent)
         result += decoder.decode(value, { stream: true })
-        setStream(prev => ({...prev, streamData : prev.streamData += decoder.decode(value, { stream: true })}))
-        // setStream(stream => stream += decoder.decode(value, { stream: true }));
+        setStream(prev => ({...prev, streamData : result}))
       }
       return result
     }
 
     const clear = () => {
-      setStream(prev => ({...prev, isTyping: false}))
-      setIsLoading({
-        state: false,
-        noticeLoad: [],
-        timing: []
-      })
+      // setStream(prev => ({...prev, isTyping: false}))
+      // setIsLoading({
+      //   state: false,
+      //   noticeLoad: [],
+      //   timing: []
+      // })
     }
 
     try{
-      const startTime = Date.now()
+      const startTime = (new Date()).getTime()
       let point_1, point_2, point_3, point_4, endTime
 
       const chosen_collections = await getChosen_collections(text).then((chosen_collections) => {
-        point_1 = Date.now()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_1 - startTime)))}))
+        point_1 = (new Date()).getTime()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(("chosen_collections: " + chosen_collections + "   " + (point_1 - startTime)/1000))}))
         return chosen_collections
       }).catch(() => {
         throw new Error(error);
       })
 
       const filter_expressions = await getFilter_expressions(text, chosen_collections).then((filter_expressions) => {
-        point_2 = Date.now()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_2 - point_1)))}))
+        point_2 = (new Date()).getTime()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(("filter_expressions: " + JSON.stringify(filter_expressions) + "   " + (point_2 - point_1)/1000))}))
         return filter_expressions
       }).catch(() => {
         throw new Error(error);
       })
       
       const context = await getContext(text, chosen_collections, filter_expressions).then((context) => {
-        point_3 = Date.now()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_3 - point_2)))}))
+        point_3 = (new Date()).getTime()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_3 - point_2)/1000))}))
         return context
       }).catch(() => {
         throw new Error(error);
       })
 
       const generate = await getGenerate(text, context, true).then((generate) => {
-        point_4 = Date.now()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_4 - point_3)))}))
+        point_4 = (new Date()).getTime()
+        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_4 - point_3)/1000))}))
         return generate
       }).catch(() => {
         throw new Error(error);
       })
-      console.log(context)
-      endTime = Date.now()
+      endTime = (new Date()).getTime()
 
       await run(generate).then((finalResponse) => {
         setConservation(Conservation => [...Conservation,{
@@ -167,7 +170,7 @@ function ChatGenerator() {
             "context" : context,
             "filter_expressions" : filter_expressions,
             "chosen_collections" : chosen_collections,
-            "timestamp" : Date.now(),
+            "timestamp" : (new Date()).getTime(),
             "duration": endTime - startTime
           }
         }])
@@ -181,7 +184,8 @@ function ChatGenerator() {
         }])
         throw new Error(error);
       }).finally(() => {
-        clear()
+        // clear()
+        setStream(prev => ({...prev, isTyping: false}))
       })
     } catch (error) {
         setConservation(Conservation => [...Conservation,{
@@ -214,7 +218,7 @@ function ChatGenerator() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [Conservation, isLoading]);
+  }, [Conservation, isLoading, stream]);
 
   return (
     <Grid container  spacing={2} sx = {{ height: '100%' }}>
@@ -333,26 +337,34 @@ function ChatGenerator() {
               fontFamily: 'auto'
              }}></Typography>
           </Header>
-              hi
-             { Conservation.map((data) => {
+          <Box sx = {{ 
+            height: '500px',
+            overflow: 'auto',
+            padding: 2
+          }}>
+            { Conservation.map((data) => {
                 return (
                   data.id ==  openDetail &&<Typography sx = {{ 
-                    fontSize: '0.725rem',
+                    fontSize: '10px !important',
                     color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000',
                     whiteSpace: 'pre-line', 
                     textIndent: '2px', 
                     lineHeight: 'normal',
                     textAlign: 'justify',
-                    height: '380px',
-                    overflow: 'auto',
                     display: 'block'
-
                    }}>
-                    {data.information?.context}
+                    {data.information?.context.split('\n\n').map((data) => {
+                      return (
+                        <Box sx = {{ background: '#ccc', marginTop: '10px', fontSize: 'inherit', padding: 2 }}>
+                          {data}
+                        </Box>
+                      )
+                    })}
                   </Typography>
                 )
               })
             }
+          </Box>
         </Block>
       </Grid>
     </Grid>

@@ -3,11 +3,15 @@ import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  const loggedIn = useSelector((state) => state.auth.loggedIn);
-
-  if (!loggedIn) {
+  const accessToken = sessionStorage.getItem('accessToken');
+  const user_profile = sessionStorage.getItem('userProfile');
+  
+  if (!accessToken || !user_profile) {
     return <Navigate to="/signin" />;
   }
+
+  sessionStorage.setItem('accessToken', accessToken);
+  sessionStorage.setItem('userProfile', user_profile);
 
   return children;
 };

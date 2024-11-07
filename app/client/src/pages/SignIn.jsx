@@ -1,11 +1,14 @@
 import styled from '@emotion/styled';
-import { CheckBox } from '@mui/icons-material';
-import { Card, FormControl, FormLabel, TextField, Typography, Box, FormControlLabel, Button } from '@mui/material';
+// import { CheckBox } from '@mui/icons-material';
+import Checkbox from '@mui/material/Checkbox';
+import { Card, FormControl, FormLabel, TextField, Typography, Box, FormControlLabel, Button, Alert, CircularProgress } from '@mui/material';
 import Link from '@mui/material/Link';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import { login } from '~/store/actions/authActions';
+import { useAuth } from '~/apis/Auth';
+import { useErrorMessage } from '~/hooks/useMessage';
 
 const SignInCard = styled(Card)(({ theme }) => ({
   display: 'flex',
@@ -16,7 +19,7 @@ const SignInCard = styled(Card)(({ theme }) => ({
   gap: theme.spacing(2),
   margin: 'auto',
   [theme.breakpoints.up('sm')]: {
-    maxWidth: '450px',
+    maxWidth: '420px',
   },
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
@@ -24,67 +27,89 @@ const SignInCard = styled(Card)(({ theme }) => ({
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
   }),
+  background: '#fff',
+  borderRadius: '20px'
+}));
+
+const TextInput = styled(TextField) (({ theme }) => ({
+
 }));
 
 function SignIn() {
-  const [emailError, setEmailError] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [passwordError, setPasswordError] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const [notificationError, setNotification] = useState(null)
+  const [submiting, isSubmiting] = useState(false)
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigate();   
 
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
 
-    let isValid = true;
-
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
+ 
+      setNotification('Vui lòng nhập email hợp lệ !')
+      return false;
     }
 
     if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
+      setNotification('Password phải tối thiểu có 6 kí tự !')
+      return false;
     }
-    return isValid;
+
+    setNotification(null)
+    return true;
   };
 
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    isSubmiting(true)
+
+    if (notificationError) {
       event.preventDefault();
-      console.log('event is prevent')
+      console.log(notificationError)
+      isSubmiting(false)
       return;
     }
+
+    event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const userData = { name: data.get('email'), email: data.get('password') };
-    dispatch(login(userData));
-    navigate('/');
+    const userData = { email: data.get('email'), password: data.get('password') };
+    await useAuth.login(userData)
+      .then((userData) => 
+        {
+          dispatch(login(userData))
+          isSubmiting(false)
+          sessionStorage.setItem('accessToken', userData.token);
+          sessionStorage.setItem('userProfile', userData.user);
+          navigate('/');
+        })
+      .catch((err) => {
+        setNotification(useErrorMessage(err))
+        isSubmiting(false)
+        return;
+      })
   };
 
   return (
-    <div>
+    <>
+      {!!submiting && <Box sx = {{ 
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        background: '#0000000f',
+        zIndex: 10
+      }}/>}
       <SignInCard variant="outlined">
-          <Typography
-              component="h1"
-              variant="h6"
-              sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-          >
-              Đăng Nhập
-          </Typography>
+        <Typography
+          component="h1"
+          variant="h6"
+          sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', color: theme => theme.palette.primary.main }}
+        >
+          Đăng Nhập
+        </Typography>
 
-      <Box
+        <Box
           component="form"
           onSubmit={handleSubmit}
           noValidate
@@ -93,11 +118,13 @@ function SignIn() {
             flexDirection: 'column',
             width: '100%',
             gap: 2,
+            position: 'relative',
+            color: theme => theme.palette.primary.main
           }}
         >
           <FormControl sx={{gap: 1}}>
-            <FormLabel htmlFor="email">Tên đăng nhập</FormLabel>
-            <TextField
+            <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Tên đăng nhập</FormLabel>
+            <TextInput
               id="email"
               type="username"
               name="email"
@@ -109,18 +136,19 @@ function SignIn() {
               variant="outlined"
             />
           </FormControl>
+          
           <FormControl  sx={{gap: 1}}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <FormLabel htmlFor="password">Mật khẩu</FormLabel>
+              <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Mật khẩu</FormLabel>
               <Link
                 component="button"
                 variant="body2"
-                sx={{ alignSelf: 'baseline' }}
+                sx={{ alignSelf: 'baseline', color: 'inherit' }}
               >
                 Quên mật khẩu ? 
               </Link>
             </Box>
-            <TextField
+            <TextInput
               name="password"
               placeholder="••••••"
               type="password"
@@ -130,6 +158,7 @@ function SignIn() {
               required
               fullWidth
               variant="outlined"
+              sx = {{ color: '#000' }}
             />
           </FormControl>
 
@@ -138,13 +167,17 @@ function SignIn() {
             fullWidth
             variant="contained"
             onClick={validateInputs}
+            endIcon= { submiting && <CircularProgress size="0.725rem" color='secondary'/>}
           >
             Đăng nhập
           </Button>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <FormControlLabel
-                control={<CheckBox value="remember" color="primary" />}
+                control={
+                  <Checkbox defaultChecked sx ={{ padding: 0, paddingRight: '5px' }} />
+                  // <CheckBox value="remember" color="primary" />
+                }
                 label="Remember me"
             />
             <Typography sx={{ textAlign: 'center' }}>
@@ -159,9 +192,14 @@ function SignIn() {
               </span>
             </Typography>
           </Box>
+
+          <Typography sx = {{ width: '100%' , textAlign: 'end', color: 'red' }}>
+            {notificationError}
+          </Typography>
         </Box>
+
       </SignInCard>
-    </div>
+    </>
   )
 }
 

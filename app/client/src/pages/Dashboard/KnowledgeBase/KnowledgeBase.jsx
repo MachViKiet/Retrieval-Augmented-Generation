@@ -10,7 +10,7 @@ import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 
 const Header = styled(Box) (({theme}) => ({
-  background: theme.palette.primary.main,
+  background: theme.palette.mode == 'dark' ? '#3b416f' : theme.palette.primary.main,
   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
   height: theme.spacing(6),
   width: '100%',

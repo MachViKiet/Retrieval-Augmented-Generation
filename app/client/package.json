@@ -29,6 +29,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@wojtekmaj/react-hooks": "^1.20.0",
     "apollo-boost": "^0.4.9",
+    "axios": "^1.7.7",
     "connected-react-router": "^6.9.3",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",

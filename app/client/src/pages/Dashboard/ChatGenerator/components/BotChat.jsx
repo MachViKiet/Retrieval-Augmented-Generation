@@ -1,6 +1,7 @@
 import React from 'react'
 import { Typography } from '@mui/material';
 import BubbleChatLeft from '~/components/Chatbots/BubbleChatLeft';
+import ReactMarkdown from 'react-markdown';
 
 function BotChat({message,metadata, setOpenDetail}) {
 
@@ -19,7 +20,9 @@ function BotChat({message,metadata, setOpenDetail}) {
             lineHeight: 'normal',
             cursor: 'pointer' 
           }}>
-            {message}
+            <ReactMarkdown>
+              {message}
+            </ReactMarkdown>
         </Typography>
       }
     />

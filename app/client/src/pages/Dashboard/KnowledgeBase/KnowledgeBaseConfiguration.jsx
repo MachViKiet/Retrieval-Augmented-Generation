@@ -18,7 +18,10 @@ function KnowledgeBaseConfiguration() {
   })
 
   return (
-      <></>
+      <Box>
+
+        
+      </Box>
   )
 }
 

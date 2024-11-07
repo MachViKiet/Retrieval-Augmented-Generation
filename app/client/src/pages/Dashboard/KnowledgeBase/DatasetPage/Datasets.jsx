@@ -9,12 +9,15 @@ import { renderLink } from '~/components/MuiTable/cell-renderers/link';
 import { Box, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Snackbar from '@mui/material/Snackbar';
+import DatasetsUpload from './DatasetsUpload';
 
 const DIRECTION = '/knowledge_bases/student_handbook/dataset'
 
 function Datasets() {
   const dispatch = useDispatch()
   const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const useData = () => {
 
@@ -94,14 +97,18 @@ function Datasets() {
         justifyContent: 'end',
         alignItems: 'center'
       }}>
-        <Button sx = {{ 
+        <Button 
+        // onClick={}
+        sx = {{ 
           color: '#fff', 
           background: theme => "#404c7a",
           paddingX:2,
           paddingY: 1,
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
           borderRadius: '10px'
+
         }} startIcon = {<AddIcon/>}>Thêm Tài Liệu</Button>
+        <DatasetsUpload/>
       </Box>
     <Box sx={{ 
         maxHeight: 'calc(100vh - 130px)',

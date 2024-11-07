@@ -38,7 +38,7 @@ const theme = extendTheme(
             secondary: "#25294c", //"#32344d",
             third: "#4c5679",
             light: "red",
-            dark: "#b1cee8",
+            dark: "#0e2c4f",
             contrastText: "#000",
             background: "#25294a",
           },
@@ -170,10 +170,15 @@ const theme = extendTheme(
 
       MuiButton: {
         styleOverrides: {
-          root: {
+          root: ({theme}) => ({
             textTransform: "none",
             marginLeft: 0,
-          },
+            '&:hover' : {
+            }
+          }),
+          contained: {
+            color: `#fff`
+          }
         },
       },
 
@@ -197,9 +202,24 @@ const theme = extendTheme(
 
       MuiOutlinedInput: {
         styleOverrides: {
-          root: {
-            color: `var(--mui-palette-text-secondary)`,
-          },
+          root: ({ theme }) => ({
+            color:  theme.palette.text.secondary,
+            '& input' : {
+              background: 'transparent !important',
+              'WebkitBoxShadow' : '0 0 0 100px #fff inset !important',
+              'WebkitTextFillColor' : '#000 !important'
+            },
+            '& fieldset': {
+              borderColor: '#ccc !important',
+              backgroundColorL: 'red'
+            },
+            '&:hover fieldset': {
+              borderColor: `${theme.palette.primary.main} !important`,
+            },
+            '&.Mui-focused fieldset': {
+              // borderColor: 'yellow !important',
+            },
+          })
         },
       },
 
