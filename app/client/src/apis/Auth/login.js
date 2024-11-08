@@ -19,7 +19,8 @@ export const login = async (data, api_key = null) => {
 
 	const res = await fetch(url, structure)
 		.then(async (response) => {
-			await sleep(5000)
+			// await sleep(5000)
+			console.log('coss')
 			if (!response.ok) {
 				return response.json().then(errorData => {
 					throw errorData.errors.msg;
@@ -28,10 +29,14 @@ export const login = async (data, api_key = null) => {
 			return response.json()
 		})
 		.then(data => {
-			console.log('Dữ liệu nhận được:', data);
-
 			return data
 		})
+		.catch((err) => {
+			if(typeof(err) == "object"){
+				throw 'ERR_CONNECTION_REFUSED'
+			}
+			throw err
+		}) 
 
 	return res
 }

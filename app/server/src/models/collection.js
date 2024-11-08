@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 // const validator = require('validator')
 
-const UserAccessSchema = new mongoose.Schema(
+const CollectionAccessSchema = new mongoose.Schema(
   {
     collection_name: {
       type: String,
@@ -26,4 +26,4 @@ const UserAccessSchema = new mongoose.Schema(
     timestamps: true
   }
 )
-module.exports = mongoose.model('Collection', UserAccessSchema)
+module.exports = mongoose.model('Collection', CollectionAccessSchema)

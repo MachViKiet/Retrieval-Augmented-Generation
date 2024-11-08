@@ -20,24 +20,18 @@ const navList_1 = [
     link: "/chat_generator",
   },
   {
-    id: 355,
-    text: "Cài Đặt",
-    icon: SettingsOutlinedIcon,
-    link: "/setting",
-  },
-];
-const navList_2 = [
-  {
     id: 346,
     text: "Quản Lý Tri Thức",
     icon: StorageOutlinedIcon,
     link: "/knowledge_bases",
   },
+];
+const navList_2 = [
   {
-    id: 342,
-    text: "Quản Lý Tài Liệu",
-    icon: BackupOutlinedIcon,
-    link: "/upload_files",
+    id: 355,
+    text: "Cài Đặt",
+    icon: SettingsOutlinedIcon,
+    link: "/setting",
   },
   {
     id: 242,
