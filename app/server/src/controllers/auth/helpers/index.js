@@ -6,6 +6,7 @@ const { userIsBlocked } = require('./userIsBlocked')
 const { returnRegisterToken } = require('./returnRegisterToken')
 const { registerUser } = require('./registerUser')
 const { getUserInfo } = require('./getUserInfo')
+const { checkPermissions } = require('./checkPermissions')
 
 module.exports = {
   checkLoginAttemptsAndBlockExpires,
@@ -15,5 +16,6 @@ module.exports = {
   userIsBlocked,
   returnRegisterToken,
   registerUser,
-  getUserInfo
+  getUserInfo,
+  checkPermissions
 }

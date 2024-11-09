@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Stack, List, ListItemButton, ListItemIcon, ListItemText, Avatar, Card, CardContent, Typography, Button } from '@mui/material'
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Avatar, Card, CardContent, Typography, Button } from '@mui/material'
 import styled from '@emotion/styled'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
@@ -18,13 +18,11 @@ const DashboardContainer = styled(Box)(({ theme }) => ({
   height: '100vh',
   justifyContent: "center",
   alignItems: "center",
-  // paddingLeft: `calc(${theme.app.SideBar_Width})`,
-  // paddingRight: theme.spacing(2),
   transform: 'scale(1)',
   transition: '0.5s all ease',
 
   '&::before': {
-    background: '#ddf3fc',//'radial-gradient(at 50% 50%, hsla(210, 100%, 97%), hsl(0, 0%, 100%))',
+    background: '#ddf3fc',
     content: '""',
     display: 'flex',
     position: 'absolute',
@@ -71,7 +69,7 @@ const SubSidebarContainer = styled(Box)(({theme}) => ({
       left: '-100%', 
     },
     borderRadius: '0 15px 15px 0',
-    // background:  theme.palette.primary.main,
+    background:  theme.palette.primary.main,
     zIndex: 6
 }))
 
@@ -152,8 +150,9 @@ function DashboardLayout() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { mode, setMode } = useColorScheme();
-
+  const [loading, setLoading] = useState(true)
   const selectedIndexInitial = useSelector((state) => state.navigate.dashboard?.index ? state.navigate.dashboard.index : null);
+  const user_profile = useSelector((state) => state.auth.user ? state.auth.user : {});
   const [selectedIndex, setSelectedIndex] = useState(selectedIndexInitial)
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
   
@@ -167,7 +166,8 @@ function DashboardLayout() {
     navigate(address)
   }
 
-  const logoutClick = () => {
+  const logoutClick = (e) => {
+    e.stopPropagation()
     dispatch(logout())
     navigate('/signin')
   }
@@ -184,17 +184,20 @@ function DashboardLayout() {
           lg: `calc(${theme.app.SideBar_Width})`
         },
       })}>
-      <Overlayer sx = {(theme) =>({ 
+
+      <Overlayer sx = {(theme) =>({
         [theme.breakpoints.down('lg')]: {
-          display: isOpenSideBar && 'block !important', 
+          display: isOpenSideBar && 'block !important',  
         },
-       })}
-       onClick={expandClick}/>
+      })}
+      onClick={expandClick}/>
+
       <SidebarContainer sx = {(theme) =>({ 
         [theme.breakpoints.down('lg')]: {
           left: isOpenSideBar && '0 !important', 
         },
        })}>
+
         <LogoContainer/>
 
         <MuiDivider/>
@@ -233,12 +236,19 @@ function DashboardLayout() {
         })}
         </List>
 
-        <InformationCard sx = {{ background: theme => theme.palette.mode == 'light' ? '#b1cee1' : 'rgb(46, 63, 108)' }}>
+        <InformationCard 
+          sx = {{ 
+            background: theme => theme.palette.mode == 'light' ? '#b1cee1' : 'rgb(46, 63, 108)',
+          }}>
           <Box sx = {{ 
             display: 'flex',
             mb: 1,
-            mt: 1
-           }}>
+            mt: 1,
+            '&:active': {
+              transform: 'scale(0.9)'
+            }
+           }}
+           onClick= {() => navigate('/user_profile')}>
               <Avatar 
               src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
               sx={{ width: 32, height: 32, bgcolor: deepOrange[500], color: '#fff' }}></Avatar>
@@ -255,7 +265,7 @@ function DashboardLayout() {
                   cursor:'pointer',
                   fontWeight: '800'
                  }} >
-                  Mạch Vĩ Kiệt
+                  {user_profile?.name ? user_profile.name : 'Không tồn tại'}
                 </Typography>
                 <Typography
                   sx={{ 
@@ -272,10 +282,11 @@ function DashboardLayout() {
                     cursor:'pointer'
                    }}
                 >
-                  ntduong21@clc.fitus.edu.vn
+                  {user_profile?.email ? user_profile.email : 'Không tồn tại'}
                 </Typography>
               </CardContent>
           </Box>
+
           <ListItemButton sx = {{ 
               background: '#ffffffe8',
               borderRadius: '8px',
@@ -356,15 +367,18 @@ function DashboardLayout() {
             </ListItemIcon>
         </MuiListItemButton>
 
-          <Box sx = {{ 
+        <Box 
+          sx = {{ 
             display: 'flex',
             justifyContent:'center',
             alignItems: 'center',
             mb: 2,
             mt: 1
            }}>
-            <Avatar sx={{ width: 36, height: 36, fontSize: '18px', bgcolor: deepOrange[500], color: '#fff' }}>K</Avatar>
-          </Box>
+            <Avatar 
+            src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
+            sx={{ width: 36, height: 36, fontSize: '18px', bgcolor: deepOrange[500], color: '#fff' }}>K</Avatar>
+        </Box>
         <ListItemButton sx = {{ 
             background: '#ffffffe8',
             borderRadius: '8px',

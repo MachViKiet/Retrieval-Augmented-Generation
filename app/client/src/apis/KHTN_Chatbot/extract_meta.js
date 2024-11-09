@@ -1,7 +1,7 @@
 const domain = import.meta.env.VITE_KHTNCHATBOT_SERVICE
 
 export const extract_meta = async (userInput, chosen_collections, api_key = null) => {
-	const url = `${domain}/login`;
+	const url = `${domain}/generate/extract_meta?query=${encodeURIComponent(userInput)}&chosen_collection=${encodeURIComponent(chosen_collections)}`;
 	console.log(url)
 	// Thực hiện GET request
 	const res = await fetch(url)

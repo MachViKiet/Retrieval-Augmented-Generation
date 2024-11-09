@@ -32,7 +32,7 @@ function KnowledgeBase() {
 
   const knowledge_bases = [
     { "id" : 12346, "direction": '/student_handbook', "title": "Sổ Tay Sinh Viên", "description": "Tài liệu hướng dẫn, cung cấp thông tin về quy định, chính sách, tài nguyên và hỗ trợ dành cho sinh viên trong trường học." },
-    { "id" : 12341, "direction": '/recruitment', "title": "Thông Tin Tuyển Sinh", "description": "Thông tin chi tiết về quy trình tuyển sinh, bao gồm thời gian, yêu cầu hồ sơ, và hướng dẫn đăng ký cho các chương trình đào tạo." },
+    { "id" : 12341, "direction": '/recruitment', "title": "Thông Tin Tuyển Dụng", "description": "Thông tin chi tiết về quy trình tuyển sinh, bao gồm thời gian, yêu cầu hồ sơ, và hướng dẫn đăng ký cho các chương trình đào tạo." },
     { "id" : 12342, "direction": '/timetable', "title": "Thời Khóa Biểu", "description": "Thông tin về thời khóa biểu học tập, bao gồm các môn học, giảng viên, và lịch trình các buổi học trong học kỳ." },
     { "id" : 12343, "direction": '/scholarship', "title": "Thông Tin Học Bổng", "description": "Chi tiết về các chương trình học bổng, tiêu chí xét duyệt, hạn nộp hồ sơ và các lợi ích khi nhận học bổng." },
     { "id" : 12344, "direction": '/academic_affairs', "title": "Nội Quy Trường Học", "description": "Thông tin về các vấn đề nội bộ, bao gồm quy định học tập, hỗ trợ sinh viên và các hoạt động kỹ luật." },

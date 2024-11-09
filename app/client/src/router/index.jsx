@@ -1,9 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom';
-// import Layout from './components/Layout';
-// import HomePage from './pages/HomePage';
-// import ProfilePage from './pages/ProfilePage';
-// import LoginPage from './pages/LoginPage';
-// import ProtectedRoute from './components/ProtectedRoute';
 import AuthLayout from '~/layouts/AuthLayout'
 import DashboardLayout from '~/layouts/DashboardLayout';
 import HomePage from '~/pages/Dashboard/HomePage';
@@ -11,7 +6,6 @@ import SignIn from '~/pages/SignIn';
 import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
 import ChatGenerator from '~/pages/Dashboard/ChatGenerator/ChatGenerator';
 import GuessRoute from './GuessRoute/GuessRoute';
-import UploadFile from '~/pages/Dashboard/UploadFile';
 import KnowledgeSpace from '~/pages/Dashboard/KnowledgeBase/KnowledgeBase';
 import ModelsManager from '~/pages/Dashboard/ModelsManager';
 import AccountManager from '~/pages/Dashboard/AccountManager';
@@ -21,6 +15,11 @@ import DashboardWithSubNavLayout from '~/layouts/DashboardLayout/DashboardWithSu
 import KnowledgeBaseConfiguration from '~/pages/Dashboard/KnowledgeBase/KnowledgeBaseConfiguration';
 import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/KnowledgeBaseRetrievalTesting';
 import DatasetDetail from '~/pages/Dashboard/KnowledgeBase/DatasetPage/DatasetDetail';
+import UnknowPage from '~/components/Page/UnknowPage';
+import UserProfile from '~/pages/Dashboard/UserProfile';
+import UserRoute from './ProtectedRoute/UserRoute';
+import HomeLayout from '~/layouts/HomeLayout';
+import { HomePage as UserPage } from '~/pages/User/HomePage';
 // Define the routes
 const router = createBrowserRouter([
   {
@@ -32,21 +31,17 @@ const router = createBrowserRouter([
       }
     ],
   },
-{
+  {
     // Dashboard Layout for authenticated routes
     element: (<ProtectedRoute><DashboardLayout/></ProtectedRoute>),
     children: [
       {
-        path: '/',
+        path: '/dashboard',
         element: <HomePage />,
       },
       {
         path: '/chat_generator',
         element: <ChatGenerator />,
-      },
-      {
-        path: '/upload_files',
-        element: <UploadFile/>,
       },
       {
         path: '/knowledge_bases',
@@ -89,7 +84,24 @@ const router = createBrowserRouter([
         path: '/setting',
         element: <Setting />,
       },
+      {
+        path: '/user_profile',
+        element: <UserProfile />,
+      },
     ],
+  },
+  {
+    element: (<UserRoute><HomeLayout/></UserRoute>),
+    children: [
+      {
+        path: '/',
+        element: <UserPage />,
+      },
+    ]
+  },
+  {
+    path: "*", // Bất kỳ đường dẫn nào không khớp sẽ đi tới trang lỗi
+    element: <UnknowPage />,
   },
 ]);
 

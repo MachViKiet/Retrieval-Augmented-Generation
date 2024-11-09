@@ -28,7 +28,12 @@ const theme = extendTheme(
           text: {
             primary: "#008bff",
             secondary: "#000",
+            disabled: '#9f9f9f'
           },
+
+          success: {
+            main: '#0b8210'
+          }
         },
       },
       dark: {
@@ -46,7 +51,12 @@ const theme = extendTheme(
           text: {
             primary: "#fff",
             secondary: "#fff",
+            disabled: '#9f9f9f'
           },
+
+          success: {
+            main: '#0b8210'
+          }
         },
       },
     },
@@ -204,18 +214,23 @@ const theme = extendTheme(
         styleOverrides: {
           root: ({ theme }) => ({
             color:  theme.palette.text.secondary,
+            background: 'transparent !important',
             '& input' : {
               background: 'transparent !important',
-              'WebkitBoxShadow' : '0 0 0 100px #fff inset !important',
-              'WebkitTextFillColor' : '#000 !important'
+              'WebkitBoxShadow' : '0 0 0 100px transparent inset !important',
+              'WebkitTextFillColor' : 'inherit !important'
             },
             '& fieldset': {
-              borderColor: '#ccc !important',
+              borderColor: `${theme.palette.text.secondary} !important`,
               backgroundColorL: 'red'
             },
-            '&:hover fieldset': {
-              borderColor: `${theme.palette.primary.main} !important`,
-            },
+            // '&:hover fieldset': {
+            //   borderColor: `${theme.palette.primary.main} !important`,
+            // },
+
+            // '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            //   borderColor: `${theme.palette.primary.main} `,
+            // },
             '&.Mui-focused fieldset': {
               // borderColor: 'yellow !important',
             },

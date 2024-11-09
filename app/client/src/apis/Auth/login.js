@@ -1,14 +1,8 @@
 const domain = import.meta.env.VITE_SERVER
 
-
-function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-
 export const login = async (data, api_key = null) => {
 	const url = `${domain}/login`;
-	console.log(data)
+	console.log(url)
 	const structure = {
 		method: 'POST',
 		headers: {
@@ -19,7 +13,6 @@ export const login = async (data, api_key = null) => {
 
 	const res = await fetch(url, structure)
 		.then(async (response) => {
-			await sleep(5000)
 			if (!response.ok) {
 				return response.json().then(errorData => {
 					throw errorData.errors.msg;
@@ -28,10 +21,16 @@ export const login = async (data, api_key = null) => {
 			return response.json()
 		})
 		.then(data => {
-			console.log('Dữ liệu nhận được:', data);
-
+			sessionStorage.setItem('accessToken', data.token);
+			sessionStorage.setItem('userProfile', JSON.stringify(data.user));
 			return data
 		})
+		.catch((err) => {
+			if(typeof(err) == "object"){
+				throw 'ERR_CONNECTION_REFUSED'
+			}
+			throw err
+		}) 
 
 	return res
 }
