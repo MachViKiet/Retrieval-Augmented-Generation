@@ -7,6 +7,7 @@ import store from './store'
 import router from './router'
 
 function App() {
+
   return (
     <Provider store={store} stabilityCheck="never">
       <RouterProvider router={router} />

@@ -1,0 +1,24 @@
+const User = require('~/models/user')
+const { buildErrObject } = require('~/middlewares/utils')
+
+/**
+ * Checks against user if has quested role
+ * @param {Object} data - data object
+ * @param {*} next - next callback
+ */
+const checkPermissions = async ({ id = '', roles = [] }, next) => {
+  await User.findById(id).then(async (result) => {
+    if (!result) {
+      throw buildErrObject(404, 'USER_NOT_FOUND')
+    }
+
+    if (roles.indexOf(result.role) > -1) {
+      return next()
+    }
+    throw buildErrObject(401, 'UNAUTHORIZED')
+  }).catch(async (err) => {
+    throw buildErrObject(422, err.message)
+  })
+}
+
+module.exports = { checkPermissions }

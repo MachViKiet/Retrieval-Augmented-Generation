@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 // const validator = require('validator')
 
-const UserAccessSchema = new mongoose.Schema(
+const DocumentAccessSchema = new mongoose.Schema(
   {
     owner : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     url: {
@@ -40,4 +40,4 @@ const UserAccessSchema = new mongoose.Schema(
     timestamps: true
   }
 )
-module.exports = mongoose.model('Document', UserAccessSchema)
+module.exports = mongoose.model('Document', DocumentAccessSchema)

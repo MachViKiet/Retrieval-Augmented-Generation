@@ -25,6 +25,22 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    sex: {
+      type: String,
+      enum: ['male', 'female']
+    },
+    personal_email: {
+      type: String,
+      validate: {
+        validator: (str, option) => {
+          return isEmail(str, option)
+        },
+        message: 'EMAIL_IS_NOT_VALID'
+      }
+    },
+    department: {
+      type: String
+    },
     role: {
       type: String,
       enum: ['student', 'researcher', 'administrator', 'academic_administration'],
@@ -33,9 +49,16 @@ const UserSchema = new mongoose.Schema(
     verification: {
       type: String
     },
+    position: {
+      type: String,
+      enum: ['ROLE-TP', 'ROLE-PP', 'ROLE-NV', 'ROLE-CTV']
+    },
     verified: {
       type: Boolean,
       default: true
+    },
+    message: {
+      type: String
     },
     phone: {
       type: String

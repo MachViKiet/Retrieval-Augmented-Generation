@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 
 function Loading({isLoading}) {
   return (
-    true && <>
+    isLoading.state && <>
       <BubbleChatLeft
       text={
         <>

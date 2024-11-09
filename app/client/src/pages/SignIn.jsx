@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 // import { CheckBox } from '@mui/icons-material';
 import Checkbox from '@mui/material/Checkbox';
-import { Card, FormControl, FormLabel, TextField, Typography, Box, FormControlLabel, Button, Alert, CircularProgress } from '@mui/material';
+import { Card, FormControl, FormLabel, TextField, Typography, Box, FormControlLabel, Button, CircularProgress } from '@mui/material';
 import Link from '@mui/material/Link';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
@@ -32,7 +32,13 @@ const SignInCard = styled(Card)(({ theme }) => ({
 }));
 
 const TextInput = styled(TextField) (({ theme }) => ({
-
+  WebkitTextFillColor: '#000',
+  '& input': {
+    color: '#000'
+  },
+  '&:hover fieldset': {
+    borderColor: `${theme.palette.primary.main} !important`,
+  },
 }));
 
 function SignIn() {
@@ -80,9 +86,7 @@ function SignIn() {
         {
           dispatch(login(userData))
           isSubmiting(false)
-          sessionStorage.setItem('accessToken', userData.token);
-          sessionStorage.setItem('userProfile', userData.user);
-          navigate('/');
+          // useNavigate()('/home');
         })
       .catch((err) => {
         setNotification(useErrorMessage(err))
@@ -176,7 +180,6 @@ function SignIn() {
             <FormControlLabel
                 control={
                   <Checkbox defaultChecked sx ={{ padding: 0, paddingRight: '5px' }} />
-                  // <CheckBox value="remember" color="primary" />
                 }
                 label="Remember me"
             />

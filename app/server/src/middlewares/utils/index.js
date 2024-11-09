@@ -4,6 +4,7 @@ const { itemNotFound } = require('./itemNotFound')
 const { handleError } = require('./handleError')
 const { getBrowserInfo } = require('./getBrowserInfo')
 const { getIP } = require('./getIP')
+const { isIDGood } = require('./isIDGood')
 
 module.exports = {
   buildErrObject,
@@ -11,5 +12,6 @@ module.exports = {
   itemNotFound,
   handleError,
   getBrowserInfo,
-  getIP
+  getIP,
+  isIDGood
 }

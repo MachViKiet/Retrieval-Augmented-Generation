@@ -1,5 +1,5 @@
 // store/reducers/authReducer.js
-import { LOGIN, LOGOUT } from "../actions/authActions";
+import { LOGIN, LOGOUT, REFRESH } from "../actions/authActions";
 
 const initialState = {
   loggedIn: false,
@@ -15,11 +15,23 @@ const authReducer = (state = initialState, action) => {
         loggedIn: true,
         ...action.payload,
       };
+    case REFRESH: 
+      console.log({
+        ...state,
+        loggedIn: true,
+        ...action.payload,
+      })
+      return {
+        ...state,
+        loggedIn: true,
+        ...action.payload,
+      };
     case LOGOUT:
       return {
         ...state,
         loggedIn: false,
         user: null,
+        token: null
       };
     default:
       return state;

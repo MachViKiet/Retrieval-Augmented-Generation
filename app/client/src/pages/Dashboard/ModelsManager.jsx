@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
+import UnknowPage from '../../components/Page/UnknowPage';
 
 function ModelsManager() {
 
@@ -14,9 +15,7 @@ function ModelsManager() {
   })
 
   return (
-    <div>
-      
-    </div>
+    <UnknowPage/>
   )
 }
 
