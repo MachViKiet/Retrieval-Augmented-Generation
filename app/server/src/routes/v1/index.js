@@ -7,6 +7,7 @@ const router = Router()
 
 // Load Auth route
 router.use('/', require('./auth'))
+router.use('/', require('./profile'))
 
 /*
  * Setup routes for index

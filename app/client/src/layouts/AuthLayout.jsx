@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Box, Stack } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import background from '~/assets/futuristic-robot.png'
 
@@ -23,10 +23,9 @@ const AuthContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const AuthLayout = () => {
-  const [loading, setLoading] = useState('')
   return (
     <AuthContainer  direction="column" justifyContent="space-between">
-        <Outlet />
+        <Outlet/>
     </AuthContainer>
   );
 };

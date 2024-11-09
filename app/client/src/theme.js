@@ -28,6 +28,7 @@ const theme = extendTheme(
           text: {
             primary: "#008bff",
             secondary: "#000",
+            disabled: '#9f9f9f'
           },
 
           success: {
@@ -50,6 +51,7 @@ const theme = extendTheme(
           text: {
             primary: "#fff",
             secondary: "#fff",
+            disabled: '#9f9f9f'
           },
 
           success: {

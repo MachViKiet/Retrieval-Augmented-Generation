@@ -17,6 +17,9 @@ import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/Knowl
 import DatasetDetail from '~/pages/Dashboard/KnowledgeBase/DatasetPage/DatasetDetail';
 import UnknowPage from '~/components/Page/UnknowPage';
 import UserProfile from '~/pages/Dashboard/UserProfile';
+import UserRoute from './ProtectedRoute/UserRoute';
+import HomeLayout from '~/layouts/HomeLayout';
+import { HomePage as UserPage } from '~/pages/User/HomePage';
 // Define the routes
 const router = createBrowserRouter([
   {
@@ -33,7 +36,7 @@ const router = createBrowserRouter([
     element: (<ProtectedRoute><DashboardLayout/></ProtectedRoute>),
     children: [
       {
-        path: '/',
+        path: '/dashboard',
         element: <HomePage />,
       },
       {
@@ -86,6 +89,15 @@ const router = createBrowserRouter([
         element: <UserProfile />,
       },
     ],
+  },
+  {
+    element: (<UserRoute><HomeLayout/></UserRoute>),
+    children: [
+      {
+        path: '/',
+        element: <UserPage />,
+      },
+    ]
   },
   {
     path: "*", // Bất kỳ đường dẫn nào không khớp sẽ đi tới trang lỗi

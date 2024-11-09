@@ -1,14 +1,14 @@
 const domain = import.meta.env.VITE_SERVER
 
-export const login = async (data, api_key = null) => {
-	const url = `${domain}/login`;
+export const get = async (token = null) => {
+	const url = `${domain}/`;
 	console.log(url)
 	const structure = {
-		method: 'POST',
+		method: 'GET',
 		headers: {
-		  'Content-Type': 'application/json'
+		  'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
 		},
-		body: JSON.stringify(data)
 	  }
 
 	const res = await fetch(url, structure)
@@ -21,8 +21,6 @@ export const login = async (data, api_key = null) => {
 			return response.json()
 		})
 		.then(data => {
-			sessionStorage.setItem('accessToken', data.token);
-			sessionStorage.setItem('userProfile', JSON.stringify(data.user));
 			return data
 		})
 		.catch((err) => {

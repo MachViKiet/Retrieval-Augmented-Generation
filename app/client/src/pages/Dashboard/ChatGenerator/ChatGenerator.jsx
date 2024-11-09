@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Backdrop, Box, Button, CircularProgress, Typography } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import TextInput from '~/components/Chatbots/TextInput';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
@@ -252,7 +252,7 @@ function ChatGenerator({setLoading}) {
   }
 
   const user = useSelector((state) => state.auth.user)
-  const [userInfo, setUserInfor] = useState({})
+  const [userInfo, setUserInfor] = useState(user)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -263,13 +263,14 @@ function ChatGenerator({setLoading}) {
     dispatch(sidebarAction({index: 466}))
 
     // TODO : Load data from db
-    setUserInfor(user)
+    // setUserInfor(userInfo)
     const timeoutID = setTimeout(() => setHide(false), 500)
 
     // return (
     //   dispatch(sidebarAction({index: null}))
     // )
-  })
+  },[])
+
 
   return hide ? 
     (<Backdrop
@@ -311,7 +312,7 @@ function ChatGenerator({setLoading}) {
                 color: 'transparent',
                 backgroundSize: '400% 100%',
                 WebkitBackgroundClip : 'text'
-               }}>Xin Chào bạn, {user.name} !</Typography>
+               }}>Xin Chào bạn, {user?.name} !</Typography>
               <Typography variant='h3' sx = {{ 
                 fontSize: '1.5rem',
                 marginBottom: 2,

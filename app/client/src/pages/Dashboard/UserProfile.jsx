@@ -1,7 +1,7 @@
-import { Button, Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Paper, Select, MenuItem } from '@mui/material';
+import { Button, Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Paper, Select, MenuItem, Backdrop, CircularProgress } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import Block from '~/components/Block';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
@@ -15,7 +15,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { red } from '@mui/material/colors';
+import { useProfile } from '~/apis/Profile';
+import { useCode } from '~/hooks/useMessage';
+import { refresh } from '~/store/actions/authActions';
+import { getDate } from '~/utils/GetDate';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -30,19 +33,67 @@ const Item = styled(Paper)(({ theme }) => ({
 
 function UserProfile() {
   const dispatch = useDispatch()
+  const [hide, setHide] = useState(true)
+  const token = useSelector((state) => state.auth.token)
+  const [user, setUser] = useState(useSelector((state) => state.auth.user))
+  const [updateButtonActive, setUpdateButtonActive] = useState(true)
+
   useEffect(() => {
     document.title = 'Chatbot - Thông Tin Cá Nhân';
     dispatch(sidebarAction({index: 912}))
+
+    useProfile.get(token).then(async(user) => {
+      setTimeout(() => {
+        setUser(user)
+        setHide(false)
+      }, 500)
+    }).catch((err) => {
+      console.log(err)
+    })
+
     // return (
     //   dispatch(sidebarAction({index: null}))
     // )
-  })
+  },[])
 
-  return (
+  const updateClick = async (e) => {
+    setUpdateButtonActive(false)
+    useProfile.update(user, token).then(async (user) => {
+
+      setTimeout(() => {
+        setUpdateButtonActive(true)
+        setUser(user)
+        dispatch(refresh(token, {
+          name: user?.name,
+          role: user?.role,
+          email: user?.email
+        }))
+      }, 500);
+    }).catch((err) => {
+      console.log('update Thất bại  ', err)
+
+    })
+  }
+
+  return hide ? 
+  (<Backdrop
+    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+    open={true}
+  >
+    <CircularProgress color="inherit" />
+  </Backdrop>) :(
+    <>
     <Block sx = {{ 
       padding: '10px',
       paddingY: 3,
      }}>
+      <Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: 5 })}
+        open={!updateButtonActive}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       <Box sx = {{ 
         width: '100%',
         maxHeight: 'calc(100vh - 80px)',
@@ -80,7 +131,7 @@ function UserProfile() {
                 fontWeight: '900', 
                 width: 'fit-content'
                }}>
-                Mạch Vĩ Kiệt
+                {user?.name ? user.name : '#undefine'}
               </Typography>
 
               <Box sx = {{ 
@@ -92,7 +143,7 @@ function UserProfile() {
                 <Typography sx = {{ 
                   width: 'fit-content'
                 }}>
-                  <span style = {{ fontWeight: '600' }}>Giới tính : </span><span>Nam</span> 
+                  <span style = {{ fontWeight: '600' }}>Giới tính : </span><span>{user?.sex ? useCode(user.sex) : '#undefine'}</span> 
                 </Typography>
               </Box>
 
@@ -105,7 +156,7 @@ function UserProfile() {
                 <Typography sx = {{ 
                   width: 'fit-content'
                 }}>
-                   <span style = {{ fontWeight: '600' }}>Phòng Ban : </span>Ban Giáo Vụ
+                   <span style = {{ fontWeight: '600' }}>Phòng Ban : </span>{user?.department ? useCode(user.department) : '#undefine'}
                 </Typography>
               </Box>
 
@@ -118,7 +169,7 @@ function UserProfile() {
                 <Typography sx = {{ 
                   width: 'fit-content'
                 }}>
-                  <span style = {{ fontWeight: '600' }}>Email Công Việc : </span><span>mvkiet21@clc.fitus.edu.vn</span> ( Mặc Định )
+                  <span style = {{ fontWeight: '600' }}>Email Công Việc : </span>{user?.email ? user.email : '#undefine'}<span></span> ( Mặc Định )
                 </Typography>
               </Box>
 
@@ -131,7 +182,7 @@ function UserProfile() {
                 <Typography sx = {{ 
                   width: 'fit-content'
                 }}>
-                  <span style = {{ fontWeight: '600' }}>Số Điện Thoại: </span><span>0903031872</span>
+                  <span style = {{ fontWeight: '600' }}>Số Điện Thoại: </span><span>{user?.phone ? user.phone : '#undefine'}</span>
                 </Typography>
               </Box>
 
@@ -139,10 +190,11 @@ function UserProfile() {
                 width: 'fit-content',
                 color: theme => theme.palette.mode == 'dark' ? '#0dff0d' : '#0dd60d'
                }}>
-                <span>Đang công tác tại </span><span>Trường Đại Học Khoa Học Tự Nhiên - ĐHQG TPHCM</span>
+                {user?.message ? user.message : ''}
+                {/* <span>Đang công tác tại Trường Đại Học Khoa Học Tự Nhiên - ĐHQG TPHCM</span> */}
               </Typography>
 
-            <Chip label="Academic Administration"  sx = {{ 
+            <Chip label={user?.role ? user?.role.replace(/\b\w/g, char => char.toUpperCase()) : '#undefine'}  sx = {{ 
                 position: 'absolute',
                 right: 0, 
                 top: 0,
@@ -175,9 +227,10 @@ function UserProfile() {
           <Box sx = {{ 
             width: '100%',
             backgroundColor: theme => theme.palette.mode == 'dark' ? '#ffffff2b' : '#fff',
-            display: 'inline-flex',
+            // display: 'inline-flex',
             justifyContent: 'space-evenly',
             padding: 4,
+            paddingBottom: 2,
             borderRadius: '15px',
             minWidth: '788px'
           }} component='form'>
@@ -187,15 +240,15 @@ function UserProfile() {
               <Grid size={6}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Họ Và Tên</FormLabel>
+                    <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Họ Và Tên</FormLabel>
                   </Box>
                   <TextField
-                    autoComplete="current-password"
-                    autoFocus
+                    id="user_name"
                     required
                     fullWidth
                     variant="outlined"
-                    value={'Mạch Vĩ Kiệt'}
+                    value={user?.name ? user?.name : null}
+                    onChange={(e) => setUser((prev) => ({...prev, name : e.target.value}))}
                     sx = {{ 
                       color: '#fff',
                       '& fieldset': {
@@ -209,10 +262,8 @@ function UserProfile() {
               <Grid size={2} offset={0.25}>
                 <FormLabel htmlFor="password" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start'}}>Giới Tính</FormLabel>
                 <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  defaultValue={'female'}
-                  value='female'
+                  id="user_sex"
+                  value={user?.sex ? user?.sex : null}
                   sx = {{ 
                     width: '100%',
                     '& fieldset': {
@@ -222,6 +273,7 @@ function UserProfile() {
                       color: theme => theme.palette.text.secondary
                     }
                   }}
+                  onChange={(e) => setUser((prev) => ({...prev, sex : e.target.value}))}
                 >
                   <MenuItem value={'female'}>Nam</MenuItem>
                   <MenuItem value={'male'}>Nữ</MenuItem>
@@ -231,26 +283,28 @@ function UserProfile() {
               <Grid size={3.5} offset={0.25}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Ngày Sinh</FormLabel>
+                    <FormLabel htmlFor="birth" sx = {{ color: 'inherit' }}>Ngày Sinh</FormLabel>
                   </Box>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker']} sx = {{ paddingTop: 0, width: '100%' ,'& button' : { color: theme => theme.palette.text.secondary } }}>
                       <DatePicker
-                        defaultValue={dayjs('2022-04-17')}
-                        // value={value}
-                        // onChange={(newValue) => setValue(newValue)}
+                        id="user_birth"
+                        value={dayjs(user?.birth)}
+                        onChange={(value) => setUser((prev) => ({...prev, birth : value}))}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
                 </FormControl>
               </Grid>
 
-              <Grid size={4}>
+              <Grid size={3}>
                 <Box sx={{ display: 'block', width: 'fit-content', width: '100%' }}>
-                  <FormLabel htmlFor="password" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Phòng Ban</FormLabel>
+                  <FormLabel htmlFor="department" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Phòng Ban</FormLabel>
                   <Select
-                    defaultValue={'httt'}
-                    value='httt'
+                    id="user_department"
+                    name= 'department'
+                    value={user?.department}
+                    // disabled
                     sx = {{ 
                       width: '100%',
                       '& fieldset': {
@@ -260,23 +314,24 @@ function UserProfile() {
                         color: theme => theme.palette.text.secondary
                       }
                     }}
+                    onChange={(e) => setUser((prev) => ({...prev, department : e.target.value}))}
                   >
-                    <MenuItem value={'female'}>Ban Giáo Vụ</MenuItem>
-                    <MenuItem value={'male'}>Phòng Công Tác Sinh Viên</MenuItem>
-                    <MenuItem value={'httt'}>Văn Phòng Khoa Hệ Thống Thông Tin</MenuItem>
-                    <MenuItem value={'male'}>Phòng Đào Tạo</MenuItem>
+                    <MenuItem value={'DEPT-GV'}>Ban Giáo Vụ</MenuItem>
+                    <MenuItem value={'DEPT-CTSV'}>Phòng Công Tác Sinh Viên</MenuItem>
+                    <MenuItem value={'DEPT-HTTT'}>Văn Phòng Khoa Hệ Thống Thông Tin</MenuItem>
+                    <MenuItem value={'DEPT-DT'}>Phòng Đào Tạo</MenuItem>
                   </Select>
                 </Box>
               </Grid>
 
-              <Grid size={3} offset={0.25}>
+              <Grid size={3} offset={0}>
                 <Box sx={{ display: 'block', width: 'fit-content', width: '100%' }}>
-                  <FormLabel htmlFor="password" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Chức Vụ</FormLabel>
+                  <FormLabel htmlFor="user_position" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Chức Vụ</FormLabel>
                   <Select
-                    labelId="demo-simple-select-helper-label"
-                    id="demo-simple-select-helper"
-                    defaultValue={'female'}
-                    value='female'
+                    id="user_position"
+                    name= "user_position"
+                    value={user?.position}
+                    // disabled
                     sx = {{ 
                       width: '100%',
                       '& fieldset': {
@@ -286,27 +341,29 @@ function UserProfile() {
                         color: theme => theme.palette.text.secondary
                       }
                     }}
+                    onChange={(e) => setUser((prev) => ({...prev, position : e.target.value}))}
                   >
-                    <MenuItem value={'female'}>Trưởng Phòng</MenuItem>
-                    <MenuItem value={'male'}>Phó Phòng</MenuItem>
-                    <MenuItem value={'male'}>Nhân Viên</MenuItem>
-                    <MenuItem value={'male'}>Cộng Tác Viên</MenuItem>
+                    <MenuItem value={'ROLE-TP'}>Trưởng Phòng</MenuItem>
+                    <MenuItem value={'ROLE-PP'}>Phó Phòng</MenuItem>
+                    <MenuItem value={'ROLE-NV'}>Giáo Viên</MenuItem>
+                    <MenuItem value={'ROLE-CTV'}>Cộng Tác Viên</MenuItem>
                   </Select>
                 </Box>
               </Grid>
 
-              <Grid size={6}>
+              <Grid size={7} offset={0}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Email Công Việc</FormLabel>
+                    <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Email Công Việc</FormLabel>
                   </Box>
                   <TextField
-                    autoComplete="current-password"
-                    autoFocus
                     required
+                    id="user_email"
+                    name= "user_email"
+                    value={user?.email + ' ( Mặc Định ) '}
+                    disabled
                     fullWidth
                     variant="outlined"
-                    value={'mvkiet21@clc.fitus.edu.vn'}
                     sx = {{ 
                       color: '#fff',
                       '& fieldset': {
@@ -317,24 +374,24 @@ function UserProfile() {
                 </FormControl>
               </Grid>
 
-              <Grid size={6}>
+              <Grid size={7}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Email Cá Nhân</FormLabel>
+                    <FormLabel htmlFor="personal_email" sx = {{ color: 'inherit' }}>Email Cá Nhân</FormLabel>
                   </Box>
                   <TextField
-                    autoComplete="current-password"
-                    autoFocus
-                    required
+                    id="personal_email"
+                    name= "personal_email"
+                    value={user?.personal_email}
                     fullWidth
                     variant="outlined"
-                    value={'machkiet252003@gmail.com'}
                     sx = {{ 
                       color: '#fff',
                       '& fieldset': {
                         borderColor: `#000 !important`,
                       },
                     }}
+                    onChange={(e) => setUser((prev) => ({...prev, personal_email : e.target.value}))}
                   />
                 </FormControl>
               </Grid>
@@ -342,20 +399,21 @@ function UserProfile() {
               <Grid size={12}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '70%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
+                    <FormLabel htmlFor="personal_phone" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
                   </Box>
                   <TextField
-                    autoFocus
-                    required
+                    id="personal_phone"
+                    name= "personal_phone"
+                    value={user?.phone}
                     fullWidth
                     variant="outlined"
-                    value={'0903031872'}
                     sx = {{ 
                       color: '#fff',
                       '& fieldset': {
                         borderColor: `#000 !important`,
                       },
                     }}
+                    onChange={(e) => setUser((prev) => ({...prev, phone : e.target.value}))}
                   />
                 </FormControl>
               </Grid>
@@ -363,12 +421,15 @@ function UserProfile() {
               <Grid size={12}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Mục Tiêu Công Việc</FormLabel>
+                    <FormLabel htmlFor="preferences" sx = {{ color: 'inherit' }}>Mục Tiêu Công Việc</FormLabel>
                   </Box>
                   <TextField
                     multiline
+                    id="preferences"
+                    name= "preferences"
+                    value={user?.preferences}
                     rows={4}
-                    defaultValue="Tra cứu nội quy trường học, tìm hiểu các thông tin về chính sách học bổng, du học và tuyển dụng"
+                    onChange={(e) => setUser((prev) => ({...prev, preferences : e.target.value}))}
                     sx = {{ 
                       color: '#fff',
                       '& fieldset': {
@@ -380,7 +441,16 @@ function UserProfile() {
               </Grid>
 
             </Grid>
+          <Box >
+            <Typography sx ={{ 
+              width: '100%',
+              textAlign: 'end',
+              marginTop: 2,
+              color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000'
+             }}>Cập nhật lần cuối vào lúc : {getDate(user?.updatedAt)}</Typography>
           </Box>
+          </Box>
+
 
           <Box sx = {{ 
             display: 'flex',
@@ -388,13 +458,14 @@ function UserProfile() {
             gap: 2,
             width: '100%'
            }}>
-            <Button variant= 'contained' color="success">Cập Nhật Thông Tin</Button>
+            <Button variant= 'contained' color="success" onClick={updateClick}>Cập Nhật Thông Tin</Button>
             <Button variant= 'contained' color='error'>Đặt lại mật khẩu</Button>
           </Box>
       </Box>
 
       </Box>
     </Block>
+    </>
   )
 }
 

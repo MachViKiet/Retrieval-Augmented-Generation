@@ -86,9 +86,7 @@ function SignIn() {
         {
           dispatch(login(userData))
           isSubmiting(false)
-          sessionStorage.setItem('accessToken', userData.token);
-          sessionStorage.setItem('userProfile', JSON.stringify(userData.user));
-          navigate('/');
+          // useNavigate()('/home');
         })
       .catch((err) => {
         setNotification(useErrorMessage(err))
