@@ -21,6 +21,8 @@ export const refresh = (token, user) => {
 };
 
 export const logout = () => {
+  sessionStorage.removeItem('accessToken');
+  sessionStorage.removeItem('userProfile');
   return {
     type: LOGOUT,
   };

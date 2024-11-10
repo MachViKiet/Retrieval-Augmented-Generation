@@ -247,7 +247,7 @@ function DashboardLayout() {
               transform: 'scale(0.9)'
             }
            }}
-           onClick= {() => navigate('/user_profile')}>
+           onClick= {() => navigate('/admin_profile')}>
               <Avatar 
               src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
               sx={{ width: 32, height: 32, bgcolor: deepOrange[500], color: '#fff' }}></Avatar>

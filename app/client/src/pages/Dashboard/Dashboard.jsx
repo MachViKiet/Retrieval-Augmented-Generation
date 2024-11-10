@@ -13,10 +13,10 @@ const MuiDivider = styled(Box)  (({theme}) => ({
 }))
 
 
-function HomePage() {
+function Dashboard() {
   const dispatch = useDispatch()
   useEffect(() => {
-    document.title = 'Chatbot - Trang Chủ';
+    document.title = 'Chatbot - Dashboard';
     dispatch(sidebarAction({index: 234}))
     // return (
     //   dispatch(sidebarAction({index: null}))
@@ -30,4 +30,4 @@ function HomePage() {
   )
 }
 
-export default HomePage
+export default Dashboard

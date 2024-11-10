@@ -55,7 +55,7 @@ const MuiListItemButton = styled(ListItemButton) (({theme}) => ({
 
 }))
 
-function HomeLayout() {
+function MainLayout() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const navigateList = [
@@ -100,9 +100,7 @@ function HomeLayout() {
   }
 
   const logoutClick = (e) => {
-    e.stopPropagation()
     dispatch(logout())
-    navigate(0)
   }
 
   return (
@@ -183,7 +181,7 @@ function HomeLayout() {
                   gap: 1,
                   color: theme => theme.palette.mode == 'dark' ? '#fff' : '#047aff',
                   cursor: 'pointer'
-                }} onClick={() => navigate('/profile')}>
+                }} onClick={() => navigate('/user_profile')}>
                   <AccountCircleOutlinedIcon/>
                   <Typography variant='p'>{user_profile.name}</Typography>
                 </Button>
@@ -211,4 +209,4 @@ function HomeLayout() {
   )
 }
 
-export default HomeLayout
+export default MainLayout

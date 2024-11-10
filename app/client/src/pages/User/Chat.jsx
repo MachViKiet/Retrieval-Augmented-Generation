@@ -4,6 +4,7 @@ import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 
 function Chat() {
   const dispatch = useDispatch()
+  
   useEffect(() => {
     document.title = 'Chatbot - Trò Chuyện';
     dispatch(sidebarAction({index: 121}))

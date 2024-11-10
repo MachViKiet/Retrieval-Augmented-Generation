@@ -229,7 +229,7 @@ const theme = extendTheme(
               'WebkitTextFillColor' : 'inherit !important'
             },
             '& fieldset': {
-              borderColor: `${theme.palette.text.secondary} !important`,
+              borderColor: `#00000036 !important`,
               backgroundColorL: 'red'
             },
             // '&:hover fieldset': {

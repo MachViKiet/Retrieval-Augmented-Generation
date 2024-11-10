@@ -21,14 +21,10 @@ const SignInCard = styled(Card)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     maxWidth: '420px',
   },
-  boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  ...theme.applyStyles('dark', {
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-  }),
+  boxShadow: 'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px' ,
   background: '#fff',
-  borderRadius: '20px'
+  borderRadius: '20px',
+  // boxShadow: '0 4px 8px rgba(255, 255, 255, 0.1), 0 8px 16px rgba(0, 0, 0, 0.3)'
 }));
 
 const TextInput = styled(TextField) (({ theme }) => ({
@@ -86,7 +82,7 @@ function SignIn() {
         {
           dispatch(login(userData))
           isSubmiting(false)
-          // useNavigate()('/home');
+          navigate(0);
         })
       .catch((err) => {
         setNotification(useErrorMessage(err))
@@ -171,22 +167,33 @@ function SignIn() {
             fullWidth
             variant="contained"
             onClick={validateInputs}
+            sx = {{ 
+              background: theme => theme.palette.primary.main,
+              '&:hover' : {
+                boxShadow: 'var(--mui-shadows-4)'
+              }
+            }}
             endIcon= { submiting && <CircularProgress size="0.725rem" color='secondary'/>}
           >
             Đăng nhập
           </Button>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <FormControlLabel
-                control={
-                  <Checkbox defaultChecked sx ={{ padding: 0, paddingRight: '5px' }} />
-                }
-                label="Remember me"
-            />
             <Typography sx={{ textAlign: 'center' }}>
               <span>
                 <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/"
+                variant="body2"
+                sx={{ alignSelf: 'center' }}
+                >
+                Trở về trang chủ
+                </Link>
+              </span>
+            </Typography>
+            <Typography sx={{ textAlign: 'center' }}>
+              <span>
+                <Link
+                href="/lisences"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
                 >

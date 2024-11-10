@@ -96,7 +96,7 @@ export function UserProfile() {
 
       <Box sx = {{ 
         width: '100%',
-        maxHeight: 'calc(100vh - 80px)',
+        // maxHeight: 'calc(100vh - 80px)',
         overflow: 'auto',
         paddingX: '10px',
         paddingX: 3,

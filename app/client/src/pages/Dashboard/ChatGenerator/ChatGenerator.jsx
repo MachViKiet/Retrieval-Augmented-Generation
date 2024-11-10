@@ -15,7 +15,6 @@ import KHTNGenerativeAI from '~/services/KHTNGenerativeAI';
 import LoadingBotChat from './components/LoadingBotChat';
 import ViewStreamIcon from '@mui/icons-material/ViewStream';
 import AssuredWorkloadOutlinedIcon from '@mui/icons-material/AssuredWorkloadOutlined';
-import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined';
 import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlined';
 
 const Header = styled(Box) (({theme}) => ({
@@ -252,7 +251,6 @@ function ChatGenerator({setLoading}) {
   }
 
   const user = useSelector((state) => state.auth.user)
-  const [userInfo, setUserInfor] = useState(user)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -264,7 +262,7 @@ function ChatGenerator({setLoading}) {
 
     // TODO : Load data from db
     // setUserInfor(userInfo)
-    const timeoutID = setTimeout(() => setHide(false), 500)
+    const timeoutID = setTimeout(() => setHide(false), 100)
 
     // return (
     //   dispatch(sidebarAction({index: null}))
