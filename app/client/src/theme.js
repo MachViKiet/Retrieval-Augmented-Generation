@@ -33,6 +33,10 @@ const theme = extendTheme(
 
           success: {
             main: '#0b8210'
+          },
+
+          bgColor: {
+            main: '#25294a'
           }
         },
       },
@@ -56,6 +60,10 @@ const theme = extendTheme(
 
           success: {
             main: '#0b8210'
+          },
+
+          bgColor: {
+            main: '#DDF3FC'
           }
         },
       },

@@ -16,10 +16,14 @@ import KnowledgeBaseConfiguration from '~/pages/Dashboard/KnowledgeBase/Knowledg
 import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/KnowledgeBaseRetrievalTesting';
 import DatasetDetail from '~/pages/Dashboard/KnowledgeBase/DatasetPage/DatasetDetail';
 import UnknowPage from '~/components/Page/UnknowPage';
-import UserProfile from '~/pages/Dashboard/UserProfile';
+import UserProfile from '~/pages/User/UserProfile';
+import { UserProfile as AdminProfile} from '~/pages/Dashboard/UserProfile';
 import UserRoute from './ProtectedRoute/UserRoute';
 import HomeLayout from '~/layouts/HomeLayout';
 import { HomePage as UserPage } from '~/pages/User/HomePage';
+import Chat from '~/pages/User/Chat';
+import FeedBack from '~/pages/User/FeedBack';
+import FAQs from '~/pages/User/FAQs';
 // Define the routes
 const router = createBrowserRouter([
   {
@@ -86,16 +90,37 @@ const router = createBrowserRouter([
       },
       {
         path: '/user_profile',
-        element: <UserProfile />,
+        element: <AdminProfile />,
       },
     ],
   },
   {
-    element: (<UserRoute><HomeLayout/></UserRoute>),
+    element: (<HomeLayout/>),
     children: [
       {
         path: '/',
         element: <UserPage />,
+      },
+      {
+        path: '/faqs',
+        element: <FAQs />,
+      },
+      {
+        path: '/profile',
+        element: <UserProfile />,
+      }
+    ]
+  },
+  {
+    element: (<HomeLayout/>),
+    children: [
+      {
+        path: '/chat',
+        element: <Chat />,
+      },
+      {
+        path: '/feedback',
+        element: <FeedBack />,
       },
     ]
   },
