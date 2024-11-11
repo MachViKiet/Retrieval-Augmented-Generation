@@ -4,9 +4,9 @@ import DashboardLayout from '~/layouts/DashboardLayout';
 import Dashboard from '~/pages/Dashboard/Dashboard';
 import SignIn from '~/pages/SignIn';
 import AdminRoute from './ProtectedRoute/AdminRoute';
-import ChatGenerator from '~/pages/Dashboard/ChatGenerator/ChatGenerator';
+import ChatGenerator from '~/pages/Dashboard/ChatGenerator';
 import GuessRoute from './GuessRoute/GuessRoute';
-import KnowledgeSpace from '~/pages/Dashboard/KnowledgeBase/KnowledgeBase';
+import KnowledgeBase from '~/pages/Dashboard/KnowledgeBase';
 import ModelsManager from '~/pages/Dashboard/ModelsManager';
 import AccountManager from '~/pages/Dashboard/AccountManager';
 import Setting from '~/pages/Dashboard/Setting';
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/knowledge_bases',
-        element: <KnowledgeSpace/>,
+        element: <KnowledgeBase/>,
       },
       {
         element: <DashboardWithSubNavLayout/>,

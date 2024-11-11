@@ -78,7 +78,6 @@ export function HomePage() {
               speed={40}
               cursor={true}
             />
-          {/* Xin chào, Mình là UniBot ! */}
          
          </Typography>
 
@@ -90,7 +89,12 @@ export function HomePage() {
             Trợ lý ảo giúp bạn giải đáp thắc mắc, tra cứu thông tin một cách nhanh chóng và chính xác nhất !
          </Typography>
 
-         <Button variant='contained' onClick={Start}>Bắt đầu Ngay</Button>
+         <Button variant='contained' sx = {{ 
+            background: theme => theme.palette.primary.main,
+            '&:hover' : {
+              boxShadow: 'var(--mui-shadows-4)'
+            }
+          }} onClick={Start}>Bắt đầu Ngay</Button>
       </Box>
 
 

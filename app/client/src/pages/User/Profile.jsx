@@ -7,7 +7,6 @@ export function Profile() {
     <Box sx = {{ 
        maxHeight: 'calc(100vh - 80px)',
        overflow: 'auto',
-      //  background: 'red',
        paddingX: 26,
        paddingY: 4
      }}>

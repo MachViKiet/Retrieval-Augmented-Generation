@@ -230,7 +230,6 @@ const theme = extendTheme(
             },
             '& fieldset': {
               borderColor: `#00000036 !important`,
-              backgroundColorL: 'red'
             },
             // '&:hover fieldset': {
             //   borderColor: `${theme.palette.primary.main} !important`,

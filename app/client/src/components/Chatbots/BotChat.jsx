@@ -2,27 +2,37 @@ import React from 'react'
 import { Typography } from '@mui/material';
 import BubbleChatLeft from '~/components/Chatbots/BubbleChatLeft';
 import ReactMarkdown from 'react-markdown';
+import { marked } from 'marked';
 
-function BotChat({message,metadata, setOpenDetail}) {
+function BotChat({message,metadata, setOpenDetail, sx}) {
+
+  const htmlContent = marked(message);
+  console.log(htmlContent)
 
   return (
     <BubbleChatLeft
+      sx = {sx?.box}
       text={
         <Typography variant='p'
-        onClick = {() => {
+          onClick = {() => {
           setOpenDetail(metadata.id)
         }} 
-          sx = {{ 
+          sx = {{
             fontSize: '0.725rem',
             color: '#000',
             whiteSpace: 'pre-line', 
             textIndent: '2px', 
             lineHeight: 'normal',
-            cursor: 'pointer' 
+            cursor: 'pointer' ,
+            ...sx?.text
           }}>
-            <ReactMarkdown>
+            {/* <ReactMarkdown>
               {message}
-            </ReactMarkdown>
+            </ReactMarkdown> */}
+          <div
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
+            style={{ whiteSpace: 'pre-line' }}
+          />
         </Typography>
       }
     />
