@@ -21,7 +21,7 @@ function LoadingBotChat({text, isHidden = false, sx = {}}) {
       text={
         <Typography variant='p' 
           sx = {{ 
-            fontSize: '0.725rem',
+            fontSize: '0.825rem',
             color: '#000',
             whiteSpace: 'pre-line', 
             textIndent: '2px', 

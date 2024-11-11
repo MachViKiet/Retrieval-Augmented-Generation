@@ -219,10 +219,6 @@ function Chat() {
   }
   const Submit = async (event) => {
     event.preventDefault();
-    // if (true) {
-    //   console.log('event is prevent')
-    //   return;
-    // }
     await ChatAction(input)
   }
 
@@ -235,20 +231,18 @@ function Chat() {
       <CircularProgress color="inherit" />
     </Backdrop>) :
     (
-    <Box sx = {{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100vw', height: '100%', paddingY: 4 }}>
+    <Box sx = {{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', paddingY: 3 }}>
       <Grid container  spacing={2} sx = {{ height: '100%' }}>
         <Grid  size={{ xs: 12 }}>
           <Block sx = {{ 
             paddingBottom: '60px !important',
-            width: '100vh',
+            width: '650px',
             backgroundImage: theme => theme.palette.mode == 'dark'? 'linear-gradient(120deg, #05122d 0%, #0b3268 100%)' 
             : 'linear-gradient(180deg, #ffffff 0%, #99c4ff 100%)',
-            // background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-            // boxShadow: 'none'
           }}>
 
             <ChatBlock sx = {{ 
-              maxHeight: 'calc(100vh - 255px)',
+              maxHeight: 'calc(100vh - 245px)',
              }}>
               <Box sx ={{ width: '100%', height: '20px' }}></Box>
 
@@ -410,7 +404,11 @@ function Chat() {
                       background: 'linear-gradient(to right, #b9afff 0%, #ffd8d8 100%) !important'
                     }
                   }} isHidden = {stream.isTyping}/>}  
-              {<Loading isLoading = {isLoading}/>}
+              {<Loading isLoading = {isLoading} sx = {{
+                box: {
+                  background: 'linear-gradient(to right, #b9afff 0%, #ffd8d8 100%) !important'
+                }
+              }}/>}
 
               <div ref={bottomRef} />
             </ChatBlock>

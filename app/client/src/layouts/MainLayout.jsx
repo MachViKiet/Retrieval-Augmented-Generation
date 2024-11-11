@@ -109,7 +109,6 @@ function MainLayout() {
       height: '100vh',
       background: theme => theme.palette.mode == 'dark' ? '#25294a' : '#DDF3FC',
       position: 'relative',
-      minHeight: '620px',
       paddingTop: '72px',
      }}>
         <Box 

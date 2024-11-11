@@ -18,12 +18,13 @@ function BotChat({message,metadata, setOpenDetail, sx}) {
           setOpenDetail(metadata.id)
         }} 
           sx = {{
-            fontSize: '0.725rem',
+            fontSize: '0.825rem',
             color: '#000',
             whiteSpace: 'pre-line', 
-            textIndent: '2px', 
+            textIndent: '1px', 
             lineHeight: 'normal',
             cursor: 'pointer' ,
+            textAlign: 'start',
             ...sx?.text
           }}>
             {/* <ReactMarkdown>
