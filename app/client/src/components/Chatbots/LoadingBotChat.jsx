@@ -4,7 +4,7 @@ import BubbleChatLeft from '~/components/Chatbots/BubbleChatLeft';
 import { motion } from "framer-motion"
 import ReactMarkdown from 'react-markdown';
 
-function LoadingBotChat({text, isHidden = false}) {
+function LoadingBotChat({text, isHidden = false, sx = {}}) {
   
   return ( 
     isHidden && 
@@ -17,17 +17,19 @@ function LoadingBotChat({text, isHidden = false}) {
     damping: 40,
   }}>
     <BubbleChatLeft
+    sx = {sx?.box}
       text={
         <Typography variant='p' 
           sx = {{ 
-            fontSize: '0.725rem',
+            fontSize: '0.825rem',
             color: '#000',
             whiteSpace: 'pre-line', 
             textIndent: '2px', 
-            lineHeight: 'normal' 
+            lineHeight: 'normal' ,
+            ...sx?.text
           }}>
             <ReactMarkdown>
-            {text}
+              {text}
             </ReactMarkdown>
         </Typography>
       }

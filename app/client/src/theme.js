@@ -33,6 +33,10 @@ const theme = extendTheme(
 
           success: {
             main: '#0b8210'
+          },
+
+          bgColor: {
+            main: '#25294a'
           }
         },
       },
@@ -56,6 +60,10 @@ const theme = extendTheme(
 
           success: {
             main: '#0b8210'
+          },
+
+          bgColor: {
+            main: '#DDF3FC'
           }
         },
       },
@@ -221,8 +229,7 @@ const theme = extendTheme(
               'WebkitTextFillColor' : 'inherit !important'
             },
             '& fieldset': {
-              borderColor: `${theme.palette.text.secondary} !important`,
-              backgroundColorL: 'red'
+              borderColor: `#00000036 !important`,
             },
             // '&:hover fieldset': {
             //   borderColor: `${theme.palette.primary.main} !important`,

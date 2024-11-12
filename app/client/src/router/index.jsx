@@ -1,12 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
 import AuthLayout from '~/layouts/AuthLayout'
 import DashboardLayout from '~/layouts/DashboardLayout';
-import HomePage from '~/pages/Dashboard/HomePage';
+import Dashboard from '~/pages/Dashboard/Dashboard';
 import SignIn from '~/pages/SignIn';
-import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
-import ChatGenerator from '~/pages/Dashboard/ChatGenerator/ChatGenerator';
+import AdminRoute from './ProtectedRoute/AdminRoute';
+import ChatGenerator from '~/pages/Dashboard/ChatGenerator';
 import GuessRoute from './GuessRoute/GuessRoute';
-import KnowledgeSpace from '~/pages/Dashboard/KnowledgeBase/KnowledgeBase';
+import KnowledgeBase from '~/pages/Dashboard/KnowledgeBase';
 import ModelsManager from '~/pages/Dashboard/ModelsManager';
 import AccountManager from '~/pages/Dashboard/AccountManager';
 import Setting from '~/pages/Dashboard/Setting';
@@ -16,10 +16,15 @@ import KnowledgeBaseConfiguration from '~/pages/Dashboard/KnowledgeBase/Knowledg
 import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/KnowledgeBaseRetrievalTesting';
 import DatasetDetail from '~/pages/Dashboard/KnowledgeBase/DatasetPage/DatasetDetail';
 import UnknowPage from '~/components/Page/UnknowPage';
-import UserProfile from '~/pages/Dashboard/UserProfile';
+import { Profile as UserProfile} from '~/pages/User/Profile';
+import { Profile as AdminProfile} from '~/pages/Dashboard/Profile';
 import UserRoute from './ProtectedRoute/UserRoute';
-import HomeLayout from '~/layouts/HomeLayout';
-import { HomePage as UserPage } from '~/pages/User/HomePage';
+import MainLayout from '~/layouts/MainLayout';
+import HomePage from '~/pages/User/HomePage';
+import Chat from '~/pages/User/Chat';
+import FeedBack from '~/pages/User/FeedBack';
+import FAQs from '~/pages/User/FAQs';
+import PublicRoute from './PublicRoute/PublicRoute';
 // Define the routes
 const router = createBrowserRouter([
   {
@@ -33,11 +38,11 @@ const router = createBrowserRouter([
   },
   {
     // Dashboard Layout for authenticated routes
-    element: (<ProtectedRoute><DashboardLayout/></ProtectedRoute>),
+    element: (<AdminRoute><DashboardLayout/></AdminRoute>),
     children: [
       {
         path: '/dashboard',
-        element: <HomePage />,
+        element: <Dashboard />,
       },
       {
         path: '/chat_generator',
@@ -45,7 +50,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/knowledge_bases',
-        element: <KnowledgeSpace/>,
+        element: <KnowledgeBase/>,
       },
       {
         element: <DashboardWithSubNavLayout/>,
@@ -85,18 +90,39 @@ const router = createBrowserRouter([
         element: <Setting />,
       },
       {
-        path: '/user_profile',
-        element: <UserProfile />,
+        path: '/admin_profile',
+        element: <AdminProfile />,
       },
     ],
   },
   {
-    element: (<UserRoute><HomeLayout/></UserRoute>),
+    element: (<PublicRoute><MainLayout/></PublicRoute>),
     children: [
       {
         path: '/',
-        element: <UserPage />,
+        element: <HomePage />,
       },
+      {
+        path: '/faqs',
+        element: <FAQs />,
+      }
+    ]
+  },
+  {
+    element: (<UserRoute><MainLayout/></UserRoute>),
+    children: [
+      {
+        path: '/chat',
+        element: <Chat />,
+      },
+      {
+        path: '/feedback',
+        element: <FeedBack />,
+      },
+      {
+        path: '/user_profile',
+        element: <UserProfile />,
+      }
     ]
   },
   {
