@@ -226,14 +226,18 @@ def compile_filter_expression(metadata, loaded_collections: list):
         for s in schema:
             short_schema[s['name']] = s['type']
         for attr, val in metadata.items():
-            if val is None or val == "":
+            if val is None or val == "" or val == []: #Skip empty values
                 continue
+            meta_type = short_schema.get(attr, -1)
+            if meta_type == -1:
+                continue
+
             if short_schema[attr] == DataType.INT8 | DataType.INT16 | DataType.INT32 | DataType.INT64 | DataType.FLOAT: #integer
                 expressions[c] += attr + ' == ' + val + " || "
             elif short_schema[attr] == DataType.VARCHAR:
                 expressions[c] += attr + f' == "{val}"' + " || "
             elif short_schema[attr] == DataType.ARRAY:
-                expressions[c] += "array_contains_any({attr}, [{val}]) || "
+                expressions[c] += f"array_contains_any({attr}, {val}) || "
         # Reformat
         expressions[c] = expressions[c].removesuffix(' || ')
     return expressions
@@ -268,6 +272,11 @@ Answer:
     result = model.model.generate_text(full_prompt)
     try:
         result = json.loads(result)
+        for k, v in result.items():
+            if type(v) is str:
+                result[k] = v.lower()
+            elif type(v) is list:
+                result[k] = [x.lower() for x in v]
     except json.JSONDecodeError: #Wrong format
         print("Metadata Extraction: Couldn't decode JSON - " + result)
         result = -1
@@ -275,8 +284,17 @@ Answer:
 
 def get_document(filename, collection_name):
     '''Get metadata from a file'''
-    results = Collection(collection_name).query(
+    results = {}
+    search_results = Collection(collection_name).query(
         expr=f"title == '{filename}'",
-        output_fields=['title','article'],
-        top_k=1
+        output_fields=['article', 'chunk_id'],
     )
+    for r in search_results:
+                results[r.entity.get('chunk_id')] = r.entity
+    if len(results) == 0: #No matching documents
+        return -1
+    #Sort by distance and return only k results
+    myKeys = list(results.keys())
+    myKeys.sort()
+    sorted_list = [results[i].get('article') for i in myKeys]
+    return sorted_list
