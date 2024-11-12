@@ -41,7 +41,10 @@ class ChatModel:
 Always answer in Vietnamese, make sure the entire answer is in Vietnamese. At the end, provide the source you used for your answers (ie. title, page number (if available)).\
 Write the answer in markdown format. Use headings to make the answer more readable. Do not write many consecutive paragraphs without headings.\
 Do not add consecutive newlines.
-Context: {context}.
+Context (encased in backticks): 
+```
+{context}
+```
 Query: {question}
 Answer: 
 """
