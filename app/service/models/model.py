@@ -39,7 +39,8 @@ class ChatModel:
         else:
             prompt = f"""You are a chatbot assistant providing answers to students and faculty members of a university. Using the information contained in the context, give a detailed answer to the query. If there is no information in the context to support your answer, say so.
 Always answer in Vietnamese, make sure the entire answer is in Vietnamese. At the end, provide the source you used for your answers (ie. title, page number (if available)).\
-Give the answer in markdown format. Use headings and titles (if applicable) to make the answer more readable.
+Write the answer in markdown format. Use headings to make the answer more readable. Do not write many consecutive paragraphs without headings.\
+Do not add consecutive newlines.
 Context: {context}.
 Query: {question}
 Answer: 
