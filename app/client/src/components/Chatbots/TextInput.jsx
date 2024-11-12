@@ -47,7 +47,7 @@ const ExtensionBox = styled(Box)(({theme}) => ({
   // borderBottom: 'none'
 }))
 
-const TextInputBox = styled(Box)(({theme}) => ({
+export const TextInputBox = styled(Box)(({theme}) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -58,7 +58,7 @@ const TextInputBox = styled(Box)(({theme}) => ({
   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)'
 }))
 
-function TextInput({id,handleClick, handleSubmit}) {
+export function TextInput({id,handleClick, handleSubmit}) {
   const [input, setInput] = useState('')
   const {mode} = useColorScheme()
 
@@ -69,10 +69,6 @@ function TextInput({id,handleClick, handleSubmit}) {
 
   const Submit = async (event) => {
     event.preventDefault();
-    // if (true) {
-    //   console.log('event is prevent')
-    //   return;
-    // }
     await handleSubmit(input)
   }
 
@@ -161,5 +157,4 @@ function TextInput({id,handleClick, handleSubmit}) {
   </ChatBox>
   )
 }
-
 export default TextInput

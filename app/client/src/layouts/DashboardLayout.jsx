@@ -150,7 +150,6 @@ function DashboardLayout() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { mode, setMode } = useColorScheme();
-  const [loading, setLoading] = useState(true)
   const selectedIndexInitial = useSelector((state) => state.navigate.dashboard?.index ? state.navigate.dashboard.index : null);
   const user_profile = useSelector((state) => state.auth.user ? state.auth.user : {});
   const [selectedIndex, setSelectedIndex] = useState(selectedIndexInitial)
@@ -169,7 +168,7 @@ function DashboardLayout() {
   const logoutClick = (e) => {
     e.stopPropagation()
     dispatch(logout())
-    navigate('/signin')
+    navigate('/')
   }
 
   const expandClick = () => {
@@ -248,7 +247,7 @@ function DashboardLayout() {
               transform: 'scale(0.9)'
             }
            }}
-           onClick= {() => navigate('/user_profile')}>
+           onClick= {() => navigate('/admin_profile')}>
               <Avatar 
               src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
               sx={{ width: 32, height: 32, bgcolor: deepOrange[500], color: '#fff' }}></Avatar>

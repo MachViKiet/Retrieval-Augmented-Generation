@@ -21,7 +21,7 @@ function UserChat({ message}) {
             textIndent: '2px', 
             wordWrap: 'break-word' ,
             color:'#fff',
-            fontSize:'0.725rem'
+            fontSize:'0.825rem'
         }}>
             {message}
         </Typography>

@@ -5,15 +5,16 @@ import LoadingDot from '~/components/LoadingDot'
 import CheckIcon from '@mui/icons-material/Check';
 import { motion } from "framer-motion"
 
-function Loading({isLoading}) {
+function Loading({isLoading, sx = {}}) {
   return (
     isLoading.state && <>
       <BubbleChatLeft
+      sx = {sx?.box}
       text={
         <>
           {/* <LoadingDot/> */}
           <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-            <Typography variant='p' sx = {{  fontSize: '0.725rem', color: '#000' }}>Đang tìm kiếm</Typography>
+            <Typography variant='p' sx = {{  fontSize: '0.825rem', color: '#000' }}>Đang tìm kiếm</Typography>
           <LoadingDot/>
           </Box>
 

@@ -48,11 +48,11 @@ const BubbleChatEffect = () => (
   </> 
 )
 
-function BubbleChatLeft({text, noBubble = false}) {
+function BubbleChatLeft({text, noBubble = false, sx = {}}) {
   return (
     <MessageChat>
         <Avatar alt="Remy Sharp" src="https://ouch-cdn2.icons8.com/5d_N4vqenhj0NUReyP1FgsShuxiNde_3l6lL7-FxQ3I/rs:fit:368:343/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9zdmcvOTE5/LzExODljMWUzLWVj/YzUtNGQ5Ni04MjU5/LTE5Zjg1Y2Q5ZWRm/NC5zdmc.png" />
-        <BubbleChat>
+        <BubbleChat sx = {sx}>
             {!noBubble && <BubbleChatEffect/> }
             {text}
         </BubbleChat>

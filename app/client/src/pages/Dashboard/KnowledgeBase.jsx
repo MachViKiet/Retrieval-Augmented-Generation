@@ -7,7 +7,9 @@ import { navigate as sidebarAction } from '~/store/actions/navigateActions'
 import { Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
+import { useNavigate } from 'react-router-dom'
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.mode == 'dark' ? '#3b416f' : theme.palette.primary.main,
@@ -23,9 +25,6 @@ const Header = styled(Box) (({theme}) => ({
 }))
 
 // 'recruitment', 'timetable', 'scholarship', 'academic_affairs', 'events'
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
-import { useNavigate } from 'react-router-dom'
 function KnowledgeBase() {
 
   const PARENT_DIRECTION = '/knowledge_bases'

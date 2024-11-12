@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Backdrop, Box, Button, CircularProgress, Typography } from '@mui/material';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import TextInput from '~/components/Chatbots/TextInput';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
@@ -8,15 +8,17 @@ import Block from '~/components/Block';
 import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
 import { useDispatch, useSelector } from 'react-redux';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
-import BotChat from './components/BotChat';
-import UserChat from './components/UserChat';
-import Loading from './components/Loading';
+import BotChat from '~/components/Chatbots/BotChat';
+import UserChat from '~/components/Chatbots/UserChat';
+import Loading from '~/components/Chatbots/Loading';
 import KHTNGenerativeAI from '~/services/KHTNGenerativeAI';
-import LoadingBotChat from './components/LoadingBotChat';
+import LoadingBotChat from '~/components/Chatbots/LoadingBotChat';
 import ViewStreamIcon from '@mui/icons-material/ViewStream';
 import AssuredWorkloadOutlinedIcon from '@mui/icons-material/AssuredWorkloadOutlined';
-import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined';
 import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlined';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import { GetURLFromMarkdown } from '~/utils/GetURLFromMarkdown';
+
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -31,68 +33,9 @@ const Header = styled(Box) (({theme}) => ({
   paddingLeft: theme.spacing(4),
 }))
 
-const Overlayer = styled(Box) (() => ({
-  background: '#0000008c',
-  height: '100%',
-  width: '100%',
-  right: 0,
-  borderRadius: '15px',
-  position: 'absolute',
-  transform: 'scale(1)',
-  transition: '0.5s all ease', 
-  zIndex: 5,
-  display: 'none'
-}))
-
 const History = []
-const RecommendationQuestion = [[
-  {
-    "id" : 342324,
-    "message": "Tôi có thể tra cứu điểm và bảng điểm ở đâu?"
-  },
-  {
-    "id" : 342324,
-    "message": "Lịch học của kỳ này được công bố ở đâu?"
-  },
-  {
-    "id" : 342324,
-    "message": "Tôi cần đăng ký môn học ở đâu và vào thời gian nào?"
-  },
-  {
-    "id" : 342324,
-    "message": "Quy định về tín chỉ tối thiểu và tối đa mỗi kỳ là bao nhiêu?"
-  }], 
-  [
-    {
-      "id" : 342324,
-      "message": "Làm thế nào để đăng ký thẻ thư viện?"
-    },
-    {
-      "id" : 342324,
-      "message": "Tôi có thể mượn sách ở thư viện như thế nào?"
-    },
-    {
-      "id" : 342324,
-      "message": "Địa điểm và thời gian mở cửa của thư viện là gì?"
-    }], 
-  [
-    {
-      "id" : 342324,
-      "message": "Thông tin học bổng năm 2024"
-    },
-    {
-      "id" : 342324,
-      "message": "Có những học bổng nào dành cho tân sinh viên?"
-    }],
-  [
-    {
-      "id" : 342324,
-      "message": "Wifi phòng học của trường KHTN là gì?"
-    },
-  ]
-]
 
-function ChatGenerator({setLoading}) {
+function ChatGenerator() {
   const dispatch = useDispatch()
   const [Conservation, setConservation] = useState([])
   const [isLoading, setIsLoading] = useState({
@@ -209,7 +152,7 @@ function ChatGenerator({setLoading}) {
         setConservation(Conservation => [...Conservation,{
           "id": Math.floor(10000 + Math.random() * 900000),
           "role": "bot",
-          "message": finalResponse,
+          "message": GetURLFromMarkdown(finalResponse),
           "information" : {
             "context" : context,
             "filter_expressions" : filter_expressions,
@@ -252,7 +195,6 @@ function ChatGenerator({setLoading}) {
   }
 
   const user = useSelector((state) => state.auth.user)
-  const [userInfo, setUserInfor] = useState(user)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -264,7 +206,7 @@ function ChatGenerator({setLoading}) {
 
     // TODO : Load data from db
     // setUserInfor(userInfo)
-    const timeoutID = setTimeout(() => setHide(false), 500)
+    const timeoutID = setTimeout(() => setHide(false), 100)
 
     // return (
     //   dispatch(sidebarAction({index: null}))
@@ -300,19 +242,21 @@ function ChatGenerator({setLoading}) {
               fontWeight: '900',
              }}>Chatbot Trợ Lý Sinh Viên</Typography>
           </Header>
+
           <ChatBlock>
             <Box sx ={{ width: '100%', height: '20px' }}></Box>
             {Conservation.length === 0 && <Box>
               <Typography variant='h2' sx = {{ 
-                fontSize: '1.5rem',
+                fontSize: '2rem',
                 width: 'fit-content',
                 paddingBottom: 0.5,
                 fontWeight: '900',
                 background: 'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%)',
                 color: 'transparent',
                 backgroundSize: '400% 100%',
-                WebkitBackgroundClip : 'text'
-               }}>Xin Chào bạn, {user?.name} !</Typography>
+                WebkitBackgroundClip : 'text',
+                textAlign: 'start'
+               }}>Xin Chào Bạn, {user?.name} !</Typography>
               <Typography variant='h3' sx = {{ 
                 fontSize: '1.5rem',
                 marginBottom: 2,
@@ -323,90 +267,104 @@ function ChatGenerator({setLoading}) {
                }}>Tôi có thể giúp gì hôm nay?</Typography>
 
               <Box sx = {{ display: 'flex', gap: 1, minWidth: '500px', overflow: 'auto', marginBottom: 2 }}>
-                <Button key = '13414' sx = {(theme) => ({ 
-                  width: 'fit-content',
-                  background: theme.palette.primary.third,
-                  color: theme.palette.text.secondary,
-                  marginBottom: 1,
-                  textAlign: 'left',
-                  paddingX: 1.5,
-                  borderRadius: '10px'
-                  })}
-                  startIcon= {<ContactSupportOutlinedIcon/>}
-                  onClick = {async () => {
-                    handleClick('Danh Sách Học Bổng Mới Nhất 2024'),
-                    await ChatAction('Danh Sách Học Bổng Mới Nhất 2024')
-                  }}>
-                    <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
-                      Giới Thiệu Khoa
-                    </Typography>
-                </Button>
-
-                <Button key = '13414' sx = {(theme) => ({ 
-                  width: 'fit-content',
-                  background: theme.palette.primary.third,
-                  color: theme.palette.text.secondary,
-                  marginBottom: 1,
-                  textAlign: 'left',
-                  paddingX: 1.5,
-                  borderRadius: '10px'
-                  })}
-                  startIcon= {<ViewStreamIcon/>}
-                  onClick = {async () => {
-                    handleClick('Danh Sách Học Bổng Mới Nhất 2024'),
-                    await ChatAction('Danh Sách Học Bổng Mới Nhất 2024')
-                  }}>
-                    <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
-                      Nội Quy Trường Học
-                    </Typography>
-                </Button>
-
-                <Button key = '13414' sx = {(theme) => ({ 
-                  width: 'fit-content',
-                  background: theme.palette.primary.third,
-                  color: theme.palette.text.secondary,
-                  marginBottom: 1,
-                  textAlign: 'left',
-                  paddingX: 1.5,
-                  borderRadius: '10px'
-                  })}
-                  startIcon= {<AssuredWorkloadOutlinedIcon/>}
-                  onClick = {async () => {
-                    handleClick('Danh Sách Học Bổng Mới Nhất 2024'),
-                    await ChatAction('Danh Sách Học Bổng Mới Nhất 2024')
-                  }}>
-                    <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
-                      Chính Sách Học Bổng
-                    </Typography>
-                </Button>
-              </Box>
-
-              {RecommendationQuestion.map((questions, index) => (
-                <Box sx = {{ marginBottom: 4 }}>
-                  {
-                    questions.map((question, index) => (
-                      <Button key = {question.id} sx = {(theme) => ({ 
-                        display: 'block',
+                {
+                  [{
+                    id: '12314',
+                    key: 'Giới Thiệu Khoa',
+                    icon: <ViewStreamIcon/>,
+                    question: 'Giới Thiệu Khoa Công Nghệ thông Tin'
+                  },{
+                    id: '12315',
+                    key: 'Nội Quy Trường Học',
+                    icon: <ContactSupportOutlinedIcon/>,
+                    question: 'Khái quát nội quy trường học Khoa Học Tự Nhiên'
+                  },{
+                    id: '12316',
+                    key: 'Chính Sách Học Bổng',
+                    icon: <AssuredWorkloadOutlinedIcon/>,
+                    question: 'Chính Sách Học Bổng Mới Nhất 2024'
+                  }].map((data) => {
+                    return (
+                      <Button key = {data.id} sx = {(theme) => ({ 
                         width: 'fit-content',
-                        background: theme.palette.primary.third,
-                        color: theme.palette.text.secondary,
+                        // background: theme.palette.primary.third,
+                        backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(135deg, #1c203e 0%, #42487e 100%)' 
+                        : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
+                        color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#e2e3ff',
+                        // color: theme.palette.text.secondary,
                         marginBottom: 1,
                         textAlign: 'left',
                         paddingX: 1.5,
-                        borderRadius: '10px'
+                        borderRadius: '10px',
+                        boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 1px 2px rgba(80, 80, 80, 0.1)',
+                        "&:hover": {
+                          backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(135deg, #1c203e 20%, #42487e 100%)' 
+                          : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
+                          color: '#fff'
+                        }
+
                         })}
+                        startIcon= {data.icon}
                         onClick = {async () => {
-                          handleClick(question.message),
-                          await ChatAction(question.message)
+                          handleClick(data.question),
+                          await ChatAction(data.question)
                         }}>
-                        <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
-                          {question.message}
-                        </Typography>
+                          <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
+                            {data.key}
+                          </Typography>
                       </Button>
-                    ))
-                  }
-                </Box>
-              ))}
+                    )
+                  })
+                }
+              </Box>
+
+              {/* <Box sx = {{ 
+                display: 'flex',
+                gap: 2
+               }}> */}
+               <Grid container  spacing={2} sx = {{ width: 'fit-content' }}>
+                {['Cho tôi biết danh sách học bổng khuyến học mới nhất',
+                'Wifi phòng học của trường KHTN là gì?',
+                'Tôi có thể tra cứu điểm và bảng điểm ở đâu?'].map((question, index) => {
+                  return (
+                    <Grid  size={{ xs: 5 , md: 4}}  key = {index}>
+                      <Box sx = {{ 
+                        height: '180px',
+                        width: '180px',
+                        borderRadius: '10px',
+                        backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(135deg, #1c203e 0%, #42487e 100%)' 
+                        : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
+                        padding: 2,
+                        position: 'relative',
+                        textAlign: 'start',
+                        color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#e2e3ff',
+                        boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          color: '#fff'
+                        },
+                        '&:active': {
+                          transform: 'scale(0.9)'
+                        }
+                      }} onClick = {async () => {
+                        handleClick(question),
+                        await ChatAction(question)
+                      }}>
+                        {index + 1}{'. '}{question}
+
+                        <span style={{ 
+                          position: 'absolute',
+                          bottom: '16px',
+                          right: '16px'
+                         }}>
+                          <TipsAndUpdatesOutlinedIcon/>
+                         </span>
+                      </Box>
+                     </Grid>
+                  )
+                })}
+                </Grid>
+              {/* </Box> */}
 
               <Box sx ={{ width: '100%', height: '20px' }}></Box>  
             </Box>
@@ -439,6 +397,7 @@ function ChatGenerator({setLoading}) {
 
             <div ref={bottomRef} />
           </ChatBlock>
+          
           <TextInput
             handleClick = {handleClick}
             handleSubmit = {ChatAction}

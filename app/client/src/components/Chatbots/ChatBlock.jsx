@@ -1,13 +1,14 @@
 import { Box } from '@mui/material'
 import React from 'react'
 
-function ChatBlock({children}) {
+function ChatBlock({children, sx = {}}) {
   return (
     <Box sx = {{ 
         height: '100%',
         position: 'relative',
         maxHeight: 'calc(100vh - 225px)',
-        overflow: 'auto'
+        overflow: 'auto',
+        ...sx
      }}>
         <Box sx = {{ 
             position: 'relative',

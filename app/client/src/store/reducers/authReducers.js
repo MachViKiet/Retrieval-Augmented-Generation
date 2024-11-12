@@ -16,11 +16,6 @@ const authReducer = (state = initialState, action) => {
         ...action.payload,
       };
     case REFRESH: 
-      console.log({
-        ...state,
-        loggedIn: true,
-        ...action.payload,
-      })
       return {
         ...state,
         loggedIn: true,

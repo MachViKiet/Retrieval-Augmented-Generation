@@ -8,7 +8,6 @@ import { renderTableAction } from '~/components/MuiTable/MuiTableAction';
 import { renderLink } from '~/components/MuiTable/cell-renderers/link';
 import { Box, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import Snackbar from '@mui/material/Snackbar';
 import DatasetsUpload from './DatasetsUpload';
 
 const DIRECTION = '/knowledge_bases/student_handbook/dataset'
