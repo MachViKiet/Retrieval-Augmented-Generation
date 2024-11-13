@@ -289,11 +289,9 @@ function Chat() {
                         return (
                           <Button key = {data.id} sx = {(theme) => ({ 
                             width: 'fit-content',
-                            // background: theme.palette.primary.third,
-                            backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(135deg, #1c203e 0%, #42487e 100%)' 
+                            backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(180deg, #1c203e 0%, #42487e 100%)' 
                             : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                            // color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#e2e3ff',
-                            color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#00000057',
+                            color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '##000000a3',
                             marginBottom: 1,
                             textAlign: 'left',
                             paddingX: 1.5,
@@ -335,7 +333,7 @@ function Chat() {
                             padding: 2,
                             position: 'relative',
                             textAlign: 'start',
-                            color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#00000057',
+                            color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#000000a3',
                             boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
                             cursor: 'pointer',
                             '&:hover': {

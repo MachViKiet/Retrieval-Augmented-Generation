@@ -6,31 +6,17 @@ const requireAuth = passport.authenticate('jwt', {
   session: false
 })
 const trimRequest = require('trim-request')
-
 const { roleAuthorization } = require('~/controllers/auth')
 
-const {
-  getProfile,
-  updateProfile
-} = require('~/controllers/profile')
+const { getMessages } = require('~/controllers/conservation')
 
-const { validateUpdateProfile } = require('~/controllers/profile/validators')
 
 router.get(
-  '/',
+  '/chat',
   requireAuth,
   roleAuthorization(['user', 'administrator', 'student', 'researcher']),
   trimRequest.all,
-  getProfile
-)
-
-router.patch(
-  '/',
-  requireAuth,
-  roleAuthorization(['user', 'administrator', 'student', 'researcher']),
-  trimRequest.all,
-  validateUpdateProfile,
-  updateProfile
+  getMessages
 )
 
 module.exports = router

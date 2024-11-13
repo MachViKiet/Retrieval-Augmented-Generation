@@ -4,7 +4,10 @@
   "scripts": {
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\""
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "concurrently \"npm run build:client\" \"npm run build:server\""
   },
   "dependencies": {},
   "devDependencies": {
