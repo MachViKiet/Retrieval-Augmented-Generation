@@ -2,7 +2,7 @@
 /**
  * Updated by Mach Vi Kiet's author on November 3 2024
  */
-import './app'
+require('module-alias/register')
 const http = require('http')
 const initMongo = require('./config/mongodb')
 const app = require('./app.js')

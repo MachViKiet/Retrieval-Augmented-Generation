@@ -1,3 +1,3 @@
-// import app from '../src/server'
-const app = require('../src/server')
+import app from '../src/server'
+
 export default app
