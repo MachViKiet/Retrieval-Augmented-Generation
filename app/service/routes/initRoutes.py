@@ -66,7 +66,8 @@ def extract_metadata():
     query = request.args.get('query')
     chosen_collection = request.args.get('chosen_collection')
     schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
-    extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
+    #extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
+    extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
     if extracted_metadata != -1: #No metadata found
         filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
     else:
@@ -115,3 +116,17 @@ def generate():
         return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
     else:
         return jsonify({'answer': answer})
+
+@main.route("/get_file", methods=["GET","POST"])
+@cross_origin()
+def get_file():
+    ##PARAMS
+    if request.method == 'POST':
+        filename = request.form['filename']
+        collection_name = request.form['collection_name']
+    elif request.method == 'GET':
+        filename = request.args.get['filename'] 
+        collection_name = request.args.get['collection_name']
+    #-------------------------------------------
+    chunks = rag_utils.get_document(filename, collection_name)
+    return jsonify(chunks)
