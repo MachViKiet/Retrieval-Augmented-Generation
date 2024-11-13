@@ -12,9 +12,9 @@ dist
 dist-ssr
 *.local
 
+server/.env
 client/.env
-client/.env
-client/.env
+.env
 server/__pycache__
 
 **/package-lock.json

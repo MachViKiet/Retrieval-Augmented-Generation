@@ -1,12 +1,13 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-require('dotenv').config()
 
 const morgan = require('morgan')
 const cors = require('cors')
 
 const path = require('path')
 const app = express()
+
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
