@@ -22,7 +22,7 @@ app.use(
 
 // Init all other stuff
 app.use(cors())
-app.use(require('~/routes/v1').default)
+app.use(require('../routes/v1').default)
 app.set('views', path.join(__dirname, 'views'))
 app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'html')
