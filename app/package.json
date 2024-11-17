@@ -9,7 +9,6 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build": "concurrently \"npm run build:client\" \"npm run build:server\""
   },
-  "dependencies": {},
   "devDependencies": {
     "concurrently": "^9.1.0"
   }

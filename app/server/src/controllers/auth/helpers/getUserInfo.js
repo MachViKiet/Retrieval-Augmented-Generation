@@ -10,13 +10,6 @@ const getUserInfo = (req = {}) => {
     role: req.role
   }
 
-  // if (process.env.NODE_ENV !== 'production') {
-  //   user = {
-  //     ...user,
-  //     verification: req.verification
-  //   }
-  // }
-
   return user
 }
 

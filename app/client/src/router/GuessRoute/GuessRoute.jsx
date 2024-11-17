@@ -5,16 +5,14 @@ import { refresh } from '~/store/actions/authActions';
 
 const GuessRoute = ({ children }) => {
 
-  const dispatch = useDispatch()
+  const auth = useSelector((state) => state.auth)
 
-  const accessToken = sessionStorage.getItem('accessToken');
-  const user_profile = JSON.parse(sessionStorage.getItem('userProfile'));
-
-  if(!accessToken || !user_profile) {
+  if(!auth.loggedIn) {
     return children
   }
 
-  dispatch(refresh(accessToken, user_profile))
+  const user_profile = auth.user
+
   if(user_profile?.role && ['administrator', 'academic_administration'].includes(user_profile.role)){
       return <Navigate to="/dashboard" />;
   }

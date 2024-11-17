@@ -1,6 +1,6 @@
 import { Router } from 'express'
+require('~/config/passport')
 const router = Router()
-
 /*
  * Load routes statically and/or dynamically
  */

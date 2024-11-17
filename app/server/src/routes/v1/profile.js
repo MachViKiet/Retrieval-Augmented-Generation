@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-require('~/config/passport')
 const passport = require('passport')
 const requireAuth = passport.authenticate('jwt', {
   session: false
@@ -11,7 +10,8 @@ const { roleAuthorization } = require('~/controllers/auth')
 
 const {
   getProfile,
-  updateProfile
+  updateProfile,
+  verifyToken
 } = require('~/controllers/profile')
 
 const { validateUpdateProfile } = require('~/controllers/profile/validators')
@@ -23,6 +23,8 @@ router.get(
   trimRequest.all,
   getProfile
 )
+
+router.get('/verifyToken', requireAuth, trimRequest.all, verifyToken)
 
 router.patch(
   '/',

@@ -1,26 +1,19 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import UnknowPage from '~/components/Page/UnknowPage';
-import { refresh } from '~/store/actions/authActions';
 
 const UserRoute = ({ children }) => {
-  const dispatch = useDispatch()
 
-  const accessToken = sessionStorage.getItem('accessToken');
-  const user_profile = JSON.parse(sessionStorage.getItem('userProfile'));
-
-  if (!accessToken || !user_profile) {
+  const auth = useSelector((state) => state.auth)
+  if (!auth.loggedIn) {
     return <Navigate to="/signin" />;
   }
 
-  if(!useSelector((state) => state.auth.user) || !useSelector((state) => state.auth.token)){
-    // 'administrator', 'academic_administration'
-    if(user_profile?.role && !(['administrator', 'academic_administration', 'student', 'researcher'].includes(user_profile.role))){
-      return <UnknowPage/>;
-    }
+  const user_profile = auth.user
 
-    dispatch(refresh(accessToken, user_profile))
+  if(user_profile?.role && !(['administrator', 'academic_administration', 'student', 'researcher'].includes(user_profile.role))){
+    return <UnknowPage/>;
   }
 
   return children;

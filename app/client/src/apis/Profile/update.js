@@ -22,8 +22,6 @@ export const update = async (data, token = null) => {
 			return response.json()
 		})
 		.then(data => {
-			const user_profile = sessionStorage.getItem('userProfile')
-			sessionStorage.setItem('userProfile', JSON.stringify({ ...JSON.parse(user_profile), "name": data?.name, "role": data?.role, "email" : data?.email}))
 			return data
 		})
 		.catch((err) => {

@@ -101,6 +101,7 @@ function MainLayout() {
 
   const logoutClick = (e) => {
     dispatch(logout())
+    navigate('/')
   }
 
   return (
