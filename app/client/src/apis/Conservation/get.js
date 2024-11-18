@@ -1,15 +1,14 @@
 const domain = import.meta.env.VITE_SERVER
 
-export const update = async (data, token = null) => {
-	const url = `${domain}/`;
+export const get = async (token = null) => {
+	const url = `${domain}/chatSession`;
 	console.log(url)
 	const structure = {
-		method: 'PATCH',
+		method: 'GET',
 		headers: {
-		  'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-		},
-      body: JSON.stringify(data)
+		    'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+		}
 	  }
 
 	const res = await fetch(url, structure)

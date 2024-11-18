@@ -2,8 +2,8 @@ import React from 'react'
 import { motion } from "framer-motion"
 import ReactMarkdown from 'react-markdown';
 import { BubbleLeft } from '../MessageEffect/BubbleLeft';
-import { ChatMessage } from './ChatDisplay';
-import { Avatar } from '@mui/material';
+import { ChatMessage, ChatDisplay_Style } from './ChatDisplay';
+import { Avatar, Box } from '@mui/material';
 
 function UserTypingMessageBlock({messageHandler, sx = {}}) {
   return ( messageHandler?.stream_state && 
@@ -29,25 +29,6 @@ function UserTypingMessageBlock({messageHandler, sx = {}}) {
           </ChatMessage>
           <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
         </Box>
-
-      {/* <BubbleChatLeft
-        sx = {sx?.box}
-        text={
-          <Typography variant='p' 
-            sx = {{ 
-              fontSize: '0.825rem',
-              color: '#000',
-              whiteSpace: 'pre-line', 
-              textIndent: '2px', 
-              lineHeight: 'normal' ,
-              ...sx?.text
-            }}>
-              <ReactMarkdown>
-                {messageHandler?.stream_message}
-              </ReactMarkdown>
-          </Typography>
-        }
-      /> */}
     </motion.div>
   )
 }

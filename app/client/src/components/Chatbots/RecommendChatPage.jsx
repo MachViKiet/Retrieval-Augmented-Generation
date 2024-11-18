@@ -15,7 +15,6 @@ const Container_Style = {
 export function RecommendChatPage({ 
     bgcolor = null, 
     username = null, 
-    handleClick = null, 
     ChatAction = null
 }) {
     
@@ -78,7 +77,6 @@ export function RecommendChatPage({
                 })}
                 startIcon= {data.icon}
                 onClick = {async () => {
-                    handleClick && handleClick(data.question),
                     ChatAction && await ChatAction(data.question)
                 }}>
                     <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
@@ -119,8 +117,7 @@ export function RecommendChatPage({
                     transform: 'scale(0.9)'
                 }
                 }} onClick = {async () => {
-                handleClick(question),
-                await ChatAction(question)
+                    ChatAction && await ChatAction(question)
                 }}>
                 {index + 1}{'. '}{question}
 

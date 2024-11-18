@@ -1,15 +1,15 @@
 const domain = import.meta.env.VITE_SERVER
 
-export const update = async (data, token = null) => {
-	const url = `${domain}/`;
+export const remove = async (data = null ,token = null) => {
+	const url = `${domain}/removeChat`;
 	console.log(url)
 	const structure = {
-		method: 'PATCH',
+		method: 'DELETE',
 		headers: {
-		  'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+		    'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
 		},
-      body: JSON.stringify(data)
+        body: JSON.stringify(data)
 	  }
 
 	const res = await fetch(url, structure)
@@ -25,6 +25,7 @@ export const update = async (data, token = null) => {
 			return data
 		})
 		.catch((err) => {
+			console.log(err)
 			if(typeof(err) == "object"){
 				throw 'ERR_CONNECTION_REFUSED'
 			}

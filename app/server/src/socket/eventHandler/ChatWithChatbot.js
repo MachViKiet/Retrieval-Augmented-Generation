@@ -3,26 +3,32 @@
  */
 
 import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot'
+import { saveConservationToDB } from '~/controllers/conservation/helper/saveConservationToDB'
 import { getTime } from '~/utils/getTime'
 const { ObjectId } = require('mongodb')
 
 const chatbot = useKHTN_Chatbot()
 
-export const ChatWithChatBot = (socket) => {
-  socket.on('/ChatWithChatBot', async (message) => {
+export const ChatWithChatBot = async (socket) => {
+  socket.on('/ChatWithChatBot', async (req) => {
 
     const startTime = (new Date()).getTime()
     const message_id = new ObjectId()
+    const message = req.message
+    const current_session = req?.chat_session
 
-    socket.emit('/ChatWithChatBot/userMessage', {
+    const objectConservation = {
       '_id': message_id,
       'sender': socket.user._id,
+      'session_id': current_session,
       'question': message,
       'anwser': null,
       'state': 'in progress',
       'create_at': getTime(),
-      'duration': startTime - new Date().getTime()
-    })
+      'duration': null
+    }
+
+    socket.emit('/ChatWithChatBot/userMessage', objectConservation)
 
     try {
 
@@ -147,6 +153,12 @@ export const ChatWithChatBot = (socket) => {
         state: true,
         data: null,
         duration: end_point_4 - start_point_4
+      }, {
+        step_name: 'streaming',
+        notice: 'Đang soạn',
+        state: false,
+        data: null,
+        duration: null
       }])
 
       socket.emit('/ChatWithChatBot/Processed', {
@@ -180,28 +192,27 @@ export const ChatWithChatBot = (socket) => {
         stream_message: result
       })
 
-      socket.emit('/ChatWithChatBot/EndProcess', {
-        '_id': message_id,
-        'sender': socket.user._id,
-        'question': message,
+      const history = {
+        ...objectConservation,
         'anwser': result,
         'state': 'success',
-        'create_at': getTime(),
+        'update_at': getTime(),
         'duration': startTime - new Date().getTime()
-      })
+      }
+
+      await saveConservationToDB(history)
+
+      socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
 
       socket.emit('/ChatWithChatBot/EndProcess', {
-        '_id': message_id,
-        'sender': socket.user._id,
-        'question': message,
-        'anwser': 'Hệ thống Chatbot hiện không hoạt động !',
+        ...objectConservation,
+        'anwser': error.message, //'Hệ thống Chatbot hiện không hoạt động !',
         'state': 'success',
-        'create_at': getTime(),
+        'update_at': getTime(),
         'duration': startTime - new Date().getTime()
       })
-
     }
   })
 

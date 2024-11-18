@@ -1,9 +1,7 @@
-import { BorderColor } from "@mui/icons-material";
-// import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
-import shadows from "@mui/material/styles/shadows";
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 import { viVN } from "@mui/x-data-grid/locales";
 const SIDEBAR_WIDTH = "220px";
-import { extendTheme } from "@mui/material/styles";
+// import { extendTheme } from "@mui/material/styles";
 
 // Create a theme instance.
 const theme = extendTheme(
@@ -38,13 +36,14 @@ const theme = extendTheme(
           bgColor: {
             main: '#25294a'
           }
+
         },
       },
       dark: {
         palette: {
           primary: {
             main: "#2d325a",
-            secondary: "#25294c", //"#32344d",
+            secondary: "#25294c",
             third: "#4c5679",
             light: "red",
             dark: "#0e2c4f",
@@ -65,8 +64,9 @@ const theme = extendTheme(
           bgColor: {
             main: '#DDF3FC'
           }
+
         },
-      },
+      }
     },
     components: {
       MuiCssBaseline: {
@@ -231,15 +231,8 @@ const theme = extendTheme(
             '& fieldset': {
               borderColor: `#00000036 !important`,
             },
-            // '&:hover fieldset': {
-            //   borderColor: `${theme.palette.primary.main} !important`,
-            // },
-
-            // '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            //   borderColor: `${theme.palette.primary.main} `,
-            // },
             '&.Mui-focused fieldset': {
-              // borderColor: 'yellow !important',
+
             },
           })
         },
@@ -253,6 +246,14 @@ const theme = extendTheme(
           },
         },
       },
+
+      MuiPaper: {
+        styleOverrides: {
+          root: ({theme}) => ({
+            backgroundColor: theme.palette.primary.background,
+          })
+        },
+      }
     },
     // ...other properties
   },

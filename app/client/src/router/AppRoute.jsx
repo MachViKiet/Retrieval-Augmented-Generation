@@ -10,7 +10,7 @@ function AppRoute({children}) {
   const dispatch = useDispatch()
 
   const [isProcess, setIsProcess] = useState(true)
-  console.log(token)
+  
   if(token) {
     useProfile.verifyToken(token).then((usr_profile) => {
       dispatch(refresh(token, usr_profile))

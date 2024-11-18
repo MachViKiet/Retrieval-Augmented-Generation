@@ -5,7 +5,7 @@ const { buildErrObject } = require('~/middlewares/utils')
  * Gets profile from database by id
  * @param {string} id - user id
  */
-const getProfileFromDB = async (id = '') => {
+export const getProfileFromDB = async (id = '') => {
 
   const result = await User.findById(id, '-_id -createdAt -password').then((user) => {
     if (!user) {
@@ -18,5 +18,3 @@ const getProfileFromDB = async (id = '') => {
 
   return result
 }
-
-module.exports = { getProfileFromDB }
