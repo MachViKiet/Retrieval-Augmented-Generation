@@ -122,6 +122,10 @@ export function ChatGenerator() {
   const [openCreateChat, setOpenCreateChat] = useState(false)
   const [sessions, setSessions] = useState([])
   const [currentChatSession, setCurrentChatSession] = useState(null)
+  const [apiHandler, setApiHandler] = useState({
+    session: false,
+    history: false
+  })
   const [messageHandler, setMessageHandler] = useState({
     isProcess: false,
     notification: [],
@@ -187,20 +191,25 @@ export function ChatGenerator() {
   },[getSocket()])
 
   useEffect(() => {
-    loadChatSessionFromDB().then(() => {
-      setHide(false)
-    }).catch((err) => console.log(err))
+    loadChatSessionFromDB().then((chatSessionFromDB) => {
+      setSessions(chatSessionFromDB)
+    }).catch((err) => console.log('loi gi dó: ',err))
   }, [])
 
   const loadChatSessionFromDB = async () => {
-    return useConservation.get(token).then((conservationFromDB) => {
-      setSessions(conservationFromDB)
-      return conservationFromDB
-    }).catch((err) => console.log(err))
+    setApiHandler(prev => ({...prev, session: true}))
+    return useConservation.get(token).then((chatSessionFromDB) => {
+      setApiHandler(prev => ({...prev, session: false}))
+      return chatSessionFromDB
+    }).catch((err) => console.log('loadChatSessionFromDB: ',err))
   }
 
   const loadHistoryBySession = async (session) => {
-    return await useConservation.getHistory({ session: session?._id }, token)
+    setApiHandler(prev => ({...prev, history: true}))
+    return useConservation.getHistory({ session: session?._id }, token).then((historyFromDB) => {{
+      setApiHandler(prev => ({...prev, history: false}))
+      return historyFromDB
+    }}).catch((err) => console.log('historyFromDB: ',err))
   }
  
   const ChatAction = async (message) => {
@@ -250,14 +259,7 @@ export function ChatGenerator() {
     }
   }
 
-  return hide ? 
-    (<Backdrop
-      sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-      open={true}
-    >
-      <CircularProgress color="inherit" />
-    </Backdrop>) :
-    (
+  return (
     <Box sx = {{ width: '100%', height: '100%', paddingY: 3, paddingX: 3 }}>
       <Grid container  spacing={2} sx = {{ height: '100%' }}>
         <Grid  size={{ xs: 2.5 }}>  
@@ -316,22 +318,15 @@ export function ChatGenerator() {
              }}>
               <Box sx ={{ width: '100%', height: '20px' }}></Box>
 
-              {Conservations.length === 0 && 
-                <RecommendChatPage 
-                  bgcolor = {{ 
-                    main: 'transparent'
-                  }}
-                  username = {user?.name}
-                  ChatAction = {ChatAction}/> 
-              }
+              { (apiHandler.history || !Conservations ) && <ChatDisplay loading /> }
 
-              { Conservations.map((conservation) => {
+              { !apiHandler.history && Conservations.length === 0 && 
+                <RecommendChatPage username = {user?.name} ChatAction = {ChatAction}/> }
+
+              { !apiHandler.history && Conservations.map((conservation) => {
                 return <div key={conservation?._id}>
-                  <ChatDisplay 
-                    conservation = {conservation} user={user}
-                    action = {{
-                      re_prompt : ChatAction
-                    }} />
+                  <ChatDisplay conservation = {conservation} user={user}  
+                    action = {{ re_prompt : ChatAction }} />
                 </div>
               })}
 

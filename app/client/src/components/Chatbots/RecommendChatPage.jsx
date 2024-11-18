@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Skeleton, Typography } from '@mui/material';
 import ViewStreamIcon from '@mui/icons-material/ViewStream';
 import AssuredWorkloadOutlinedIcon from '@mui/icons-material/AssuredWorkloadOutlined';
 import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlined';
@@ -13,12 +13,27 @@ const Container_Style = {
 }
 
 export function RecommendChatPage({ 
-    bgcolor = null, 
+    loading = null, 
     username = null, 
     ChatAction = null
 }) {
     
-    return (
+    return loading ? (
+    <Box>
+        <Skeleton variant="rounded" width={'50%'} height={60} sx = {{ borderRadius: '10px', mb: 1 }} />
+        <Skeleton variant="rounded" width={'70%'} height={40} sx = {{ borderRadius: '10px', mb: 1 }} />
+
+        <Box sx = {Container_Style} >
+            { ['','',''].map((_data, index) => ( <Skeleton key={index*275486} variant="rounded" width={120} height={40} sx = {{ borderRadius: '10px', mb: 1 }} /> )) }
+        </Box>
+
+        <Box sx = {Container_Style} >
+            { ['','',''].map((_data, index) => ( <Skeleton key={index*208752} variant="rounded" width={180} height={180} sx = {{ borderRadius: '10px', mb: 1 }} /> )) }
+        </Box>
+
+        <Box sx ={{ width: '100%', height: 2 }}></Box>  
+    </Box>
+    ) : (
     <Box>
         <Typography variant='h2' sx = {{ 
             fontSize: '2rem',
@@ -29,7 +44,7 @@ export function RecommendChatPage({
             color: 'transparent',
             backgroundSize: '400% 100%',
             WebkitBackgroundClip : 'text',
-            textAlign: 'start'
+            textAlign: 'start',
         }}>Xin Chào Bạn, {username} !</Typography>
         <Typography variant='h3' sx = {{ 
             fontSize: '1.5rem',

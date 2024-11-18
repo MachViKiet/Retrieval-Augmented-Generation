@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
-import { Avatar, Box, CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, CircularProgress, IconButton, Skeleton, Tooltip, Typography } from '@mui/material'
 import { BubbleRight } from '../MessageEffect/BubbleRight'
 import { BubbleLeft } from '../MessageEffect/BubbleLeft'
 import { getTime } from '~/utils/GetTime'
@@ -17,7 +17,6 @@ export const ChatBlock_Style = {
 }
 
 export const ChatDisplay_Style = {
-  width: '100%',
   display: 'flex',
   alignItems: 'flex-start',
   justifyContent: 'end',
@@ -53,11 +52,26 @@ const ModelButton_Style = {
   }
 }
 
-function ChatDisplay({ action = null, user = null , conservation = null}) {
+function ChatDisplay({ loading = null, action = null, user = null , conservation = null}) {
 
   const [openDetail, setOpenDetail] = useState(false)
 
-  return (
+  return loading ? (
+    <Box sx = {ChatBlock_Style}>
+      {['',''].map(( _data, index) => ( <div key={ index*1251267 }>
+        <Box sx = { ChatDisplay_Style }>
+          <Skeleton variant="circular" width={40} height={40} />
+          <Skeleton variant="rounded" height={60} sx = {{ width: '100%', marginRight: '20px', maxWidth: '50%'}}/>
+        </Box>
+
+        <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
+          <Skeleton variant="rounded" height={60} sx = {{ width: '100%', marginLeft: '20px', maxWidth: '70%'}}/>
+          <Skeleton variant="circular" width={40} height={40} />
+        </Box> </div>
+      ))}
+
+    </Box>
+  ) : (
     <Box sx = {ChatBlock_Style}>
       <Box sx = { ChatDisplay_Style }>
         <Avatar alt="User" src=

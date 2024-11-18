@@ -23,7 +23,6 @@ const EndProcess = (socket, next) => {
 }
 
 const unsign_all = (socket) => {
-    console.log('nssign')
     if(socket) {
         socket.off('/ChatWithChatBot/userMessage')
         socket.off('/ChatWithChatBot/isProcessing')

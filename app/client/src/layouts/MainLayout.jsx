@@ -1,6 +1,6 @@
 import { Box, Typography, ListItemText, ListItemButton, useColorScheme, Button, Tooltip, IconButton } from '@mui/material';
 import React, { useState, useEffect } from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import styled from '@emotion/styled'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useDispatch, useSelector } from 'react-redux';
@@ -109,22 +109,12 @@ function MainLayout() {
       width: '100%',
       height: '100vh',
       background: theme => theme.palette.mode == 'dark' ? '#25294a' : '#DDF3FC',
-      position: 'relative',
       paddingTop: '72px',
      }}>
         <Box 
           sx = {{ 
-          width: '100%',
-          height: '72px',
-          background:  theme => theme.palette.mode == 'dark' ? '#100a34': '#fff',
-          boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)',
-          position: 'absolute',
-          top: 0,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingX: 6,
-          color: '#000'
+          width: '100%', height: '72px', paddingX: 6, color: '#000', background:  theme => theme.palette.mode == 'dark' ? '#100a34': '#fff',
+          boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)', position: 'absolute', top: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           }}> 
           <Box>
             <Typography variant = 'h1' sx = {{ 
@@ -204,7 +194,7 @@ function MainLayout() {
 
 
 
-        <Outlet/>
+        <Outlet  context={useOutletContext()}/>
     </Box>
   )
 }

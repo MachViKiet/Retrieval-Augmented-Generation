@@ -36,7 +36,6 @@ const theme = extendTheme(
           bgColor: {
             main: '#25294a'
           }
-
         },
       },
       dark: {
@@ -64,7 +63,6 @@ const theme = extendTheme(
           bgColor: {
             main: '#DDF3FC'
           }
-
         },
       }
     },
@@ -151,7 +149,6 @@ const theme = extendTheme(
         styleOverrides: {
           root: {},
           switchBase: ({ theme }) => ({
-            // color: theme.palette.mode == "dark" ? "#7e08a2" : "#0f31ac",
             color: theme.palette.mode == "dark" ? "#344068" : "#aecdf5",
             "&.Mui-checked": {
               color:
@@ -251,6 +248,14 @@ const theme = extendTheme(
         styleOverrides: {
           root: ({theme}) => ({
             backgroundColor: theme.palette.primary.background,
+          })
+        },
+      },
+
+      MuiSkeleton: {
+        styleOverrides: {
+          root: ({theme}) => ({
+            backgroundColor: theme.palette.mode == 'dark' ? '#b9b9bb2b' : '#131b3b2b',
           })
         },
       }

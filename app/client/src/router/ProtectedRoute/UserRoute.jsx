@@ -7,7 +7,7 @@ const UserRoute = ({ children }) => {
 
   const auth = useSelector((state) => state.auth)
   if (!auth.loggedIn) {
-    return <Navigate to="/signin" />;
+    return <Navigate to="/" />;
   }
 
   const user_profile = auth.user

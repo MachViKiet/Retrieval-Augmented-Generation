@@ -6,16 +6,12 @@ import theme from './theme'
 // import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
 import { ThemeProvider } from '@mui/material/styles'
 import './main.scss'
-import { ApolloProvider } from '@apollo/react-hooks';
-import client from './config/createApolloClient';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-        {/* <ApolloProvider client={client}> */}
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App/>
-          </ThemeProvider >
-        {/* </ApolloProvider> */}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App/>
+    </ThemeProvider >
   </React.StrictMode>
 )
