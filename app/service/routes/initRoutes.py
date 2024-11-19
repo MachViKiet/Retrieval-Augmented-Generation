@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from controllers.exampleController import authController
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import os
 import json
@@ -130,3 +131,32 @@ def get_file():
     #-------------------------------------------
     chunks = rag_utils.get_document(filename, collection_name)
     return jsonify(chunks)
+
+@main.route("/get_collection_schema", methods=["GET"])
+@cross_origin()
+def get_collection_schema():
+    ##PARAMS
+    collection_name = request.args.get('collection_name')
+    #-------------------------------------------
+    schema = database.get_collection_schema(collection_name)
+    return jsonify(schema)
+
+@main.route("/insert_file", methods=["POST"])
+@cross_origin()
+def insert_file():
+    ##PARAMS
+    chunks = request.form['chunks']
+    collection_name = request.form['collection_name']
+    filename = request.form['filename']
+    metadata = request.form['metadata']
+    #-------------------------------------------
+    #Save chunks to local storage
+    if secure_filename(filename):
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(chunks, f)
+    else:
+        return jsonify({'status': 'failed'})
+    #Call API to Airflow to insert file to Milvus
+    
+
+    return jsonify({'status': 'success'})
