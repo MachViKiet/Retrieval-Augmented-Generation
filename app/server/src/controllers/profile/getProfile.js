@@ -1,4 +1,3 @@
-// const { getProfileFromDB } = require('./helpers')
 const { isIDGood, handleError } = require('~/middlewares/utils')
 const { getProfileFromDB } = require('./helpers')
 

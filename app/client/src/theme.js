@@ -1,9 +1,7 @@
-import { BorderColor } from "@mui/icons-material";
-// import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
-import shadows from "@mui/material/styles/shadows";
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 import { viVN } from "@mui/x-data-grid/locales";
 const SIDEBAR_WIDTH = "220px";
-import { extendTheme } from "@mui/material/styles";
+// import { extendTheme } from "@mui/material/styles";
 
 // Create a theme instance.
 const theme = extendTheme(
@@ -44,7 +42,7 @@ const theme = extendTheme(
         palette: {
           primary: {
             main: "#2d325a",
-            secondary: "#25294c", //"#32344d",
+            secondary: "#25294c",
             third: "#4c5679",
             light: "red",
             dark: "#0e2c4f",
@@ -66,7 +64,7 @@ const theme = extendTheme(
             main: '#DDF3FC'
           }
         },
-      },
+      }
     },
     components: {
       MuiCssBaseline: {
@@ -151,7 +149,6 @@ const theme = extendTheme(
         styleOverrides: {
           root: {},
           switchBase: ({ theme }) => ({
-            // color: theme.palette.mode == "dark" ? "#7e08a2" : "#0f31ac",
             color: theme.palette.mode == "dark" ? "#344068" : "#aecdf5",
             "&.Mui-checked": {
               color:
@@ -231,15 +228,8 @@ const theme = extendTheme(
             '& fieldset': {
               borderColor: `#00000036 !important`,
             },
-            // '&:hover fieldset': {
-            //   borderColor: `${theme.palette.primary.main} !important`,
-            // },
-
-            // '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            //   borderColor: `${theme.palette.primary.main} `,
-            // },
             '&.Mui-focused fieldset': {
-              // borderColor: 'yellow !important',
+
             },
           })
         },
@@ -253,6 +243,22 @@ const theme = extendTheme(
           },
         },
       },
+
+      MuiPaper: {
+        styleOverrides: {
+          root: ({theme}) => ({
+            backgroundColor: theme.palette.primary.background,
+          })
+        },
+      },
+
+      MuiSkeleton: {
+        styleOverrides: {
+          root: ({theme}) => ({
+            backgroundColor: theme.palette.mode == 'dark' ? '#b9b9bb2b' : '#131b3b2b',
+          })
+        },
+      }
     },
     // ...other properties
   },
