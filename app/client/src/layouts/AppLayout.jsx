@@ -33,11 +33,11 @@ function AppLayout() {
   const processHandler = {
     add : (eventCode) => {
       const id = generateRandomId()
-      setIsProcess(prev => [...prev, eventCode + id])
+      setIsProcess(prev => [...prev, eventCode + '_' + id])
       return id
     },
     remove: (eventCode, eventID) => setIsProcess(prev => {
-      return prev.filter((event) => event != eventCode + eventID )
+      return prev.filter((event) => event != eventCode + '_' + eventID )
     })
   }
 

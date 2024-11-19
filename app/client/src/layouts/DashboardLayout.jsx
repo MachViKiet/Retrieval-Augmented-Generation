@@ -158,8 +158,6 @@ function DashboardLayout() {
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
   
-  const context = useOutletContext();
-
   useEffect(() => {
     setSelectedIndex(selectedIndexInitial)
   }, [selectedIndexInitial])

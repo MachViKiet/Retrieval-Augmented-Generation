@@ -17,7 +17,6 @@ import ChatDisplay from '~/components/Chatbots/MessageHandler.jsx/ChatDisplay';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { DeleteOutlineOutlined } from '@mui/icons-material';
 
-
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -143,7 +142,7 @@ export function ChatGenerator() {
 
   const [Conservations, setConservations] = useState([])
   const [openCreateChat, setOpenCreateChat] = useState(false)
-  const [sessions, setSessions] = useState([])
+  const [sessions, setSessions] = useState(null)
   const [currentChatSession, setCurrentChatSession] = useState(null)
   const [apiHandler, setApiHandler] = useState({
     session: false,
@@ -303,10 +302,10 @@ export function ChatGenerator() {
 
             { (apiHandler.history || !Conservations ) && <ChatDisplay loading /> }
 
-            { !apiHandler.history && Conservations.length === 0 && 
+            { !apiHandler.history && Conservations && Conservations.length === 0 && 
               <RecommendChatPage username = {user?.name} ChatAction = {ChatAction}/> }
 
-            { !apiHandler.history && Conservations.map((conservation) => {
+            { !apiHandler.history && Conservations && Conservations.map((conservation) => {
               return <div key={conservation?._id}>
                 <ChatDisplay conservation = {conservation} user={user}  />
               </div>
@@ -358,9 +357,9 @@ export function ChatGenerator() {
           </Box> }
 
 
-          { apiHandler.session && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 230px)', overflow: 'auto', padding: 1 }}> {
+          { (apiHandler.session || !sessions) && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 230px)', overflow: 'auto', padding: 1 }}> {
             ['','',''].map((_session, index) => (
-              <Skeleton key={ index*82715 } variant="rounded" height={62} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
+              <Skeleton key={ index * 82715 } variant="rounded" height={62} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
             ))
           } </Box> }
 

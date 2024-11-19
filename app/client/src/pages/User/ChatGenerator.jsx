@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, CircularProgress, IconButton, TextField, Typography } from '@mui/material';
+import { Backdrop, Box, Button, CircularProgress, IconButton, Skeleton, TextField, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import ChatBlock from '~/components/Chatbots/ChatBlock';
@@ -94,20 +94,9 @@ function NewChatModal({ modalHandler = null }) {
 }
 
 
-const ChatWindow = styled(Box)(({theme}) => ({
-  position: 'absolute',
-  bottom: theme.spacing(0),
-  padding: theme.spacing(2),
-  paddingTop: theme.spacing(0),
-  right: theme.spacing(0),
-  width: '100%',
-  borderRadius: '15px'
-}))
+const ChatWindow = styled(Box)(({theme}) => ({ position: 'absolute', bottom: theme.spacing(0), padding: theme.spacing(2), paddingTop: theme.spacing(0), right: theme.spacing(0), width: '100%', borderRadius: '15px' }))
 
-const BlockStyle = {
-  bgColor_dark: 'linear-gradient(30deg, #ffffff2e 0%, #0352c038 100%)',
-  bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #99c4ff 100%)',
-}
+const BlockStyle = { bgColor_dark: 'linear-gradient(30deg, #ffffff2e 0%, #0352c038 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #99c4ff 100%)' }
 
 export function ChatGenerator() {
 
@@ -118,9 +107,8 @@ export function ChatGenerator() {
   const token = useSelector(state => state.auth.token)
 
   const [Conservations, setConservations] = useState([])
-  const [hide, setHide] = useState(true)
   const [openCreateChat, setOpenCreateChat] = useState(false)
-  const [sessions, setSessions] = useState([])
+  const [sessions, setSessions] = useState(null)
   const [currentChatSession, setCurrentChatSession] = useState(null)
   const [apiHandler, setApiHandler] = useState({
     session: false,
@@ -136,7 +124,6 @@ export function ChatGenerator() {
     duration: 0,
     create_at: null
   })
-
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -191,17 +178,16 @@ export function ChatGenerator() {
   },[getSocket()])
 
   useEffect(() => {
-    loadChatSessionFromDB().then((chatSessionFromDB) => {
-      setSessions(chatSessionFromDB)
-    }).catch((err) => console.log('loi gi dó: ',err))
-  }, [])
+    token && loadChatSessionFromDB().then((chatSessionFromDB) => setSessions(chatSessionFromDB))
+      .catch((err) => { console.log('loadChatSessionFromDB: ',err); return [] })
+  }, [token])
 
   const loadChatSessionFromDB = async () => {
     setApiHandler(prev => ({...prev, session: true}))
     return useConservation.get(token).then((chatSessionFromDB) => {
       setApiHandler(prev => ({...prev, session: false}))
       return chatSessionFromDB
-    }).catch((err) => console.log('loadChatSessionFromDB: ',err))
+    })
   }
 
   const loadHistoryBySession = async (session) => {
@@ -209,7 +195,7 @@ export function ChatGenerator() {
     return useConservation.getHistory({ session: session?._id }, token).then((historyFromDB) => {{
       setApiHandler(prev => ({...prev, history: false}))
       return historyFromDB
-    }}).catch((err) => console.log('historyFromDB: ',err))
+    }})
   }
  
   const ChatAction = async (message) => {
@@ -232,6 +218,7 @@ export function ChatGenerator() {
       setSessions(prev => [session, ...prev])
       setCurrentChatSession(session)
       const history = await loadHistoryBySession(session)
+        .catch((err) => { console.log('historyFromDB: ',err); return [] })
       setConservations(history)
       return session
     })
@@ -276,13 +263,12 @@ export function ChatGenerator() {
               <Button component='p' sx = {{ color: 'red', paddingY: 0 }}>Xóa hết </Button>
             </Box>
 
-            <Box sx = {{ height: 'calc(100%)', maxHeight: 'calc(100vh - 260px)', overflow: 'auto', padding: 1 }}>
-            {
+            { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
               sessions.map((session) => (
                 <Box key = {session._id} 
-                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#70009f6b' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
+                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
                     borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
-                  onClick = {async (e) => await sessionButtonClick(session)}>
+                    onClick = {async (e) => await sessionButtonClick(session)}>
                   <Box >
                     <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
                     <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '100', fontSize: '0.725rem !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_description}</Typography>
@@ -290,10 +276,18 @@ export function ChatGenerator() {
                   <IconButton color = 'error' sx = {{ padding: 0.25 }} onClick={async (e) => await removeChatSessionClick(e, session)} >
                     <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/>
                     </IconButton>
-                </Box>
+                </Box> ))
+
+              }
+
+              { sessions.length == 0 && <> Không có cuộc trò chuyện </> }
+            </Box> }
+
+            { (apiHandler.session || !sessions) && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
+              ['','',''].map((_session, index) => (
+                <Skeleton key={ index * 82715 } variant="rounded" height={62} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
               ))
-            }
-            </Box>
+            } </Box> }
 
             <Box sx = {{ padding: 1, paddingTop: 3 }}>
               <Button 
@@ -320,10 +314,10 @@ export function ChatGenerator() {
 
               { (apiHandler.history || !Conservations ) && <ChatDisplay loading /> }
 
-              { !apiHandler.history && Conservations.length === 0 && 
+              { !apiHandler.history && Conservations && Conservations.length === 0 && 
                 <RecommendChatPage username = {user?.name} ChatAction = {ChatAction}/> }
 
-              { !apiHandler.history && Conservations.map((conservation) => {
+              { !apiHandler.history && Conservations && Conservations.map((conservation) => {
                 return <div key={conservation?._id}>
                   <ChatDisplay conservation = {conservation} user={user}  
                     action = {{ re_prompt : ChatAction }} />

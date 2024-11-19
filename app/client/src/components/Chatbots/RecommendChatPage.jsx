@@ -35,7 +35,8 @@ export function RecommendChatPage({
     </Box>
     ) : (
     <Box>
-        <Typography variant='h2' sx = {{ 
+        {!username ? <Skeleton variant="rounded" width={'70%'} height={40} sx = {{ borderRadius: '10px', mb: 1 }} /> 
+        : <Typography variant='h2' sx = {{ 
             fontSize: '2rem',
             width: 'fit-content',
             paddingBottom: 0.5,
@@ -45,7 +46,7 @@ export function RecommendChatPage({
             backgroundSize: '400% 100%',
             WebkitBackgroundClip : 'text',
             textAlign: 'start',
-        }}>Xin Chào Bạn, {username} !</Typography>
+        }}>Xin Chào Bạn, {username} !</Typography> }
         <Typography variant='h3' sx = {{ 
             fontSize: '1.5rem',
             marginBottom: 2,
