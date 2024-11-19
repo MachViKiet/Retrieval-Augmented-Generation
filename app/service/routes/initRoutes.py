@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import os
 import json
+import requests
 
 from models.model import ChatModel, PhoQueryRouter
 from utils import rag_utils, query_routing
@@ -151,9 +152,15 @@ def insert_file():
     metadata = request.form['metadata']
     #-------------------------------------------
     #Save chunks to local storage
-    if secure_filename(filename):
+    if secure_filename(os.getenv('AIRFLOW_TEMP_FOLDER') + filename):
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(chunks, f)
+            requests.post('http://localhost:8080/api/experimental/dags/process_file_and_insert/dag_runs', json={
+                "conf": {
+                    "filename": filename,
+                    "collection_name": collection_name,
+                    "metadata": metadata
+                }})
     else:
         return jsonify({'status': 'failed'})
     #Call API to Airflow to insert file to Milvus
