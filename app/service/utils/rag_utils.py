@@ -71,14 +71,10 @@ class MongoDB:
 
 class MilvusDB:
     def __init__(self, host,port,password,user,server_pem_path,server_name='localhost') -> None:
+        
         connections.connect(alias = 'default',
                         host = host,
-                        port = port,
-                        user = user,
-                        password = password,
-                        server_pem_path=server_pem_path,
-                        server_name = server_name,
-                        secure = True)
+                        port = port)
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
 

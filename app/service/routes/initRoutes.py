@@ -45,8 +45,7 @@ def preload():
     global database
     database = rag_utils.MilvusDB(
         host=os.getenv('MILVUS_HOST'), port=os.getenv('MILVUS_PORT'),
-        user=os.getenv('MILVUS_USERNAME'), password=os.getenv('MILVUS_PASSWORD'),
-        server_name=os.getenv('MILVUS_SERVER_NAME'), server_pem_path=os.getenv('MILVUS_SERVER_PEM')
+        user=os.getenv('MILVUS_USERNAME', ""), password=os.getenv('MILVUS_PASSWORD', ""),
     )
     database.load_collection('student_handbook', persist=True)
     print("Database loaded.")
