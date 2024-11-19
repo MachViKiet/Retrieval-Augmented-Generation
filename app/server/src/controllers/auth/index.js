@@ -5,5 +5,5 @@ const { roleAuthorization } = require('./roleAuthorization')
 module.exports = {
   login,
   register,
-  roleAuthorization
+  roleAuthorization,
 }

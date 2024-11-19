@@ -1,0 +1,31 @@
+const mongoose = require('mongoose')
+
+const HistorySchema = new mongoose.Schema(
+  {
+    sender : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    session_id: {
+      type: mongoose.Schema.Types.ObjectId, ref: 'Chat_session'
+    },
+    question : {
+      type: String,
+      require: true
+    },
+    anwser : {
+      type: String,
+      require: true
+    },
+    state : {
+      type: String,
+      require: true
+    },
+    duration : {
+      type: String,
+      require: true
+    }
+  },
+  {
+    versionKey: false,
+    timestamps: true
+  }
+)
+module.exports = mongoose.model('History', HistorySchema)

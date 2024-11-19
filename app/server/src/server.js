@@ -2,58 +2,34 @@
 /**
  * Updated by Mach Vi Kiet's author on November 3 2024
  */
-
-require('dotenv').config()
-
-
-import express from 'express'
-import bodyParser from 'body-parser'
-
-
-const morgan = require('morgan')
-const cors = require('cors')
-
-const path = require('path')
-const app = express()
+import './app'
+const http = require('http')
 const initMongo = require('./config/mongodb')
+const app = require('./app.js')
+// const socket = require('./socket');
+const io = require('./socket')
 
-app.set('port', process.env.APP_PORT || 3000)
+async function bootstrap () {
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
+  await initMongo()
+
+  return http.createServer(app).listen(process.env.APP_PORT || 3000)
 }
 
+bootstrap().then(async (server) => {
 
-// for parsing json
-app.use(
-  bodyParser.json({
-    limit: '20mb'
+  io.attach(server, {
+    cors: {
+      origin: 'http://localhost:5173',
+      methods: ['GET', 'POST'],
+      credentials: true
+    }
   })
-)
-// for parsing application/x-www-form-urlencoded
-app.use(
-  bodyParser.urlencoded({
-    limit: '20mb',
-    extended: true
-  })
-)
 
-// Init all other stuff
-app.use(cors())
-app.use(require('~/routes/v1').default)
-app.set('views', path.join(__dirname, 'views'))
-app.engine('html', require('ejs').renderFile)
-app.set('view engine', 'html')
-app.listen(app.get('port'))
-
-app.get('/', (req, res) => {
-  res.end('<h1>Hello World! I am running</h1><hr>')
-})
-
-initMongo()
-
-app.listen(() => {
-  console.log('\x1b[33m%s\x1b[0m', `\n\n\nServer is listening at http://${ process.env.APP_HOST }:${ process.env.APP_PORT }/`)
+  console.log('\n')
+  console.log('\x1b[36m', `Server is listening at http://${ process.env.APP_HOST }:${ process.env.APP_PORT }/`)
+}).catch((err) => {
+  console.log(err)
 })
 
 module.exports = app

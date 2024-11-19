@@ -13,18 +13,23 @@ const {
  * @param {Object} user - user object
  */
 const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
+  const token = generateToken(user._id)
+
   const userAccess = new UserAccess({
     email: user.email,
+    user: user._id,
     ip: getIP(req),
     browser: getBrowserInfo(req),
-    country: 'Viet Nam'
+    country: 'Viet Nam',
+    token: token,
+    socketid: null
   })
 
   const result = await userAccess.save().then(async () => {
     const userInfo = getUserInfo(user)
     // Returns data with access token
     return ({
-      token: generateToken(user._id),
+      token: token,
       user: userInfo
     })
   }).catch((err) => {

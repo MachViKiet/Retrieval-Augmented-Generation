@@ -1,24 +1,102 @@
 import styled from '@emotion/styled';
-import { Backdrop, Box, Button, CircularProgress, Typography } from '@mui/material';
+import { Backdrop, Box, CircularProgress,Button,IconButton ,  Typography, TextField, Skeleton } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
-import TextInput from '~/components/Chatbots/TextInput';
+import ChatInput from '~/components/Chatbots/ChatInput';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
 import Block from '~/components/Block';
 import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
 import { useDispatch, useSelector } from 'react-redux';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
-import BotChat from '~/components/Chatbots/BotChat';
-import UserChat from '~/components/Chatbots/UserChat';
-import Loading from '~/components/Chatbots/Loading';
-import KHTNGenerativeAI from '~/services/KHTNGenerativeAI';
-import LoadingBotChat from '~/components/Chatbots/LoadingBotChat';
-import ViewStreamIcon from '@mui/icons-material/ViewStream';
-import AssuredWorkloadOutlinedIcon from '@mui/icons-material/AssuredWorkloadOutlined';
-import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlined';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { GetURLFromMarkdown } from '~/utils/GetURLFromMarkdown';
+import { RecommendChatPage } from '~/components/Chatbots/RecommendChatPage';
+import ProcessBlock from '~/components/Chatbots/MessageHandler.jsx/ProcessBlock';
+import UserTypingMessageBlock from '~/components/Chatbots/MessageHandler.jsx/UserTypingMessageBlock';
+import { getSocket } from '~/socket';
+import { ChatWithChatbot } from '~/socket/ChatWithChatbot';
+import ChatDisplay from '~/components/Chatbots/MessageHandler.jsx/ChatDisplay';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { DeleteOutlineOutlined } from '@mui/icons-material';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { useConservation } from '~/apis/Conservation';
+
+function NewChatModal({ modalHandler = null }) {
+
+  const [name , setName] = useState('')
+  const [description , setDescription] = useState('')
+  const [notice, setNotice] = useState(null)
+
+  const context = useOutletContext();
+
+  useEffect(() => {
+    setName('')
+    setDescription('')
+    setNotice(null)
+  },[])
+
+  const newChat = async (e) => {
+    e.preventDefault()
+    if( name == '' ) {
+      setNotice('Vui lòng nhập tên cuộc trò chuyện !')
+    } else {
+      await modalHandler.submit({
+        name, description
+      }).then(() => modalHandler?.close())
+        .catch(() => setNotice('Tạo không thành công'))
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        open={modalHandler?.state}
+        onClose={modalHandler?.close}>
+        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+          <Box sx = {{ width: '50vw', maxWidth: '450px'}}>
+            <OpenInNewIcon/> Tạo Cuộc Trò Chuyện
+          </Box>
+        </DialogTitle>
+        <DialogContent >
+          <DialogContentText sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              variant="standard"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              sx = {{ 
+                '& div' : {color: theme => theme.palette.text.secondary },
+                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
+              }}
+              placeholder='Tên Cuộc Trò Chuyện'/>
+            <TextField 
+              variant="standard"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              sx = {{ 
+                '& div' : {color: theme => theme.palette.text.secondary },
+                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' }
+              }}
+              placeholder='Mô tả Cuộc Trò Chuyện'/>
+          </DialogContentText>
+
+          {notice && 
+            <DialogContentText sx = {{ paddingTop: 2, display: 'block' }}>
+              <Typography component={'span'} variant={'body2'} sx = {{ color: '#ff7900', textAlign: 'end', display: 'block', width: '100%' }}>{notice}</Typography>
+            </DialogContentText>}
+        </DialogContent>
+        <DialogActions>
+          <Button sx = {{ color: theme => theme.palette.text.secondary }} onClick={newChat}>{modalHandler.submitTitle}</Button>
+          <Button sx = {{ color: '#ff3c3c' }} onClick={modalHandler?.close}>Đóng</Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  );
+}
+
+import { useOutletContext } from "react-router-dom";
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -31,427 +109,279 @@ const Header = styled(Box) (({theme}) => ({
   borderRadius: '15px 15px 0 0 ',
   zIndex: 1,
   paddingLeft: theme.spacing(4),
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'start',
+  gap: 2
 }))
 
-const History = []
+const ChatExtension = styled(Box)(({theme}) => ({
+  display: 'flex',
+  padding: theme.spacing(1),
+  paddingRight: theme.spacing(0),
+  minHeight: '40px'
+}))
 
-function ChatGenerator() {
+const ChatWindow = styled(Box)(({theme}) => ({
+  position: 'absolute',
+  bottom: theme.spacing(0),
+  padding: theme.spacing(2),
+  paddingTop: theme.spacing(0),
+  right: theme.spacing(0),
+  width: '100%',
+  borderRadius: '15px'
+}))
+
+export function ChatGenerator() {
   const dispatch = useDispatch()
-  const [Conservation, setConservation] = useState([])
-  const [isLoading, setIsLoading] = useState({
-    state: false,
-    noticeLoad: [],
-    timing: []
-  })
-  const [stream, setStream] = useState({
-    isTyping: false,
-    streamData: null
-  })
-  const [openDetail, setOpenDetail] = useState(null)
-  const [hide, setHide] = useState(true)
   const bottomRef = useRef(null);
-
-  const KHTN_Chatbot = KHTNGenerativeAI()
-
-  const ChatAction = async (text) => {
-
-    const getChosen_collections = async (text) => await KHTN_Chatbot.step_1(text).then((res) => {
-        // TODO : Validate
-        setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat(`Xác định nội dung câu hỏi`)}))
-        return res.collection // Return chosen_collections : string
-    })
-
-    const getFilter_expressions = async (text, chosen_collections) => await KHTN_Chatbot.step_2(text, chosen_collections).then((res) => {
-      // TODO : Validate
-      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Rút trích dữ liệu trong câu hỏi')}))
-      return res
-    }) // Return filter_expressions : json
-
-    const getContext = async (text, chosen_collections, filter_expressions) => await KHTN_Chatbot.step_3(text, chosen_collections, JSON.stringify(filter_expressions)).then((res) => {
-      // TODO : Validate
-      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Tìm kiếm tài liệu trong kho')}))
-      return res.context
-    }) // Return context : string
-
-    const getGenerate = async (text, context, isStreaming) => await KHTN_Chatbot.step_4(text, context, isStreaming).then((res) => {
-      // TODO : Validate
-      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Tạo văn bản')}))
-      return res
-    }) // Return generate : streamObject
-
-    const run = async (streamObject) => {
-      setIsLoading({
-        state: false,
-        noticeLoad: [],
-        timing: []
-      })
-      setIsLoading(prev => ({...prev, noticeLoad: prev.noticeLoad.concat('Đang soạn')}))
-      setIsLoading(prev => ({...prev, timing: prev.timing.concat("")}))
-
-      const reader = streamObject.body.getReader();
-      setStream({streamData : '', isTyping: true})
-      const decoder = new TextDecoder("utf-8");
-      let done = false;
-      let result = ''
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        result += decoder.decode(value, { stream: true })
-        setStream(prev => ({...prev, streamData : result}))
-      }
-      return result
-    }
-
-    const clear = () => {
-      setStream(prev => ({...prev, isTyping: false}))
-      setIsLoading({
-        state: false,
-        noticeLoad: [],
-        timing: []
-      })
-    }
-
-    try{
-      const startTime = (new Date()).getTime()
-      let point_1, point_2, point_3, point_4, endTime
-
-      const chosen_collections = await getChosen_collections(text).then((chosen_collections) => {
-        point_1 = (new Date()).getTime()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(("chosen_collections: " + chosen_collections + "   " + (point_1 - startTime)/1000))}))
-        return chosen_collections
-      }).catch(() => {
-        throw new Error(error);
-      })
-
-      const filter_expressions = await getFilter_expressions(text, chosen_collections).then((filter_expressions) => {
-        point_2 = (new Date()).getTime()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(("filter_expressions: " + JSON.stringify(filter_expressions) + "   " + (point_2 - point_1)/1000))}))
-        return filter_expressions
-      }).catch(() => {
-        throw new Error(error);
-      })
-      
-      const context = await getContext(text, chosen_collections, filter_expressions).then((context) => {
-        point_3 = (new Date()).getTime()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_3 - point_2)/1000))}))
-        return context
-      }).catch(() => {
-        throw new Error(error);
-      })
-
-      const generate = await getGenerate(text, context, true).then((generate) => {
-        point_4 = (new Date()).getTime()
-        setIsLoading(prev => ({...prev, timing: prev.timing.concat(((point_4 - point_3)/1000))}))
-        return generate
-      }).catch(() => {
-        throw new Error(error);
-      })
-      endTime = (new Date()).getTime()
-
-      await run(generate).then((finalResponse) => {
-        setConservation(Conservation => [...Conservation,{
-          "id": Math.floor(10000 + Math.random() * 900000),
-          "role": "bot",
-          "message": GetURLFromMarkdown(finalResponse),
-          "information" : {
-            "context" : context,
-            "filter_expressions" : filter_expressions,
-            "chosen_collections" : chosen_collections,
-            "timestamp" : (new Date()).getTime(),
-            "duration": endTime - startTime
-          }
-        }])
-        return finalResponse
-      }).catch((error) => {
-        setConservation(Conservation => [...Conservation,{
-          "id": Math.floor(10000 + Math.random() * 900000),
-          "role": "bot",
-          "message": 'Xin Lỗi! Đã xảy ra lỗi với đường truyền',
-          "information" : {}
-        }])
-        throw new Error(error);
-      }).finally(() => {
-        // clear()
-        setStream(prev => ({...prev, isTyping: false}))
-      })
-    } catch (error) {
-        setConservation(Conservation => [...Conservation,{
-          "id": Math.floor(10000 + Math.random() * 900000),
-          "role": "bot",
-          "message": 'Xin Lỗi ! Server hiện không hoạt động',
-          "information" : {}
-        }])
-        clear()
-    }
-  }
-
-  const handleClick = (text) => {
-    setConservation(Conservation => [...Conservation,{
-                              "id": Math.floor(10000 + Math.random() * 90000),
-                              "role": "user",
-                              "message": text
-            }])
-    setIsLoading(prev => ({...prev, state: true}))
-  }
-
   const user = useSelector((state) => state.auth.user)
+  const token = useSelector(state => state.auth.token)
+
+  const socket = getSocket();
+
+  const [Conservations, setConservations] = useState([])
+  const [openCreateChat, setOpenCreateChat] = useState(false)
+  const [sessions, setSessions] = useState(null)
+  const [currentChatSession, setCurrentChatSession] = useState(null)
+  const [apiHandler, setApiHandler] = useState({
+    session: false,
+    history: false
+  })
+  const [messageHandler, setMessageHandler] = useState({
+    isProcess: false,
+    notification: [],
+    stream_state: false,
+    stream_load: [],
+    stream_message: null,
+    stream_time: 0,
+    duration: 0,
+    create_at: null
+  })
+
+  const context = useOutletContext();
+
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [Conservation, isLoading, stream]);
-
+  }, [Conservations, messageHandler ]);
+  
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
     dispatch(sidebarAction({index: 466}))
 
-    // TODO : Load data from db
-    // setUserInfor(userInfo)
-    const timeoutID = setTimeout(() => setHide(false), 100)
+    const chatEventID = context.processHandler.add('#ChatGenerate')
+    setTimeout(() => {
+      context.processHandler.remove('#ChatGenerate', chatEventID)
+    }, 200);
 
-    // return (
-    //   dispatch(sidebarAction({index: null}))
-    // )
-  },[])
+    ChatWithChatbot.userMessage(socket, (data) => {
+      setConservations((prev) => ([...prev, data]))
+    })
 
+    ChatWithChatbot.isProcessing(socket, (data) => {
+      setMessageHandler(prev => ({ ...prev, notification: data }))
+    })
 
-  return hide ? 
-    (<Backdrop
-      sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-      open={true}
-      // onClick={handleClose}
-    >
-      <CircularProgress color="inherit" />
-    </Backdrop>) :
-    (<Grid container  spacing={2} sx = {{ height: '100%' }}>
-      <Grid  size={{ xs: 12, md: 8 }}>
-        <Block sx = {{ 
-          paddingBottom: '120px !important',
-          paddingTop: '69px !important',
-         }}>
-          <Header sx = {{ 
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'start',
-            gap: 2
-            }}> 
+    ChatWithChatbot.Processed(socket, () => {
+      setMessageHandler(prev => ({ ...prev, isProcess: true }))
+    })
+
+    ChatWithChatbot.streamMessages(socket, (data) => {
+      setMessageHandler(prev => ({ ...prev, 
+        stream_state: true,
+        stream_message: data.messages,
+      }))
+    }) 
+
+    ChatWithChatbot.EndStream(socket, (data) => {
+      setMessageHandler(prev => ({ ...prev, 
+        stream_state: false,
+        data,
+      }))
+    })
+
+    ChatWithChatbot.EndProcess(socket, async (data) => {
+      setTimeout(() => {
+        setMessageHandler(prev => ({ ...prev, 
+          isProcess: false,
+        }))
+
+        setConservations((prev) => [...prev.slice(0, -1), data])
+      }, 500)
+    })
+    
+    return () => (
+      ChatWithChatbot.unsign_all(socket),
+      dispatch(sidebarAction({index: null}))
+    )
+    
+  },[getSocket()])
+
+  useEffect(() => {
+    token && loadChatSessionFromDB().then((chatSessionFromDB) => {
+      setSessions(chatSessionFromDB)
+    }).catch((err) => console.log(err))
+  }, [token])
+
+  const loadChatSessionFromDB = async () => {
+    setApiHandler(prev => ({...prev, session: true}))
+    return useConservation.get(token).then((chatSessionFromDB) => {
+      setApiHandler(prev => ({...prev, session: false}))
+      return chatSessionFromDB
+    }).catch((err) => console.error('Có lỗi xảy ra với server'))
+  }
+
+  const loadHistoryBySession = async (session) => {
+    setApiHandler(prev => ({...prev, history: true}))
+    return useConservation.getHistory({ session: session?._id }, token).then((historyFromDB) => {{
+      setApiHandler(prev => ({...prev, history: false}))
+      return historyFromDB
+    }}).catch((err) => console.error('Có lỗi xảy ra với server'))
+  }
+ 
+  const ChatAction = async (message) => {
+    let session
+    if(currentChatSession == null) {
+      session = await newChatAction({ name: message })
+    } else {
+      session = currentChatSession
+    }
+  
+    if (session?._id){
+      setCurrentChatSession(session)
+      ChatWithChatbot.chat(socket, { message: message, chat_session: session?._id })
+      setMessageHandler(prev => ({...prev, isProcess: true }))
+    }
+  }
+
+  const newChatAction = async (data) => {
+    return useConservation.create(data, token).then(async (session) => {
+      setSessions(prev => [session, ...prev])
+      setCurrentChatSession(session)
+      const history = await loadHistoryBySession(session)
+      setConservations(history)
+      return session
+    })
+  }
+
+  const sessionButtonClick = async (session) => {
+    try {
+      if(!messageHandler.isProcess) {
+        const history = await loadHistoryBySession(session)
+        setCurrentChatSession(session)
+        setConservations(history)
+      }
+    } catch (error) {
+      return error
+    }
+  }
+
+  const removeChatSessionClick = async (event, session) => {
+    event.stopPropagation()
+    if(!messageHandler.isProcess) {
+      useConservation.remove({session: session._id}, token).then((removed_session) => {
+        setSessions(prev => prev.filter((session) => session._id != removed_session._id))
+        if (currentChatSession == removed_session._id) setCurrentChatSession(null)
+      })
+    }
+  }
+
+  return (<Grid container  spacing={2} sx = {{ height: '100%' }}>
+      
+      <Grid  size={{ xs: 12, md: 8.5 }}>
+        <Block sx = {{ paddingBottom: '120px !important', paddingTop: '69px !important' }}>
+
+          <Header> 
             <AvatarUserDefault/>
-            <Typography variant='h1' sx = {{ 
-              color: '#fff',
-              fontSize: '1.5rem',
-              width: 'fit-content',
-              fontWeight: '900',
-             }}>Chatbot Trợ Lý Sinh Viên</Typography>
+            <Typography variant='h1' sx = {{ color: '#fff', fontSize: '1.5rem', width: 'fit-content', fontWeight: '900' }}>Chatbot Trợ Lý Sinh Viên</Typography>
           </Header>
 
           <ChatBlock>
-            <Box sx ={{ width: '100%', height: '20px' }}></Box>
-            {Conservation.length === 0 && <Box>
-              <Typography variant='h2' sx = {{ 
-                fontSize: '2rem',
-                width: 'fit-content',
-                paddingBottom: 0.5,
-                fontWeight: '900',
-                background: 'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%)',
-                color: 'transparent',
-                backgroundSize: '400% 100%',
-                WebkitBackgroundClip : 'text',
-                textAlign: 'start'
-               }}>Xin Chào Bạn, {user?.name} !</Typography>
-              <Typography variant='h3' sx = {{ 
-                fontSize: '1.5rem',
-                marginBottom: 2,
-                width: 'fit-content',
-                textAlign:'left',
-                color: '#8e9492',
-                fontWeight: '900',
-               }}>Tôi có thể giúp gì hôm nay?</Typography>
+            <Box sx ={{ width: '100%', height: '20px' }}/>
 
-              <Box sx = {{ display: 'flex', gap: 1, minWidth: '500px', overflow: 'auto', marginBottom: 2 }}>
-                {
-                  [{
-                    id: '12314',
-                    key: 'Giới Thiệu Khoa',
-                    icon: <ViewStreamIcon/>,
-                    question: 'Giới Thiệu Khoa Công Nghệ thông Tin'
-                  },{
-                    id: '12315',
-                    key: 'Nội Quy Trường Học',
-                    icon: <ContactSupportOutlinedIcon/>,
-                    question: 'Khái quát nội quy trường học Khoa Học Tự Nhiên'
-                  },{
-                    id: '12316',
-                    key: 'Chính Sách Học Bổng',
-                    icon: <AssuredWorkloadOutlinedIcon/>,
-                    question: 'Chính Sách Học Bổng Mới Nhất 2024'
-                  }].map((data) => {
-                    return (
-                      <Button key = {data.id} sx = {(theme) => ({ 
-                        width: 'fit-content',
-                        // background: theme.palette.primary.third,
-                        backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(135deg, #1c203e 0%, #42487e 100%)' 
-                        : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
-                        color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#e2e3ff',
-                        // color: theme.palette.text.secondary,
-                        marginBottom: 1,
-                        textAlign: 'left',
-                        paddingX: 1.5,
-                        borderRadius: '10px',
-                        boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 1px 2px rgba(80, 80, 80, 0.1)',
-                        "&:hover": {
-                          backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(135deg, #1c203e 20%, #42487e 100%)' 
-                          : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
-                          color: '#fff'
-                        }
+            { (apiHandler.history || !Conservations ) && <ChatDisplay loading /> }
 
-                        })}
-                        startIcon= {data.icon}
-                        onClick = {async () => {
-                          handleClick(data.question),
-                          await ChatAction(data.question)
-                        }}>
-                          <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
-                            {data.key}
-                          </Typography>
-                      </Button>
-                    )
-                  })
-                }
-              </Box>
+            { !apiHandler.history && Conservations && Conservations.length === 0 && 
+              <RecommendChatPage username = {user?.name} ChatAction = {ChatAction}/> }
 
-              {/* <Box sx = {{ 
-                display: 'flex',
-                gap: 2
-               }}> */}
-               <Grid container  spacing={2} sx = {{ width: 'fit-content' }}>
-                {['Cho tôi biết danh sách học bổng khuyến học mới nhất',
-                'Wifi phòng học của trường KHTN là gì?',
-                'Tôi có thể tra cứu điểm và bảng điểm ở đâu?'].map((question, index) => {
-                  return (
-                    <Grid  size={{ xs: 5 , md: 4}}  key = {index}>
-                      <Box sx = {{ 
-                        height: '180px',
-                        width: '180px',
-                        borderRadius: '10px',
-                        backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(135deg, #1c203e 0%, #42487e 100%)' 
-                        : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
-                        padding: 2,
-                        position: 'relative',
-                        textAlign: 'start',
-                        color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '#e2e3ff',
-                        boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
-                        cursor: 'pointer',
-                        '&:hover': {
-                          color: '#fff'
-                        },
-                        '&:active': {
-                          transform: 'scale(0.9)'
-                        }
-                      }} onClick = {async () => {
-                        handleClick(question),
-                        await ChatAction(question)
-                      }}>
-                        {index + 1}{'. '}{question}
+            { !apiHandler.history && Conservations && Conservations.map((conservation) => {
+              return <div key={conservation?._id}>
+                <ChatDisplay conservation = {conservation} user={user}  />
+              </div>
+            })}
 
-                        <span style={{ 
-                          position: 'absolute',
-                          bottom: '16px',
-                          right: '16px'
-                         }}>
-                          <TipsAndUpdatesOutlinedIcon/>
-                         </span>
-                      </Box>
-                     </Grid>
-                  )
-                })}
-                </Grid>
-              {/* </Box> */}
-
-              <Box sx ={{ width: '100%', height: '20px' }}></Box>  
-            </Box>
-            }
-
-            {History.map((conservation, index) => 
-              (
-                <div key = {conservation?.id}>
-                {
-                  conservation.role == 'bot' ?
-                    <BotChat message={(conservation?.message)}/> 
-                    : <UserChat message={conservation.message}/>
-                }</div>
-              )
-            )}
-
-            {Conservation.map((conservation, index) => 
-              (
-                <div key = {conservation?.id}>
-                {
-                  conservation.role == 'bot' ?
-                    <BotChat message={(conservation?.message)} metadata = {conservation} setOpenDetail = {setOpenDetail}/> 
-                    : <UserChat message={conservation.message} metadata = {conservation}/>
-                }</div>
-              )
-            )}
-
-            {<LoadingBotChat text = {stream.streamData} isHidden = {stream.isTyping}/>}  
-            {<Loading isLoading = {isLoading}/>}
-
+            <ProcessBlock messageHandler={messageHandler}/>
+            <UserTypingMessageBlock messageHandler={messageHandler}/>
             <div ref={bottomRef} />
           </ChatBlock>
-          
-          <TextInput
-            handleClick = {handleClick}
-            handleSubmit = {ChatAction}
-            id = "Chatbox"
-          />
+
+          <ChatWindow>
+            <Box sx = {{ borderRadius: '15px', background: theme => theme.palette.primary.main, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+              <ChatExtension/>
+              <Box sx = {{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', background: theme => theme.palette.primary.third, borderRadius: '0 0 15px 15px' }}>
+                <ChatInput id = 'FormChat_For_Admin' handleSubmit = {ChatAction} messageHandler = { messageHandler } />
+              </Box>
+            </Box>
+          </ChatWindow>
+
         </Block>
       </Grid>
 
-      <Grid  size={{ xs: 0, md: 4 }} >
-        <Block sx = {{ paddingTop: 8.5 }}>
-          <Header sx = {{ 
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'start',
-            gap: 2
-            }}> 
-            <Typography variant='h1' sx = {{ 
-              color: '#fff',
-              fontSize: '28px',
-              width: '100%',
-              fontWeight: '900',
-              fontFamily: 'auto'
-             }}></Typography>
-          </Header>
-          <Box sx = {{ 
-            height: '500px',
-            overflow: 'auto',
-            padding: 2
-          }}>
-            { Conservation.map((data) => {
-                return (
-                  data.id ==  openDetail &&<Typography sx = {{ 
-                    fontSize: '10px !important',
-                    color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000',
-                    whiteSpace: 'pre-line', 
-                    textIndent: '2px', 
-                    lineHeight: 'normal',
-                    textAlign: 'justify',
-                    display: 'block'
-                   }}>
-                    {data.information?.context.split('\n\n').map((data) => {
-                      return (
-                        <Box sx = {{ background: '#ccc', marginTop: '10px', fontSize: 'inherit', padding: 2 }}>
-                          {data}
-                        </Box>
-                      )
-                    })}
-                  </Typography>
-                )
-              })
+      <Grid  size={{ xs: 3.5, md: 3.5 }} >
+        <Block sx = {{ padding: 1, paddingTop: 9, display: { md: 'block', xs: 'none' }, backgroundColor: theme => theme.palette.primary.secondary + '!important' }}>
+          <Header/> 
+          <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
+            <Typography component='p' sx = {{ fontWeight: '800' }}> Cuộc Trò Chuyện </Typography>
+            <Button component='p' sx = {{ color: 'red', paddingY: 0 }}> Xóa hết </Button>
+          </Box>
+
+          { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 230px)', overflow: 'auto', padding: 1 }}> {
+            sessions.map((session) => (
+              <Box key = {session._id} 
+                sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
+                  borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
+                  onClick = {async (e) => await sessionButtonClick(session)}>
+                <Box >
+                  <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
+                  <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '100', fontSize: '0.725rem !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_description}</Typography>
+                </Box>
+                <IconButton color = 'error' sx = {{ padding: 0.25 }} onClick={async (e) => await removeChatSessionClick(e, session)} >
+                  <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/>
+                  </IconButton>
+              </Box> ))
+
             }
+
+            { !apiHandler.session && sessions.length == 0 && <> Không có cuộc trò chuyện </> }
+          </Box> }
+
+
+          { (apiHandler.session || !sessions) && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 230px)', overflow: 'auto', padding: 1 }}> {
+            ['','',''].map((_session, index) => (
+              <Skeleton key={ index * 82715 } variant="rounded" height={62} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
+            ))
+          } </Box> }
+
+
+
+          <Box sx = {{ padding: 1, paddingTop: 3 }}>
+            <Button 
+              variant='contained' color='info' sx = {{ color: '#022f71' }}
+              startIcon= {<OpenInNewIcon/>}
+              disabled={messageHandler.isProcess}
+              onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>
           </Box>
         </Block>
       </Grid>
+
+      <NewChatModal
+        modalHandler = {{
+          state: openCreateChat,
+          close: () => setOpenCreateChat(false),
+          submitTitle: 'Tạo Cuộc Trò Chuyện',
+          submit: (data) => newChatAction(data)
+        }} />
     </Grid>)
   
   

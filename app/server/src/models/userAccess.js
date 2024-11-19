@@ -3,6 +3,7 @@ const validator = require('validator')
 
 const UserAccessSchema = new mongoose.Schema(
   {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     email: {
       type: String,
       validate: {
@@ -11,6 +12,13 @@ const UserAccessSchema = new mongoose.Schema(
       },
       lowercase: true,
       required: true
+    },
+    token: {
+      type: String,
+      require: true
+    },
+    socketid: {
+      type: String
     },
     ip: {
       type: String,

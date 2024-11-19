@@ -1,29 +1,45 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
-import UnknowPage from '~/components/Page/UnknowPage';
+import { Navigate, useNavigate, useOutletContext } from 'react-router-dom';
+import { useProfile } from '~/apis/Profile';
 import { refresh } from '~/store/actions/authActions';
 
 const AdminRoute = ({ children }) => {
+
   const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const auth = useSelector(state => state.auth)
+  const { processHandler } = useOutletContext();
+  const token = localStorage.getItem('token');
 
-  const accessToken = sessionStorage.getItem('accessToken');
-  const user_profile = JSON.parse(sessionStorage.getItem('userProfile'));
-
-  if(!accessToken || !user_profile) {
-    return <Navigate to="/signin" />;
+  if (!token) {
+    return <Navigate to="/" />;
   }
 
-  if(!useSelector((state) => state.auth.user) || !useSelector((state) => state.auth.token)){
-    // 'administrator', 'academic_administration'
-    if(user_profile?.role && !(['administrator', 'academic_administration'].includes(user_profile.role))){
-      return <UnknowPage/>;
+  useEffect(() => {
+    if(token){
+      if (!auth.loggedIn) {
+        const eventID = processHandler.add('#verifyToken')
+        useProfile.verifyToken(token).then((usr_profile) => {
+          dispatch(refresh(token, usr_profile))
+          processHandler.remove('#verifyToken', eventID)
+          if(usr_profile?.role && !(['administrator', 'academic_administration'].includes(usr_profile?.role))){
+            navigate('/')
+          }
+
+        }).catch((error) => {
+          console.log(error)
+        })
+      } else {
+        const usr_profile = auth.user
+        if(usr_profile?.role && !(['administrator', 'academic_administration'].includes(usr_profile?.role))){
+          navigate('/')
+        }
+      }
     }
+  }, [])
 
-    dispatch(refresh(accessToken, user_profile))
-  }
-
-  return children;
+  return children
 };
 
 export default AdminRoute;

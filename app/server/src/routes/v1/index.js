@@ -1,6 +1,6 @@
 import { Router } from 'express'
+require('~/config/passport')
 const router = Router()
-
 /*
  * Load routes statically and/or dynamically
  */
@@ -8,11 +8,12 @@ const router = Router()
 // Load Auth route
 router.use('/', require('./auth'))
 router.use('/', require('./profile'))
+router.use('/', require('./conservation'))
 
 /*
  * Setup routes for index
  */
-router.get('/', (req, res) => {
+router.get('/admin', (req, res) => {
   res.render('index')
 })
 

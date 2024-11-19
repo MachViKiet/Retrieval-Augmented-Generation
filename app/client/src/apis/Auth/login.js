@@ -21,8 +21,6 @@ export const login = async (data, api_key = null) => {
 			return response.json()
 		})
 		.then(data => {
-			sessionStorage.setItem('accessToken', data.token);
-			sessionStorage.setItem('userProfile', JSON.stringify(data.user));
 			return data
 		})
 		.catch((err) => {

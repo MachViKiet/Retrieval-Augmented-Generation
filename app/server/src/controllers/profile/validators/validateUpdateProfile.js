@@ -1,4 +1,3 @@
-const { validateResult } = require('~/middlewares/utils')
 const { handleError, buildErrObject } = require('~/middlewares/utils')
 // const validator = require('validator')
 const { check, validationResult } = require('express-validator')
