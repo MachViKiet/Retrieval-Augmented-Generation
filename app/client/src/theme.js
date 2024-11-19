@@ -88,7 +88,7 @@ const theme = extendTheme(
       MuiDataGrid: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: "15px",
+            borderRadius: "10px",
             fontSize: "0.725rem",
             border: "none",
             boxShadow:

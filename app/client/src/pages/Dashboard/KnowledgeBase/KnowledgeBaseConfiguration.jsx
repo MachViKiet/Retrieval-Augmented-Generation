@@ -11,9 +11,9 @@ function KnowledgeBaseConfiguration() {
     document.title = 'Chatbot - Quản Lý Tri Thức - Cấu Hình'
     dispatch(sidebarAction({index: 346}))
     dispatch(navigate_subnav({index: 893, openSubSidebar : false}))
-    // return (
-    //   dispatch(sidebarAction({index: null}))
-    // )
+    return () => (
+      dispatch(sidebarAction({index: null}))
+    )
   })
 
   return (

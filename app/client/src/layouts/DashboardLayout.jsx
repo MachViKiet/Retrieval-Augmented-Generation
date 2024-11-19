@@ -157,13 +157,19 @@ function DashboardLayout() {
   
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
+
+  const { processHandler } = useOutletContext();
   
   useEffect(() => {
     setSelectedIndex(selectedIndexInitial)
   }, [selectedIndexInitial])
 
-  const handleListItemClick = (_event, index, address) => {
+  const handleListItemClick = (_event, _index, address) => {
     setIsOpenSideBar(false)
+    const event = processHandler.add('#NavigateTabInDashboard')
+    setTimeout(() => {
+      processHandler.remove('#NavigateTabInDashboard', event)
+    }, 200);
     navigate(address)
   }
 

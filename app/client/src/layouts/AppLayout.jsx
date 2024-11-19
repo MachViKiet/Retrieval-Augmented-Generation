@@ -38,6 +38,10 @@ function AppLayout() {
     },
     remove: (eventCode, eventID) => setIsProcess(prev => {
       return prev.filter((event) => event != eventCode + '_' + eventID )
+    }),
+    list: () => setIsProcess( prev => {
+      console.log('Processing: ', prev)
+      return prev
     })
   }
 

@@ -2,7 +2,7 @@ const Chat_session = require('~/models/chat_session')
 const { buildErrObject } = require('~/middlewares/utils')
 
 /**
- * Gets profile from database by id
+ * Gets conservation from database by id
  * @param {string} id - session id
  */
 export const getConservationFromDB = async (id = '') => {

@@ -24,13 +24,15 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useConservation } from '~/apis/Conservation';
 
+import { useOutletContext } from "react-router-dom";
+
 function NewChatModal({ modalHandler = null }) {
 
   const [name , setName] = useState('')
   const [description , setDescription] = useState('')
   const [notice, setNotice] = useState(null)
 
-  const context = useOutletContext();
+  const { processHandler } = useOutletContext();
 
   useEffect(() => {
     setName('')
@@ -43,10 +45,10 @@ function NewChatModal({ modalHandler = null }) {
     if( name == '' ) {
       setNotice('Vui lòng nhập tên cuộc trò chuyện !')
     } else {
-      await modalHandler.submit({
-        name, description
-      }).then(() => modalHandler?.close())
-        .catch(() => setNotice('Tạo không thành công'))
+      const event = processHandler.add('#createChatSession')
+      await modalHandler.submit({ name, description })
+        .then(() => { processHandler.remove('#createChatSession', event); modalHandler?.close() })
+        .catch(() => { processHandler.remove('#createChatSession', event); setNotice('Tạo không thành công') })
     }
   }
 
@@ -95,8 +97,6 @@ function NewChatModal({ modalHandler = null }) {
     </React.Fragment>
   );
 }
-
-import { useOutletContext } from "react-router-dom";
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -159,7 +159,7 @@ export function ChatGenerator() {
     create_at: null
   })
 
-  const context = useOutletContext();
+  const { processHandler } = useOutletContext();
 
 
   useEffect(() => {
@@ -169,11 +169,6 @@ export function ChatGenerator() {
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
     dispatch(sidebarAction({index: 466}))
-
-    const chatEventID = context.processHandler.add('#ChatGenerate')
-    setTimeout(() => {
-      context.processHandler.remove('#ChatGenerate', chatEventID)
-    }, 200);
 
     ChatWithChatbot.userMessage(socket, (data) => {
       setConservations((prev) => ([...prev, data]))

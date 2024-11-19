@@ -65,21 +65,17 @@ const router = createBrowserRouter([
                 element: <Datasets/>,
               },
               {
-                path: '/knowledge_bases/:id/dataset',
-                element: <Datasets/>,
-              },
-              {
-                path: '/knowledge_bases/:id/configuration',
+                path: '/knowledge_bases/configuration/:id',
                 element: <KnowledgeBaseConfiguration/>,
               },
               {
-                path: '/knowledge_bases/:id/retrieval_testing',
+                path: '/knowledge_bases/retrieval_testing/:id',
                 element: <KnowledgeBaseRetrievalTesting/>,
               }
             ]
           },
           {
-            path: '/knowledge_bases/:id/dataset/:document_id',
+            path: '/knowledge_bases/:collection/:id',
             element: <DatasetDetail/>,
           },
           {
