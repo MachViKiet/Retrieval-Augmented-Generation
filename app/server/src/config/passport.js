@@ -10,14 +10,16 @@ const JwtStrategy = require('passport-jwt').Strategy
  */
 const jwtExtractor = (req) => {
   let token = null
-
-  if (req.headers.authorization) {
+  if (req.headers?.authorization) {
     token = req.headers.authorization.replace('Bearer ', '').trim()
-  } else if (req.body.token) {
+  } else if (req?.body?.token) {
     token = req.body.token.trim()
-  } else if (req.query.token) {
+  } else if (req?.query?.token) {
     token = req.query.token.trim()
+  } else if (req?.auth?.token) {
+    token = req.auth.token.trim()
   }
+
   if (token) {
     // Decrypts token
     token = auth.decrypt(token)
@@ -42,13 +44,7 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
   }).catch((err) => {
     return done(err, false)
   })
-
-  // User.findById(payload.data._id, (err, user) => {
-  //   if (err) {
-  //     return done(err, false)
-  //   }
-  //   return !user ? done(null, false) : done(null, user)
-  // })
 })
+
 
 passport.use(jwtLogin)

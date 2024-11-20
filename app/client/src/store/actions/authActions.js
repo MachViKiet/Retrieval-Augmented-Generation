@@ -4,10 +4,11 @@ export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
 export const REFRESH = "REFRESH"
 
-export const login = (user) => {
+export const login = (session) => {
+  localStorage.setItem('token', session.token);
   return {
     type: LOGIN,
-    payload: user,
+    payload: session,
   };
 };
 
@@ -21,8 +22,7 @@ export const refresh = (token, user) => {
 };
 
 export const logout = () => {
-  sessionStorage.removeItem('accessToken');
-  sessionStorage.removeItem('userProfile');
+  localStorage.removeItem('token');
   return {
     type: LOGOUT,
   };

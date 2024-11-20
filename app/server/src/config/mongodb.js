@@ -9,27 +9,18 @@ const mongoURI = process.env.MONGODB_URI // 'mongodb+srv://machkiet252003:i1SsJi
 const loadModels = require('~/models')
 
 module.exports = async function () {
-  const dbStatusSuccess = '*    MongoDB database connection established successfully'
+  mongoose.set('strictQuery', false)
 
-  const connect_v2 = async () => {
-    try {
-      mongoose.set('strictQuery', false)
-      mongoose.connect(mongoURI)
-      // const database = mongoose.db('luan_van_2024')
-    } catch {() => {
-      process.exit(1)
-    }}
-  }
-
-  await connect_v2()
-
-  mongoose.connection.on('error', () => console.log('\x1b[31m%s\x1b[0m', 'Error connecting to MongoDB'))
-  mongoose.connection.on('disconnected', connect_v2)
-  mongoose.connection.once('open', () => {
-    console.log('\x1b[32m%s\x1b[0m', dbStatusSuccess)
-    console.log('\x1b[32m%s\x1b[0m', `*    NODE_ENV: ${process.env.NODE_ENV}`)
-  })
-
-  loadModels()
-
+  console.log('\n')
+  console.log('\x1b[33m%s\x1b[0m', 'Connecting to MongoDB ...')
+  return await mongoose.connect(mongoURI)
+    .then(() => {
+      console.log('\x1b[32m%s\x1b[0m', '*    MongoDB database connection established successfully')
+      console.log('\x1b[32m%s\x1b[0m', `*    NODE_ENV: ${process.env.NODE_ENV}`)
+      loadModels()
+    })
+    .catch(( err) => {
+      console.log('\x1b[31m%s\x1b[0m', '[Error] Cannot connect to MongoDB')
+      throw new Error(err)
+    })
 }

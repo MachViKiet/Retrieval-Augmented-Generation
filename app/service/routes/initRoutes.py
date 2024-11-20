@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from controllers.exampleController import authController
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import os
 import json
+import requests
 
 from models.model import ChatModel, PhoQueryRouter
 from utils import rag_utils, query_routing
@@ -32,7 +34,8 @@ def preload():
     print("---LOADING ASSETS---")
     chat_model_id = "meta-llama/llama-3-1-70b-instruct"
     global model
-    model = ChatModel(model_id=chat_model_id)
+    #model = ChatModel(model_id=chat_model_id)
+    model = ChatModel()
     print("Chat model loaded.")
     global encoder
     encoder = rag_utils.Encoder()
@@ -43,8 +46,7 @@ def preload():
     global database
     database = rag_utils.MilvusDB(
         host=os.getenv('MILVUS_HOST'), port=os.getenv('MILVUS_PORT'),
-        user=os.getenv('MILVUS_USERNAME'), password=os.getenv('MILVUS_PASSWORD'),
-        server_name=os.getenv('MILVUS_SERVER_NAME'), server_pem_path=os.getenv('MILVUS_SERVER_PEM')
+        user=os.getenv('MILVUS_USERNAME', ""), password=os.getenv('MILVUS_PASSWORD', ""),
     )
     database.load_collection('student_handbook', persist=True)
     print("Database loaded.")
@@ -130,3 +132,38 @@ def get_file():
     #-------------------------------------------
     chunks = rag_utils.get_document(filename, collection_name)
     return jsonify(chunks)
+
+@main.route("/get_collection_schema", methods=["GET"])
+@cross_origin()
+def get_collection_schema():
+    ##PARAMS
+    collection_name = request.args.get('collection_name')
+    #-------------------------------------------
+    schema = database.get_collection_schema(collection_name)
+    return jsonify(schema)
+
+@main.route("/insert_file", methods=["POST"])
+@cross_origin()
+def insert_file():
+    ##PARAMS
+    chunks = request.form['chunks']
+    collection_name = request.form['collection_name']
+    filename = request.form['filename']
+    metadata = request.form['metadata']
+    #-------------------------------------------
+    #Save chunks to local storage
+    if secure_filename(os.getenv('AIRFLOW_TEMP_FOLDER') + filename):
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(chunks, f)
+            requests.post('http://localhost:8080/api/experimental/dags/process_file_and_insert/dag_runs', json={
+                "conf": {
+                    "filename": filename,
+                    "collection_name": collection_name,
+                    "metadata": metadata
+                }})
+    else:
+        return jsonify({'status': 'failed'})
+    #Call API to Airflow to insert file to Milvus
+    
+
+    return jsonify({'status': 'success'})

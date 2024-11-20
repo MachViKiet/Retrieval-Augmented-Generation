@@ -70,18 +70,41 @@ class MongoDB:
         pass
 
 class MilvusDB:
-    def __init__(self, host,port,password,user,server_pem_path,server_name='localhost') -> None:
+    def __init__(self, host,port,password,user,server_pem_path=None,server_name='localhost') -> None:
+        
         connections.connect(alias = 'default',
                         host = host,
-                        port = port,
-                        user = user,
-                        password = password,
-                        server_pem_path=server_pem_path,
-                        server_name = server_name,
-                        secure = True)
+                        port = port)
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
 
+    def get_collection_schema(self, collection_name):
+        schema = Collection(collection_name).describe()['fields']
+        schema_readable = {}
+        def convert_type(type):
+            if type == DataType.INT8 | DataType.INT16 | DataType.INT32 | DataType.INT64 | DataType.FLOAT:
+                return 'number'
+            elif type == DataType.VARCHAR:
+                return 'string'
+            elif type == DataType.ARRAY:
+                return 'list'
+        for meta in schema:
+            if meta['name]'] in ['id', 'embedding', 'chunk_id', 'page_number', 'article', 'is_active']: #Skip these fields
+                continue #TODO: Fix this to achieve better flexibility in the system
+            schema_readable[meta['name']] = {}
+
+            schema_readable[meta['name']]['type'] = convert_type(meta['type'])
+            if schema_readable[meta['name']]['type'] == 'list':
+                schema_readable[meta['name']]['element_type'] = convert_type(meta['params']['element_type'])
+                schema_readable[meta['name']]['max_size'] = meta['params']['max_capacity']
+            elif schema_readable[meta['name']]['type'] == 'string':
+                schema_readable[meta['name']]['max_length'] = meta['params']['max_length']
+
+            schema_readable[meta['name']]['description'] = meta['description']
+            schema_readable[meta['name']]['required'] = False
+        schema_readable['title']['required'] = True
+        return schema_readable
+    
     def load_collection(self, name, persist=False):
         if persist:
             self.persistent_collections.append(name)

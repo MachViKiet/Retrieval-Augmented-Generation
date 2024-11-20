@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import { deepOrange } from '@mui/material/colors';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '~/store/actions/authActions';
 import { navList_1, navList_2 } from "~/config/navList";
@@ -14,12 +14,12 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
 
 const DashboardContainer = styled(Box)(({ theme }) => ({
-  position: 'relative',
   height: '100vh',
   justifyContent: "center",
   alignItems: "center",
   transform: 'scale(1)',
   transition: '0.5s all ease',
+  paddingRight: theme.spacing(2),
 
   '&::before': {
     background: '#ddf3fc',
@@ -149,10 +149,13 @@ const MuiDivider = styled(Box)  (({theme}) => ({
 function DashboardLayout() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  
   const { mode, setMode } = useColorScheme();
+  
   const selectedIndexInitial = useSelector((state) => state.navigate.dashboard?.index ? state.navigate.dashboard.index : null);
   const user_profile = useSelector((state) => state.auth.user ? state.auth.user : {});
-  const [selectedIndex, setSelectedIndex] = useState(selectedIndexInitial)
+  
+  const [selectedIndex, setSelectedIndex] = useState(null)
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
   
   useEffect(() => {
@@ -160,7 +163,6 @@ function DashboardLayout() {
   }, [selectedIndexInitial])
 
   const handleListItemClick = (_event, index, address) => {
-    setSelectedIndex(index)
     setIsOpenSideBar(false)
     navigate(address)
   }
@@ -177,134 +179,64 @@ function DashboardLayout() {
 
   return (
     <DashboardContainer sx = {(theme) => ({
-        paddingRight: theme.spacing(2),
-        paddingLeft: {
-          xs : isOpenSideBar ? 0 : '85px',
-          lg: `calc(${theme.app.SideBar_Width})`
-        },
-      })}>
+        paddingLeft: { xs : isOpenSideBar ? 0 : '85px', lg: `calc(${theme.app.SideBar_Width})` }})}>
 
-      <Overlayer sx = {(theme) =>({
-        [theme.breakpoints.down('lg')]: {
-          display: isOpenSideBar && 'block !important',  
-        },
-      })}
-      onClick={expandClick}/>
+      <Overlayer onClick={expandClick}
+        sx = {(theme) =>({ [theme.breakpoints.down('lg')]: { display: isOpenSideBar && 'block !important' } })} />
 
-      <SidebarContainer sx = {(theme) =>({ 
-        [theme.breakpoints.down('lg')]: {
-          left: isOpenSideBar && '0 !important', 
-        },
-       })}>
+      <SidebarContainer 
+        sx = {(theme) =>({ [theme.breakpoints.down('lg')]: { left: isOpenSideBar && '0 !important' } })}>
 
         <LogoContainer/>
 
         <MuiDivider/>
 
         <List component="nav">
-        {navList_1.map((data, _index) => {
-          const Icon = data.icon
-          return data?.text ? (
-            <MuiListItemButton
-              key = {data.id}
-              selected={(selectedIndex === data.id)}
-              onClick={(event) => handleListItemClick(event, data.id, data.link)}
-            >
-              <ListItemIcon>
-                <Icon/>
-              </ListItemIcon>
-              <ListItemText primary= {data.text}/>
-            </MuiListItemButton>
-          ) : <></>
-        })}
-        <MuiDivider/>
-        {navList_2.map((data, _index) => {
-          const Icon = data.icon
-          return data?.text ? (
-            <MuiListItemButton
-              key = {data.id}
-              selected={(selectedIndex === data.id)}
-              onClick={(event) => handleListItemClick(event, data.id, data.link)}
-            >
-              <ListItemIcon>
-                <Icon/>
-              </ListItemIcon>
-              <ListItemText primary= {data.text}/>
-            </MuiListItemButton>
-          ) : <></>
-        })}
+
+          {navList_1.map((data, _index) => {
+            const Icon = data.icon
+            return data?.text ? (
+              <MuiListItemButton key = {data.id} selected={(selectedIndex === data.id)}
+                onClick={(event) => handleListItemClick(event, data.id, data.link)} >
+                <ListItemIcon> <Icon/> </ListItemIcon>
+                <ListItemText primary= {data.text}/>
+              </MuiListItemButton> ) : <></> })}
+
+          <MuiDivider/>
+          {navList_2.map((data, _index) => {
+            const Icon = data.icon
+            return data?.text ? (
+              <MuiListItemButton key = {data.id} selected={(selectedIndex === data.id)}
+                onClick={(event) => handleListItemClick(event, data.id, data.link)} >
+                <ListItemIcon> <Icon/> </ListItemIcon>
+                <ListItemText primary= {data.text}/>
+              </MuiListItemButton> ) : <></> })}
         </List>
 
         <InformationCard 
-          sx = {{ 
-            background: theme => theme.palette.mode == 'light' ? '#b1cee1' : 'rgb(46, 63, 108)',
-          }}>
-          <Box sx = {{ 
-            display: 'flex',
-            mb: 1,
-            mt: 1,
-            '&:active': {
-              transform: 'scale(0.9)'
-            }
-           }}
-           onClick= {() => navigate('/admin_profile')}>
-              <Avatar 
-              src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
+          sx = {{ background: theme => theme.palette.mode == 'light' ? '#b1cee1' : 'rgb(46, 63, 108)' }}>
+          <Box onClick= {() => navigate('/admin_profile')}
+            sx = {{ display: 'flex', mb: 1, mt: 1, '&:active': { transform: 'scale(0.9)' }}} >
+              <Avatar src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
               sx={{ width: 32, height: 32, bgcolor: deepOrange[500], color: '#fff' }}></Avatar>
               <CardContent sx={{ height: '100%', py: 0, '&:last-child' : {py: 0}, position: 'relation', paddingLeft: 1}}>
                 <Typography component="div" variant="p"
-                sx = {{ 
-                  width: '108px',
-                  overflow: 'hidden',
-                  fontSize:'0.725rem',
-                  color :theme => theme.palette.mode == 'light' ? '#000' : '#fff',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  cursor:'pointer',
-                  fontWeight: '800'
-                 }} >
+                sx = {{ width: '108px', overflow: 'hidden', fontSize:'0.725rem', color :theme => theme.palette.mode == 'light' ? '#000' : '#fff',
+                  whiteSpace: 'nowrap', textOverflow: 'ellipsis', cursor:'pointer', fontWeight: '800' }} >
                   {user_profile?.name ? user_profile.name : 'Không tồn tại'}
                 </Typography>
                 <Typography
-                  sx={{ 
-                    color: 'text.secondary',
-                    fontSize: '0.625rem !important',
-                    lineHeight: '120%',
-                    fontWeight: '400',
-                    color: theme => theme.palette.mode == 'light' ? '#505766' : 'rgb(133, 141, 160)',
-                    width: '128px',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    cursor:'pointer'
-                   }}
-                >
+                  sx={{ color: 'text.secondary', fontSize: '0.625rem !important', lineHeight: '120%', fontWeight: '400', color: theme => theme.palette.mode == 'light' ? '#505766' : 'rgb(133, 141, 160)',
+                    width: '128px', overflow: 'hidden', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor:'pointer' }} >
                   {user_profile?.email ? user_profile.email : 'Không tồn tại'}
                 </Typography>
               </CardContent>
           </Box>
 
-          <ListItemButton sx = {{ 
-              background: '#ffffffe8',
-              borderRadius: '8px',
-              '& > div' : {
-                color: '#000',
-              },
-              '&:hover' : {
-                background: '#fff',
-                fontWeight: 700,   
-              },
-              '&:active' : {
-                transform: 'scale(0.9)'
-              }
-             }}
-            onClick= {logoutClick}
-          >
-            <ListItemIcon>
-              <ReplyAllIcon/>
-            </ListItemIcon>
+          <ListItemButton onClick= {logoutClick}
+          sx = {{ background: '#ffffffe8', borderRadius: '8px', 
+            '& > div' : { color: '#000', }, '&:hover' : { background: '#fff', fontWeight: 700,    }, '&:active' : { transform: 'scale(0.9)' } }} >
+            <ListItemIcon> <ReplyAllIcon/> </ListItemIcon>
             <ListItemText primary= "Đăng Xuất" />
           </ListItemButton>
         </InformationCard>
@@ -312,17 +244,12 @@ function DashboardLayout() {
         <Box sx = {{ display: 'flex', justifyContent: 'center', paddingTop: '10px' }}>
           { mode == 'light' ? <Button onClick={() => setMode('dark')} startIcon = {<LightModeIcon/>} sx = {{ color: '#fff' }}>Sáng</Button>
           : ( mode == 'dark' ? <Button onClick={() => setMode('system')} startIcon = {<DarkModeIcon/>} sx = {{ color: '#fff' }}>Tối</Button>
-           :<Button onClick={() => setMode('light')} startIcon = {<SettingsSystemDaydreamIcon/>} sx = {{ color: '#fff' }}>Hệ thống</Button> )
-          }
-        </Box>
+           :<Button onClick={() => setMode('light')} startIcon = {<SettingsSystemDaydreamIcon/>} sx = {{ color: '#fff' }}>Hệ thống</Button> ) } </Box>
         
       </SidebarContainer>
 
       <SubSidebarContainer sx = {(theme) => ({
-          [theme.breakpoints.down('lg')]: {
-          left: isOpenSideBar && '-100% !important', 
-        },
-      })}>
+          [theme.breakpoints.down('lg')]: { left: isOpenSideBar && '-100% !important' } })}>
         <LogoContainer/>
 
         <MuiDivider/>
@@ -331,77 +258,46 @@ function DashboardLayout() {
           {navList_1.map((data, _index) => {
             const Icon = data.icon
             return data?.text ? (
-              <MuiListItemButton
-                key = {data.id}
-                selected={selectedIndex === data.id}
-                onClick={(event) => handleListItemClick(event, data.id, data.link)}
-              >
-                <ListItemIcon sx = {{ display: 'contents' }}>
-                  <Icon/>
-                </ListItemIcon>
+              <MuiListItemButton key = {data.id} selected={selectedIndex === data.id}
+                onClick={(event) => handleListItemClick(event, data.id, data.link)} >
+                <ListItemIcon sx = {{ display: 'contents' }}> <Icon/> </ListItemIcon>
               </MuiListItemButton>
-            ) : <></>
-          })}
+            ) : <></> })}
+          
           <MuiDivider/>
+
           {navList_2.map((data, _index) => {
             const Icon = data.icon
             return data?.text ? (
-              <MuiListItemButton
-                key = {data.id}
-                selected={selectedIndex === data.id}
-                onClick={(event) => handleListItemClick(event, data.id, data.link)}
-              >
-                <ListItemIcon sx = {{ display: 'contents' }}>
-                  <Icon/>
-                </ListItemIcon>
+              <MuiListItemButton key = {data.id} selected={selectedIndex === data.id}
+                onClick={(event) => handleListItemClick(event, data.id, data.link)} >
+                <ListItemIcon sx = {{ display: 'contents' }}> <Icon/> </ListItemIcon>
               </MuiListItemButton>
-            ) : <></>
-          })}
+            ) : <></> })}
         </List>
 
 
         <MuiListItemButton onClick={expandClick}>
-            <ListItemIcon sx = {{ display: 'contents' }}>
-              <KeyboardArrowRightIcon/>
-            </ListItemIcon>
+            <ListItemIcon sx = {{ display: 'contents' }}> <KeyboardArrowRightIcon/> </ListItemIcon>
         </MuiListItemButton>
 
         <Box 
-          sx = {{ 
-            display: 'flex',
-            justifyContent:'center',
-            alignItems: 'center',
-            mb: 2,
-            mt: 1
-           }}>
-            <Avatar 
-            src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
+          sx = {{ display: 'flex', justifyContent:'center', alignItems: 'center', mb: 2, mt: 1 }}>
+          <Avatar src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
             sx={{ width: 36, height: 36, fontSize: '18px', bgcolor: deepOrange[500], color: '#fff' }}>K</Avatar>
         </Box>
-        <ListItemButton sx = {{ 
-            background: '#ffffffe8',
-            borderRadius: '8px',
-            '& > div' : {
-              color: '#000',
-            },
-            '&:hover' : {
-              background: '#fff',
-              fontWeight: 700,   
-            }
-            }}
-          onClick= {logoutClick}
-        >
-          <ListItemIcon sx = {{ display: 'contents' }}>
-            <ReplyAllIcon/>
-          </ListItemIcon>
+        
+        <ListItemButton onClick= {logoutClick}
+          sx = {{ background: '#ffffffe8', borderRadius: '8px', '& > div' : { color: '#000' }, '&:hover' : { background: '#fff', fontWeight: 700 }}}>
+          <ListItemIcon sx = {{ display: 'contents' }}> <ReplyAllIcon/> </ListItemIcon>
         </ListItemButton >
 
       </SubSidebarContainer>
 
-      {/* Content */}
       <ContentContainer sx={{ flexGrow: 1, p: 2, pr: '2px' }}>
-        <Outlet/>
+        <Outlet context={useOutletContext()}/>
       </ContentContainer>
+
     </DashboardContainer>       
   )
 }
