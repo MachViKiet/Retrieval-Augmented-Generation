@@ -34,7 +34,8 @@ def preload():
     print("---LOADING ASSETS---")
     chat_model_id = "meta-llama/llama-3-1-70b-instruct"
     global model
-    model = ChatModel(model_id=chat_model_id)
+    #model = ChatModel(model_id=chat_model_id)
+    model = ChatModel()
     print("Chat model loaded.")
     global encoder
     encoder = rag_utils.Encoder()

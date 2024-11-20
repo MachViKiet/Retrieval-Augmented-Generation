@@ -70,7 +70,7 @@ class MongoDB:
         pass
 
 class MilvusDB:
-    def __init__(self, host,port,password,user,server_pem_path,server_name='localhost') -> None:
+    def __init__(self, host,port,password,user,server_pem_path=None,server_name='localhost') -> None:
         
         connections.connect(alias = 'default',
                         host = host,

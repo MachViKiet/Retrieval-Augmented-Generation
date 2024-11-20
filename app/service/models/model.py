@@ -44,8 +44,8 @@ Context (encased in backticks):
 {context}
 ```
 Query: {question}
-Always answer in Vietnamese, make sure the entire answer is in Vietnamese. At the end, provide the source you used for your answers (ie. title, page number (if available)).\
-Write the answer in markdown format. Use headings to make the answer more readable. Do not write many consecutive paragraphs without headings.\
+Always answer in Vietnamese. At the end, provide the source you used for your answers (ie. title, page number (if available)).\
+Remember to write the answer in markdown format. Use headings in markdown to make the answer more readable. Do not write many consecutive paragraphs without headings.\
 Do not add consecutive newlines.
 Answer: 
 """
