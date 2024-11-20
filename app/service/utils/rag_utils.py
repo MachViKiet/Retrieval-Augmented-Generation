@@ -121,7 +121,7 @@ class MilvusDB:
     
     def similarity_search(self, collection:str, query_embeddings, k: int = 3, search_params=None, output_fields=['title','article'], filters: dict = None):
         results = {}
-        
+        source = []
         if search_params is None:
             search_params = {
                 "metric_type": "L2",
@@ -140,15 +140,17 @@ class MilvusDB:
                                                                                                     # for different collections
             )[0]
             for r in search_results:
-                results[r.distance] = r.entity
+                results[r.distance] = (r.entity, c)
         if len(results) == 0: #No matching documents
             return -1
         #Sort by distance and return only k results
         myKeys = list(results.keys())
         myKeys.sort()
         myKeys = myKeys[:k]
-        sorted_list = [results[i] for i in myKeys]
-        return sorted_list
+        sorted_list = [results[i][0] for i in myKeys]
+        #Return the collection name of the source document
+        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url')} for i in myKeys]
+        return sorted_list, source
 
 ##UTILITY FUNCTIONS
 # def load_and_split_pdfs(file_paths: list, chunk_size: int = 256):

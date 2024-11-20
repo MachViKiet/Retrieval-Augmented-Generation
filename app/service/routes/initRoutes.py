@@ -90,7 +90,7 @@ def search():
         chosen_collection: ['title', 'article']
     }
     query_embeddings = encoder.embedding_function.embed_query("query: " + query)
-    search_results = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields, k=3, filters=filter_expressions)
+    search_results, source = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields, k=3, filters=filter_expressions)
     if search_results != -1:
         context = rag_utils.create_prompt_milvus(query, search_results)
     else:
@@ -101,7 +101,8 @@ def search():
     #     'context': context
     #     })
     return jsonify({
-        'context': context
+        'context': context,
+        'source': source
     })
 
 @main.route("/generate", methods=["GET"])
