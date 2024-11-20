@@ -90,7 +90,7 @@ def search():
         chosen_collection: ['title', 'article']
     }
     query_embeddings = encoder.embedding_function.embed_query("query: " + query)
-    search_results = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields, k=3, filters=filter_expressions)
+    search_results, source = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields, k=3, filters=filter_expressions)
     if search_results != -1:
         context = rag_utils.create_prompt_milvus(query, search_results)
     else:
@@ -101,7 +101,8 @@ def search():
     #     'context': context
     #     })
     return jsonify({
-        'context': context
+        'context': context,
+        'source': source
     })
 
 @main.route("/generate", methods=["GET"])
@@ -155,7 +156,7 @@ def insert_file():
     if secure_filename(os.getenv('AIRFLOW_TEMP_FOLDER') + filename):
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(chunks, f)
-            requests.post('http://localhost:8080/api/experimental/dags/process_file_and_insert/dag_runs', json={
+            requests.post(f'http://{os.getenv('AIRFLOW_HOST')}:{os.getenv('AIRFLOW_PORT')}/dags/{os.getenv('AIRFLOW_DAGID_INSERT')}/dagRuns', json={
                 "conf": {
                     "filename": filename,
                     "collection_name": collection_name,
