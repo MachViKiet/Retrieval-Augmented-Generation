@@ -78,7 +78,7 @@ class MilvusDB:
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
 
-    def get_collection_schema(self, collection_name):
+    def get_collection_schema(self, collection_name, readable=False):
         schema = Collection(collection_name).describe()['fields']
         schema_readable = {}
         def convert_type(type):
@@ -95,7 +95,7 @@ class MilvusDB:
 
             schema_readable[meta['name']]['type'] = convert_type(meta['type'])
             if schema_readable[meta['name']]['type'] == 'list':
-                schema_readable[meta['name']]['element_type'] = convert_type(meta['params']['element_type'])
+                schema_readable[meta['name']]['element_type'] = convert_type(meta['element_type'])
                 schema_readable[meta['name']]['max_size'] = meta['params']['max_capacity']
             elif schema_readable[meta['name']]['type'] == 'string':
                 schema_readable[meta['name']]['max_length'] = meta['params']['max_length']
@@ -278,7 +278,7 @@ For any metadata whose value is a list, write the list as a string (surrounded b
 User's query: {query}
 Schema:
 {schema}
-Always answer in JSON format.
+Always answer as a JSON object.
 Answer:
 """
     fields = Collection(collection_name).describe()['fields']
@@ -303,8 +303,12 @@ Answer:
             elif type(v) is list:
                 result[k] = [x.lower() for x in v]
     except json.JSONDecodeError: #Wrong format
-        print("Metadata Extraction: Couldn't decode JSON - " + result)
-        result = -1
+        try:
+            result = result.replace("`", '').replace("json", '')
+            result = json.loads(result)
+        except json.JSONDecodeError:
+            print("Metadata Extraction: Couldn't decode JSON - " + result)
+            result = -1
     return result
 
 def get_document(filename, collection_name):
