@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { navigate_subnav, navigate as sidebarAction } from '~/store/actions/navigateActions'
 import MuiTable from '~/components/MuiTable/MuiTable';
 import { renderStatus } from '~/components/MuiTable/cell-renderers/status';
 import {renderControlledSwitches} from '~/components/MuiTable/cell-renderers/switch'
 import { renderTableAction } from '~/components/MuiTable/MuiTableAction';
 import { renderLink } from '~/components/MuiTable/cell-renderers/link';
-import { Box, Breadcrumbs, Button, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Button, TextField, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useCollection } from '~/apis/Collection';
@@ -73,44 +72,61 @@ const useData = (documents) => {
 }
 
 function Datasets() {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const token = useSelector(state => state.auth.token)
-  const { processHandler, navHandler } = useOutletContext();
   const [collectionWithDocuments, setCollectionWithDocuments] = useState(null)
+  const [openModalUpload, setOpenModalUpload] = useState(false)
+
+  const { processHandler, dashboard, subDashboard } = useOutletContext();
 
   useEffect(() => {
-    document.title = 'Chatbot - Quản Lý Tri Thức'
-    dispatch(sidebarAction({index: 346}))
-    dispatch(navigate_subnav({index: 452, openSubSidebar : false}))
+    document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
+    dashboard.navigate.active(346)
 
-    navHandler.addActions( [
-        { _id: 452, title: "Tập Dữ Liệu", icon: <DescriptionOutlinedIcon/>, link: "/knowledge_bases/" + id },
-        { _id: 564, title: "Thử Nghiệm", icon: <BugReportOutlinedIcon/>, link: "/knowledge_bases/retrieval_testing/" + id },
-        { _id: 893, title: "Cấu Hình", icon: <AdjustOutlinedIcon/>, link: "/knowledge_bases/configuration/" + id }]
+    subDashboard.navigate.active(452)
+    subDashboard.addActions( [
+      { _id: 452, title: "Tập Dữ Liệu", icon: <DescriptionOutlinedIcon/>, link: "/knowledge_bases/" + id },
+      { _id: 564, title: "Thử Nghiệm", icon: <BugReportOutlinedIcon/>, link: "/knowledge_bases/retrieval_testing/" + id },
+      { _id: 893, title: "Cấu Hình", icon: <AdjustOutlinedIcon/>, link: "/knowledge_bases/configuration/" + id }]
     )
-
-    return () => (
-      dispatch(sidebarAction({index: null}))
+    
+    return () => ( 
+      dashboard.navigate.active('#'),
+      subDashboard.navigate.active('#')
     )
   }, [])
 
   const { id } = useParams();
 
-  useEffect(() => {
-    if(token){
-      const event = processHandler.add('#loadCollectionWithDocument')
-      loadDocumentByCollectionID(id, token).then((collectionWithDocuments) => {
-        setCollectionWithDocuments(collectionWithDocuments)
-        navHandler.addTitle(collectionWithDocuments.collection_name)
-        processHandler.remove('#loadCollectionWithDocument', event)
-      }).catch((err) => console.log(err))
-    }
-  }, [token])
-
   const loadDocumentByCollectionID = async (collection_id, token) => {
     return useCollection.getDocumentInCollection(collection_id, token).then((document) => document )
   }
+
+  const loadCollectionSchema = async (collection_id, token) => {
+    return useCollection.getCollectionSchema(collection_id, token).then((document) => document )
+  }
+
+  useEffect(() => {
+    if(token){
+      const loadCollectionWithDocument = processHandler.add('#loadCollectionWithDocument')
+      loadDocumentByCollectionID(id, token).then((collectionWithDocuments) => {
+        setCollectionWithDocuments(collectionWithDocuments)
+        subDashboard.addTitle(collectionWithDocuments.collection_name)
+        processHandler.remove('#loadCollectionWithDocument', loadCollectionWithDocument)
+
+
+        const loadCollectionSchemaEvent = processHandler.add('#loadCollectionSchema')
+        loadCollectionSchema(collectionWithDocuments?.id, token).then((schema) => {
+          console.log('schema: ', schema)
+        }).catch((err) => console.log(err))
+        .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionSchemaEvent))
+
+
+      }).catch((err) => console.log(err))
+      .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionWithDocument))
+
+    }
+  }, [token])
 
   return (
     <>
@@ -126,21 +142,86 @@ function Datasets() {
             <TopicOutlinedIcon/> 
           </Link>,
           <Typography key={id}>
-            {collectionWithDocuments?.collection_name} || 'Không có tên kho dữ liệu'
+            {collectionWithDocuments?.collection_name || 'Không có tên kho dữ liệu' }
           </Typography>,
         </Breadcrumbs>
         
         <Box>
-          <Button startIcon = {<AddIcon/>}
+          <Button startIcon = {<AddIcon/>} component="label" role={undefined} tabIndex={-1}
+            // onClick={() => setOpenModalUpload(true)}
             sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
-              Thêm Tài Liệu</Button>
+              Thêm Tài Liệu
+              <VisuallyHiddenInput
+                type="file"
+                onChange={(event) => console.log(event.target.files)}
+                multiple
+              />
+          </Button>
         </Box>
       </Box>
+      
       <Box sx={{ maxHeight: 'calc(100vh - 130px)', height: '100%',  width: '100%', background: 'transparent' }}>
         <MuiTable useData = {useData(collectionWithDocuments?.documents)}/>
       </Box>
+
+      <UploadModal
+        modalHandler = {{
+          state: openModalUpload,
+          close: () => setOpenModalUpload(false),
+          submitTitle: 'Lưu'
+        }} />
     </>
   )
 }
 
 export default Datasets
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import InputFileUpload, { VisuallyHiddenInput } from '~/components/Mui/InputFileUpload';
+
+function UploadModal({ modalHandler = null }) {
+
+  const [name , setName] = useState('')
+  const [description , setDescription] = useState('')
+  const [notice, setNotice] = useState(null)
+
+  const { processHandler } = useOutletContext();
+
+  useEffect(() => {
+    setName('')
+    setDescription('')
+    setNotice(null)
+  },[])
+
+  return (
+    <React.Fragment>
+      <Dialog
+        open={modalHandler?.state}
+        onClose={modalHandler?.close}>
+        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+          <Box sx = {{ width: '50vw', maxWidth: '450px', display: 'flex', alignItems: 'center', gap: 2}}>
+            <CloudUploadOutlinedIcon/> Upload Tài Liệu
+          </Box>
+        </DialogTitle>
+        <DialogContent >
+          {/* <DialogContentText sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            
+          </DialogContentText> */}
+          <InputFileUpload/>
+
+
+        </DialogContent>
+        <DialogActions>
+          <Button sx = {{ color: theme => theme.palette.text.secondary }}>{modalHandler.submitTitle}</Button>
+          {/* <Button sx = {{ color: '#ff3c3c' }} onClick={modalHandler?.close}>Đóng</Button> */}
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  );
+}

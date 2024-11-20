@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import AuthLayout from '~/layouts/AuthLayout'
-import DashboardLayout from '~/layouts/DashboardLayout';
+import DashboardLayout from '~/layouts/DashboardLayout/DashboardLayout';
 import Dashboard from '~/pages/Dashboard/Dashboard';
 import SignIn from '~/pages/SignIn';
 import AdminRoute from './ProtectedRoute/AdminRoute';
@@ -10,11 +10,11 @@ import KnowledgeBase from '~/pages/Dashboard/KnowledgeBase';
 import ModelsManager from '~/pages/Dashboard/ModelsManager';
 import AccountManager from '~/pages/Dashboard/AccountManager';
 import Setting from '~/pages/Dashboard/Setting';
-import Datasets from '~/pages/Dashboard/KnowledgeBase/DatasetPage/Datasets';
+import Datasets from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail';
 import DashboardWithSubNavLayout from '~/layouts/DashboardLayout/DashboardWithSubNavLayout';
-import KnowledgeBaseConfiguration from '~/pages/Dashboard/KnowledgeBase/KnowledgeBaseConfiguration';
-import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/KnowledgeBaseRetrievalTesting';
-import DatasetDetail from '~/pages/Dashboard/KnowledgeBase/DatasetPage/DatasetDetail';
+import KnowledgeBaseConfiguration from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Configuration';
+import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/RetrievalTesting';
+import DatasetDetail from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Dataset';
 import UnknowPage from '~/components/Page/UnknowPage';
 import { Profile as UserProfile} from '~/pages/User/Profile';
 import { Profile as AdminProfile} from '~/pages/Dashboard/Profile';

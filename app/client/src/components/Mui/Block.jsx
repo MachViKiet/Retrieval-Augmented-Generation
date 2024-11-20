@@ -1,6 +1,6 @@
 import { Paper } from "@mui/material";
 
-function Block({sx, children}) {
+function Block({sx = {}, children}) {
   return (
     <Paper sx = {theme => ({
       ...theme.typography.body2,

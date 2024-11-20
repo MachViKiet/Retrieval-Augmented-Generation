@@ -1,9 +1,8 @@
 import Box from '@mui/material/Box'
-import Block from '~/components/Block'
+import Block from '~/components/Mui/Block'
 import Grid from '@mui/material/Grid2'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { navigate as sidebarAction } from '~/store/actions/navigateActions'
+import { useSelector } from 'react-redux'
 import { Skeleton, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
@@ -11,8 +10,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useCollection } from '~/apis/Collection'
-import { getDate } from '~/utils/GetDate'
-import { formatTime, getTime } from '~/utils/GetTime'
+import { formatTime } from '~/utils/GetTime'
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.mode == 'dark' ? '#03082ecc' : '#0087d7', width: '100%', 
@@ -21,24 +19,18 @@ const Header = styled(Box) (({theme}) => ({
 
 function KnowledgeBase() {
 
-  const PARENT_DIRECTION = '/knowledge_bases/'
-
-  const dispatch = useDispatch()
   const nagative = useNavigate()
   
-  const {processHandler } = useOutletContext();
-
+  const PARENT_DIRECTION = '/knowledge_bases/'
   const token = useSelector(state => state.auth.token)
-
   const [Collections, setCollections] = useState(null)
+  const {processHandler, dashboard } = useOutletContext();
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức'
-    dispatch(sidebarAction({index: 346}))
-
-    return () => (
-      dispatch(sidebarAction({index: null}))
-    )
+    dashboard.navigate.active(346)
+    
+    return () => ( dashboard.navigate.active('#') )
   }, [])
 
   useEffect(() => {

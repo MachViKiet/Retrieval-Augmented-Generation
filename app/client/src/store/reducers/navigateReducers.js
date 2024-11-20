@@ -1,13 +1,9 @@
-import { NAVIGATE, NAVIGATE_SUBNAV } from "../actions/navigateActions";
+import { NAVIGATE } from "../actions/navigateActions";
 
 const initialState = {
   dashboard: {
     index: null,
-  },
-  subnav: {
-    openSubSidebar: false,
-    index: null,
-  },
+  }
 };
 
 const navigate = (state = initialState, action) => {
@@ -16,11 +12,6 @@ const navigate = (state = initialState, action) => {
       return {
         ...state,
         dashboard: action.payload,
-      };
-    case NAVIGATE_SUBNAV:
-      return {
-        ...state,
-        subnav: action.payload,
       };
     default:
       return state;

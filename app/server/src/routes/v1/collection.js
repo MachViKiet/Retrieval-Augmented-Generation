@@ -7,10 +7,12 @@ const requireAuth = passport.authenticate('jwt', {
 })
 const {
   loadCollectionsList,
-  loadDocumentList
+  loadDocumentList,
+  getCollectionSchema
 } = require('~/controllers/collection')
 
 router.get('/', requireAuth, trimRequest.all, loadCollectionsList)
+router.get('/schema', requireAuth, trimRequest.all, getCollectionSchema)
 router.get('/documents', requireAuth, trimRequest.all, loadDocumentList)
 
 module.exports = router

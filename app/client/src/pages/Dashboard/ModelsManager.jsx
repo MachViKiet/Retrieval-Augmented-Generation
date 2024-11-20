@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import UnknowPage from '../../components/Page/UnknowPage';
+import { useOutletContext } from 'react-router-dom';
 
 function ModelsManager() {
 
-  const dispatch = useDispatch()
+  const {processHandler, dashboard } = useOutletContext();
+
   useEffect(() => {
-    document.title = 'Chatbot - Quản Lý Mô Hình';
-    dispatch(sidebarAction({index: 242}))
-    // return (
-    //   dispatch(sidebarAction({index: null}))
-    // )
+    document.title = 'Chatbot - Trang Chủ';
+    dashboard.navigate.active(242)
+
+    return () => ( dashboard.navigate.active('#') )
   })
 
   return (

@@ -1,13 +1,11 @@
-import { Box, Breadcrumbs, Button, Link, Tooltip, Typography } from '@mui/material'
+import { Box, Breadcrumbs, Link, Tooltip, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
 import MuiTable from '~/components/MuiTable/MuiTable';
 import {renderControlledSwitches} from '~/components/MuiTable/cell-renderers/switch'
 import { useDispatch, useSelector } from 'react-redux';
-import { navigate_subnav, navigate as sidebarAction } from '~/store/actions/navigateActions'
-import Documents from '~/components/Documents/Documents';
-import Block from '~/components/Block';
+import Block from '~/components/Mui/Block';
 import { renderTableAction } from '~/components/MuiTable/MuiTableAction';
 import { useDocument } from '~/apis/Document';
 import ExternalWebsite from '~/components/ExternalWebsite ';
@@ -78,20 +76,28 @@ function DatasetDetail() {
 
   const { id, collection } = useParams();
 
-  const { processHandler } = useOutletContext();
   const token = useSelector(state => state.auth.token)
 
   const [documentWithChunk, setDocumentWithChunk] = useState(null)
- 
+
+  const {processHandler, dashboard } = useOutletContext();
+
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
-    dispatch(sidebarAction({index: 346}))
-    dispatch(navigate_subnav({index: 0, openSubSidebar : true}))
-    setScroll(0)
-    return () => (
-      dispatch(sidebarAction({index: null}))
-    )
+    dashboard.navigate.active(346)
+    
+    return () => ( dashboard.navigate.active('#') )
   }, [])
+ 
+  // useEffect(() => {
+  //   document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
+  //   dispatch(sidebarAction({index: 346}))
+  //   dispatch(navigate_subnav({index: 0, openSubSidebar : true}))
+  //   setScroll(0)
+  //   return () => (
+  //     dispatch(sidebarAction({index: null}))
+  //   )
+  // }, [])
 
   useEffect(() => {
     if(token) {

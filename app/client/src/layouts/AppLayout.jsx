@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { useProfile } from '~/apis/Profile'
-import { connectSocket, disconnectSocket } from '~/socket'
+import { connectSocket } from '~/socket'
 import { refresh } from '~/store/actions/authActions'
 
 function AppLayout() {
@@ -26,9 +26,7 @@ function AppLayout() {
     document.getElementsByTagName("head")[0].appendChild(link);
   };
 
-  const generateRandomId = () => {
-    return Math.floor(Math.random() * 1000000000) + 1;
-  };
+  const generateRandomId = () => { return Math.floor(Math.random() * 1000000000) + 1 };
 
   const processHandler = {
     add : (eventCode) => {
