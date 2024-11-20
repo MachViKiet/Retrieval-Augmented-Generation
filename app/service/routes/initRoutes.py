@@ -156,7 +156,7 @@ def insert_file():
     if secure_filename(os.getenv('AIRFLOW_TEMP_FOLDER') + filename):
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(chunks, f)
-            requests.post('http://localhost:8080/api/experimental/dags/process_file_and_insert/dag_runs', json={
+            requests.post(f'http://{os.getenv('AIRFLOW_HOST')}:{os.getenv('AIRFLOW_PORT')}/dags/{os.getenv('AIRFLOW_DAGID_INSERT')}/dagRuns', json={
                 "conf": {
                     "filename": filename,
                     "collection_name": collection_name,

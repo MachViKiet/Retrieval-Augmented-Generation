@@ -89,7 +89,7 @@ class MilvusDB:
             elif type == DataType.ARRAY:
                 return 'list'
         for meta in schema:
-            if meta['name]'] in ['id', 'embedding', 'chunk_id', 'page_number', 'article', 'is_active']: #Skip these fields
+            if meta['name'] in ['id', 'embedding', 'chunk_id', 'article', 'is_active']: #Skip these fields
                 continue #TODO: Fix this to achieve better flexibility in the system
             schema_readable[meta['name']] = {}
 
