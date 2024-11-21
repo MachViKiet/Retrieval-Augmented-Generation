@@ -149,10 +149,10 @@ def get_collection_schema():
 @cross_origin()
 def insert_file():
     ##PARAMS
-    chunks = request.form['chunks']
+    chunks = json.loads(request.form['chunks'])
     collection_name = request.form['collection_name']
     filename = request.form['filename']
-    metadata = request.form['metadata']
+    metadata = json.loads(request.form['metadata'])
     #-------------------------------------------
     #Save chunks to local storage
     if secure_filename(filename):
