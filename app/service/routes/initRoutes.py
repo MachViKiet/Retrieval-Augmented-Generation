@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from controllers.exampleController import authController
 from werkzeug.utils import secure_filename
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 from dotenv import load_dotenv
 import os
 import json
@@ -125,10 +127,10 @@ def generate():
 def get_file():
     ##PARAMS
     if request.method == 'POST':
-        filename = request.form['filename']
+        filename = request.form['document_id']
         collection_name = request.form['collection_name']
     elif request.method == 'GET':
-        filename = request.args.get['filename'] 
+        filename = request.args.get['document_id'] 
         collection_name = request.args.get['collection_name']
     #-------------------------------------------
     chunks = rag_utils.get_document(filename, collection_name)
@@ -156,15 +158,30 @@ def insert_file():
     if secure_filename(os.getenv('AIRFLOW_TEMP_FOLDER') + filename):
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(chunks, f)
-            requests.post('http://localhost:8080/api/experimental/dags/process_file_and_insert/dag_runs', json={
+            r = requests.post(f'http://{os.getenv('AIRFLOW_HOST')}:{os.getenv('AIRFLOW_PORT')}/dags/{os.getenv('AIRFLOW_DAGID_INSERT')}/dagRuns', json={
                 "conf": {
                     "filename": filename,
                     "collection_name": collection_name,
                     "metadata": metadata
                 }})
+            response = r.json()
+            return jsonify({
+                'dag_run_id': response['dag_run_id'],
+                'dag_id': response['dag_id'],
+                'state': response['state']
+            })
     else:
         return jsonify({'status': 'failed'})
-    #Call API to Airflow to insert file to Milvus
     
-
     return jsonify({'status': 'success'})
+
+@main.route("/chunk_file", methods=["POST"])
+@cross_origin()
+def chunk_file():
+    ##PARAMS
+    file = request.files['file']
+    #-------------------------------------------
+    splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=75)
+    data = file.read().decode('utf-8')
+    chunks = splitter.split_text(data)
+    return jsonify(chunks)
