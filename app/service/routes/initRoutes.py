@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 import json
 import requests
+from requests.auth import HTTPBasicAuth
 
 from models.model import ChatModel, PhoQueryRouter
 from utils import rag_utils, query_routing
@@ -163,7 +164,8 @@ def insert_file():
                     "filename": filename,
                     "collection_name": collection_name,
                     "metadata": metadata
-                }})
+                }},
+                auth=HTTPBasicAuth(os.getenv('AIRFLOW_USERNAME'), os.getenv('AIRFLOW_PASSWORD')))
             response = r.json()
             return jsonify({
                 'dag_run_id': response['dag_run_id'],
