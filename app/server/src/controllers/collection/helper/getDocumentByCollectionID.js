@@ -12,11 +12,15 @@ export const getDocumentByCollectionID = async (id = '') => {
         _id: new ObjectId(id) // Điều kiện tìm kiếm user có userID = 124
       }
     },
+    { $sort: { createdAt: -1 } },
     {
       $lookup: {
         from: 'documents',
-        localField: '_id',
-        foreignField: 'collection_id',
+        let: { collectionId: '$_id' }, // Biến để truyền _id vào pipeline
+        pipeline: [
+          { $match: { $expr: { $eq: ['$collection_id', '$$collectionId'] } } }, // Match theo collection_id
+          { $sort: { createdAt: -1 } } // Sắp xếp documents giảm dần theo createdAt
+        ],
         as: 'documents' // Tên trường sau khi join
       }
     }
