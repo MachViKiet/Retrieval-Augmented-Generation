@@ -57,7 +57,14 @@ const StyledChip = styled(Chip)(({ theme }) => ({
     color: (theme.vars || theme).palette.success.dark,
     border: `1px solid ${(theme.vars || theme).palette.success.main}`,
   },
-  '&.Processing': {
+  '&.pending': {
+    backgroundColor: '#f3ff96 !important',
+    width: '95px',
+    justifyContent: 'center',
+    color: (theme.vars || theme).palette.success.dark,
+    border: `1px solid ${(theme.vars || theme).palette.success.main}`,
+  },
+  '&.processing': {
     backgroundColor: '#ffa72614',
     color: (theme.vars || theme).palette.warning.dark,
     border: `1px solid ${(theme.vars || theme).palette.warning.main}`,
@@ -75,20 +82,20 @@ const Status = (props) => {
   let icon = null;
   if (status === 'rejected') {
     icon = <ReportProblemIcon className="icon" />;
+  } else if (status === 'processed') {
+    icon = <DoneIcon className="icon" />;
+  } else if (status === 'processing') {
+    icon = <SyncIcon className="icon" />;
+
+  } else if (status === 'basic') {
+    icon = <AutoFixNormalOutlinedIcon className="icon" />;
+
   } else if (status === 'Open') {
     icon = <InfoIcon className="icon" />;
   } else if (status === 'PartiallyFilled') {
     icon = <AutorenewIcon className="icon" />;
   } else if (status === 'Filled') {
     icon = <DoneIcon className="icon" />;
-  } else if (status === 'processed') {
-    icon = <DoneIcon className="icon" />;
-  } else if (status === 'Completed') {
-    icon = <DoneIcon className="icon" />;
-  } else if (status === 'Processing') {
-    icon = <SyncIcon className="icon" />;
-  } else if (status === 'basic') {
-    icon = <AutoFixNormalOutlinedIcon className="icon" />;
   }
 
   let label
@@ -102,12 +109,12 @@ const Status = (props) => {
     label = status;
   } else if (status === 'processed') {
     label = 'Thành Công';
-  } else if (status === 'Completed') {
-    label = 'Đã Hoàn Tất';
-  } else if (status === 'Processing') {
+  } else if (status === 'pending') {
+    label = 'Chưa Xử Lý';
+  } else if (status === 'processing') {
     label = 'Đang Xử Lý';
   } else if (status === 'basic') {
-    label = 'Thông dụng';
+    label = 'Cơ bản';
   }
 
   if (status === 'PartiallyFilled') {

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState } from 'react'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
 import Block from '~/components/Mui/Block'
 import { Box, List, ListItemIcon, ListItemButton, ListItemText, styled, Typography, Avatar, Skeleton } from '@mui/material'
@@ -29,18 +28,11 @@ function DashboardWithSubNavLayout() {
     get: () => navInfor
   }
 
-  useSelector((state) => {
-    if (!state.navigate.dashboard?.index) return []
-    if (state.reducers.subnav == 0) return []
-    return state.reducers.subnav[state.navigate.dashboard?.index] 
-  });
-
   function stringAvatar(name) {
     if(name) return {
       children: `${name.split(' ')[0][0]}`,
     };
-
-    return '@'
+    return { children : '@' }
   }
 
   const handleListItemClick = (_event, index, address) => {

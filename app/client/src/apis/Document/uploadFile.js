@@ -1,21 +1,21 @@
 const domain = import.meta.env.VITE_SERVER
 
-export const verifyToken = async (token = null) => {
-	const url = `${domain}/verifyToken`;
-	// console.log(url)
+export const uploadFile = async (formData = null, token = null) => {
+	const url = `${domain}/documents/upload`;
+	console.log(url)
 	const structure = {
-		method: 'GET',
+		method: 'POST',
 		headers: {
-		  'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`
 		},
+        body: formData
 	  }
 
 	const res = await fetch(url, structure)
 		.then(async (response) => {
 			if (!response.ok) {
 				return response.json().then(errorData => {
-					throw errorData.errors.msg;
+                    throw errorData.errors.msg;
 				});
 			}
 			return response.json()

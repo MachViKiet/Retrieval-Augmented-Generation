@@ -14,18 +14,22 @@ export const getTime = (DateString) => {
 }
 
 export const formatTime = (isoString) => {
-    const date = new Date(isoString);
+    try {
+        const date = new Date(isoString);
 
-    const options = {
-    hour: 'numeric',
-    minute: 'numeric',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    };
-
-    const formatter = new Intl.DateTimeFormat('en-GB', options);
-    const [time, datePart] = formatter.format(date).split(','); // Tách thời gian và ngày
-
-    return `${time} lúc  ${datePart}`
+        const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        };
+    
+        const formatter = new Intl.DateTimeFormat('en-GB', options);
+        const [time, datePart] = formatter.format(date).split(','); // Tách thời gian và ngày
+    
+        return `${time} lúc  ${datePart}`
+    } catch (err) {
+        return '###'
+    }
 }

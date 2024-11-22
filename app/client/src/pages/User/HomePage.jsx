@@ -18,9 +18,9 @@ export function HomePage() {
   useEffect(() => {
     document.title = 'Chatbot - Trang Chủ';
     dispatch(sidebarAction({index: 120}))
-    // return (
-    //   dispatch(sidebarAction({index: null}))
-    // )
+    return () => (
+      dispatch(sidebarAction({index: null}))
+    )
   })
   const Start = (e) => {
     isLogin ? navigate('/chat') : navigate('/signin')

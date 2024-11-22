@@ -13,7 +13,7 @@ import { useCollection } from '~/apis/Collection'
 import { formatTime } from '~/utils/GetTime'
 
 const Header = styled(Box) (({theme}) => ({
-  background: theme.palette.mode == 'dark' ? '#03082ecc' : '#0087d7', width: '100%', 
+  background: theme.palette.mode == 'dark' ? '#010b5ccc' : '#0087d7', width: '100%', 
   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', height: theme.spacing(6), 
   position: 'absolute', right: 0, top: '0', borderRadius: '15px 15px 0 0 ', zIndex: 1, paddingLeft: theme.spacing(4) }))
 
@@ -35,13 +35,19 @@ function KnowledgeBase() {
 
   useEffect(() => {
     if(token){
-      const getCollectionEvent = processHandler.add('#getCollection')
-      useCollection.getCollection(token).then((collections) => {
-        processHandler.remove('#getCollection', getCollectionEvent)
+      getCollection(token).then((collections) => {
         setCollections(collections)
       }).catch((err) => console.log(err))
     }
   }, [token])
+
+  const getCollection = async (token) => {
+    const getCollectionEvent = processHandler.add('#getCollection')
+    return useCollection.getCollection(token).then((collections) => {
+      processHandler.remove('#getCollection', getCollectionEvent)
+      return collections
+    })
+  }
 
   return (
     <Block sx = {{ paddingX: 4, paddingTop: 4, paddingRight: 1 }}>
@@ -65,8 +71,8 @@ function KnowledgeBase() {
         sx = {{ maxHeight: 'calc(100vh - 160px)', paddingY: '5px', paddingLeft: '2px', paddingBottom: 4, paddingRight: 2.5, overflow: 'auto', }}>
         {Collections && Collections.map((collection) => (
           <Box key={collection._id}
-            sx = {{ width: '200px', height: '200px', padding: 0, padding: 2, paddingTop: 7, borderRadius: '15px', position: 'relative', cursor: 'pointer',
-              background: theme => theme.palette.mode == 'dark'? '#71758991' : '#71758936', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+            sx = {{ width: '200px', height: '200px', color: '#000', padding: 2, paddingTop: 7, borderRadius: '15px', position: 'relative', cursor: 'pointer',
+              background: theme => theme.palette.mode == 'dark'? '#fffdfdc2' : '#71758936', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
               '&:active' : { transform: 'scale(0.9)' } }}
             onClick = {() => nagative(PARENT_DIRECTION + collection._id)}>
 

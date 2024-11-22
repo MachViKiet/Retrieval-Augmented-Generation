@@ -7,7 +7,7 @@ function LinkComponent({params, link, condition}) {
   return (
     <Tooltip title= {params.value}>
       <Link underline="always" 
-        onClick={(event) => { event.stopPropagation(); condition && navigate(link) }}
+        onClick={(event) => { console.log(link); event.stopPropagation(); condition && navigate(link) }}
         sx = {{ 
           color: theme => theme.palette.mode == 'dark' ? '#c9d5ff' : '#040085', 
           fontWeight: '400', cursor: 'pointer', width: '200px', display: 'block',

@@ -25,11 +25,12 @@ const useData = (documents) => {
 
   if(!documents) return {rows: [], columns: [], loading : false}
   const rows = documents.map((document) => {
-    const {_id, document_name, amount_chunking, created_at, updated_at, methods, isactive,state} = document
-    return createData(_id, document_name, amount_chunking, formatTime(created_at), formatTime(updated_at), methods, isactive,state, ['discovery','rename', 'download', 'delete'] )
+    const {_id, document_name, amount_chunking, createdAt, updatedAt, methods, isactive,state} = document
+    return createData(_id, document_name, amount_chunking, (createdAt), (updatedAt), methods, isactive,state, ['delete'] )
   })
 
-  const condition = (params) => { return params.row.parsingStatus === 'processed' }
+  // const condition = (params) => { return params.row.parsingStatus === 'processed' }
+  const condition = () => true
   const getLinkToDocument = (params) => { return `/knowledge_bases/${id}/${params.row.id}`}
 
   const columns = [
@@ -45,8 +46,8 @@ const useData = (documents) => {
         <Typography sx = {{ width: '50%', textAlign: 'center', lineHeight: '34px' }}>{params.value}</Typography>) 
     },
     {
-      field: 'chunkMethod', headerName: 'Phương Pháp Cắt Đoạn', width: 160,
-      renderCell: renderStatus,
+      field: 'parsingStatus', headerName: 'Trạng Thái Phân Tích', width: 180, type: 'singleSelect',
+      renderCell: renderStatus
     },
     { 
       field: 'upload_date', headerName: 'Ngày Tạo', width: 150 
@@ -59,12 +60,12 @@ const useData = (documents) => {
       renderCell: renderControlledSwitches ,  
     },
     {
-      field: 'parsingStatus', headerName: 'Trạng Thái Phân Tích', width: 180, type: 'singleSelect',
-      renderCell: renderStatus
+      field: 'chunkMethod', headerName: 'Phương Pháp Cắt Đoạn', width: 160,
+      renderCell: renderStatus,
     },
     {
-      field: 'action', headerName: 'Hành động', width: 120,
-      renderCell: renderTableAction,
+      field: 'action', headerName: '', width: 40,
+      renderCell: renderTableAction
     }
   ];
 
@@ -77,7 +78,7 @@ function Datasets() {
   const [collectionWithDocuments, setCollectionWithDocuments] = useState(null)
   const [openModalUpload, setOpenModalUpload] = useState(false)
 
-  const { processHandler, dashboard, subDashboard } = useOutletContext();
+  const { processHandler, noticeHandler, dashboard, subDashboard } = useOutletContext();
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
@@ -107,26 +108,39 @@ function Datasets() {
   }
 
   useEffect(() => {
-    if(token){
+    if(token && !collectionWithDocuments ){
       const loadCollectionWithDocument = processHandler.add('#loadCollectionWithDocument')
       loadDocumentByCollectionID(id, token).then((collectionWithDocuments) => {
         setCollectionWithDocuments(collectionWithDocuments)
         subDashboard.addTitle(collectionWithDocuments.collection_name)
-        processHandler.remove('#loadCollectionWithDocument', loadCollectionWithDocument)
 
-
-        const loadCollectionSchemaEvent = processHandler.add('#loadCollectionSchema')
-        loadCollectionSchema(collectionWithDocuments?.id, token).then((schema) => {
-          console.log('schema: ', schema)
-        }).catch((err) => console.log(err))
-        .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionSchemaEvent))
-
-
+        
+        // const loadCollectionSchemaEvent = processHandler.add('#loadCollectionSchema')
+        // loadCollectionSchema(collectionWithDocuments?.id, token).then((schema) => {
+        //   // console.log('schema: ', schema)
+        // }).catch((err) => console.log(err))
+        // .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionSchemaEvent))
+        
       }).catch((err) => console.log(err))
-      .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionWithDocument))
+      .finally(()=> processHandler.remove('#loadCollectionWithDocument', loadCollectionWithDocument))
 
     }
   }, [token])
+
+  const uploadFileHandler = (e) => {
+    e.preventDefault()
+    const formData = new FormData();
+    formData.append('file', e.target.files[0]);
+    formData.append('collection', id)
+    formData.append('filename', encodeURI((e.target.files[0].name)))
+
+    const uploadFileEvent = processHandler.add('#uploadFile')
+    useDocument.uploadFile(formData, token).then((newDocument) => {
+      setCollectionWithDocuments(prev => ({ ...prev, documents: [newDocument.document, ...prev.documents ] }))
+      noticeHandler.add({ status: 'success', message: 'Thêm tài liệu thành công' })
+    }).catch((err) => noticeHandler.add({ status: 'error', message: err }))
+    .finally(() => processHandler.remove('#uploadFile', uploadFileEvent))
+  }
 
   return (
     <>
@@ -135,11 +149,10 @@ function Datasets() {
           <Link underline="hover" key="2657812" color="inherit"
             onClick = {(e) => {
               e.preventDefault()
-              console.log('fasdfasd')
               navigate('/knowledge_bases')
             }} 
             sx = {{  display: 'flex', gap: 1, alignItems: 'center' }}>
-            <TopicOutlinedIcon/> 
+            <TopicOutlinedIcon sx = {{ color: theme => theme.palette.text.secondary }}/> 
           </Link>,
           <Typography key={id}>
             {collectionWithDocuments?.collection_name || 'Không có tên kho dữ liệu' }
@@ -148,13 +161,11 @@ function Datasets() {
         
         <Box>
           <Button startIcon = {<AddIcon/>} component="label" role={undefined} tabIndex={-1}
-            // onClick={() => setOpenModalUpload(true)}
             sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
               Thêm Tài Liệu
               <VisuallyHiddenInput
                 type="file"
-                onChange={(event) => console.log(event.target.files)}
-                multiple
+                onChange={uploadFileHandler}
               />
           </Button>
         </Box>
@@ -179,11 +190,12 @@ export default Datasets
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+// import DialogContentText from '@mui/material/DialogContentText';
 
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import InputFileUpload, { VisuallyHiddenInput } from '~/components/Mui/InputFileUpload';
+import { useDocument } from '~/apis/Document';
 
 function UploadModal({ modalHandler = null }) {
 
