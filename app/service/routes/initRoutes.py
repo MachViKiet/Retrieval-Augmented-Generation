@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 import json
 import requests
+from requests.auth import HTTPBasicAuth
 
 from models.model import ChatModel, PhoQueryRouter
 from utils import rag_utils, query_routing
@@ -158,12 +159,13 @@ def insert_file():
     if secure_filename(filename):
         with open(os.getenv('AIRFLOW_TEMP_FOLDER') + filename, 'w', encoding='utf-8') as f:
             json.dump(chunks, f)
-            r = requests.post(f'http://{os.getenv('AIRFLOW_HOST')}:{os.getenv('AIRFLOW_PORT')}/dags/{os.getenv('AIRFLOW_DAGID_INSERT')}/dagRuns', json={
+            r = requests.post(f'http://{os.getenv('AIRFLOW_HOST')}:{os.getenv('AIRFLOW_PORT')}/api/v1/dags/{os.getenv('AIRFLOW_DAGID_INSERT')}/dagRuns', json={
                 "conf": {
                     "filename": filename,
                     "collection_name": collection_name,
                     "metadata": metadata
-                }})
+                }},
+                auth=HTTPBasicAuth(os.getenv('AIRFLOW_USERNAME'), os.getenv('AIRFLOW_PASSWORD')))
             response = r.json()
             return jsonify({
                 'dag_run_id': response['dag_run_id'],
