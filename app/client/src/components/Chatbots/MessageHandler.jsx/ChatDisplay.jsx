@@ -106,9 +106,9 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
               color: '#000'
             }}>
-            <ReactMarkdown>
-              {conservation?.anwser}
-            </ReactMarkdown>
+            { typeof conservation?.anwser === "string" && <ReactMarkdown>
+              { conservation?.anwser }
+            </ReactMarkdown> }
             <BubbleLeft/>
 
             <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>

@@ -7,7 +7,6 @@ import ChatBlock from '~/components/Chatbots/ChatBlock';
 import Block from '~/components/Mui/Block';
 import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
 import { useDispatch, useSelector } from 'react-redux';
-import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import { RecommendChatPage } from '~/components/Chatbots/RecommendChatPage';
 import ProcessBlock from '~/components/Chatbots/MessageHandler.jsx/ProcessBlock';
 import UserTypingMessageBlock from '~/components/Chatbots/MessageHandler.jsx/UserTypingMessageBlock';

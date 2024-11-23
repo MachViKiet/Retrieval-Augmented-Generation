@@ -1,6 +1,5 @@
 import { insert_file } from '~/apis/KHTN_Chatbot/Document/insert_file'
 import { buildErrObject } from '~/middlewares/utils'
-const { ObjectId } = require('mongodb')
 
 const Document = require('~/models/document')
 const Collection = require('~/models/collection')
