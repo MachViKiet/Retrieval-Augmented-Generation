@@ -23,27 +23,36 @@ export const uploadFile = async (req, res) => {
 
     const filePath = path.join(__dirname, '../../storage', filename)
     // Ghi file vào đĩa
-    fs.writeFile(filePath, req.file.buffer, async (err) => {
 
-      if (err) {
-        handleError(res, buildErrObject(500, err))
-      }
+    const action = new Promise((resolve, reject) => {
+      fs.writeFile(filePath, req.file.buffer, async (err) => {
 
-      const document = new Document({
-        owner: id,
-        collection_id: req.body?.collection,
-        document_name: req.body?.filename ? decodeURI(removeFileExtension(req.body.filename)) + getFileExtension(req.file.originalname) : req.file.originalname,
-        document_description: req.body?.description,
-        url: `${process.env.STORAGE}/documents?name=${filename}`
-      })
+        if (err) {
+          reject(buildErrObject(500, err))
+        }
 
-      document.save()
-        .then((document) => {
-          res.status(200).send({ document })
+        const document = new Document({
+          owner: id,
+          originalName: req.file.originalname,
+          collection_id: req.body?.collection,
+          document_name: decodeURI(removeFileExtension(req.body.filename)),
+          document_name_in_storage: filename,
+          document_description: req.body?.description,
+          url: `${process.env.STORAGE}/documents?name=${filename}`
         })
-        .catch((err) => { throw buildErrObject(422, err.message) })
 
+        document.save()
+          .then((document) => {
+            resolve({ document })
+          })
+          .catch((err) => { reject(buildErrObject(422, err.message)) })
+
+      })
     })
+
+    action.then((data) => {
+      res.status(200).send(data)
+    }).catch((err) => handleError(res, err))
 
   } catch (error) {
     handleError(res, error)

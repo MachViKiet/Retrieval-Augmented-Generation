@@ -9,14 +9,17 @@ const requireAuth = passport.authenticate('jwt', {
   session: false
 })
 
-const { getChunkInDocument, uploadFile } = require('~/controllers/document')
+const { getChunkInDocument, uploadFile, updateDocument, process } = require('~/controllers/document')
 
 const directory = './src/storage'
 
 router.get('/chunks', requireAuth, trimRequest.all, getChunkInDocument)
 
 router.post('/upload', requireAuth, trimRequest.all, upload.single('file'), uploadFile)
-// router.post('/upload', requireAuth, trimRequest.all, uploadFile)
+
+router.patch('/', requireAuth, trimRequest.all, updateDocument)
+
+router.post('/process', requireAuth, trimRequest.all, process)
 
 
 router.get('/', async (req, res) => {

@@ -1,7 +1,7 @@
 const domain = import.meta.env.VITE_SERVER
 
 export const getCollectionSchema = async (_id = null ,token = null) => {
-	const url = `${domain}/collections/schema?collection_id=${encodeURIComponent(_id)}`;
+	const url = `${domain}/collections/schema?_id=${encodeURIComponent(_id)}`;
 	console.log(url)
 	const structure = {
 		method: 'GET',

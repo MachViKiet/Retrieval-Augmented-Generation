@@ -3,7 +3,7 @@ import { getChunkFromdbByDocumentID } from './helper/getChunkFromdbByDocumentID'
 
 export const getChunkInDocument = async (req, res) => {
   try {
-    const id = await isIDGood(req.query.document_id)
+    const id = await isIDGood(req.query._id)
     res.status(200).json(await getChunkFromdbByDocumentID(id))
   } catch (error) {
     handleError(res, error)

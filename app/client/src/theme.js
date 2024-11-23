@@ -211,6 +211,7 @@ const theme = extendTheme(
         styleOverrides: {
           root: {
             fontSize: "0.875rem",
+            color: theme => theme.palette.text.secondary
           },
         },
       },

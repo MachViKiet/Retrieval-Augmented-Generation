@@ -4,11 +4,14 @@ import { buildErrObject } from '~/middlewares/utils'
 
 const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT_PORT}`
 
-export const get_collection_schema = async (collectionName = null) => {
-  const url = `${domain}/get_collection_schema?collection_name=${encodeURIComponent(collectionName)}`
-  console.log('url: ', url)
+export const chunk_file = async (formData = null) => {
+  const url = `${domain}/chunk_file`
+  const structure = {
+    method: 'POST',
+    body: formData
+  }
   // Thực hiện GET request
-  return fetch(url)
+  return fetch(url, structure)
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok')
       return response.json()

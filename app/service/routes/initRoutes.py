@@ -152,7 +152,7 @@ def insert_file():
     ##PARAMS
     chunks = json.loads(request.form['chunks'])
     collection_name = request.form['collection_name']
-    filename = request.form['filename']
+    filename = request.form['filename']    
     metadata = json.loads(request.form['metadata'])
     #-------------------------------------------
     #Save chunks to local storage
@@ -181,9 +181,8 @@ def insert_file():
 @cross_origin()
 def chunk_file():
     ##PARAMS
-    file = request.files['file']
+    data = request.form['text']
     #-------------------------------------------
     splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=75)
-    data = file.read().decode('utf-8')
     chunks = splitter.split_text(data)
     return jsonify(chunks)

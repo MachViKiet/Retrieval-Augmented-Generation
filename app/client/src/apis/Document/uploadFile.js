@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const uploadFile = async (formData = null, token = null) => {
 	const url = `${domain}/documents/upload`;
-	console.log(url)
 	const structure = {
 		method: 'POST',
 		headers: {

@@ -13,6 +13,13 @@ const DocumentSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    originalName: {
+      type: String,
+      required: true
+    },
+    document_name_in_storage: {
+      type: String
+    },
     document_description: {
       type: String,
       default: 'Tài Liệu Trường Khoa Học Tự Nhiên'
@@ -29,6 +36,10 @@ const DocumentSchema = new mongoose.Schema(
     isactive:  {
       type: Boolean,
       default: false
+    },
+    metadata: {
+      type: Object,
+      default: null
     },
     state: {
       type: String,

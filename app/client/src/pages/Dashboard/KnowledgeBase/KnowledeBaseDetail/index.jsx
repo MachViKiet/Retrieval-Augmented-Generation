@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import MuiTable from '~/components/MuiTable/MuiTable';
 import { renderStatus } from '~/components/MuiTable/cell-renderers/status';
 import {renderControlledSwitches} from '~/components/MuiTable/cell-renderers/switch'
@@ -15,6 +15,9 @@ import BugReportOutlinedIcon from "@mui/icons-material/BugReportOutlined";
 import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
 import { formatTime } from '~/utils/GetTime';
 import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import InputFileUpload, { VisuallyHiddenInput } from '~/components/Mui/InputFileUpload';
+import { useDocument } from '~/apis/Document';
 
 const useData = (documents) => {
   const { id } = useParams();
@@ -26,7 +29,7 @@ const useData = (documents) => {
   if(!documents) return {rows: [], columns: [], loading : false}
   const rows = documents.map((document) => {
     const {_id, document_name, amount_chunking, createdAt, updatedAt, methods, isactive,state} = document
-    return createData(_id, document_name, amount_chunking, (createdAt), (updatedAt), methods, isactive,state, ['delete'] )
+    return createData(_id, document_name, amount_chunking, formatTime(createdAt), formatTime(updatedAt), methods, isactive,state, ['delete'] )
   })
 
   // const condition = (params) => { return params.row.parsingStatus === 'processed' }
@@ -76,7 +79,6 @@ function Datasets() {
   const navigate = useNavigate()
   const token = useSelector(state => state.auth.token)
   const [collectionWithDocuments, setCollectionWithDocuments] = useState(null)
-  const [openModalUpload, setOpenModalUpload] = useState(false)
 
   const { processHandler, noticeHandler, dashboard, subDashboard } = useOutletContext();
 
@@ -103,24 +105,12 @@ function Datasets() {
     return useCollection.getDocumentInCollection(collection_id, token).then((document) => document )
   }
 
-  const loadCollectionSchema = async (collection_id, token) => {
-    return useCollection.getCollectionSchema(collection_id, token).then((document) => document )
-  }
-
   useEffect(() => {
     if(token && !collectionWithDocuments ){
       const loadCollectionWithDocument = processHandler.add('#loadCollectionWithDocument')
       loadDocumentByCollectionID(id, token).then((collectionWithDocuments) => {
         setCollectionWithDocuments(collectionWithDocuments)
-        subDashboard.addTitle(collectionWithDocuments.collection_name)
-
-        
-        // const loadCollectionSchemaEvent = processHandler.add('#loadCollectionSchema')
-        // loadCollectionSchema(collectionWithDocuments?.id, token).then((schema) => {
-        //   // console.log('schema: ', schema)
-        // }).catch((err) => console.log(err))
-        // .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionSchemaEvent))
-        
+        subDashboard.addTitle(collectionWithDocuments.collection_name)        
       }).catch((err) => console.log(err))
       .finally(()=> processHandler.remove('#loadCollectionWithDocument', loadCollectionWithDocument))
 
@@ -174,66 +164,8 @@ function Datasets() {
       <Box sx={{ maxHeight: 'calc(100vh - 130px)', height: '100%',  width: '100%', background: 'transparent' }}>
         <MuiTable useData = {useData(collectionWithDocuments?.documents)}/>
       </Box>
-
-      <UploadModal
-        modalHandler = {{
-          state: openModalUpload,
-          close: () => setOpenModalUpload(false),
-          submitTitle: 'Lưu'
-        }} />
     </>
   )
 }
 
 export default Datasets
-
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-// import DialogContentText from '@mui/material/DialogContentText';
-
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import InputFileUpload, { VisuallyHiddenInput } from '~/components/Mui/InputFileUpload';
-import { useDocument } from '~/apis/Document';
-
-function UploadModal({ modalHandler = null }) {
-
-  const [name , setName] = useState('')
-  const [description , setDescription] = useState('')
-  const [notice, setNotice] = useState(null)
-
-  const { processHandler } = useOutletContext();
-
-  useEffect(() => {
-    setName('')
-    setDescription('')
-    setNotice(null)
-  },[])
-
-  return (
-    <React.Fragment>
-      <Dialog
-        open={modalHandler?.state}
-        onClose={modalHandler?.close}>
-        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
-          <Box sx = {{ width: '50vw', maxWidth: '450px', display: 'flex', alignItems: 'center', gap: 2}}>
-            <CloudUploadOutlinedIcon/> Upload Tài Liệu
-          </Box>
-        </DialogTitle>
-        <DialogContent >
-          {/* <DialogContentText sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            
-          </DialogContentText> */}
-          <InputFileUpload/>
-
-
-        </DialogContent>
-        <DialogActions>
-          <Button sx = {{ color: theme => theme.palette.text.secondary }}>{modalHandler.submitTitle}</Button>
-          {/* <Button sx = {{ color: '#ff3c3c' }} onClick={modalHandler?.close}>Đóng</Button> */}
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  );
-}
