@@ -82,11 +82,11 @@ class MilvusDB:
         schema = Collection(collection_name).describe()['fields']
         schema_readable = {}
         def convert_type(type):
-            if type == DataType.INT8 | DataType.INT16 | DataType.INT32 | DataType.INT64:
+            if type == DataType.INT8 or type == DataType.INT16 or type == DataType.INT32 or type == DataType.INT64:
                 return 'int'
-            elif type == DataType.FLOAT | DataType.DOUBLE:
+            elif type == DataType.FLOAT or type == DataType.DOUBLE:
                 return 'float'
-            elif type == DataType.VARCHAR | DataType.STRING:
+            elif type == DataType.VARCHAR or type == DataType.STRING:
                 return 'string'
             elif type == DataType.ARRAY:
                 return 'list'
