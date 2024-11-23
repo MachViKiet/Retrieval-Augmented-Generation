@@ -2,7 +2,7 @@ const domain = import.meta.env.VITE_SERVER
 
 export const verifyToken = async (token = null) => {
 	const url = `${domain}/verifyToken`;
-	console.log(url)
+	// console.log(url)
 	const structure = {
 		method: 'GET',
 		headers: {

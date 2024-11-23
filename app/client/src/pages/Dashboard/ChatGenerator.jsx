@@ -4,10 +4,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import ChatInput from '~/components/Chatbots/ChatInput';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
-import Block from '~/components/Block';
+import Block from '~/components/Mui/Block';
 import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
 import { useDispatch, useSelector } from 'react-redux';
-import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import { RecommendChatPage } from '~/components/Chatbots/RecommendChatPage';
 import ProcessBlock from '~/components/Chatbots/MessageHandler.jsx/ProcessBlock';
 import UserTypingMessageBlock from '~/components/Chatbots/MessageHandler.jsx/UserTypingMessageBlock';
@@ -22,7 +21,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+
 import { useConservation } from '~/apis/Conservation';
+import { useOutletContext } from "react-router-dom";
 
 function NewChatModal({ modalHandler = null }) {
 
@@ -30,7 +31,7 @@ function NewChatModal({ modalHandler = null }) {
   const [description , setDescription] = useState('')
   const [notice, setNotice] = useState(null)
 
-  const context = useOutletContext();
+  const { processHandler } = useOutletContext();
 
   useEffect(() => {
     setName('')
@@ -43,10 +44,10 @@ function NewChatModal({ modalHandler = null }) {
     if( name == '' ) {
       setNotice('Vui lòng nhập tên cuộc trò chuyện !')
     } else {
-      await modalHandler.submit({
-        name, description
-      }).then(() => modalHandler?.close())
-        .catch(() => setNotice('Tạo không thành công'))
+      const event = processHandler.add('#createChatSession')
+      await modalHandler.submit({ name, description })
+        .then(() => { processHandler.remove('#createChatSession', event); modalHandler?.close() })
+        .catch(() => { processHandler.remove('#createChatSession', event); setNotice('Tạo không thành công') })
     }
   }
 
@@ -95,8 +96,6 @@ function NewChatModal({ modalHandler = null }) {
     </React.Fragment>
   );
 }
-
-import { useOutletContext } from "react-router-dom";
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
@@ -159,61 +158,34 @@ export function ChatGenerator() {
     create_at: null
   })
 
-  const context = useOutletContext();
-
-
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [Conservations, messageHandler ]);
+
+  const {processHandler, dashboard } = useOutletContext();
   
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
-    dispatch(sidebarAction({index: 466}))
+    dashboard.navigate.active(466)
 
-    const chatEventID = context.processHandler.add('#ChatGenerate')
-    setTimeout(() => {
-      context.processHandler.remove('#ChatGenerate', chatEventID)
-    }, 200);
+    ChatWithChatbot.userMessage(socket, (data) => { setConservations((prev) => ([...prev, data])) })
 
-    ChatWithChatbot.userMessage(socket, (data) => {
-      setConservations((prev) => ([...prev, data]))
-    })
+    ChatWithChatbot.isProcessing(socket, (data) => { setMessageHandler(prev => ({ ...prev, notification: data })) })
 
-    ChatWithChatbot.isProcessing(socket, (data) => {
-      setMessageHandler(prev => ({ ...prev, notification: data }))
-    })
+    ChatWithChatbot.Processed(socket, () => { setMessageHandler(prev => ({ ...prev, isProcess: true })) })
 
-    ChatWithChatbot.Processed(socket, () => {
-      setMessageHandler(prev => ({ ...prev, isProcess: true }))
-    })
+    ChatWithChatbot.streamMessages(socket, (data) => { setMessageHandler(prev => ({ ...prev, stream_state: true, stream_message: data.messages })) }) 
 
-    ChatWithChatbot.streamMessages(socket, (data) => {
-      setMessageHandler(prev => ({ ...prev, 
-        stream_state: true,
-        stream_message: data.messages,
-      }))
-    }) 
-
-    ChatWithChatbot.EndStream(socket, (data) => {
-      setMessageHandler(prev => ({ ...prev, 
-        stream_state: false,
-        data,
-      }))
-    })
+    ChatWithChatbot.EndStream(socket, (data) => { setMessageHandler(prev => ({ ...prev, stream_state: false, data, }))  })
 
     ChatWithChatbot.EndProcess(socket, async (data) => {
-      setTimeout(() => {
-        setMessageHandler(prev => ({ ...prev, 
-          isProcess: false,
-        }))
-
-        setConservations((prev) => [...prev.slice(0, -1), data])
-      }, 500)
+      setMessageHandler(prev => ({ ...prev, isProcess: false }))
+      setConservations((prev) => [...prev.slice(0, -1), data])  
     })
     
     return () => (
       ChatWithChatbot.unsign_all(socket),
-      dispatch(sidebarAction({index: null}))
+      dashboard.navigate.active('#')
     )
     
   },[getSocket()])
@@ -340,6 +312,7 @@ export function ChatGenerator() {
             sessions.map((session) => (
               <Box key = {session._id} 
                 sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
+                  '&:hover': {background: '#00000091'},
                   borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
                   onClick = {async (e) => await sessionButtonClick(session)}>
                 <Box >

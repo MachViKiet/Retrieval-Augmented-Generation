@@ -12,10 +12,6 @@ const AdminRoute = ({ children }) => {
   const { processHandler } = useOutletContext();
   const token = localStorage.getItem('token');
 
-  if (!token) {
-    return <Navigate to="/" />;
-  }
-
   useEffect(() => {
     if(token){
       if (!auth.loggedIn) {
@@ -26,9 +22,9 @@ const AdminRoute = ({ children }) => {
           if(usr_profile?.role && !(['administrator', 'academic_administration'].includes(usr_profile?.role))){
             navigate('/')
           }
-
         }).catch((error) => {
-          console.log(error)
+            console.error("Server không hoạt động!\n", error)
+            navigate('/')
         })
       } else {
         const usr_profile = auth.user
@@ -38,6 +34,10 @@ const AdminRoute = ({ children }) => {
       }
     }
   }, [])
+
+  if (!token) {
+    return <Navigate to="/" />;
+  }
 
   return children
 };

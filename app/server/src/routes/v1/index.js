@@ -9,6 +9,8 @@ const router = Router()
 router.use('/', require('./auth'))
 router.use('/', require('./profile'))
 router.use('/', require('./conservation'))
+router.use('/collections', require('./collection'))
+router.use('/documents', require('./document'))
 
 /*
  * Setup routes for index

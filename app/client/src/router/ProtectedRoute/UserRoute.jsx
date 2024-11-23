@@ -30,9 +30,9 @@ const UserRoute = ({ children }) => {
               navigate('/')
             } else navigate('/dashboard')
           }
-
         }).catch((error) => {
-          console.log(error)
+          console.error("Server không hoạt động!\n", error)
+          navigate('/')
         })
       } else {
         const usr_profile = auth.user

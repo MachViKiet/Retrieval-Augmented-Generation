@@ -6,6 +6,7 @@ import { ChatMessage, ChatDisplay_Style } from './ChatDisplay';
 import { Avatar, Box } from '@mui/material';
 
 function UserTypingMessageBlock({messageHandler, sx = {}}) {
+  console.log(messageHandler?.stream_message)
   return ( messageHandler?.stream_state && 
     <motion.div
       initial={{ transform: "scale(0)" }}
@@ -22,9 +23,9 @@ function UserTypingMessageBlock({messageHandler, sx = {}}) {
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
               color: '#000'
             }}>
-                <ReactMarkdown>
+                { messageHandler?.stream_message && <ReactMarkdown>
                   {messageHandler?.stream_message}
-                </ReactMarkdown>
+                </ReactMarkdown> }
             <BubbleLeft/>
           </ChatMessage>
           <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />

@@ -12,3 +12,24 @@ export const getTime = (DateString) => {
     // Định dạng chuỗi kết quả
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${period}`;
 }
+
+export const formatTime = (isoString) => {
+    try {
+        const date = new Date(isoString);
+
+        const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        };
+    
+        const formatter = new Intl.DateTimeFormat('en-GB', options);
+        const [time, datePart] = formatter.format(date).split(','); // Tách thời gian và ngày
+    
+        return `${time} lúc  ${datePart}`
+    } catch (err) {
+        return '###'
+    }
+}

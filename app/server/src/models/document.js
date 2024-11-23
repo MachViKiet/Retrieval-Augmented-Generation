@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 
 const DocumentSchema = new mongoose.Schema(
   {
-    owner : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    owner : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    collection_id : { type: mongoose.Schema.Types.ObjectId, ref: 'Collection' },
     url: {
       type: String,
       required: true
@@ -12,9 +13,16 @@ const DocumentSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    document_description: {
+    originalName: {
       type: String,
       required: true
+    },
+    document_name_in_storage: {
+      type: String
+    },
+    document_description: {
+      type: String,
+      default: 'Tài Liệu Trường Khoa Học Tự Nhiên'
     },
     amount_chunking: {
       type: String,
@@ -22,17 +30,21 @@ const DocumentSchema = new mongoose.Schema(
     },
     methods: {
       type: String,
-      enum: ['Cơ bản'],
-      default: 'Cơ bản'
+      enum: ['basic'],
+      default: 'basic'
     },
     isactive:  {
       type: Boolean,
       default: false
     },
+    metadata: {
+      type: Object,
+      default: null
+    },
     state: {
       type: String,
-      enum: ['Đang Xử Lý', 'Đã Hoàn Tất', 'Không Thành Công', 'Chưa được Xử Lý'],
-      default : 'Chưa được Xử Lý'
+      enum: ['processed', 'pending', 'processing', 'failed'],
+      default : 'pending'
     }
   },
   {

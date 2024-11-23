@@ -177,7 +177,7 @@ export default function MuiTable({ useData, getRowHeight, rowHeight, onRowClick 
         rowHeight  = {rowHeight}
         onRowClick = {onRowClick}
         pageSizeOptions={[10,20,  100]}
-        // loading = {true}
+        // loading
         initialState={{
           ...data.initialState,
           pagination: { paginationModel: { pageSize: 20 } },

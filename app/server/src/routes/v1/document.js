@@ -1,0 +1,42 @@
+const express = require('express')
+const fs = require('fs')
+const router = express.Router()
+const trimRequest = require('trim-request')
+import { buildErrObject, handleError } from '~/middlewares/utils'
+import { upload } from '~/multer'
+const passport = require('passport')
+const requireAuth = passport.authenticate('jwt', {
+  session: false
+})
+
+const { getChunkInDocument, uploadFile, updateDocument, process } = require('~/controllers/document')
+
+const directory = './src/storage'
+
+router.get('/chunks', requireAuth, trimRequest.all, getChunkInDocument)
+
+router.post('/upload', requireAuth, trimRequest.all, upload.single('file'), uploadFile)
+
+router.patch('/', requireAuth, trimRequest.all, updateDocument)
+
+router.post('/process', requireAuth, trimRequest.all, process)
+
+
+router.get('/', async (req, res) => {
+  const filePath = `${directory}/${req.query.name}`
+
+  try {
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Content-Type', 'application/pdf')
+      const fileStream = fs.createReadStream(filePath)
+      fileStream.pipe(res)
+    } else {
+      throw buildErrObject(422, 'PDF file not found')
+    }
+  } catch (error) {
+    handleError(res, error)
+  }
+
+})
+
+module.exports = router
