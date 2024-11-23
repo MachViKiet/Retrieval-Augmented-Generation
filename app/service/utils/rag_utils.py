@@ -82,14 +82,18 @@ class MilvusDB:
         schema = Collection(collection_name).describe()['fields']
         schema_readable = {}
         def convert_type(type):
-            if type == DataType.INT8 | DataType.INT16 | DataType.INT32 | DataType.INT64 | DataType.FLOAT:
-                return 'number'
-            elif type == DataType.VARCHAR:
+            if type == DataType.INT8 | DataType.INT16 | DataType.INT32 | DataType.INT64:
+                return 'int'
+            elif type == DataType.FLOAT | DataType.DOUBLE:
+                return 'float'
+            elif type == DataType.VARCHAR | DataType.STRING:
                 return 'string'
             elif type == DataType.ARRAY:
                 return 'list'
+            else:
+                return 'unknown'
         for meta in schema:
-            if meta['name'] in ['id', 'embedding', 'chunk_id', 'article', 'is_active']: #Skip these fields
+            if meta['name'] in ['id', 'embedding', 'chunk_id', 'article', 'is_active', 'page_number', 'file_links']: #Skip these fields
                 continue #TODO: Fix this to achieve better flexibility in the system
             schema_readable[meta['name']] = {}
 
