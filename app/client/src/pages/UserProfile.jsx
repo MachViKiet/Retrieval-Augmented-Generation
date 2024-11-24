@@ -1,15 +1,14 @@
-import { Button, Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Paper, Select, MenuItem, Backdrop, CircularProgress } from '@mui/material';
+import { Button, Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Select, MenuItem, Backdrop, CircularProgress } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import Block from '~/components/Block';
+import Block from '~/components/Mui/Block';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import HomeWorkOutlinedIcon from '@mui/icons-material/HomeWorkOutlined';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import MaleIcon from '@mui/icons-material/Male';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
-import { styled } from '@mui/material/styles';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -19,17 +18,6 @@ import { useProfile } from '~/apis/Profile';
 import { useCode } from '~/hooks/useMessage';
 import { refresh } from '~/store/actions/authActions';
 import { getDate } from '~/utils/GetDate';
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  ...theme.applyStyles('dark', {
-    backgroundColor: '#1A2027',
-  }),
-}));
 
 export function UserProfile() {
   const dispatch = useDispatch()
@@ -51,12 +39,13 @@ export function UserProfile() {
       console.log(err)
     })
 
-    // return (
-    //   dispatch(sidebarAction({index: null}))
-    // )
+    return () => (
+      dispatch(sidebarAction({index: null}))
+    )
   },[])
 
   const updateClick = async (e) => {
+    e.preventDefault()
     setUpdateButtonActive(false)
     useProfile.update(user, token).then(async (user) => {
 
@@ -75,28 +64,12 @@ export function UserProfile() {
     })
   }
 
-  return hide ? 
-  (<Backdrop
-    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-    open={true}
-  >
-    <CircularProgress color="inherit" />
-  </Backdrop>) :(
+  return (
     <>
-    <Block sx = {{ 
-      padding: '10px',
-      paddingY: 3,
-     }}>
-      <Backdrop
-        sx={(theme) => ({ color: '#fff', zIndex: 5 })}
-        open={!updateButtonActive}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+    <Block sx = {{ padding: '10px', paddingY: 3, }}>
 
       <Box sx = {{ 
         width: '100%',
-        // maxHeight: 'calc(100vh - 80px)',
         overflow: 'auto',
         paddingX: '10px',
         paddingX: 3,
@@ -111,77 +84,38 @@ export function UserProfile() {
         paddingBottom: 2
        }}>
 
-          <Box sx = {{ 
-            width: '100%',
-            height: '160px',
-            padding: '10px',
-            display: 'flex',
-            gap: 4,
-           }}>
-            <Avatar sx={{ 
-              bgcolor: '#6193a5',
-              height: '140px',
-              width: '140px'
-            }} src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png">
-              K
-            </Avatar>
+          <Box sx = {{  width: '100%', height: '160px', padding: '10px', display: 'flex', gap: 4, }}>
+            <Avatar sx={{ background: '#6193a5', height: '140px', width: '140px' }} 
+              src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"/>
+            
             <Box sx ={{  display: 'flex', position: 'relative', flexDirection: 'column', width: '100%', minWidth: '600px', }}>
-              <Typography sx = {{ 
-                fontSize: '1.525rem !important',
-                fontWeight: '900', 
-                width: 'fit-content'
-               }}>
-                {user?.name ? user.name : '#undefine'}
-              </Typography>
+              <Typography sx = {{  fontSize: '1.525rem !important', fontWeight: '900',  width: 'fit-content' }}>
+                {user?.name ? user.name : '#undefine'} </Typography>
 
-              <Box sx = {{ 
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.75
-              }}>
+              <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <MaleIcon sx = {{ fontSize: '1rem' }}/>
-                <Typography sx = {{ 
-                  width: 'fit-content'
-                }}>
+                <Typography sx = {{  width: 'fit-content' }}>
                   <span style = {{ fontWeight: '600' }}>Giới tính : </span><span>{user?.sex ? useCode(user.sex) : '#undefine'}</span> 
                 </Typography>
               </Box>
 
-              <Box sx = {{ 
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.75
-              }}>
+              <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <HomeWorkOutlinedIcon sx = {{ fontSize: '1rem' }}/>
-                <Typography sx = {{ 
-                  width: 'fit-content'
-                }}>
+                <Typography sx = {{  width: 'fit-content' }}>
                    <span style = {{ fontWeight: '600' }}>Phòng Ban : </span>{user?.department ? useCode(user.department) : '#undefine'}
                 </Typography>
               </Box>
 
-              <Box sx = {{ 
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.75
-              }}>
+              <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <DraftsOutlinedIcon sx = {{ fontSize: '1rem' }}/>
-                <Typography sx = {{ 
-                  width: 'fit-content'
-                }}>
+                <Typography sx = {{ width: 'fit-content' }}>
                   <span style = {{ fontWeight: '600' }}>Email Công Việc : </span>{user?.email ? user.email : '#undefine'}<span></span> ( Mặc Định )
                 </Typography>
               </Box>
 
-              <Box sx = {{ 
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.75
-              }}>
+              <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <LocalPhoneOutlinedIcon sx = {{ fontSize: '1rem' }}/>
-                <Typography sx = {{ 
-                  width: 'fit-content'
-                }}>
+                <Typography sx = {{  width: 'fit-content' }}>
                   <span style = {{ fontWeight: '600' }}>Số Điện Thoại: </span><span>{user?.phone ? user.phone : '#undefine'}</span>
                 </Typography>
               </Box>
@@ -191,18 +125,10 @@ export function UserProfile() {
                 color: theme => theme.palette.mode == 'dark' ? '#0dff0d' : '#0dd60d'
                }}>
                 {user?.message ? user.message : ''}
-                {/* <span>Đang công tác tại Trường Đại Học Khoa Học Tự Nhiên - ĐHQG TPHCM</span> */}
               </Typography>
 
-            <Chip label={user?.role ? user?.role.replace(/\b\w/g, char => char.toUpperCase()) : '#undefine'}  sx = {{ 
-                position: 'absolute',
-                right: 0, 
-                top: 0,
-                background: '#4d6b38',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}/>
-
+              <Chip label={user?.role ? user?.role.replace(/\b\w/g, char => char.toUpperCase()) : '#undefine'}  
+                  sx = {{ position: 'absolute', right: 0,  top: 0, background: '#4d6b38', fontWeight: '600', cursor: 'pointer' }}/>
             </Box>
 
           </Box>
@@ -227,7 +153,6 @@ export function UserProfile() {
           <Box sx = {{ 
             width: '100%',
             backgroundColor: theme => theme.palette.mode == 'dark' ? '#ffffff2b' : '#fff',
-            // display: 'inline-flex',
             justifyContent: 'space-evenly',
             padding: 4,
             paddingBottom: 2,

@@ -152,12 +152,14 @@ def insert_file():
     ##PARAMS
     chunks = json.loads(request.form['chunks'])
     collection_name = request.form['collection_name']
-    filename = request.form['filename']
+    filename = request.form['filename']    
     metadata = json.loads(request.form['metadata'])
+    
+    print('Du lieu: ',collection_name, filename, metadata)
     #-------------------------------------------
     #Save chunks to local storage
     if secure_filename(filename):
-        with open(os.getenv('AIRFLOW_TEMP_FOLDER') + filename, 'w', encoding='utf-8') as f:
+        with open(os.getenv('AIRFLOW_TEMP_FOLDER') + '/' + filename, 'w+', encoding='utf-8') as f:
             json.dump(chunks, f)
             r = requests.post(f'http://{os.getenv('AIRFLOW_HOST')}:{os.getenv('AIRFLOW_PORT')}/api/v1/dags/{os.getenv('AIRFLOW_DAGID_INSERT')}/dagRuns', json={
                 "conf": {
@@ -167,6 +169,7 @@ def insert_file():
                 }},
                 auth=HTTPBasicAuth(os.getenv('AIRFLOW_USERNAME'), os.getenv('AIRFLOW_PASSWORD')))
             response = r.json()
+            print(r.status_code,r.json())
             return jsonify({
                 'dag_run_id': response['dag_run_id'],
                 'dag_id': response['dag_id'],
@@ -181,9 +184,8 @@ def insert_file():
 @cross_origin()
 def chunk_file():
     ##PARAMS
-    file = request.files['file']
+    data = request.form['text']
     #-------------------------------------------
     splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=75)
-    data = file.read().decode('utf-8')
     chunks = splitter.split_text(data)
     return jsonify(chunks)

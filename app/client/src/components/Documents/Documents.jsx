@@ -4,15 +4,10 @@ import { useResizeObserver } from "@wojtekmaj/react-hooks"
 import { pdfjs, Document, Page } from "react-pdf"
 import "react-pdf/dist/esm/Page/AnnotationLayer.css"
 import "react-pdf/dist/esm/Page/TextLayer.css"
-import pdfFile from '../quy_dinh_chung.pdf'
-// import pdfFile from '../Noi Quy Cong Ty CloudGo.pdf'
+import pdfFile from './quy_dinh_chung.pdf'
 import { Box, Typography } from '@mui/material'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.mjs`;
-// const options = {
-//   cMapUrl: "/cmaps/",
-//   standardFontDataUrl: "/standard_fonts/"
-// }
 
 const options = {
       cMapUrl: '/bcmaps/',

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { useProfile } from '~/apis/Profile';
 import { refresh } from '~/store/actions/authActions';
 
@@ -17,13 +17,12 @@ const PublicRoute = ({ children }) => {
         const eventID = processHandler.add('#verifyToken')
         useProfile.verifyToken(token).then((usr_profile) => {
           dispatch(refresh(token, usr_profile))
-          processHandler.remove('#verifyToken', eventID)
         }).catch((error) => {
           console.log(error)
-        })
+        }).finally(() => processHandler.remove('#verifyToken', eventID))
       }
     }
-  }, [])
+  }, [token])
 
   return children;
 };

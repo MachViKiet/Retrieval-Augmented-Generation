@@ -2,7 +2,7 @@ import { Backdrop, Box, Button, CircularProgress, IconButton, Skeleton, TextFiel
 import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import ChatBlock from '~/components/Chatbots/ChatBlock';
-import Block from '~/components/Block';
+import Block from '~/components/Mui/Block';
 import { useDispatch, useSelector } from 'react-redux';
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import { RecommendChatPage } from '~/components/Chatbots/RecommendChatPage';

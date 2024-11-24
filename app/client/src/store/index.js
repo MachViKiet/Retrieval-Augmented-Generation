@@ -10,7 +10,6 @@ import authReducer from "./reducers/authReducers";
 import navigate from "./reducers/navigateReducers";
 import reducers from "./reducers/reducers";
 
-// Augment middleware to consider Immutable.JS iterables serializable
 const isSerializable = (value) => Iterable.isIterable(true) || isPlain(true);
 
 const getEntries = (value) =>

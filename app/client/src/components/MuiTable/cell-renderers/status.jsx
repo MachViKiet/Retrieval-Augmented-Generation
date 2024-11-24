@@ -16,15 +16,17 @@ import {
   useGridApiContext,
   useGridRootProps,
 } from '@mui/x-data-grid';
-// import { Tooltip } from '@mui/material';
+import AutoFixNormalOutlinedIcon from '@mui/icons-material/AutoFixNormalOutlined';
 
-export const STATUS_OPTIONS = ['Open', 'PartiallyFilled', 'Filled', 'Rejected', 'Success'];
+export const STATUS_OPTIONS = ['Open', 'PartiallyFilled', 'Filled', 'rejected', 'processed'];
 
 const StyledChip = styled(Chip)(({ theme }) => ({
   justifyContent: 'left',
   borderRadius: '8px',
   fontSize: 'inherit',
   fontWeight: '700',
+  marginLeft: '20px',
+  marginBottom: '5px',
   '&:hover': {
     cursor: 'pointer'
   },
@@ -43,27 +45,34 @@ const StyledChip = styled(Chip)(({ theme }) => ({
     color: (theme.vars || theme).palette.warning.dark,
     border: `1px solid ${(theme.vars || theme).palette.warning.main}`,
   },
-  '&.Rejected': {
+  '&.rejected': {
     color: '#fff',
+    marginLeft: '0',
     backgroundColor: (theme.vars || theme).palette.error.dark,
     border: `1px solid ${(theme.vars || theme).palette.error.main}`,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
-  '&.Completed': {
-    // color: '#fff',
-    backgroundColor: '#66bb6a14',
-    // border: `1px solid ${(theme.vars || theme).palette.success.main}`,
-    // boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+  '&.processed': {
+    backgroundColor: '#b8ffb3 !important',
     color: (theme.vars || theme).palette.success.dark,
     border: `1px solid ${(theme.vars || theme).palette.success.main}`,
   },
-  '&.Processing': {
-    // color: '#fff',
+  '&.pending': {
+    backgroundColor: '#f3ff96 !important',
+    width: '95px',
+    justifyContent: 'center',
+    color: (theme.vars || theme).palette.success.dark,
+    border: `1px solid ${(theme.vars || theme).palette.success.main}`,
+  },
+  '&.processing': {
     backgroundColor: '#ffa72614',
-    // border: `1px solid ${(theme.vars || theme).palette.warning.main}`,
-    // boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
     color: (theme.vars || theme).palette.warning.dark,
     border: `1px solid ${(theme.vars || theme).palette.warning.main}`,
+  },
+  '&.basic': {
+    backgroundColor: '#dadcff !important',
+    color: '#000',
+    border: `1px solid ${(theme.vars || theme).palette.success.main}`,
   },
 }));
 
@@ -71,24 +80,26 @@ const Status = (props) => {
   const { status } = props;
 
   let icon = null;
-  if (status === 'Rejected') {
+  if (status === 'rejected') {
     icon = <ReportProblemIcon className="icon" />;
+  } else if (status === 'processed') {
+    icon = <DoneIcon className="icon" />;
+  } else if (status === 'processing') {
+    icon = <SyncIcon className="icon" />;
+
+  } else if (status === 'basic') {
+    icon = <AutoFixNormalOutlinedIcon className="icon" />;
+
   } else if (status === 'Open') {
     icon = <InfoIcon className="icon" />;
   } else if (status === 'PartiallyFilled') {
     icon = <AutorenewIcon className="icon" />;
   } else if (status === 'Filled') {
     icon = <DoneIcon className="icon" />;
-  } else if (status === 'Success') {
-    icon = <DoneIcon className="icon" />;
-  } else if (status === 'Completed') {
-    icon = <DoneIcon className="icon" />;
-  } else if (status === 'Processing') {
-    icon = <SyncIcon className="icon" />;
   }
 
   let label
-  if (status === 'Rejected') {
+  if (status === 'rejected') {
     label = 'Không Thành Công';
   } else if (status === 'Open') {
     label = status;
@@ -96,12 +107,14 @@ const Status = (props) => {
     label = status;
   } else if (status === 'Filled') {
     label = status;
-  } else if (status === 'Success') {
+  } else if (status === 'processed') {
     label = 'Thành Công';
-  } else if (status === 'Completed') {
-    label = 'Đã Hoàn Tất';
-  } else if (status === 'Processing') {
+  } else if (status === 'pending') {
+    label = 'Chưa Xử Lý';
+  } else if (status === 'processing') {
     label = 'Đang Xử Lý';
+  } else if (status === 'basic') {
+    label = 'Cơ bản';
   }
 
   if (status === 'PartiallyFilled') {
@@ -109,19 +122,13 @@ const Status = (props) => {
   }
 
   return (
-    // <Tooltip title={label}     
-    // onClick={(event) => {
-    //     event.stopPropagation();
-    //     navigate(navigateAddress)
-    // }}>
-      <StyledChip
-        className={status}
-        icon={icon}
-        size="small"
-        label={label}
-        variant="outlined"
-      />
-    // </Tooltip>
+    <StyledChip
+      className={status}
+      icon={icon}
+      size="small"
+      label={label}
+      variant="outlined"
+    />
   );
 };
 
@@ -169,7 +176,7 @@ function EditStatus(props) {
     >
       {STATUS_OPTIONS.map((option) => {
         let IconComponent = null;
-        if (option === 'Rejected') {
+        if (option === 'rejected') {
           IconComponent = ReportProblemIcon;
         } else if (option === 'Open') {
           IconComponent = InfoIcon;
@@ -177,7 +184,7 @@ function EditStatus(props) {
           IconComponent = AutorenewIcon;
         } else if (option === 'Filled') {
           IconComponent = DoneIcon;
-        } else if (option === 'Success') {
+        } else if (option === 'processed') {
           IconComponent = ReportProblemIcon;
         }
 

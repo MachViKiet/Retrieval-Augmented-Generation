@@ -170,14 +170,14 @@ export default function MuiTable({ useData, getRowHeight, rowHeight, onRowClick 
   return (
       <DataGrid
         apiRef={apiRef}
-        checkboxSelection
+        // checkboxSelection
         density="compact"
         getRowHeight = {getRowHeight}
         {...data}
         rowHeight  = {rowHeight}
         onRowClick = {onRowClick}
         pageSizeOptions={[10,20,  100]}
-        // loading = {true}
+        // loading
         initialState={{
           ...data.initialState,
           pagination: { paginationModel: { pageSize: 20 } },

@@ -6,7 +6,12 @@ const ErrorMessage = {
 
 const Code = {
     'DEPT-GV' : 'Ban Giáo Vụ',
-    'female': 'Nam'
+    'female': 'Nam',
+    'school_year': 'Năm Học',
+    'keywords': 'Từ Khóa',
+    'majors': 'Chuyên Ngành',
+    'subjects_code': 'Mã Môn Học',
+    'subjects_name': 'Tên Môn Học'
 }
 
 export const useErrorMessage = (code) => {

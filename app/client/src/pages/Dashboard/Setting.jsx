@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import UnknowPage from '../../components/Page/UnknowPage';
+import { useOutletContext } from 'react-router-dom';
 
-function Setting({setSelectedIndex}) {
+function Setting() {
 
-  const dispatch = useDispatch()
+  const { processHandler, dashboard } = useOutletContext()
+
   useEffect(() => {
     document.title = 'Chatbot - Cài Đặt';
-    dispatch(sidebarAction({index: 355}))
-    // return (
-    //   dispatch(sidebarAction({index: null}))
-    // )
+    dashboard.navigate.active(355)
+
+    return () => ( dashboard.navigate.active('#') )
   })
 
   return (

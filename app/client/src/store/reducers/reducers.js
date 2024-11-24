@@ -1,11 +1,11 @@
 import { INITIALSTATE } from "../actions/actions";
-import { navList_1, navList_2 } from "~/config/navList";
-import { subNav as knowledge_baseSubNavs } from "~/pages/Dashboard/KnowledgeBase/SubNav";
+// import { navList_1, navList_2 } from "~/config/navList";
+// import { subNav as knowledge_baseSubNavs } from "~/pages/Dashboard/KnowledgeBase/SubNav";
 const initialState = {
-  dashboard: { ...navList_1, ...navList_2 },
-  subnav: {
-    346: knowledge_baseSubNavs,
-  },
+  // dashboard: { ...navList_1, ...navList_2 },
+  // subnav: {
+  //   346: knowledge_baseSubNavs,
+  // },
   payload: null,
 };
 

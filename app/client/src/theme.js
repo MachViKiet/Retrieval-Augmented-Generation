@@ -1,4 +1,4 @@
-import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
+import { extendTheme } from '@mui/material/styles'
 import { viVN } from "@mui/x-data-grid/locales";
 const SIDEBAR_WIDTH = "220px";
 // import { extendTheme } from "@mui/material/styles";
@@ -88,7 +88,7 @@ const theme = extendTheme(
       MuiDataGrid: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: "15px",
+            borderRadius: "10px",
             fontSize: "0.725rem",
             border: "none",
             boxShadow:
@@ -211,6 +211,7 @@ const theme = extendTheme(
         styleOverrides: {
           root: {
             fontSize: "0.875rem",
+            color: theme => theme.palette.text.secondary
           },
         },
       },

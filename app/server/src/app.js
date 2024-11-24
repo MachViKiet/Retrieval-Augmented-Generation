@@ -24,8 +24,22 @@ app.use(cors())
 
 app.use(require('~/routes/v1').default)
 app.set('views', path.join(__dirname, 'views'))
+app.set('storage', path.join(__dirname, 'storage'))
 app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'html')
 app.listen(app.get('port'))
+
+let parse_formdata = require('express-form-data')
+let os = require('os')
+
+let options_parse_formdata = {
+  uploadDir: os.tmpdir(),
+  autoClean: true
+}
+
+app.use(parse_formdata.parse(options_parse_formdata))
+app.use(parse_formdata.format())
+app.use(parse_formdata.stream())
+app.use(parse_formdata.union())
 
 module.exports = app

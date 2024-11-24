@@ -15,6 +15,7 @@ export const verifyToken = async (token = null) => {
 		.then(async (response) => {
 			if (!response.ok) {
 				return response.json().then(errorData => {
+					console.log(errorData.errors.msg)
 					throw errorData.errors.msg;
 				});
 			}

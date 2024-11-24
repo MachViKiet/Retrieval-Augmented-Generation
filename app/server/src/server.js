@@ -6,7 +6,6 @@ import './app'
 const http = require('http')
 const initMongo = require('./config/mongodb')
 const app = require('./app.js')
-// const socket = require('./socket');
 const io = require('./socket')
 
 async function bootstrap () {

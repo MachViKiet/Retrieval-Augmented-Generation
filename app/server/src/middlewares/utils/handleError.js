@@ -7,8 +7,14 @@ const handleError = (res = {}, err = {}) => {
   // Prints error in console
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-console
-    console.log(err)
+    // console.log(err)
   }
+  console.log({
+    errors: {
+      msg: err.message,
+      code: err.code
+    }
+  })
   // Sends error to user
   res.status(err.code).json({
     errors: {
