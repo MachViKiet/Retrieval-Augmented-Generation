@@ -132,7 +132,6 @@ const ChatWindow = styled(Box)(({theme}) => ({
 }))
 
 export function ChatGenerator() {
-  const dispatch = useDispatch()
   const bottomRef = useRef(null);
   const user = useSelector((state) => state.auth.user)
   const token = useSelector(state => state.auth.token)
@@ -301,7 +300,7 @@ export function ChatGenerator() {
       </Grid>
 
       <Grid  size={{ xs: 3.5, md: 3.5 }} >
-        <Block sx = {{ padding: 1, paddingTop: 9, display: { md: 'block', xs: 'none' }, backgroundColor: theme => theme.palette.primary.secondary + '!important' }}>
+        <Block sx = {{ padding: 1, paddingTop: 9, display: { md: 'block', xs: 'none' } }}>
           <Header/> 
           <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
             <Typography component='p' sx = {{ fontWeight: '800' }}> Cuộc Trò Chuyện </Typography>

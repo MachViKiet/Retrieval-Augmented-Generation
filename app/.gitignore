@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+temp
+
 client/.env
 client/.env
 client/.env

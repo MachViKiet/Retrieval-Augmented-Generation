@@ -28,6 +28,10 @@ const DocumentSchema = new mongoose.Schema(
       type: String,
       default: '0'
     },
+    chunks: {
+      type: Array,
+      default: []
+    },
     methods: {
       type: String,
       enum: ['basic'],

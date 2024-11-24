@@ -170,7 +170,7 @@ export default function MuiTable({ useData, getRowHeight, rowHeight, onRowClick 
   return (
       <DataGrid
         apiRef={apiRef}
-        checkboxSelection
+        // checkboxSelection
         density="compact"
         getRowHeight = {getRowHeight}
         {...data}

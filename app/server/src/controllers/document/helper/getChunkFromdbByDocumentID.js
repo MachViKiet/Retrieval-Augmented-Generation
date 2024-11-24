@@ -21,22 +21,30 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
     }
 
     let chunks = null
+
     try {
-      const formData = new FormData()
-      formData.append('text', content)
-      chunks = await chunk_file(formData)
+      if (!(_doc.state == 'pending')) {
+        throw 'Đang xử lý'
+      }
+
+      if ( _doc?.chunks && _doc.chunks.length != 0) {
+        chunks = _doc?.chunks
+      } else {
+        const formData = new FormData()
+        formData.append('text', content)
+        chunks = await chunk_file(formData)
+        chunks = chunks.map((chunk) => {
+          return {
+            id: uuidv4(),
+            chunk
+          }
+        })
+      }
     } catch (error) {
       chunks = []
     }
 
-    const chunksWithID = chunks.map((chunk) => {
-      return {
-        id: uuidv4(),
-        chunk
-      }
-    })
-
-    return { ..._doc, chunks: chunksWithID }
+    return { ..._doc, chunks: chunks }
   }).catch((err) => {
     throw buildErrObject(422, err.message)
   })
