@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Button, FormControl, IconButton, Input, InputLabel, Link, Tooltip, Typography } from '@mui/material'
+import { Box, Breadcrumbs, Button, FormControl, IconButton, Input, InputLabel, Link, TextField, Tooltip, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
@@ -8,52 +8,37 @@ import Block from '~/components/Mui/Block';
 import { renderTableAction } from '~/components/MuiTable/MuiTableAction';
 import { useDocument } from '~/apis/Document';
 import ExternalWebsite from '~/components/ExternalWebsite ';
-import { CreateID } from '~/utils/CreateID';
-
+import MemoryIcon from '@mui/icons-material/Memory';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 
-function createData(id, chunk, action) {
-  return { id, chunk, action};
+function createData(id, chunk) {
+  return { id, chunk};
 }
 
 const useData = (chunks) => {
   if(!chunks) return {rows: [], columns: []}
 
   const rows = chunks.map((data) => {
-    // const _id  = CreateID()
     const { id, chunk } = data
-    return createData(id, chunk, ['edit', 'delete'])
+    return createData(id, chunk)
   })
 
   const columns = [
     { 
       field: 'chunk', 
       headerName: 'Đoạn Cắt Từ Tài Liệu', 
-      width: 460,
+      width: 520,
       renderCell: (params) => (
-      <Tooltip title= {params.value} placement="top-end" >
+      <Tooltip title= {params.id} placement="top-end" >
         <Typography variant='p' component='p' 
-          sx = {{ textAlign: 'justify', padding: '5px 0', display: 'block', height: '100%', 
+          sx = {{ textAlign: 'justify', padding: '5px 0', display: 'block', height: '100%', paddingX: 1,
             maxHeight: '67px', width: '100%', whiteSpace: 'nowrap', textWrap: 'wrap', lineHeight: '15px', overflow: 'hidden', 
-            textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical' }}
-          onClick={(event) => {
-            const page_number = params.row?.page_number
-            if (scroll != page_number) {
-              event.stopPropagation();
-              setScroll(page_number)
-    };
-          }}>
-            {params.value}
+            textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical' }}>
+          {params.value}
           </Typography>
       </Tooltip>
       )
-    },
-    {
-      field: 'action',
-      headerName: '',
-      width: 70,
-      renderCell: renderTableAction,
     }
   ];
 
@@ -67,8 +52,10 @@ function DatasetDetail() {
   const {processHandler, noticeHandler, dashboard } = useOutletContext()
 
   const [documentWithChunk, setDocumentWithChunk] = useState(null)
-  const [openModal, setOpenModal] = useState(false)
+  const [openModalUpload, setOpenModalUpload] = useState(false)
+  const [openModalChunking, setOpenModalChunking] = useState(false)
   const [schema, setSchema] = useState(null)
+  const [chunk_id, set_chunk_id] = useState(null)
   
   const token = useSelector(state => state.auth.token)
 
@@ -76,7 +63,10 @@ function DatasetDetail() {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
     dashboard.navigate.active(346)
     
-    return () => ( dashboard.navigate.active('#') )
+    return () => {
+      dashboard.navigate.active('#')
+      console.log('destructor')
+    }
   }, [])
  
   useEffect(() => {
@@ -104,7 +94,7 @@ function DatasetDetail() {
   const DocumentUpdate = async (new_data) => {
     const UpdateDocumentEvent = processHandler.add('#UpdateDocument')
     await useDocument.update(new_data, token).then((document) => {
-      setDocumentWithChunk(document)
+      setDocumentWithChunk(prev => ( {...document, chunks: prev.chunks}))
       noticeHandler.add({
         status: 'success',
         message: 'Cập Nhật Dữ Liệu Thành Công'
@@ -144,20 +134,37 @@ function DatasetDetail() {
         </Breadcrumbs>
 
         <Box sx = {{ display: 'flex',justifyContent: 'end',  width: 'fit-content', gap: 2 }}>
-          <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModal(true)}
+
+          <Button component="label" startIcon={<SaveAsIcon/>} onClick={(e) => {
+            DocumentUpdate({
+              id: id,
+              update: {
+                chunks: documentWithChunk.chunks,
+                metadata: documentWithChunk.metadata
+              }
+            })
+          }}
+            sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
+              Lưu Thay Đổi
+          </Button>
+
+          <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
             sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
               Chỉnh Sửa Thông Tin
           </Button>
-          <Button component="label" startIcon={<SaveAsIcon/>} onClick={ProcessButton}
-            sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
-              Lưu Thay Đổi
+
+          <Button component="label" startIcon={<MemoryIcon />} color={'error'} onClick={ProcessButton} variant='contained'
+            sx = {{ paddingX: 2, paddingY: 1, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} 
+            >
+              Xử Lý Tài Liệu
           </Button>
         </Box>
       </Box>
 
-      <Box sx = {{  height: 'calc(100vh - 126px)', marginTop: 2, paddingX: 2, borderRadius: '15px', display: 'flex',justifyContent:'space-between', gap: 2 }}>
+      <Box sx = {{  height: 'calc(100vh - 126px)', marginTop: 2, borderRadius: '15px', display: 'flex',justifyContent:'space-between', gap: 2 }}>
         <Box sx = {{  width: '60%',  minWidth: '450px'}}>
-          <MuiTable rowHeight={101} useData = {useData(documentWithChunk?.chunks)} />
+          <MuiTable onRowClick={(e) => { setOpenModalChunking(true); set_chunk_id(e.id) }}
+            rowHeight={101} useData = {useData(documentWithChunk?.chunks)} />
         </Box>
 
         <Box sx = {{ width: '45%', height: '100%', borderRadius: '15px', padding: 2,
@@ -174,21 +181,63 @@ function DatasetDetail() {
           getMetadata: () => documentWithChunk?.metadata,
           state: documentWithChunk?.state,
           setMetadata: (value) => {
-            setDocumentWithChunk(prev =>
-            {
-              console.log({ ...prev, metadata: { ...prev.metadata, ...value } })
-              return { ...prev, metadata: { ...prev.metadata, ...value } }
-            })
+            if(documentWithChunk?.state != 'pending') return false
+            setDocumentWithChunk(prev =>({ ...prev, metadata: { ...prev.metadata, ...value }} ))
+            return true
           },
           getName: () => documentWithChunk?.document_name,
-          setName: (value) => setDocumentWithChunk(prev => ({ ...prev, document_name: value }))
+          setName: (value) => {
+            if(documentWithChunk?.state != 'pending') return false
+            setDocumentWithChunk(prev => ({ ...prev, document_name: value }))
+            return true
+          }
         }}
         dashboard = {dashboard}
         modalHandler = {{
-          state: openModal,
-          close: () => setOpenModal(false),
+          state: openModalUpload,
+          close: () => setOpenModalUpload(false),
           submit: DocumentUpdate,
           buffer: schema,
+        }} />
+
+      <SettingChunkModal
+        document = {{
+          id: id,
+          state: documentWithChunk?.state,
+          getChunk: (id) => {
+            if(!documentWithChunk?.chunks) return ''
+            const chunk = documentWithChunk?.chunks.filter((chunk) => {
+              return chunk.id == id
+            })
+            if(chunk && chunk.length != 0) return chunk[0].chunk
+            return ''
+          },
+          setChunks: (id, value) => {
+            if(documentWithChunk?.state != 'pending') return false
+            setDocumentWithChunk(prev =>({ ...prev, chunks: prev.chunks.map((chunk) => {
+              if(chunk.id == id) return { id: id, 'chunk': value }
+              return chunk
+            })} ))
+            return true
+          },
+          addChunk: (id, newChunk) => {
+            const index = documentWithChunk?.chunks.findIndex((item) => item.id === id)
+            if(index != -1){
+              documentWithChunk?.chunks.splice(index + 1, 0, newChunk);
+            }
+          },
+          removeChunks: (ids = []) => {
+            const new_chunks = documentWithChunk?.chunks.filter((chunks) => {
+              return !ids.includes(chunks.id)
+            })
+            setDocumentWithChunk(prev => ({...prev, chunks: new_chunks}))
+            return true
+          }
+        }}
+        modalHandler = {{
+          state: openModalChunking,
+          close: () => setOpenModalChunking(false),
+          buffer: chunk_id,
         }} />
     </Block>
   )
@@ -205,17 +254,21 @@ import { useCollection } from '~/apis/Collection';
 import Grid from '@mui/material/Grid2';
 import { useCode } from '~/hooks/useMessage';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import { CreateID } from '~/utils/CreateID';
+
 function SettingDocumentModal({ document, modalHandler = null }) {
 
   const [error_message, setError_message] = useState(null)
 
   const handleSubmit = async (e) => {
     if(document?.state != 'pending') {
-      setError_message('Tài Liệu Đã Được Xử Lý, Không Thể Thay Đổi')
+      setError_message('Tài Liệu Đã Hoặc Đang Được Xử Lý, Không Thể Thay Đổi !')
       return
     }
 
     const metadata = document.getMetadata()
+    const document_name = document.getName()
+
     const condition = getSchema(modalHandler.buffer).every(
       data => metadata?.[data.key] && metadata[data.key] != '' && metadata[data.key] != [])
 
@@ -227,10 +280,11 @@ function SettingDocumentModal({ document, modalHandler = null }) {
     await modalHandler.submit({
       id: document.id,
       update: {
-        document_name: document.getName(),
-        metadata: document.getMetadata()
+        document_name: document_name,
+        metadata: metadata
       }
     })
+    
     modalHandler.close()
   }
 
@@ -292,4 +346,59 @@ function SettingDocumentModal({ document, modalHandler = null }) {
     </React.Fragment>
   );
 }
+
+function SettingChunkModal({ document, modalHandler = null }) {
+
+  const [dataList, setDataList] = useState([])
+
+  useEffect(() => {
+    modalHandler.buffer && setDataList([modalHandler.buffer])
+  }, [modalHandler.buffer])
+
+  return (
+    <React.Fragment>
+      <Dialog
+        open={modalHandler?.state}
+        onClose={() => { modalHandler?.close(); setDataList([])}}>
+        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+          <Box sx = {{ width: '90vw', maxWidth: '600px', display: 'flex', alignItems: 'center', gap: 2}}>
+             Chỉnh Sửa Đoạn Cắt
+          </Box>
+        </DialogTitle>
+        <DialogContent sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {
+            dataList && dataList.map((id) => (
+              <TextField maxRows={4} multiline fullWidth
+                value={document.getChunk(id)}
+                onChange={(e) => document.setChunks(id, e.target.value)}
+              placeholder='Nhập câu hỏi bạn muốn'
+            />
+            ))
+          }
+        </DialogContent>
+        <DialogActions>
+
+          <Button onClick={() => {
+            const id = CreateID()
+            document.addChunk(dataList[dataList.length - 1], {
+              id: id,
+              chunk: ''
+            }),
+            setDataList(prev => [...prev, id])
+          }}
+            sx = {{ color: theme => theme.palette.text.secondary }}>Thêm Đoạn Cắt</Button>
+
+          <Button onClick={() => {
+            document.removeChunks(dataList) 
+            modalHandler?.close() 
+            setDataList([])
+          }}
+            sx = {{ color: theme => theme.palette.text.secondary }}>Xóa Tất Cả</Button>
+
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  );
+}
+
 

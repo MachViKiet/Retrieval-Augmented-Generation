@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { useProfile } from '~/apis/Profile';
 import { refresh } from '~/store/actions/authActions';
 
@@ -22,7 +22,7 @@ const PublicRoute = ({ children }) => {
         }).finally(() => processHandler.remove('#verifyToken', eventID))
       }
     }
-  }, [])
+  }, [token])
 
   return children;
 };

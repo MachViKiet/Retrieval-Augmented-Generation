@@ -32,15 +32,17 @@ const useData = (documents) => {
     return createData(_id, document_name, amount_chunking, formatTime(createdAt), formatTime(updatedAt), methods, isactive,state, ['delete'] )
   })
 
-  // const condition = (params) => { return params.row.parsingStatus === 'processed' }
-  const condition = () => true
+  const condition = (params) => { return ['processed', 'pending', 'failed'].includes(params.row.parsingStatus) }
+  // const condition = () => true
   const getLinkToDocument = (params) => { return `/knowledge_bases/${id}/${params.row.id}`}
 
   const columns = [
     { 
       field: 'name', headerName: 'Tên Tài Liệu', width: 240, 
       renderCell: (params) => {
-        return renderLink({params: params, link: getLinkToDocument(params), condition: condition(params)})
+        return <Box sx = {{ paddingLeft: 1 }}>
+          { renderLink({params: params, link: getLinkToDocument(params), condition: condition(params)}) }
+        </Box>
       },
     },
     { 
