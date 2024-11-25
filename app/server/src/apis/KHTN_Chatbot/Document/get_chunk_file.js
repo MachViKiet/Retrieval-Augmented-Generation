@@ -4,10 +4,11 @@ import { buildErrObject } from '~/middlewares/utils'
 
 const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT_PORT}`
 
-export const get_chunk_file = async (document_id = '', collection_name = '' ) => {
-  const url = `${domain}/get_file?document_id=${encodeURIComponent(document_id)}&collection_name=${encodeURIComponent(collection_name)}`
+export const get_chunk_file = async (formData = null) => {
+  const url = `${domain}/get_file`
   const structure = {
-    method: 'GET'
+    method: 'POST',
+    body: formData
   }
   // Thực hiện GET request
   return fetch(url, structure)

@@ -53,6 +53,7 @@ export const uploadFile = async (req, res) => {
           document_name_in_storage: `${id_in_storage}-${filename}${extensionFile}`,
           document_description: req.body?.description,
           chunks: chunks,
+          document_type: 'Upload',
           url: `${process.env.STORAGE}/documents?name=${id_in_storage}-${filename}${extensionFile}`
         })
 
