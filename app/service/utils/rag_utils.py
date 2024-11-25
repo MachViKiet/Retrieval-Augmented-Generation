@@ -320,16 +320,17 @@ def get_document(filename, collection_name):
     results = {}
     collection = Collection(collection_name)
     collection.load()
+    chunk_id_name = 'chunk_id' if collection_name != 'student_handbook' else 'page_number'
     search_results = collection.query(
         expr=f"document_id == '{filename}'",
-        output_fields=['article', 'chunk_id'],
+        output_fields=['article', chunk_id_name],
     )
     for r in search_results:
-                results[r.entity.get('chunk_id')] = r.entity
+                results[r[chunk_id_name]] = r['article']
     if len(results) == 0: #No matching documents
         return -1
     #Sort by distance and return only k results
     myKeys = list(results.keys())
     myKeys.sort()
-    sorted_list = [results[i].get('article') for i in myKeys]
+    sorted_list = [results[i] for i in myKeys]
     return sorted_list
