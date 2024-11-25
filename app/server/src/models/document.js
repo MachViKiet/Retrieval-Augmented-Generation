@@ -24,6 +24,10 @@ const DocumentSchema = new mongoose.Schema(
       type: String,
       default: 'Tài Liệu Trường Khoa Học Tự Nhiên'
     },
+    document_type: {
+      type: String,
+      default: 'Upload'
+    },
     amount_chunking: {
       type: String,
       default: '0'

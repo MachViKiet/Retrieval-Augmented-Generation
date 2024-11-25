@@ -72,8 +72,8 @@ function DatasetDetail() {
   useEffect(() => {
     if(token) {
       const event = processHandler.add('#loadDocumentWithChunk')
-      loadDocumentWithChunk(id, token).then((documentWithChunk) => setDocumentWithChunk(documentWithChunk))
-      .catch((err) => console.log(err))
+      loadDocumentWithChunk(id, token).then((documentWithChunk) => { setDocumentWithChunk(documentWithChunk) })
+      .catch((err) => console.log('error ',err))
       .finally(() =>  processHandler.remove('#loadDocumentWithChunk', event)) 
 
       const loadCollectionSchemaEvent = processHandler.add('#loadCollectionSchema')
@@ -153,10 +153,9 @@ function DatasetDetail() {
               Chỉnh Sửa Thông Tin
           </Button>
 
-          <Button component="label" startIcon={<MemoryIcon />} color={'error'} onClick={ProcessButton} variant='contained'
+          <Button disabled = { documentWithChunk?.state=='processed' } component="label" startIcon={<MemoryIcon />} color={'error'} onClick={ProcessButton} variant='contained'
             sx = {{ paddingX: 2, paddingY: 1, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} 
-            >
-              Xử Lý Tài Liệu
+            > Xử Lý Tài Liệu
           </Button>
         </Box>
       </Box>
@@ -175,7 +174,7 @@ function DatasetDetail() {
         </Box>
       </Box>
 
-      <SettingDocumentModal
+      { openModalUpload && <SettingDocumentModal
         document = {{
           id: id,
           getMetadata: () => documentWithChunk?.metadata,
@@ -198,9 +197,9 @@ function DatasetDetail() {
           close: () => setOpenModalUpload(false),
           submit: DocumentUpdate,
           buffer: schema,
-        }} />
+        }} /> }
 
-      <SettingChunkModal
+      { openModalChunking && <SettingChunkModal
         document = {{
           id: id,
           state: documentWithChunk?.state,
@@ -238,7 +237,7 @@ function DatasetDetail() {
           state: openModalChunking,
           close: () => setOpenModalChunking(false),
           buffer: chunk_id,
-        }} />
+        }} /> }
     </Block>
   )
 }
