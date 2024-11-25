@@ -318,8 +318,10 @@ Answer:
 def get_document(filename, collection_name):
     '''Get metadata from a file'''
     results = {}
-    search_results = Collection(collection_name).query(
-        expr=f"title == '{filename}'",
+    collection = Collection(collection_name)
+    collection.load()
+    search_results = collection.query(
+        expr=f"document_id == '{filename}'",
         output_fields=['article', 'chunk_id'],
     )
     for r in search_results:
