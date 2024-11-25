@@ -6,7 +6,6 @@ const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT
 
 export const get_collection_schema = async (collectionName = null) => {
   const url = `${domain}/get_collection_schema?collection_name=${encodeURIComponent(collectionName)}`
-  console.log('url: ', url)
   // Thực hiện GET request
   return fetch(url)
     .then(response => {

@@ -7,19 +7,12 @@ const Collection = require('~/models/collection')
 const { v4: uuidv4 } = require('uuid')
 
 export const getChunkFromdbByDocumentID = async (id = '') => {
-  console.log('heloe \n\n\n')
   const result = await Document.findById(id).then(async ({ _doc }) => {
     if (!_doc) {
       return buildErrObject(422, 'NOT_FOUND')
     }
 
-    console.log('heloe \n\n\n')
-
-
     let chunks = null
-
-    console.log('heloe \n\n\n')
-
 
     try {
       if ((_doc.state == 'processing')) {
@@ -32,7 +25,10 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
           .then((_collection) => _collection.name )
           .catch(() => { throw buildErrObject(422, 'Không thể đọc collection') })
 
-        chunks = useKHTN_Chatbot.get_chunk_file(_doc._id, collection_name)
+        const formData = new FormData
+        formData.append('collection_name', collection_name )
+        formData.append('document_id', _doc._id )
+        chunks = await useKHTN_Chatbot().get_chunk_file(formData)
           .catch(() => { throw buildErrObject(422, 'Không thể đọc chunk từ db') })
         chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
       }
@@ -40,8 +36,6 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
     } catch (error) {
       chunks = []
     }
-
-    console.log(chunks)
 
     return { ..._doc, chunks: chunks }
   }).catch((err) => {
