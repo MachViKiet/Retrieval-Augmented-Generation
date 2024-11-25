@@ -5,8 +5,8 @@ const domain = import.meta.env.VITE_SERVER
 const ExternalWebsite = ({ url = null }) => {
   const [externalWebsite, setExternalWebsite] = useState(null)
   useEffect(() => {
-    if(!url.startsWith(domain)){
-
+    if(url && !url.startsWith(domain)) {
+      url = `${domain}/proxy?url=${url}`
     }
     setExternalWebsite(url)
   }, [url])
