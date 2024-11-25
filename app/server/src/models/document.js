@@ -26,7 +26,7 @@ const DocumentSchema = new mongoose.Schema(
     },
     document_type: {
       type: String,
-      default: 'Upload'
+      required: true
     },
     amount_chunking: {
       type: String,
