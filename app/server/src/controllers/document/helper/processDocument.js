@@ -22,7 +22,7 @@ export const processDocument = async (id = null, chunks = null) => {
       .then((collection) => collection.name)
 
     const data = {
-      chunks: JSON.stringify(chunks),
+      chunks: chunks.length,
       collection_name: collection_name,
       filename: _doc.originalName,
       metadata: JSON.stringify({
@@ -48,7 +48,7 @@ export const processDocument = async (id = null, chunks = null) => {
       ..._doc.metadata
     }))
 
-    console.log(data)
+    console.log('Dữ liệu gởi đi để xử lý', data)
 
     const result = await insert_file(formData)
       .then((data) => data)

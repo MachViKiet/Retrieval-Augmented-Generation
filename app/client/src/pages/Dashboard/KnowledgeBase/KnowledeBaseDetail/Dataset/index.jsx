@@ -357,6 +357,7 @@ function SettingChunkModal({ document, modalHandler = null }) {
   return (
     <React.Fragment>
       <Dialog
+        sx = {{ '& .MuiPaper-root': { width: '80vw',maxWidth: 'none !important' }}}
         open={modalHandler?.state}
         onClose={() => { modalHandler?.close(); setDataList([])}}>
         <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
@@ -367,10 +368,10 @@ function SettingChunkModal({ document, modalHandler = null }) {
         <DialogContent sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {
             dataList && dataList.map((id) => (
-              <TextField maxRows={4} multiline fullWidth
+              <TextField maxRows={8} multiline fullWidth
                 value={document.getChunk(id)}
                 onChange={(e) => document.setChunks(id, e.target.value)}
-              placeholder='Nhập câu hỏi bạn muốn'
+              placeholder='Nhập thay đổi'
             />
             ))
           }
