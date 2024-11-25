@@ -9,6 +9,7 @@ from ibm_watsonx_ai.foundation_models import Embeddings
 
 import pymongo
 import json
+import ast
 
 from pymilvus import(
     Milvus,
@@ -261,12 +262,15 @@ def compile_filter_expression(metadata, loaded_collections: list):
             if meta_type == -1:
                 continue
 
-            if short_schema[attr] == DataType.INT8 | DataType.INT16 | DataType.INT32 | DataType.INT64 | DataType.FLOAT: #integer
+            if short_schema[attr] == DataType.INT8 or short_schema[attr] == DataType.INT16 or short_schema[attr] == DataType.INT32 or short_schema[attr] == DataType.INT64 or short_schema[attr] == DataType.FLOAT: #intege
                 expressions[c] += attr + ' == ' + val + " || "
             elif short_schema[attr] == DataType.VARCHAR:
                 expressions[c] += attr + f' == "{val}"' + " || "
             elif short_schema[attr] == DataType.ARRAY:
-                expressions[c] += f"array_contains_any({attr}, {val}) || "
+                if type(ast.literal_eval(val)) is list:
+                    expressions[c] += f"array_contains_any({attr}, {val}) || "
+                else:
+                    expressions[c] += f"array_contains_any({attr}, [{val}]) || "
         # Reformat
         expressions[c] = expressions[c].removesuffix(' || ')
     return expressions

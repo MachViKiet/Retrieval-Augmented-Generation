@@ -46,7 +46,7 @@ Context (encased in backticks):
 Query: {question}
 Always answer in Vietnamese.\
 Do not write many consecutive paragraphs without headings.\
-Do not add consecutive newlines. Always write the answer in markdown format. Use headings in markdown to make the answer more readable.
+Do not add consecutive newlines. Always write the answer in markdown format. Use headings in markdown to make the answer more readable. Do not use the markdown syntax for code blocks.
 Answer: 
 """
         params = {
