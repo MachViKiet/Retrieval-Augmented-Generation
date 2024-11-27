@@ -92,8 +92,12 @@ def search():
         'student_handbook': ['title', 'article', 'page_number'],
         chosen_collection: ['title', 'article']
     }
+    print(filter_expressions)
     query_embeddings = encoder.embedding_function.embed_query("query: " + query)
-    search_results, source = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields, k=3, filters=filter_expressions)
+    try:
+        search_results, source = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields, filters=filter_expressions)
+    except:
+        search_results, source = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields)
     if search_results != -1:
         context = rag_utils.create_prompt_milvus(query, search_results)
     else:
