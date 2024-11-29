@@ -25,6 +25,10 @@ const validateUpdateProfile = [
   check('position'),
   check('persional_email'),
   check('preferences'),
+  check('major'),
+  check('class'),
+  check('program'),
+  check('interest'),
   // TODO
   (req, res, next) => {
     try {

@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema(
         message: 'EMAIL_IS_NOT_VALID'
       }
     },
+    interest: {
+      type: Array,
+      default: []
+    },
     department: {
       type: String
     },
@@ -45,6 +49,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ['student', 'researcher', 'administrator', 'academic_administration'],
       default: 'student'
+    },
+    program: {
+      type: String,
+      enum: ['PR-CLC', 'PR-CNTN', 'PR-DT', 'PR-VP']
+    },
+    class: {
+      type: String,
+      enum: ['K20', 'K21', 'K22', 'K23', 'K24']
     },
     verification: {
       type: String
@@ -79,7 +91,7 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: []
     },
-    majors: {
+    major: {
       type: String,
       default: 'Công nghệ thông tin'
     },

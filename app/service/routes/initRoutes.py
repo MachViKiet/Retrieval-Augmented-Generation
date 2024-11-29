@@ -110,13 +110,14 @@ def search():
         'source': source
     })
 
-@main.route("/generate", methods=["GET"])
+@main.route("/generate", methods=["POST"])
 @cross_origin()
 def generate():
     ##PARAMS
-    query = request.args.get('query') # Tin nhắn người dùng
-    context = request.args.get('context') # Context từ api search
-    streaming = request.args.get('streaming').lower() == "true"  #True or False 
+    query = request.form['query'] # Tin nhắn người dùng
+    context = request.form['context'] # Context từ api search
+    streaming = request.form['streaming'].lower() == "true"  #True or False 
+    history = json.loads(request.form['history']) 
     max_tokens = 1500 
     #-------------------------------------------
     answer = model.generate(query, context, streaming, max_tokens)

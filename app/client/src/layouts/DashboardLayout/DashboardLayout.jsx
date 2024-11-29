@@ -16,7 +16,7 @@ import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydre
 const DashboardContainer = styled(Box)(({ theme }) => ({ 
   height: '100vh', justifyContent: "center", alignItems: "center", transform: 'scale(1)', transition: '0.5s all ease',
   '&::before': { background: '#ddf3fc', content: '""', display: 'flex', position: 'absolute', zIndex: -1, inset: 0, 
-    backgroundColor: theme.palette.primary.background, backgroundRepeat: 'no-repeat' }
+    backgroundColor: theme.palette.mode == 'dark' ? '#25294a' : '#ddf3fc', backgroundRepeat: 'no-repeat' }
 }));
 
 const SidebarContainer = styled(Box)(({theme}) => ({

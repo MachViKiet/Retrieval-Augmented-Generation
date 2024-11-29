@@ -54,7 +54,7 @@ export function HomePage() {
        }}>
         
         <Box sx = {{ 
-          width:  '150px',
+          width:  '245px',
           height:  '200px'
         }}>
           <img src={avatar} style = {{ width: '100%', height: '100%' }} />

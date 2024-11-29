@@ -4,12 +4,16 @@ import ViewStreamIcon from '@mui/icons-material/ViewStream';
 import AssuredWorkloadOutlinedIcon from '@mui/icons-material/AssuredWorkloadOutlined';
 import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import FestivalOutlinedIcon from '@mui/icons-material/FestivalOutlined';
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 
 const Container_Style = {
     display: "flex",
     flexWrap: "wrap",
-    gap: 2,
-    paddingBottom: 1
+    gap: 1,
+    paddingBottom: 2,
+    paddingTop: 1
 }
 
 export function RecommendChatPage({ 
@@ -47,64 +51,18 @@ export function RecommendChatPage({
             WebkitBackgroundClip : 'text',
             textAlign: 'start',
         }}>Xin Chào Bạn, {username} !</Typography> }
+
         <Typography variant='h3' sx = {{ 
             fontSize: '1.5rem',
-            marginBottom: 2,
+            marginBottom: 1,
             width: 'fit-content',
             textAlign:'left',
             color: '#8e9492',
             fontWeight: '900',
-        }}>Tôi có thể giúp gì hôm nay?</Typography>
+        }}>Tôi có thể giúp gì hôm nay ?</Typography>
 
-        <Box sx = {Container_Style} >
-        {
-            [{
-            id: '12314',
-            key: 'Giới Thiệu Khoa',
-            icon: <ViewStreamIcon/>,
-            question: 'Giới Thiệu Khoa Công Nghệ thông Tin'
-            },{
-            id: '12315',
-            key: 'Nội Quy Trường Học',
-            icon: <ContactSupportOutlinedIcon/>,
-            question: 'Khái quát nội quy trường học Khoa Học Tự Nhiên'
-            },{
-            id: '12316',
-            key: 'Chính Sách Học Bổng',
-            icon: <AssuredWorkloadOutlinedIcon/>,
-            question: 'Chính Sách Học Bổng Mới Nhất 2024'
-            }].map((data) => {
-            return (
-                <Button key = {data.id} sx = {(theme) => ({ 
-                    width: 'fit-content',
-                    background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
-                        : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                    color: theme.palette.mode == 'dark' ? '#ffffffad' : '##000000a3',
-                    marginBottom: 1,
-                    textAlign: 'left',
-                    paddingX: 1.5,
-                    borderRadius: '10px',
-                    boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 1px 2px rgba(80, 80, 80, 0.1)',
-                    "&:hover": {
-                        background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041a91 100%)' 
-                            : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
-                        color: '#fff'
-                    }
-                })}
-                startIcon= {data.icon}
-                onClick = {async () => {
-                    ChatAction && await ChatAction(data.question)
-                }}>
-                    <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
-                    {data.key}
-                    </Typography>
-                </Button>
-            )
-            })
-        }
-        </Box>
 
-        <Box sx = {Container_Style}>
+        <Box sx = {{...Container_Style, gap: 2 }}>
         {['Cho tôi biết danh sách học bổng khuyến học mới nhất',
         'Wifi phòng học của trường KHTN là gì?',
         'Tôi có thể tra cứu điểm và bảng điểm ở đâu?'].map((question, index) => {
@@ -121,7 +79,7 @@ export function RecommendChatPage({
                 padding: 2,
                 position: 'relative',
                 textAlign: 'start',
-                color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : '##000000a3',
+                color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : 'var(--mui-palette-primary-main)',
                 boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
                 cursor: 'pointer',
                 '&:hover': {
@@ -148,6 +106,78 @@ export function RecommendChatPage({
             </Box>
             )
         })}
+        </Box>
+
+        {/* <Typography variant='h3' sx = {{ 
+            fontSize: '1.5rem',
+            marginBottom: 1,
+            width: 'fit-content',
+            textAlign:'left',
+            color: '#8e9492',
+            fontWeight: '900',
+        }}>Chủ đề bạn có thể quan tâm ! </Typography> */}
+
+        <Box sx = {Container_Style} >
+        {
+            [{
+            id: '12314',
+            key: 'Nội quy trường học',
+            icon: <ViewStreamIcon/>,
+            question: 'Giới Thiệu Khoa Công Nghệ thông Tin'
+            },{
+            id: '12315',
+            key: 'Thông tin sổ tay sinh viên',
+            icon: <ContactSupportOutlinedIcon/>,
+            question: 'Khái quát nội quy trường học Khoa Học Tự Nhiên'
+            },{
+            id: '12316',
+            key: 'Chính Sách Học Bổng',
+            icon: <AssuredWorkloadOutlinedIcon/>,
+            question: 'Chính Sách Học Bổng Các Năm'
+            },{
+            id: '12316',
+            key: 'Thời Khóa Biểu',
+            icon: <CalendarMonthOutlinedIcon/>,
+            question: 'Chính Sách Học Bổng Mới Nhất 2024'
+            },{
+            id: '12316',
+            key: 'Thông Tin Sự Kiện',
+            icon: <FestivalOutlinedIcon/>,
+            question: 'Thông Tin Sự Kiện'
+            },{
+            id: '12316',
+            key: 'Thông Tin Tuyển Dụng',
+            icon: <PaymentsOutlinedIcon/>,
+            question: 'Thông Tin Tuyển Dụng'
+            }].map((data) => {
+            return (
+                <Button key = {data.id} sx = {(theme) => ({ 
+                    width: 'fit-content',
+                    background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
+                        : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                    color: theme.palette.mode == 'dark' ? '#ffffffad' : '##000000a3',
+                    textAlign: 'left',
+                    marginRight: 0.75,
+                    paddingX: 1.5,
+                    borderRadius: '10px',
+                    boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 1px 2px rgba(80, 80, 80, 0.1)',
+                    "&:hover": {
+                        background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041a91 100%)' 
+                            : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
+                        color: '#fff'
+                    }
+                })}
+                startIcon= {data.icon}
+                onClick = {async () => {
+                    ChatAction && await ChatAction(data.question)
+                }}>
+                    <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
+                    {data.key}
+                    </Typography>
+                </Button>
+            )
+            })
+        }
         </Box>
 
         <Box sx ={{ width: '100%', height: 2 }}></Box>  

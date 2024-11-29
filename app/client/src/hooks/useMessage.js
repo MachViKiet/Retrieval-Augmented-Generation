@@ -11,7 +11,24 @@ const Code = {
     'keywords': 'Từ Khóa',
     'majors': 'Chuyên Ngành',
     'subjects_code': 'Mã Môn Học',
-    'subjects_name': 'Tên Môn Học'
+    'subjects_name': 'Tên Môn Học',
+    'PR-CLC': 'Chất Lượng Cao',
+    'K21': 'Khóa 2021',
+    'K24': 'Khóa 2024',
+    'K23': 'Khóa 2023',
+    'K22': 'Khóa 2022',
+    'K20': 'Khóa 2020',
+    'KHMT': 'Khoa Học Máy Tính',
+    'PR-CNTN': 'Cử Nhân Tài Năng',
+    'PR-DT': 'Đại Trà',
+    'PR-VP': 'Việt - Pháp',
+    'CNPM': 'Công Nghệ Phần Mềm',
+    'HTTT': 'Hệ Thống Thông Tin',
+    'TGMT': 'Thị Giác Máy Tính',
+    'CNTTHUC': 'Công Nghệ Tri Thức',
+    'CNTT': 'Công Nghệ Thông Tin',
+    'NONE': 'Không có ( Chưa xét chuyên ngành )'
+
 }
 
 export const useErrorMessage = (code) => {

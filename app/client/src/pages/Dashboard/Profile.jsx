@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid2';
-import { Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Select, MenuItem, Backdrop, CircularProgress, Skeleton } from '@mui/material';
+import { Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Select, MenuItem, Backdrop, CircularProgress, Skeleton, Button } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -8,7 +8,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useProfile } from '~/apis/Profile';
 import { useOutletContext } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import MaleIcon from '@mui/icons-material/Male';
 import HomeWorkOutlinedIcon from '@mui/icons-material/HomeWorkOutlined';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import { useCode } from '~/hooks/useMessage';
 import Block from '~/components/Mui/Block';
 import { getDate } from '~/utils/GetDate';
+import { refresh } from '~/store/actions/authActions';
 
 const Container_Style = { height: 'fit-content', paddingX:1, paddingY: 4,
   background: theme => theme.palette.mode == 'dark' ? '#3e436b' : '#7474742b'
@@ -25,7 +26,9 @@ const Container_Style = { height: 'fit-content', paddingX:1, paddingY: 4,
 
 export function Profile() {
 
-  const { processHandler, dashboard } = useOutletContext()
+  const dispatch = useDispatch()
+
+  const { processHandler, noticeHandler, dashboard } = useOutletContext()
   const [user, setUser] = useState(null)
   const token = useSelector((state) => state.auth.token)
 
@@ -47,6 +50,27 @@ export function Profile() {
     return useProfile.get(token).then(async(user) => {
       processHandler.remove('#GetUser', eventID); return user
     })
+  }
+
+  const updateClick = async (e) => {
+    e.preventDefault()
+    const updateUserEvent = processHandler.add('#UpdateUser')
+    useProfile.update(user, token)
+    .then(async (user) => {
+      setUser(user)
+      dispatch(refresh(token, {
+        name: user?.name,
+        role: user?.role,
+        email: user?.email
+      }))
+
+      noticeHandler.add({
+        status: 'success',
+        message: 'Cập nhật thành công'
+      })
+    }).catch((err) => {
+      console.log('update Thất bại  ', err)
+    }).finally(() => processHandler.remove('#UpdateUser', updateUserEvent))
   }
 
   return (
@@ -137,9 +161,6 @@ export function Profile() {
                   variant="outlined"
                   value={user?.name ? user?.name : null}
                   onChange={(e) => setUser((prev) => ({...prev, name : e.target.value}))}
-                  sx = {{ 
-                    color: '#fff',
-                  }}
                 />
               </FormControl>
             </Grid>
@@ -149,11 +170,8 @@ export function Profile() {
               <Select
                 id="user_sex"
                 value={user?.sex ? user?.sex : null}
-                sx = {{ 
-                  width: '100%',
-                  '& .MuiSelect-icon': {
-                    color: theme => theme.palette.text.secondary
-                  }
+                sx = {{ width: '100%',
+                  '& .MuiSelect-icon': { color: theme => theme.palette.text.secondary }
                 }}
                 onChange={(e) => setUser((prev) => ({...prev, sex : e.target.value}))}
               >
@@ -172,8 +190,7 @@ export function Profile() {
                     <DatePicker
                       id="user_birth"
                       value={dayjs(user?.birth)}
-                      onChange={(value) => setUser((prev) => ({...prev, birth : value}))}
-                    />
+                      onChange={(value) => setUser((prev) => ({...prev, birth : value}))} />
                   </DemoContainer>
                 </LocalizationProvider>
               </FormControl>
@@ -186,11 +203,8 @@ export function Profile() {
                   id="user_department"
                   name= 'department'
                   value={user?.department}
-                  sx = {{ 
-                    width: '100%',
-                    '& .MuiSelect-icon': {
-                      color: theme => theme.palette.text.secondary
-                    }
+                  sx = {{ width: '100%',
+                    '& .MuiSelect-icon': { color: theme => theme.palette.text.secondary }
                   }}
                   onChange={(e) => setUser((prev) => ({...prev, department : e.target.value}))}
                 >
@@ -209,11 +223,8 @@ export function Profile() {
                   id="user_position"
                   name= "user_position"
                   value={user?.position}
-                  sx = {{ 
-                    width: '100%',
-                    '& .MuiSelect-icon': {
-                      color: theme => theme.palette.text.secondary
-                    }
+                  sx = {{ width: '100%',
+                    '& .MuiSelect-icon': { color: theme => theme.palette.text.secondary },
                   }}
                   onChange={(e) => setUser((prev) => ({...prev, position : e.target.value}))}
                 >
@@ -238,9 +249,6 @@ export function Profile() {
                   disabled
                   fullWidth
                   variant="outlined"
-                  sx = {{ 
-                    color: '#fff'
-                  }}
                 />
               </FormControl>
             </Grid>
@@ -272,9 +280,6 @@ export function Profile() {
                   value={user?.personal_email}
                   fullWidth
                   variant="outlined"
-                  sx = {{ 
-                    color: '#fff'
-                  }}
                   onChange={(e) => setUser((prev) => ({...prev, personal_email : e.target.value}))}
                 />
               </FormControl>
@@ -283,13 +288,14 @@ export function Profile() {
             <Grid size={12}>
               <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <FormLabel htmlFor="preferences" sx = {{ color: 'inherit' }}>Mục Tiêu Công Việc</FormLabel>
+                  <FormLabel htmlFor="preferences" sx = {{ color: 'inherit' }}>Mô Tả Công Việc</FormLabel>
                 </Box>
                 <TextField
                   multiline
                   id="preferences"
                   name= "preferences"
                   value={user?.preferences}
+                  spellCheck = {false}
                   rows={4}
                   onChange={(e) => setUser((prev) => ({...prev, preferences : e.target.value}))}
                 />
@@ -298,16 +304,16 @@ export function Profile() {
 
           </Grid>
           <Box >
-            <Typography sx ={{ 
-              width: '100%',
-              textAlign: 'end',
-              marginTop: 2,
-              color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000'
-            }}>Cập nhật lần cuối vào lúc : {getDate(user?.updatedAt)}</Typography>
+            <Typography sx ={{ width: '100%', textAlign: 'end', marginTop: 2 }}>Cập nhật lần cuối vào lúc : {getDate(user?.updatedAt)}</Typography>
           </Box>
         </Box>
-        </> }
-      </Box>
+
+        <Box sx = {{ display: 'flex', justifyContent: 'center', gap: 2, width: '100%' }}>
+          <Button variant= 'contained' color="success" onClick={updateClick}>Cập Nhật Thông Tin</Button>
+          <Button variant= 'contained' color='error'>Đặt lại mật khẩu</Button>
+        </Box>
+
+      </> } </Box>
 
     </Block>
   )

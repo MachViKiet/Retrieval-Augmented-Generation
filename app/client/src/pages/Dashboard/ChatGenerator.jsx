@@ -5,8 +5,7 @@ import Grid from '@mui/material/Grid2'
 import ChatInput from '~/components/Chatbots/ChatInput';
 import ChatBlock from '~/components/Chatbots/ChatBlock';
 import Block from '~/components/Mui/Block';
-import AvatarUserDefault from '~/components/Avatar/AvatarUserDefault';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RecommendChatPage } from '~/components/Chatbots/RecommendChatPage';
 import ProcessBlock from '~/components/Chatbots/MessageHandler.jsx/ProcessBlock';
 import UserTypingMessageBlock from '~/components/Chatbots/MessageHandler.jsx/UserTypingMessageBlock';
@@ -158,10 +157,10 @@ export function ChatGenerator() {
   })
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    currentChatSession && bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [Conservations, messageHandler ]);
 
-  const {processHandler, dashboard } = useOutletContext();
+  const { dashboard } = useOutletContext();
   
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
@@ -222,7 +221,14 @@ export function ChatGenerator() {
     
       if (session?._id){
         setCurrentChatSession(session)
-        ChatWithChatbot.chat(socket, { message: message, chat_session: session?._id })
+        ChatWithChatbot.chat(socket, { message: message, chat_session: session?._id, 
+          history: Conservations.slice(0,3).map((Conservation) => ({
+            update_at: Conservation.update_at,
+            create_at: Conservation.create_at,
+            question: Conservation.question,
+            anwser: Conservation.anwser
+          })) 
+        })
         setMessageHandler(prev => ({...prev, isProcess: true }))
       } 
     } catch (error) {
@@ -315,7 +321,7 @@ export function ChatGenerator() {
             sessions.map((session) => (
               <Box key = {session._id} 
                 sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
-                  '&:hover': {background: '#00000091'},
+                  '&:hover': {background: '#00000091', color: '#fff'},
                   borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
                   onClick = {async (e) => await sessionButtonClick(session)}>
                 <Box >

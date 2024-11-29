@@ -17,6 +17,7 @@ export const ChatWithChatBot = async (socket) => {
     const message_id = new ObjectId()
     const message = req.message
     const current_session = req?.chat_session
+    const conservationBefore = req?.history
 
     const objectConservation = {
       '_id': message_id,
@@ -125,7 +126,7 @@ export const ChatWithChatBot = async (socket) => {
 
       const start_point_4 = (new Date()).getTime()
 
-      const finalResponse = await chatbot.generate(message, context, true).then((res) => {
+      const finalResponse = await chatbot.generate(message, context, true, conservationBefore).then((res) => {
         return res // StreamObject
       }).catch((err) => console.log(err))
       const end_point_4 = (new Date()).getTime()
