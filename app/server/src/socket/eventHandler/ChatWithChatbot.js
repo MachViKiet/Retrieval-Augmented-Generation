@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Updated by Mach Vi Kiet's author on November 15 2024
  */
@@ -43,7 +44,7 @@ export const ChatWithChatBot = async (socket) => {
       const start_point_1 = (new Date()).getTime()
       const chosen_collections = await chatbot.determine_collection(message).then((res) => {
         return res.collection
-      })
+      }).catch((err) => console.log(err))
       const end_point_1 = (new Date()).getTime()
 
 
@@ -64,7 +65,7 @@ export const ChatWithChatBot = async (socket) => {
       const start_point_2 = (new Date()).getTime()
       const filter_expressions = await chatbot.extract_meta(message, chosen_collections).then((res) => {
         return res
-      })
+      }).catch((err) => console.log(err))
       const end_point_2 = (new Date()).getTime()
 
       socket.emit('/ChatWithChatBot/isProcessing', [{
@@ -90,8 +91,9 @@ export const ChatWithChatBot = async (socket) => {
       const start_point_3 = (new Date()).getTime()
 
       const context = await chatbot.search(message, chosen_collections, JSON.stringify(filter_expressions)).then((res) => {
+        console.log(res)
         return res.context
-      })
+      }).catch((err) => console.log(err))
       const end_point_3 = (new Date()).getTime()
 
 
@@ -125,7 +127,7 @@ export const ChatWithChatBot = async (socket) => {
 
       const finalResponse = await chatbot.generate(message, context, true).then((res) => {
         return res // StreamObject
-      })
+      }).catch((err) => console.log(err))
       const end_point_4 = (new Date()).getTime()
 
 
@@ -205,10 +207,9 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
-
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
-        'anwser': error.message, //'Hệ thống Chatbot hiện không hoạt động !',
+        'anwser': 'Hệ thống Chatbot hiện không hoạt động !',
         'state': 'success',
         'update_at': getTime(),
         'duration': startTime - new Date().getTime()

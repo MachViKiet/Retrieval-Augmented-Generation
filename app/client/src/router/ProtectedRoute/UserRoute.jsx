@@ -31,6 +31,8 @@ const UserRoute = ({ children }) => {
             } else navigate('/dashboard')
           }
         }).catch((error) => {
+          
+          processHandler.remove('#verifyToken', eventID)
           console.error("Server không hoạt động!\n", error)
           navigate('/')
         })

@@ -77,7 +77,7 @@ export function RecommendChatPage({
             return (
                 <Button key = {data.id} sx = {(theme) => ({ 
                     width: 'fit-content',
-                    background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #515480 100%)' 
+                    background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
                         : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
                     color: theme.palette.mode == 'dark' ? '#ffffffad' : '##000000a3',
                     marginBottom: 1,
@@ -86,7 +86,7 @@ export function RecommendChatPage({
                     borderRadius: '10px',
                     boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 1px 2px rgba(80, 80, 80, 0.1)',
                     "&:hover": {
-                        background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #05083891 100%)' 
+                        background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041a91 100%)' 
                             : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
                         color: '#fff'
                     }
@@ -116,7 +116,7 @@ export function RecommendChatPage({
                 height: '180px',
                 width: '100%',
                 borderRadius: '10px',
-                backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #515480 100%)' 
+                backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
                 : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
                 padding: 2,
                 position: 'relative',
@@ -126,7 +126,7 @@ export function RecommendChatPage({
                 cursor: 'pointer',
                 '&:hover': {
                     color: '#fff',
-                    backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #05083891 100%)' 
+                    backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041a91 100%)' 
                     : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
                 },
                 '&:active': {

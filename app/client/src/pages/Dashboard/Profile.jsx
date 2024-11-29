@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid2';
-import { Button, Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Select, MenuItem, Backdrop, CircularProgress, Skeleton } from '@mui/material';
+import { Avatar, Box, Chip, FormControl, FormLabel, Typography, TextField, Select, MenuItem, Backdrop, CircularProgress, Skeleton } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -19,7 +19,9 @@ import { useCode } from '~/hooks/useMessage';
 import Block from '~/components/Mui/Block';
 import { getDate } from '~/utils/GetDate';
 
-const Container_Style = { maxHeight: 'calc(100vh - 40px)', overflow: 'auto', padding: 2 }
+const Container_Style = { height: 'fit-content', paddingX:1, paddingY: 4,
+  background: theme => theme.palette.mode == 'dark' ? '#3e436b' : '#7474742b'
+ }
 
 export function Profile() {
 
@@ -48,15 +50,21 @@ export function Profile() {
   }
 
   return (
-    <Block sx = {{ Container_Style }}>
+    <Block className = 'Profile_Block' sx = { Container_Style }>
       
-      <Box sx = {{ height: '100%', overflow: 'auto', paddingX: 1,  display: 'flex', flexDirection: 'column', gap: 2  }}>
+      <Box sx = {{  paddingX: 2,  display: 'flex', flexDirection: 'column', gap: 2  }}>
         { user && <>
-        <Box sx = {{ width: '100%', height: '160px', padding: '10px', display: 'flex', gap: 4 }}>
-          <Avatar sx={{ background: '#6193a5', height: '140px', width: '140px' }} 
-            src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"/>
-          
-          <Box sx ={{  display: 'flex', position: 'relative', flexDirection: 'column', width: '100%', minWidth: '600px', }}>
+        <Box sx = {{ width: '100%', height: '175px', display: 'flex', gap: 6, paddingX: 5 }}>
+          <Box>
+            <Avatar sx={{ background: '#6193a5', height: '140px', width: '140px' }} 
+              src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"/>
+            
+            <Chip label={user?.role ? user?.role.replace(/\b\w/g, char => char.toUpperCase()) : '#undefine'}  
+              sx = {{ background: '#4d6b38', fontWeight: '600', cursor: 'pointer' }}/>
+          </Box>
+
+
+          <Box sx ={{  display: 'flex', position: 'relative', flexDirection: 'column', justifyContent:'center', width: '100%', minWidth: '600px', height: '100%' }}>
             <Typography sx = {{  fontSize: '1.525rem !important', fontWeight: '900',  width: 'fit-content' }}>
               {user?.name ? user.name : '#undefine'} </Typography>
 
@@ -91,65 +99,28 @@ export function Profile() {
             <Typography sx = {{  width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#0dff0d' : '#0dd60d' }}>
               {user?.message ? user.message : ''} </Typography>
 
-            <Chip label={user?.role ? user?.role.replace(/\b\w/g, char => char.toUpperCase()) : '#undefine'}  
-                sx = {{ position: 'absolute', right: 0,  top: 0, background: '#4d6b38', fontWeight: '600', cursor: 'pointer' }}/>
           </Box>
         </Box>
 
-        <Box sx = {{ width: '100%', height: '160px', padding: '10px', display: 'flex', gap: 4 }}>
-          
+        {/* <Box sx = {{ width: '100%', height: '175px', paddingY: 2, display: 'flex', gap: 6, paddingX: 5 }}>
           <Skeleton variant="circular" width={140} height={140} />
           
           <Box sx ={{  display: 'flex', position: 'relative', flexDirection: 'column', minWidth: '600px', gap: 1 }}>
-            {/* <Typography sx = {{  fontSize: '1.525rem !important', fontWeight: '900',  width: 'fit-content' }}> */}
-              {/* {user?.name ? user.name : '#undefine'} </Typography> */}
 
-            <Skeleton variant="rounded" width={'70%'} height={'70px'} />
+            <Skeleton variant="rounded" width={'100%'} height={40} />
 
-            {['','',''].map(() => (<Skeleton variant="rounded" width={'70%'} height={140} />))}
-            {/* <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <MaleIcon sx = {{ fontSize: '1rem' }}/>
-              <Typography sx = {{  width: 'fit-content' }}>
-                <span style = {{ fontWeight: '600' }}>Giới tính : </span><span>{user?.sex ? useCode(user.sex) : '#undefine'}</span> 
-              </Typography>
-            </Box>
+            {['','','',''].map(() => (<Skeleton variant="rounded" width={'100%'} height={15} />))}
 
-            <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <HomeWorkOutlinedIcon sx = {{ fontSize: '1rem' }}/>
-              <Typography sx = {{  width: 'fit-content' }}>
-                  <span style = {{ fontWeight: '600' }}>Phòng Ban : </span>{user?.department ? useCode(user.department) : '#undefine'}
-              </Typography>
-            </Box>
-
-            <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <DraftsOutlinedIcon sx = {{ fontSize: '1rem' }}/>
-              <Typography sx = {{ width: 'fit-content' }}>
-                <span style = {{ fontWeight: '600' }}>Email Công Việc : </span>{user?.email ? user.email : '#undefine'}<span></span> ( Mặc Định )
-              </Typography>
-            </Box>
-
-            <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <LocalPhoneOutlinedIcon sx = {{ fontSize: '1rem' }}/>
-              <Typography sx = {{  width: 'fit-content' }}>
-                <span style = {{ fontWeight: '600' }}>Số Điện Thoại: </span><span>{user?.phone ? user.phone : '#undefine'}</span>
-              </Typography>
-            </Box> */}
-
-            <Typography sx = {{  width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#0dff0d' : '#0dd60d' }}>
-              {user?.message ? user.message : ''} </Typography>
-
-            {/* <Chip label={user?.role ? user?.role.replace(/\b\w/g, char => char.toUpperCase()) : '#undefine'}   */}
-                {/* sx = {{ position: 'absolute', right: 0,  top: 0, background: '#4d6b38', fontWeight: '600', cursor: 'pointer' }}/> */}
           </Box>
-        </Box>
+        </Box> */}
 
-        <Box sx = {{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'fit-content', paddingLeft: 2, gap: 1 }}>
+        <Box sx = {{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'fit-content', gap: 1 }}>
           <PermIdentityOutlinedIcon sx = {{ fontSize: '2.225rem' }}/> 
           <Typography variant='h1' sx = {{  fontSize: '1.5rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', lineHeight: '100%', }}>
             Chỉnh Sửa Thông Tin Cá Nhân</Typography>
         </Box>
 
-        <Box sx = {{ width: '100%', backgroundColor: theme => theme.palette.mode == 'dark' ? '#ffffff2b' : '#fff', justifyContent: 'space-evenly', padding: 4, paddingBottom: 2, borderRadius: '15px', minWidth: '788px' }} component='form'>
+        <Box sx = {{ width: '100%', backgroundColor: theme => theme.palette.mode == 'dark' ? '#3c5784' : '#fff', justifyContent: 'space-evenly', padding: 4, paddingBottom: 2, borderRadius: '15px', minWidth: '788px' }} component='form'>
 
           <Grid container spacing={2} sx = {{ width: '100%', height: 'fit-content' }}>
 
@@ -161,15 +132,13 @@ export function Profile() {
                 <TextField
                   id="user_name"
                   required
+                  spellCheck = { false }
                   fullWidth
                   variant="outlined"
                   value={user?.name ? user?.name : null}
                   onChange={(e) => setUser((prev) => ({...prev, name : e.target.value}))}
                   sx = {{ 
                     color: '#fff',
-                    '& fieldset': {
-                      borderColor: `#000 !important`,
-                    },
                   }}
                 />
               </FormControl>
@@ -182,9 +151,6 @@ export function Profile() {
                 value={user?.sex ? user?.sex : null}
                 sx = {{ 
                   width: '100%',
-                  '& fieldset': {
-                    borderColor: theme => theme.palette.mode == 'dark' ? '-' :`#000 !important`,
-                  },
                   '& .MuiSelect-icon': {
                     color: theme => theme.palette.text.secondary
                   }
@@ -220,12 +186,8 @@ export function Profile() {
                   id="user_department"
                   name= 'department'
                   value={user?.department}
-                  // disabled
                   sx = {{ 
                     width: '100%',
-                    '& fieldset': {
-                      borderColor: theme => theme.palette.mode == 'dark' ? '-' :`#000 !important`,
-                    },
                     '& .MuiSelect-icon': {
                       color: theme => theme.palette.text.secondary
                     }
@@ -249,9 +211,6 @@ export function Profile() {
                   value={user?.position}
                   sx = {{ 
                     width: '100%',
-                    '& fieldset': {
-                      borderColor: theme => theme.palette.mode == 'dark' ? '-' :`#000 !important`,
-                    },
                     '& .MuiSelect-icon': {
                       color: theme => theme.palette.text.secondary
                     }
@@ -280,11 +239,24 @@ export function Profile() {
                   fullWidth
                   variant="outlined"
                   sx = {{ 
-                    color: '#fff',
-                    '& fieldset': {
-                      borderColor: `#000 !important`,
-                    },
+                    color: '#fff'
                   }}
+                />
+              </FormControl>
+            </Grid>
+
+            <Grid size={5}>
+              <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <FormLabel htmlFor="personal_phone" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
+                </Box>
+                <TextField
+                  id="personal_phone"
+                  name= "personal_phone"
+                  value={user?.phone}
+                  fullWidth
+                  variant="outlined"
+                  onChange={(e) => setUser((prev) => ({...prev, phone : e.target.value}))}
                 />
               </FormControl>
             </Grid>
@@ -301,34 +273,9 @@ export function Profile() {
                   fullWidth
                   variant="outlined"
                   sx = {{ 
-                    color: '#fff',
-                    '& fieldset': {
-                      borderColor: `#000 !important`,
-                    },
+                    color: '#fff'
                   }}
                   onChange={(e) => setUser((prev) => ({...prev, personal_email : e.target.value}))}
-                />
-              </FormControl>
-            </Grid>
-
-            <Grid size={12}>
-              <FormControl  sx={{gap: 1, display: 'flex', width: '70%'}}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <FormLabel htmlFor="personal_phone" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
-                </Box>
-                <TextField
-                  id="personal_phone"
-                  name= "personal_phone"
-                  value={user?.phone}
-                  fullWidth
-                  variant="outlined"
-                  sx = {{ 
-                    color: '#fff',
-                    '& fieldset': {
-                      borderColor: `#000 !important`,
-                    },
-                  }}
-                  onChange={(e) => setUser((prev) => ({...prev, phone : e.target.value}))}
                 />
               </FormControl>
             </Grid>
@@ -345,12 +292,6 @@ export function Profile() {
                   value={user?.preferences}
                   rows={4}
                   onChange={(e) => setUser((prev) => ({...prev, preferences : e.target.value}))}
-                  sx = {{ 
-                    color: '#fff',
-                    '& fieldset': {
-                      borderColor: `#000 !important`,
-                    },
-                  }}
                 />
               </FormControl>
             </Grid>

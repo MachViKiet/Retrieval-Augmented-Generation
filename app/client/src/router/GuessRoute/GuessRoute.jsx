@@ -27,6 +27,7 @@ const GuessRoute = ({ children }) => {
           }
 
         }).catch((error) => {
+          processHandler.remove('#verifyToken', eventID)
           dispatch(logout())
         })
       } else {

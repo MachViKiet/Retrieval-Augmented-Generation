@@ -55,10 +55,10 @@ function KnowledgeBase() {
       <Box>
         <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 0.5 }}>
           <Typography variant='h1' 
-            sx = {{ fontSize: '1.7rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#9ba3d9' : theme.palette.primary.main }}>
+            sx = {{ fontSize: '1.7rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
               Danh Sách Chủ Đề</Typography>
         </Box>
-        <Box sx = {{ display: 'flex', gap: 0.5, alignItems:'center', paddingTop: 0.5, paddingBottom: 2, color: theme => theme.palette.mode == 'dark'? '#b2b2b2' : '#727171',}}>
+        <Box sx = {{ display: 'flex', gap: 0.5, alignItems:'center', paddingTop: 0.5, paddingBottom: 2, color: theme => theme.palette.mode == 'dark'? '#fff' : '#727171',}}>
           <LightbulbOutlinedIcon sx = {{ color: 'inherit', fontSize: '20px' }}/>
 
           <Typography variant='p' component='p' fontSize= {'0.925rem'} 
@@ -72,7 +72,7 @@ function KnowledgeBase() {
         {Collections && Collections.map((collection) => (
           <Box key={collection._id}
             sx = {{ width: '200px', height: '200px', color: '#000', padding: 2, paddingTop: 7, borderRadius: '15px', position: 'relative', cursor: 'pointer',
-              background: theme => theme.palette.mode == 'dark'? '#fffdfdc2' : '#71758936', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+              background: theme => theme.palette.mode == 'dark'? '#fefefe' : '#71758936', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
               '&:active' : { transform: 'scale(0.9)' } }}
             onClick = {() => nagative(PARENT_DIRECTION + collection._id)}>
 
@@ -81,7 +81,7 @@ function KnowledgeBase() {
               {collection.collection_name}</Typography>
             
             <Typography variant='p' component='p' 
-              sx = {{ paddingTop: '2px', fontSize: '0.725rem', fontWeight: '200', width: 'fit-content',  textAlign: 'left',  maxHeight: '160px', width: '170px',
+              sx = {{ paddingTop: '2px', fontSize: '0.725rem', fontWeight: '400', width: 'fit-content',  textAlign: 'left',  maxHeight: '160px', width: '170px',
               whiteSpace: 'nowrap', textWrap: 'wrap', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical' }}>
                 {collection.collection_description}</Typography>
             <Box sx = {{  position: 'absolute', height: '50px', display: 'flex', flexDirection: 'column', gap: 0.225, width: '100%', left: 0, bottom: 0, paddingX: 2 }}>
@@ -97,7 +97,7 @@ function KnowledgeBase() {
           </Box>
         ))}
 
-        { !Collections && ['','','','','','','',''].map((_data, index) =>( <Skeleton key={ index * 82715 } variant="rounded" height={'200px'} width = {'200px'} sx = {{ marginBottom: 2, borderRadius: '15px' }} /> ))}
+        { !Collections && ['','','',''].map((_data, index) =>( <Skeleton key={ index * 82715 } variant="rounded" height={'200px'} width = {'200px'} sx = {{ marginBottom: 2, borderRadius: '15px' }} /> ))}
       </Grid>
 
     </Block>

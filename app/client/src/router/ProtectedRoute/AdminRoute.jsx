@@ -22,9 +22,10 @@ const AdminRoute = ({ children }) => {
           if(usr_profile?.role && !(['administrator', 'academic_administration'].includes(usr_profile?.role))){
             navigate('/')
           }
-        }).catch((error) => {
-            console.error("Server không hoạt động!\n", error)
-            navigate('/')
+        }).catch((error) => {     
+          processHandler.remove('#verifyToken', eventID)
+          console.error("Server không hoạt động!\n", error)
+          navigate('/')
         })
       } else {
         const usr_profile = auth.user
