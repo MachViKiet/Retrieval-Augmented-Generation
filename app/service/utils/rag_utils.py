@@ -124,7 +124,7 @@ class MilvusDB:
                 Collection(c).release()
         return Status()
     
-    def similarity_search(self, collection:str, query_embeddings, k: int = 3, search_params=None, output_fields=['title','article'], filters: dict = None):
+    def similarity_search(self, collection:str, query_embeddings, k: int = 3, search_params=None, output_fields=['title','article', 'url'], filters: dict = None):
         results = {}
         source = []
         if search_params is None:
