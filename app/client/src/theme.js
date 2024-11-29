@@ -20,7 +20,7 @@ const theme = extendTheme(
             light: "#f5f6fa",
             dark: "#1565c0",
             contrastText: "#fff",
-            background: "#ddf3fc",
+            background: "#005181",
           },
 
           text: {

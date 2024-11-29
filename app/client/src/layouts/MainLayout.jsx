@@ -191,10 +191,17 @@ function MainLayout() {
           </Box>
         </Box>
 
+        {/* <Box sx={ ContentContainer_Style }>
+          <Box sx = {{ overflow: 'auto', height: '100%', paddingX: 1, paddingY: '2px' }}>
 
+            <Outlet  context={useOutletContext()}/>
 
+          </Box>
+        </Box> */}
+        <Box sx = {{ overflow: 'auto', height: '100%', paddingY: '2px' }}>
+          <Outlet  context={useOutletContext()}/>
+        </Box>
 
-        <Outlet  context={useOutletContext()}/>
     </Box>
   )
 }

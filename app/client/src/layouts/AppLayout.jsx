@@ -32,7 +32,7 @@ function AppLayout() {
     add: (noti_json) => {
       const id = generateRandomId()
       const notice = {...noti_json, id }
-      setNotification(prev => [...prev, notice])
+      setNotification(prev => [...prev, notice].slice(0, 5))
     },
     remove: (id) => {
       setNotification(prev => prev.filter((prev) => (prev.id != id) ))
@@ -53,7 +53,7 @@ function AppLayout() {
   const processHandler = {
     add : (eventCode) => {
       const id = generateRandomId()
-      setIsProcess(prev => [...prev, eventCode + '_' + id])
+      setIsProcess(prev => ([...prev, eventCode + '_' + id]))
       return id
     },
     remove: (eventCode, eventID) => setIsProcess(prev => {

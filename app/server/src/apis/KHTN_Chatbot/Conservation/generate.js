@@ -3,11 +3,20 @@ import { buildErrObject } from '~/middlewares/utils'
 /* eslint-disable no-unused-vars */
 const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT_PORT}`
 
-export const generate = async (userInput, context, streaming = 'False', api_key = null) => {
-  const url = `${domain}/generate?query=${encodeURIComponent(userInput)}&context=${encodeURIComponent(context)}&streaming=${encodeURIComponent(streaming)}`
+export const generate = async (userInput, context, streaming = 'False', history = [], api_key = null) => {
+  const url = `${domain}/generate?`
+  const formData = new FormData()
+  formData.append('query', userInput )
+  formData.append('context', context )
+  formData.append('streaming', streaming )
+  formData.append('history', JSON.stringify(history) )
 
-  // Thực hiện GET request
-  const res = await fetch(url)
+  const structure = {
+    method: 'POST',
+    body: formData
+  }
+  // Thực hiện POST request
+  const res = await fetch(url, structure)
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok')
       return response

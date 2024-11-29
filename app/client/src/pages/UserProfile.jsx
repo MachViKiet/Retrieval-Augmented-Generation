@@ -31,10 +31,10 @@ export function UserProfile() {
     dispatch(sidebarAction({index: 912}))
 
     useProfile.get(token).then(async(user) => {
-      setTimeout(() => {
+      // setTimeout(() => {
         setUser(user)
         setHide(false)
-      }, 500)
+      // }, 500)
     }).catch((err) => {
       console.log(err)
     })
