@@ -94,7 +94,7 @@ function DatasetDetail() {
   const DocumentUpdate = async (new_data) => {
     const UpdateDocumentEvent = processHandler.add('#UpdateDocument')
     await useDocument.update(new_data, token).then((document) => {
-      setDocumentWithChunk(prev => ( {...document, chunks: prev.chunks}))
+      setDocumentWithChunk(prev => ( {...document, chunks: prev.chunks, amount_chunking: prev.chunks.length}))
       noticeHandler.add({
         status: 'success',
         message: 'Cập Nhật Dữ Liệu Thành Công'

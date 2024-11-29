@@ -1,7 +1,6 @@
 const domain = import.meta.env.VITE_SERVER
 
 export const create = async (data = null, token = null) => {
-	console.log(data)
 	const url = `${domain}/newChat`;
 	console.log(url)
 	const structure = {
@@ -20,6 +19,7 @@ export const create = async (data = null, token = null) => {
 					throw errorData.errors.msg;
 				});
 			}
+			console.log(response)
 			return response.json()
 		})
 		.then(data => {

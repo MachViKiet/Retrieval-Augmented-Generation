@@ -14,7 +14,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
 
 const DashboardContainer = styled(Box)(({ theme }) => ({ 
-  height: '100vh', justifyContent: "center", alignItems: "center", transform: 'scale(1)', transition: '0.5s all ease', paddingRight: theme.spacing(2),
+  height: '100vh', justifyContent: "center", alignItems: "center", transform: 'scale(1)', transition: '0.5s all ease',
   '&::before': { background: '#ddf3fc', content: '""', display: 'flex', position: 'absolute', zIndex: -1, inset: 0, 
     backgroundColor: theme.palette.primary.background, backgroundRepeat: 'no-repeat' }
 }));
@@ -36,7 +36,7 @@ const SubSidebarContainer = styled(Box)(({theme}) => ({
     background:  theme.palette.primary.main
 }))
 
-const ContentContainer_Style = { width: '100%', height: '100vh', maxHeight: '100vh', overflow: 'auto', flexGrow: 1, p: 2, pr: '2px' }
+const ContentContainer_Style = { width: '100%', height: '100vh', maxHeight: '100vh', flexGrow: 1, paddingX: 1, paddingY: 2 }
 const LogoContainer_Style = { background: '#cccccc12', height: '56px', width: '100%', borderRadius: '15px' }
 
 function DashboardLayout() {
@@ -186,7 +186,10 @@ function DashboardLayout() {
       </SubSidebarContainer>
 
       <Box sx={ ContentContainer_Style }>
-        <Outlet context={{...useOutletContext(), dashboard}}/>
+        <Box sx = {{ overflow: 'auto', height: '100%', paddingX: 1, paddingY: '2px' }}>
+
+          <Outlet context={{...useOutletContext(), dashboard}}/>
+        </Box>
       </Box>
 
     </DashboardContainer>       

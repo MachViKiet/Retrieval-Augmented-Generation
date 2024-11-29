@@ -52,7 +52,7 @@ const ModelButton_Style = {
   }
 }
 
-function ChatDisplay({ loading = null, action = null, user = null , conservation = null}) {
+function ChatDisplay({ loading = null, action = null, user = null , conservation = null }) {
 
   const [openDetail, setOpenDetail] = useState(false)
 

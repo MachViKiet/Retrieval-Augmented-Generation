@@ -213,16 +213,20 @@ export function ChatGenerator() {
  
   const ChatAction = async (message) => {
     let session
-    if(currentChatSession == null) {
-      session = await newChatAction({ name: message })
-    } else {
-      session = currentChatSession
-    }
-  
-    if (session?._id){
-      setCurrentChatSession(session)
-      ChatWithChatbot.chat(socket, { message: message, chat_session: session?._id })
-      setMessageHandler(prev => ({...prev, isProcess: true }))
+    try {
+      if(currentChatSession == null) {
+        session = await newChatAction({ name: message })
+      } else {
+        session = currentChatSession
+      }
+    
+      if (session?._id){
+        setCurrentChatSession(session)
+        ChatWithChatbot.chat(socket, { message: message, chat_session: session?._id })
+        setMessageHandler(prev => ({...prev, isProcess: true }))
+      } 
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -233,7 +237,7 @@ export function ChatGenerator() {
       const history = await loadHistoryBySession(session)
       setConservations(history)
       return session
-    })
+    }).catch(() => 'Server Chatbot Không Hoạt Động')
   }
 
   const sessionButtonClick = async (session) => {
@@ -258,14 +262,14 @@ export function ChatGenerator() {
     }
   }
 
-  return (<Grid container  spacing={2} sx = {{ height: '100%' }}>
+  return (<Grid container spacing={2} sx = {{ height: '100%' }}>
       
       <Grid  size={{ xs: 12, md: 8.5 }}>
         <Block sx = {{ paddingBottom: '120px !important', paddingTop: '69px !important' }}>
 
           <Header> 
-            <AvatarUserDefault/>
-            <Typography variant='h1' sx = {{ color: '#fff', fontSize: '1.5rem', width: 'fit-content', fontWeight: '900' }}>Chatbot Trợ Lý Sinh Viên</Typography>
+            {/* <AvatarUserDefault/> */}
+            {/* <Typography variant='h1' sx = {{ color: '#fff', fontSize: '1.5rem', width: 'fit-content', fontWeight: '900' }}>Chatbot Trợ Lý Sinh Viên</Typography> */}
           </Header>
 
           <ChatBlock>
@@ -278,7 +282,7 @@ export function ChatGenerator() {
 
             { !apiHandler.history && Conservations && Conservations.map((conservation) => {
               return <div key={conservation?._id}>
-                <ChatDisplay conservation = {conservation} user={user}  />
+                <ChatDisplay conservation = {conservation} user={user} action = {{ re_prompt: ChatAction }} />
               </div>
             })}
 

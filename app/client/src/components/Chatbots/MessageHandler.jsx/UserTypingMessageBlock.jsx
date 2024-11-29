@@ -5,8 +5,7 @@ import { BubbleLeft } from '../MessageEffect/BubbleLeft';
 import { ChatMessage, ChatDisplay_Style } from './ChatDisplay';
 import { Avatar, Box } from '@mui/material';
 
-function UserTypingMessageBlock({messageHandler, sx = {}}) {
-  console.log(messageHandler?.stream_message)
+function UserTypingMessageBlock({messageHandler}) {
   return ( messageHandler?.stream_state && 
     <motion.div
       initial={{ transform: "scale(0)" }}

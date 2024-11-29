@@ -43,6 +43,7 @@ export const uploadFile = async (req, res) => {
         const formData = new FormData()
         formData.append('text', content)
         chunks = await chunk_file(formData).catch(() => { resolve(buildErrObject(422, 'Cannot chunk file')) })
+
         chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
 
         const document = new Document({
@@ -53,6 +54,7 @@ export const uploadFile = async (req, res) => {
           document_name_in_storage: `${id_in_storage}-${filename}${extensionFile}`,
           document_description: req.body?.description,
           chunks: chunks,
+          amount_chunking: chunks.length,
           document_type: 'Upload',
           url: `${process.env.STORAGE}/documents?name=${id_in_storage}-${filename}${extensionFile}`
         })

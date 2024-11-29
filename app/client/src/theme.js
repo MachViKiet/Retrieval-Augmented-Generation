@@ -220,7 +220,7 @@ const theme = extendTheme(
         styleOverrides: {
           root: ({ theme }) => ({
             color:  theme.palette.text.secondary,
-            background: 'transparent !important',
+            background: '#0000000d',
             '& input' : {
               background: 'transparent !important',
               'WebkitBoxShadow' : '0 0 0 100px transparent inset !important',

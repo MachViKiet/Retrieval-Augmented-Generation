@@ -56,6 +56,7 @@ export function ChatInput({ id, handleSubmit = null, messageHandler = null}) {
         disabled = {messageHandler.isProcess}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Enter') Submit(e) }}
+        sx = {{ '& > div ': { background: 'transparent !important' } }}
       />
 
       <Button_Custom type="submit" disabled = {messageHandler.isProcess}>
