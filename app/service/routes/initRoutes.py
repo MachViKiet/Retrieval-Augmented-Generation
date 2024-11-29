@@ -85,14 +85,16 @@ def search():
     ##PARAMS
     query = request.args.get('query') # Tin nhắn người dùng
     chosen_collection = request.args.get('chosen_collection') #Context từ api search
-    filter_expressions = json.loads(request.args.get('filter_expressions')) #
+    try:
+        filter_expressions = json.loads(request.args.get('filter_expressions')) #
+    except json.JSONDecodeError:
+        filter_expressions = None
     #----------------------------------
     database.load_collection(chosen_collection)
     output_fields = {
         'student_handbook': ['title', 'article'],
         chosen_collection: ['title', 'article']
     }
-    print(filter_expressions)
     query_embeddings = encoder.embedding_function.embed_query("query: " + query)
     try:
         search_results, source = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions)
