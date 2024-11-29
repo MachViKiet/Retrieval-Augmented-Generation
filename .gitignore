@@ -7,3 +7,5 @@ notebook/playground.ipynb
 static/models/*
 student_handbook_embedded.csv
 **/__pycache__
+
+app/service/.env
