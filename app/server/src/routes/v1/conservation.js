@@ -10,12 +10,14 @@ const {
   newChat,
   loadConservationList,
   loadHistoryInSession,
-  removeConservationInDB
+  removeConservationInDB,
+  updateConservationInDB
 } = require('~/controllers/conservation')
 
 router.post('/newChat', requireAuth, trimRequest.all, newChat)
 router.get('/chatSession', requireAuth, trimRequest.all, loadConservationList)
 router.post('/historyInChatSession', requireAuth, trimRequest.all, loadHistoryInSession)
 router.delete('/removeChat', requireAuth, trimRequest.all, removeConservationInDB)
+router.post('/updateChat', requireAuth, trimRequest.all, updateConservationInDB)
 
 module.exports = router

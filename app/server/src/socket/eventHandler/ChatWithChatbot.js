@@ -27,7 +27,8 @@ export const ChatWithChatBot = async (socket) => {
       'anwser': null,
       'state': 'in progress',
       'create_at': getTime(),
-      'duration': null
+      'duration': null,
+      'rating': -1
     }
 
     socket.emit('/ChatWithChatBot/userMessage', objectConservation)
@@ -91,12 +92,10 @@ export const ChatWithChatBot = async (socket) => {
 
       const start_point_3 = (new Date()).getTime()
 
-      const context = await chatbot.search(message, chosen_collections, JSON.stringify(filter_expressions)).then((res) => {
-        console.log(res)
-        return res.context
-      }).catch((err) => console.log(err))
+      const searchResult = await chatbot.search(message, chosen_collections, JSON.stringify(filter_expressions)).then((res) => {
+        return res
+      }).catch((err) => { console.log(err); throw 'Lỗi ở bước search' })
       const end_point_3 = (new Date()).getTime()
-
 
       socket.emit('/ChatWithChatBot/isProcessing', [{
         step_name: 'chosen_collections',
@@ -114,7 +113,7 @@ export const ChatWithChatBot = async (socket) => {
         step_name: 'search',
         notice: 'Tìm kiếm tài liệu trong kho',
         state: true,
-        data: context,
+        data: searchResult.context,
         duration: end_point_3 - start_point_3
       }, {
         step_name: 'generate',
@@ -126,7 +125,7 @@ export const ChatWithChatBot = async (socket) => {
 
       const start_point_4 = (new Date()).getTime()
 
-      const finalResponse = await chatbot.generate(message, context, true, conservationBefore).then((res) => {
+      const finalResponse = await chatbot.generate(message, searchResult.context, true, conservationBefore).then((res) => {
         return res // StreamObject
       }).catch((err) => console.log(err))
       const end_point_4 = (new Date()).getTime()
@@ -148,7 +147,7 @@ export const ChatWithChatBot = async (socket) => {
         step_name: 'search',
         notice: 'Tìm kiếm tài liệu trong kho',
         state: true,
-        data: context,
+        data: searchResult.context,
         duration: end_point_3 - start_point_3
       }, {
         step_name: 'generate',
@@ -165,8 +164,9 @@ export const ChatWithChatBot = async (socket) => {
       }])
 
       socket.emit('/ChatWithChatBot/Processed', {
-        chosen_collections, filter_expressions,
-        context, finalResponse,
+        chosen_collections, filter_expressions, finalResponse,
+        context : searchResult.context,
+        source : searchResult.source,
         create_at: getTime(),
         duration: startTime - new Date().getTime()
       })
@@ -197,11 +197,14 @@ export const ChatWithChatBot = async (socket) => {
 
       const history = {
         ...objectConservation,
+        'source': searchResult.source,
         'anwser': result,
         'state': 'success',
         'update_at': getTime(),
         'duration': startTime - new Date().getTime()
       }
+
+      console.log(history)
 
       await saveConservationToDB(history)
 
@@ -211,7 +214,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': 'Hệ thống Chatbot hiện không hoạt động !',
-        'state': 'success',
+        'state': 'fail',
         'update_at': getTime(),
         'duration': startTime - new Date().getTime()
       })

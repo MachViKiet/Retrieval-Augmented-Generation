@@ -14,6 +14,14 @@ const HistorySchema = new mongoose.Schema(
       type: String,
       require: true
     },
+    source: {
+      type: Array,
+      default: []
+    },
+    rating: {
+      type: Number,
+      default: -1
+    },
     state : {
       type: String,
       require: true

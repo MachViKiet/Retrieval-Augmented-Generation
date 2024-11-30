@@ -12,6 +12,7 @@ import { useColorScheme } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
+import NotifycationModal from '~/components/Mui/NotifycationModal';
 
 const DashboardContainer = styled(Box)(({ theme }) => ({ 
   height: '100vh', justifyContent: "center", alignItems: "center", transform: 'scale(1)', transition: '0.5s all ease',
@@ -49,6 +50,7 @@ function DashboardLayout() {
   
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
+  const [isOpenModel, setIsOpenModel] = useState(false)
 
   const { processHandler } = useOutletContext();
 
@@ -125,7 +127,7 @@ function DashboardLayout() {
             </CardContent>
           </Box>
 
-          <ListItemButton onClick= {logoutClick}
+          <ListItemButton onClick={() => setIsOpenModel(true)} // onClick= {logoutClick}
             sx = {{ background: '#ffffffe8', borderRadius: '8px', 
               '& > div' : { color: '#000', }, '&:hover' : { background: '#fff', fontWeight: 700,    }, '&:active' : { transform: 'scale(0.9)' } }} >
             <ListItemIcon> <ReplyAllIcon/> </ListItemIcon>
@@ -191,6 +193,13 @@ function DashboardLayout() {
           <Outlet context={{...useOutletContext(), dashboard}}/>
         </Box>
       </Box>
+
+      <NotifycationModal modalHandler = {{
+        state: isOpenModel,
+        close: () => setIsOpenModel(false),
+        action: logoutClick,
+        actionName: 'Đăng Xuất'
+      }} title={' '} content={'Bạn Thật Sự Muốn Đăng Xuất Sao ☹️'}/>
 
     </DashboardContainer>       
   )

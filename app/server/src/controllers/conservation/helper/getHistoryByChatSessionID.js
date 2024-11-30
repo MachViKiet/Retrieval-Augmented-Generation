@@ -10,7 +10,7 @@ export const getHistoryByChatSessionID = async (user = {}, id = '') => {
   const result = await History.find({
     sender: user._id,
     session_id: id
-  }, '-sender').sort({ createdAt: -1 }).then((history) => {
+  }, '-sender').sort({ createdAt: 1 }).then((history) => {
     if (!history) {
       return buildErrObject(422, 'NOT_FOUND')
     }

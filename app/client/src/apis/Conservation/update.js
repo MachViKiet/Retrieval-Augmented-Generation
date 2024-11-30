@@ -1,9 +1,9 @@
 const domain = import.meta.env.VITE_SERVER
 
-export const remove = async (data = null ,token = null) => {
-	const url = `${domain}/removeChat`;
+export const update = async (data = null ,token = null) => {
+	const url = `${domain}/updateChat`;
 	const structure = {
-		method: 'DELETE',
+		method: 'POST',
 		headers: {
 		    'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

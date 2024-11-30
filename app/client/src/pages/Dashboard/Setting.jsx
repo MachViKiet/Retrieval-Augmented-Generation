@@ -15,21 +15,7 @@ function Setting() {
   })
 
   return (
-    <>
-      <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Họ Và Tên</FormLabel>
-        </Box>
-        <TextField id="user_name" required fullWidth variant="outlined"
-          sx = {{ 
-            color: '#fff',
-            '& fieldset': {
-              borderColor: `#000 !important`,
-            },
-          }}
-        />
-      </FormControl>
-    </>
+    <UnknowPage> </UnknowPage>
   )
 }
 

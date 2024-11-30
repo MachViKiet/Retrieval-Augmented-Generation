@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom';
+import Hidden from '~/components/Page/Hidden';
 
 function Dashboard() {
   const {processHandler, dashboard } = useOutletContext();
@@ -12,7 +13,7 @@ function Dashboard() {
   })
 
   return (
-    <></>
+    <Hidden></Hidden>
   )
 }
 

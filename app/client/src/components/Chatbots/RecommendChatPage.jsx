@@ -120,7 +120,7 @@ export function RecommendChatPage({
         <Box sx = {Container_Style} >
         {
             [{
-            id: '12314',
+            id: '12310',
             key: 'Nội quy trường học',
             icon: <ViewStreamIcon/>,
             question: 'Giới Thiệu Khoa Công Nghệ thông Tin'
@@ -130,22 +130,22 @@ export function RecommendChatPage({
             icon: <ContactSupportOutlinedIcon/>,
             question: 'Khái quát nội quy trường học Khoa Học Tự Nhiên'
             },{
-            id: '12316',
+            id: '12314',
             key: 'Chính Sách Học Bổng',
             icon: <AssuredWorkloadOutlinedIcon/>,
             question: 'Chính Sách Học Bổng Các Năm'
             },{
-            id: '12316',
+            id: '12326',
             key: 'Thời Khóa Biểu',
             icon: <CalendarMonthOutlinedIcon/>,
             question: 'Chính Sách Học Bổng Mới Nhất 2024'
             },{
-            id: '12316',
+            id: '12216',
             key: 'Thông Tin Sự Kiện',
             icon: <FestivalOutlinedIcon/>,
             question: 'Thông Tin Sự Kiện'
             },{
-            id: '12316',
+            id: '13316',
             key: 'Thông Tin Tuyển Dụng',
             icon: <PaymentsOutlinedIcon/>,
             question: 'Thông Tin Tuyển Dụng'

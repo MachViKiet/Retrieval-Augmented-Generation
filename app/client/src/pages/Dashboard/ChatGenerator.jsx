@@ -55,7 +55,7 @@ function NewChatModal({ modalHandler = null }) {
       <Dialog
         open={modalHandler?.state}
         onClose={modalHandler?.close}>
-        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+        <DialogTitle sx = {{ color: '#fff', display: 'flex', gap: 1.5, alignItems: 'center' }}>
           <Box sx = {{ width: '50vw', maxWidth: '450px'}}>
             <OpenInNewIcon/> Tạo Cuộc Trò Chuyện
           </Box>
@@ -67,8 +67,8 @@ function NewChatModal({ modalHandler = null }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               sx = {{ 
-                '& div' : {color: theme => theme.palette.text.secondary },
                 '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
+                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' }
               }}
               placeholder='Tên Cuộc Trò Chuyện'/>
             <TextField 
@@ -76,8 +76,8 @@ function NewChatModal({ modalHandler = null }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               sx = {{ 
-                '& div' : {color: theme => theme.palette.text.secondary },
-                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' }
+                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
+                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' }
               }}
               placeholder='Mô tả Cuộc Trò Chuyện'/>
           </DialogContentText>
@@ -88,8 +88,8 @@ function NewChatModal({ modalHandler = null }) {
             </DialogContentText>}
         </DialogContent>
         <DialogActions>
-          <Button sx = {{ color: theme => theme.palette.text.secondary }} onClick={newChat}>{modalHandler.submitTitle}</Button>
-          <Button sx = {{ color: '#ff3c3c' }} onClick={modalHandler?.close}>Đóng</Button>
+          <Button sx = {{ color: '#fff' }} onClick={newChat}>{modalHandler.submitTitle}</Button>
+          <Button sx = {{ color: '#ff4646', fontWeight: '900' }} onClick={modalHandler?.close}>Đóng</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
@@ -160,7 +160,7 @@ export function ChatGenerator() {
     currentChatSession && bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [Conservations, messageHandler ]);
 
-  const { dashboard } = useOutletContext();
+  const { dashboard, processHandler } = useOutletContext();
   
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
@@ -268,6 +268,21 @@ export function ChatGenerator() {
     }
   }
 
+  const feedback = async (value) => {
+    const sendFeedbackEvent = processHandler.add('#sendFeedback')
+    await useConservation.update(value, token)
+    .then((data) => { setConservations(prev => prev.map((prev_consv) => {
+      if(prev_consv._id == data._id){
+        return data
+      }
+      return prev_consv
+    })) })
+    .catch((err) => console.log(err))
+    .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
+
+    return true
+  }
+
   return (<Grid container spacing={2} sx = {{ height: '100%' }}>
       
       <Grid  size={{ xs: 12, md: 8.5 }}>
@@ -288,7 +303,10 @@ export function ChatGenerator() {
 
             { !apiHandler.history && Conservations && Conservations.map((conservation) => {
               return <div key={conservation?._id}>
-                <ChatDisplay conservation = {conservation} user={user} action = {{ re_prompt: ChatAction }} />
+                <ChatDisplay conservation = {conservation} user={user} action = {{ 
+                  re_prompt: ChatAction,
+                  addFeedback: feedback
+                }} />
               </div>
             })}
 
@@ -349,7 +367,7 @@ export function ChatGenerator() {
 
           <Box sx = {{ padding: 1, paddingTop: 3 }}>
             <Button 
-              variant='contained' color='info' sx = {{ color: '#022f71' }}
+              variant='contained' color='info'
               startIcon= {<OpenInNewIcon/>}
               disabled={messageHandler.isProcess}
               onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>

@@ -52,7 +52,7 @@ function NewChatModal({ modalHandler = null }) {
       <Dialog
         open={modalHandler?.state}
         onClose={modalHandler?.close}>
-        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+        <DialogTitle sx = {{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
           <Box sx = {{ width: '50vw', maxWidth: '450px'}}>
             <OpenInNewIcon/> Tạo Cuộc Trò Chuyện
           </Box>
@@ -64,8 +64,8 @@ function NewChatModal({ modalHandler = null }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               sx = {{ 
-                '& div' : {color: theme => theme.palette.text.secondary },
                 '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
+                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' },
               }}
               placeholder='Tên Cuộc Trò Chuyện'/>
             <TextField 
@@ -73,20 +73,20 @@ function NewChatModal({ modalHandler = null }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               sx = {{ 
-                '& div' : {color: theme => theme.palette.text.secondary },
-                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' }
+                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
+                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' },
               }}
               placeholder='Mô tả Cuộc Trò Chuyện'/>
           </DialogContentText>
 
           {notice && 
             <DialogContentText sx = {{ paddingTop: 2, display: 'block' }}>
-              <Typography component={'span'} variant={'body2'} sx = {{ color: '#ff7900', textAlign: 'end', display: 'block', width: '100%' }}>{notice}</Typography>
+              <Typography component={'span'} variant={'body2'} sx = {{ color: '#fcff28', textAlign: 'end', display: 'block', width: '100%' }}>{notice}</Typography>
             </DialogContentText>}
         </DialogContent>
         <DialogActions>
-          <Button sx = {{ color: theme => theme.palette.text.secondary }} onClick={newChat}>{modalHandler.submitTitle}</Button>
-          <Button sx = {{ color: '#ff3c3c' }} onClick={modalHandler?.close}>Đóng</Button>
+          <Button sx = {{ color: '#fff' }} onClick={newChat}>{modalHandler.submitTitle}</Button>
+          <Button sx = {{ color: '#ff4646' }} onClick={modalHandler?.close}>Đóng</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
@@ -298,7 +298,7 @@ export function ChatGenerator() {
 
             <Box sx = {{ padding: 1, paddingTop: 3 }}>
               <Button 
-                variant='contained' color='info' sx = {{ color: '#022f71' }}
+                variant='contained' color='info'
                 startIcon= {<OpenInNewIcon/>}
                 disabled={messageHandler.isProcess}
                 onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>
