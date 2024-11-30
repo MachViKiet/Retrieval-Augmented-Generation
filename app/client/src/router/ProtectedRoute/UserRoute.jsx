@@ -28,7 +28,7 @@ const UserRoute = ({ children }) => {
           if(usr_profile?.role && !(['student', 'researcher'].includes(usr_profile?.role))){
             if(!['administrator', 'academic_administration'].includes(usr_profile?.role)){
               navigate('/')
-            } else navigate('/dashboard')
+            } else navigate('/chat_generator')
           }
         }).catch((error) => {
           
@@ -41,7 +41,7 @@ const UserRoute = ({ children }) => {
         if(usr_profile?.role && !(['student', 'researcher'].includes(usr_profile?.role))){
           if(!['administrator', 'academic_administration'].includes(usr_profile?.role)){
             navigate('/')
-          } else navigate('/dashboard')
+          } else navigate('/chat_generator')
         }
       }
     }

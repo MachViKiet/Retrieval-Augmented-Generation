@@ -35,6 +35,10 @@ const theme = extendTheme(
 
           bgColor: {
             main: '#25294a'
+          },
+
+          info: {
+            main: '#005181'
           }
         },
       },
@@ -46,8 +50,8 @@ const theme = extendTheme(
             third: "#4c5679",
             light: "red",
             dark: "#0e2c4f",
-            contrastText: "#000",
-            background: "#25294a",
+            contrastText: "#fff",
+            background: "#415073",
           },
 
           text: {
@@ -62,6 +66,10 @@ const theme = extendTheme(
 
           bgColor: {
             main: '#DDF3FC'
+          },
+
+          info: {
+            main: '#005181'
           }
         },
       }
@@ -248,7 +256,8 @@ const theme = extendTheme(
       MuiPaper: {
         styleOverrides: {
           root: ({theme}) => ({
-            backgroundColor: theme.palette.primary.background,
+            background: theme.palette.primary.background,
+            color: '#fff'
           })
         },
       },

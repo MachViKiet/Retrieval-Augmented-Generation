@@ -11,7 +11,7 @@ const navList_1 = [
     id: 234,
     text: "Trang chủ",
     icon: HomeOutlinedIcon,
-    link: "/dashboard",
+    link: "/",
   },
   {
     id: 466,

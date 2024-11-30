@@ -27,8 +27,12 @@ const Code = {
     'TGMT': 'Thị Giác Máy Tính',
     'CNTTHUC': 'Công Nghệ Tri Thức',
     'CNTT': 'Công Nghệ Thông Tin',
-    'NONE': 'Không có ( Chưa xét chuyên ngành )'
-
+    'NONE': 'Không có ( Chưa xét chuyên ngành )',
+    'male': 'Nam',
+    'student_handbook': 'Sổ tay sinh viên',
+    'events': 'Thông tin sự kiện',
+    'academic_affairs': 'Nội quy trường',
+    'timetable': 'Thời khóa biểu'
 }
 
 export const useErrorMessage = (code) => {

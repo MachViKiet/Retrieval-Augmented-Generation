@@ -6,7 +6,7 @@ const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT
 export const search = async (userInput, chosen_collection, filter_expressions, api_key = null) => {
   const url = `${domain}/generate/search?query=${encodeURIComponent(userInput)}&chosen_collection=${encodeURIComponent(chosen_collection)}&filter_expressions=${encodeURIComponent(filter_expressions)}`
 
-  const res = await fetch(url)
+  return fetch(url)
     .then(response => {
       if (!response.ok) throw new Error('Network response was not ok')
       return response.json()
@@ -14,6 +14,4 @@ export const search = async (userInput, chosen_collection, filter_expressions, a
     .catch(error => {
       throw buildErrObject(422, error)
     })
-
-  return res
 }
