@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Button, FormControl, IconButton, Input, InputLabel, Link, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Breadcrumbs, Button, Chip, FormControl, IconButton, Input, InputLabel, Link, TextField, Tooltip, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
@@ -130,7 +130,7 @@ function DatasetDetail() {
             sx = {{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <TopicOutlinedIcon/>
           </Link>,
-          <Typography key="62756213"> {documentWithChunk?.document_name} </Typography>
+          <Typography key="62756213" sx = {{ maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}> {documentWithChunk?.document_name} </Typography>
         </Breadcrumbs>
 
         <Box sx = {{ display: 'flex',justifyContent: 'end',  width: 'fit-content', gap: 2 }}>
@@ -181,7 +181,9 @@ function DatasetDetail() {
           state: documentWithChunk?.state,
           setMetadata: (value) => {
             if(documentWithChunk?.state != 'pending') return false
-            setDocumentWithChunk(prev =>({ ...prev, metadata: { ...prev.metadata, ...value }} ))
+            setDocumentWithChunk(prev => {
+              return { ...prev, metadata: { ...prev.metadata, ...value }} 
+            })
             return true
           },
           getName: () => documentWithChunk?.document_name,
@@ -259,13 +261,15 @@ function SettingDocumentModal({ document, modalHandler = null }) {
 
   const [error_message, setError_message] = useState(null)
 
+  const [dataList, setDataList] = useState({})
+
   const handleSubmit = async (e) => {
     if(document?.state != 'pending') {
       setError_message('Tài Liệu Đã Hoặc Đang Được Xử Lý, Không Thể Thay Đổi !')
       return
     }
 
-    const metadata = document.getMetadata()
+    const metadata = { ...document.getMetadata(), ...dataList}
     const document_name = document.getName()
 
     const condition = getSchema(modalHandler.buffer).every(
@@ -296,50 +300,131 @@ function SettingDocumentModal({ document, modalHandler = null }) {
     return array
   }
 
+  useEffect(() => {
+    getSchema(modalHandler.buffer).forEach((data) => {
+      if(data.value.type == 'list') {
+        setDataList(prev => ({ ...prev, [data.key]: document.getMetadata()?.[data.key] }))
+      }
+    })
+  }, [])
+
   return (
     <React.Fragment>
       <Dialog
         open={modalHandler?.state}
         onClose={() => { modalHandler?.close(); setError_message('')} }>
-        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+        <DialogTitle sx = {{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
           <Box sx = {{ width: '90vw', maxWidth: '600px', display: 'flex', alignItems: 'center', gap: 2}}>
              Thông Tin Tài Liệu
           </Box>
         </DialogTitle>
         <DialogContent >
-          <Box sx = {{ display: 'flex', flexWrap: "wrap",  paddingBottom: 1, gap: 2, color: theme => (theme.palette.text.secondary) }}>
+          <Box sx = {{ display: 'flex', flexWrap: "wrap",  paddingBottom: 1, gap: 2 }}>
             <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
               <InputLabel sx = {{  color: 'inherit !important' }}>Tên Tài Liệu</InputLabel>
-              <Input id="Description" value={document.getName()} onChange={(e) => document.setName(e.target.value)}
-                sx = {{  color: 'inherit', '&:before, &:after':{ borderBottom: theme => `2px solid ${theme.palette.text.secondary} !important` } }}/>
+              <Input id="Description" value={document.getName()} onChange={(e) => {
+                if(e.target.value.length > 50){
+                  setError_message('Trường Dữ Liệu Không được quá 50 kí tự')
+                  return 
+                }
+                document.setName(e.target.value) 
+              }}
+                sx = {{  color: 'inherit', '&:before, &:after':{ borderBottom: `1px solid #fff` } }}/>
             </FormControl>
 
             <Grid container spacing={3} sx = {{ width: '100%' }}>
             {
               getSchema(modalHandler.buffer).map((data) => {
-                const icon  = (<Tooltip title={data.value.description} placement="top">
-                  <IconButton aria-label="information" color='inherit'>
-                    <HelpOutlineOutlinedIcon />
-                  </IconButton>
-                </Tooltip>)
 
+                const element_type = data.value?.element_type
+                const type = data.value.type
+                const required = data.value.required
+                const name = data.key
+                const max_size = data.value?.max_size
+
+                const icon  = ( <Tooltip title={data.value.description} placement="top">
+                    <IconButton aria-label="information" color='inherit'>
+                      <HelpOutlineOutlinedIcon />
+                    </IconButton>
+                  </Tooltip> )
+
+                if(type == 'list') {
+
+                  const ChipList = <Box sx = {{ padding: 1, paddingRight: 2, display: 'flex', gap: 1, flexWrap: 'wrap', width: '700px', background: '#f0f8ff0f', borderRadius: '10px', marginBottom: 1, marginRight: 1 }}>
+                    {dataList?.[name] && dataList[name].map((data) => {
+                      return <Chip label={data} onDelete={() => {
+                        setDataList(prev => ({
+                          ...prev, [name] : prev[name].filter((dataInList) => dataInList != data) }) )
+                      }} />
+                    })}
+                  </Box>
+
+                  // document.getMetadata()?.[data.key] && setDataList(prev => ({ ...prev, [data.key]: document.getMetadata()?.[data.key] }))
+
+                  return <>
+                    <Grid size={12}>
+                      <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
+                        <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
+                        <Input endAdornment = {data.value.description && icon} startAdornment = {dataList?.[name] && dataList?.[name] != [] && ChipList}
+                          id="Description" 
+                          // value={document.getMetadata()?.[data.key]} 
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              setDataList( prev => {
+                                if(prev?.[name]) {
+                                  if(max_size && prev?.[name].length < max_size && e.target.value != '')
+                                    return {...prev, [name]: prev[name].concat(e.target.value)}
+                                  setError_message(`Trường dữ liệu ${name} không được vượt quá ${max_size} hoặc bỏ trống`)
+                                  return prev
+                                }
+                                return {...prev, [name]: [e.target.value]}
+                              })
+                              e.target.value = ''
+                            }
+                          }}
+                          sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
+                      </FormControl>
+                    </Grid>   
+                  </>
+                }
+
+                if(type == 'int') {
+                  return  <Grid size={6}>
+                  <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
+                    <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
+                    <Input endAdornment = {data.value.description && icon}
+                      id="Description" value={document.getMetadata()?.[data.key]} 
+                      onChange={(e) => {
+                        console.log(e.target.value, Number.isInteger(Number(e.target.value)))
+                        if(Number.isInteger(Number(e.target.value))) {
+                          document.setMetadata({[data.key]: e.target.value})
+                          return 
+                        }
+                        setError_message(`Trường dữ liệu ${name} phải có giá trị là số nguyên`)
+                        e.target.value = document.getMetadata()?.[data.key] || ''
+                      }}
+                      sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
+                  </FormControl>
+                </Grid> 
+                }
+
+                // String value
                 return  <Grid size={6}>
                   <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
                     <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
                     <Input endAdornment = {data.value.description && icon}
                       id="Description" value={document.getMetadata()?.[data.key]} onChange={(e) => document.setMetadata({[data.key]: e.target.value}) }
-                      sx = {{ cursor: 'pointer',  color: 'inherit', '&:before, &:after':{ borderBottom: theme => `2px solid ${theme.palette.text.secondary} !important` } }}/>
+                      sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
                   </FormControl>
                 </Grid>   
               })
             }
             </Grid>
           </Box>
-        <Typography sx = {{ color: '#ff6262' }}>{error_message}</Typography>
+        <Typography sx = {{ color: '#ff6262', fontWeight: '900' }}>{error_message}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit}
-            sx = {{ color: theme => theme.palette.text.secondary }}>Lưu Thay Đổi</Button>
+          <Button onClick={handleSubmit} sx = {{ color: '#fff' }}>Lưu Thay Đổi</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
@@ -360,7 +445,7 @@ function SettingChunkModal({ document, modalHandler = null }) {
         sx = {{ '& .MuiPaper-root': { width: '80vw',maxWidth: 'none !important' }}}
         open={modalHandler?.state}
         onClose={() => { modalHandler?.close(); setDataList([])}}>
-        <DialogTitle sx = {{ color: theme => theme.palette.text.secondary, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+        <DialogTitle sx = {{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
           <Box sx = {{ width: '90vw', maxWidth: '600px', display: 'flex', alignItems: 'center', gap: 2}}>
              Chỉnh Sửa Đoạn Cắt
           </Box>
@@ -370,6 +455,7 @@ function SettingChunkModal({ document, modalHandler = null }) {
             dataList && dataList.map((id) => (
               <TextField maxRows={8} multiline fullWidth
                 value={document.getChunk(id)}
+                sx = {{ '& textarea': {color: '#fff'} }}
                 onChange={(e) => document.setChunks(id, e.target.value)}
               placeholder='Nhập thay đổi'
             />
@@ -385,15 +471,14 @@ function SettingChunkModal({ document, modalHandler = null }) {
               chunk: ''
             }),
             setDataList(prev => [...prev, id])
-          }}
-            sx = {{ color: theme => theme.palette.text.secondary }}>Thêm Đoạn Cắt</Button>
+          }} sx = {{ color: '#fff' }}>Thêm Đoạn Cắt</Button>
 
           <Button onClick={() => {
             document.removeChunks(dataList) 
             modalHandler?.close() 
             setDataList([])
           }}
-            sx = {{ color: theme => theme.palette.text.secondary }}>Xóa Tất Cả</Button>
+            sx = {{ color: '#fff' }}>Xóa Tất Cả</Button>
 
         </DialogActions>
       </Dialog>
