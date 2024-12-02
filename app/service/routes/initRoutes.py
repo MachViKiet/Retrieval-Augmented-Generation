@@ -119,6 +119,7 @@ def generate():
     streaming = request.form['streaming'].lower() == "true"  #True or False 
     history = json.loads(request.form['history']) # Conversation history
     theme = request.form['collection_name'] # Collection name
+    user_profile = request.form['user_profile'] # User profile
     max_tokens = 1500 
     #-------------------------------------------
     theme_context = database._handler.describe_collection(theme)['description']
