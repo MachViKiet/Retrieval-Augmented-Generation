@@ -1,5 +1,7 @@
 // store/actions/authActions.js
 
+import { disconnectSocket } from "~/socket";
+
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
 export const REFRESH = "REFRESH"
@@ -23,6 +25,7 @@ export const refresh = (token, user) => {
 
 export const logout = () => {
   localStorage.removeItem('token');
+  disconnectSocket()
   return {
     type: LOGOUT,
   };

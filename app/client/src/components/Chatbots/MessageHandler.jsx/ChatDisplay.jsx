@@ -47,9 +47,7 @@ const ModelButton_Style = {
   color: '#fff',
   borderRadius: '8px',
   cursor: 'pointer',
-  '&:active': {
-    transform: 'scale(0.95)'
-  }
+  '&:active': { transform: 'scale(0.95)' }
 }
 
 function ChatDisplay({ loading = null, action = null, user = null , conservation = null }) {

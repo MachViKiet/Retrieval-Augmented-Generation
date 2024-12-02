@@ -99,7 +99,7 @@ function NewChatModal({ modalHandler = null }) {
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.primary.main,
   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
-  height: theme.spacing(8),
+  height: theme.spacing(7),
   width: '100%',
   position: 'absolute',
   right: 0,

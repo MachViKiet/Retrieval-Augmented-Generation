@@ -175,8 +175,8 @@ export function Profile() {
                 }}
                 onChange={(e) => setUser((prev) => ({...prev, sex : e.target.value}))}
               >
-                <MenuItem value={'female'}>Nam</MenuItem>
-                <MenuItem value={'male'}>Nữ</MenuItem>
+                <MenuItem value={'female'}>Nữ</MenuItem>
+                <MenuItem value={'male'}>Nam</MenuItem>
               </Select>
             </Grid>
 

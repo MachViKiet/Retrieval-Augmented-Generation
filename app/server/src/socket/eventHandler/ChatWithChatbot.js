@@ -5,6 +5,7 @@
 
 import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot'
 import { saveConservationToDB } from '~/controllers/conservation/helper/saveConservationToDB'
+import { getProfileToString } from '~/utils/getProfileToString'
 import { getTime } from '~/utils/getTime'
 const { ObjectId } = require('mongodb')
 
@@ -43,10 +44,11 @@ export const ChatWithChatBot = async (socket) => {
         time: null
       }])
 
+      // Step 1
       const start_point_1 = (new Date()).getTime()
       const chosen_collections = await chatbot.determine_collection(message).then((res) => {
         return res.collection
-      }).catch((err) => console.log(err))
+      }).catch((err) => { throw 'Lỗi ở bước determine_collection: ' + JSON.stringify(err) })
       const end_point_1 = (new Date()).getTime()
 
 
@@ -64,10 +66,12 @@ export const ChatWithChatBot = async (socket) => {
         time: null
       }])
 
+
+      // Step 2
       const start_point_2 = (new Date()).getTime()
       const filter_expressions = await chatbot.extract_meta(message, chosen_collections).then((res) => {
         return res
-      }).catch((err) => console.log(err))
+      }).catch((err) => { throw 'Lỗi ở bước extract_meta: ' + JSON.stringify(err) })
       const end_point_2 = (new Date()).getTime()
 
       socket.emit('/ChatWithChatBot/isProcessing', [{
@@ -92,9 +96,10 @@ export const ChatWithChatBot = async (socket) => {
 
       const start_point_3 = (new Date()).getTime()
 
-      const searchResult = await chatbot.search(message, chosen_collections, JSON.stringify(filter_expressions)).then((res) => {
+      // Step 3
+      const searchResult = await chatbot.search(message, chosen_collections, JSON.stringify(filter_expressions), chosen_collections).then((res) => {
         return res
-      }).catch((err) => { console.log(err); throw 'Lỗi ở bước search' })
+      }).catch((err) => { throw 'Lỗi ở bước search: ' + JSON.stringify(err) })
       const end_point_3 = (new Date()).getTime()
 
       socket.emit('/ChatWithChatBot/isProcessing', [{
@@ -125,9 +130,10 @@ export const ChatWithChatBot = async (socket) => {
 
       const start_point_4 = (new Date()).getTime()
 
-      const finalResponse = await chatbot.generate(message, searchResult.context, true, conservationBefore).then((res) => {
+      // Step 4
+      const finalResponse = await chatbot.generate(message, null, true, conservationBefore, getProfileToString(socket.user), chosen_collections).then((res) => {
         return res // StreamObject
-      }).catch((err) => console.log(err))
+      }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
       const end_point_4 = (new Date()).getTime()
 
 
@@ -204,13 +210,13 @@ export const ChatWithChatBot = async (socket) => {
         'duration': startTime - new Date().getTime()
       }
 
-      console.log(history)
-
       await saveConservationToDB(history)
 
       socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
+      console.log(error)
+
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': 'Hệ thống Chatbot hiện không hoạt động !',

@@ -138,21 +138,21 @@ export function Profile() {
               <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <AccountBalanceWalletOutlinedIcon sx = {{ fontSize: '1rem' }}/>
                 <Typography sx = {{  width: 'fit-content' }}>
-                    <span style = {{ fontWeight: '600' }}>Hệ Đào Tạo : </span>{user?.department ? useCode(user.program) : '#undefine'}
+                    <span style = {{ fontWeight: '600' }}>Hệ Đào Tạo : </span>{user?.program ? useCode(user.program) : '#undefine'}
                 </Typography>
               </Box>
 
               <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <AdjustOutlinedIcon sx = {{ fontSize: '1rem' }}/>
                 <Typography sx = {{  width: 'fit-content' }}>
-                    <span style = {{ fontWeight: '600' }}>Khóa Đào Tạo : </span>{user?.department ? useCode(user.class) : '#undefine'}
+                    <span style = {{ fontWeight: '600' }}>Khóa Đào Tạo : </span>{user?.class ? useCode(user.class) : '#undefine'}
                 </Typography>
               </Box>
 
               <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <AnnouncementOutlinedIcon sx = {{ fontSize: '1rem' }}/>
                 <Typography sx = {{  width: 'fit-content' }}>
-                    <span style = {{ fontWeight: '600' }}>Chuyên Ngành : </span>{user?.department ? useCode(user.major) : '#undefine'}
+                    <span style = {{ fontWeight: '600' }}>Chuyên Ngành : </span>{user?.major ? useCode(user.major) : '#undefine'}
                 </Typography>
               </Box>
 
@@ -206,8 +206,8 @@ export function Profile() {
                   }}
                   onChange={(e) => setUser((prev) => ({...prev, sex : e.target.value}))}
                 >
-                  <MenuItem value={'female'}>Nam</MenuItem>
-                  <MenuItem value={'male'}>Nữ</MenuItem>
+                  <MenuItem value={'female'}>Nữ</MenuItem>
+                  <MenuItem value={'male'}>Nam</MenuItem>
                 </Select>
               </Grid>
 
