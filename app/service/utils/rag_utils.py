@@ -157,23 +157,6 @@ class MilvusDB:
         source = [{'collection_name': results[i][1], 'url': results[i][0].get('url')} for i in myKeys]
         return sorted_list, source
 
-##UTILITY FUNCTIONS
-# def load_and_split_pdfs(file_paths: list, chunk_size: int = 256):
-#     loaders = [PyPDFLoader(file_path) for file_path in file_paths]
-#     pages = []
-#     for loader in loaders:
-#         pages.extend(loader.load())
-
-#     text_splitter = RecursiveCharacterTextSplitter.from_huggingface_tokenizer(
-#         tokenizer=AutoTokenizer.from_pretrained(
-#             "sentence-transformers/all-MiniLM-L12-v2"
-#         ),
-#         chunk_size=chunk_size,
-#         chunk_overlap=int(chunk_size / 10),
-#         strip_whitespace=True,
-#     )
-#     docs = text_splitter.split_documents(pages)
-#     return docs
 def create_prompt_milvus(question, context, output_fields=['title','article']):
 #     full_context = """
 # You always answer with markdown formatting using GitHub syntax. Do not use ordered or numbered lists.

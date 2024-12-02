@@ -4,6 +4,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from dotenv import load_dotenv
 from ibm_watsonx_ai.foundation_models import ModelInference
 from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+from prompts import prompts
 
 load_dotenv('../.env')
 
@@ -32,29 +33,33 @@ class ChatModel:
         )
         self.chat = []
 
-    def generate(self, question: str, context: str = None, streaming=False, max_new_tokens=2048, k=3):
+    def generate(self, question: str, context: str = None, streaming=False, max_new_tokens=2048, k=3, history=None, theme=None, theme_context=None):
 
         if context == None or context == "":
-            prompt = f"""Give a detailed answer to the following question. Always answer in Vietnamese. Question: {question}"""
+            if history is None or len(history) == 0:
+                prompt = prompts['NO_CONTEXT_NO_HISTORY']
+                formatted_prompt = prompt.format(question=question)
+            else:
+                prompt = prompts['NO_CONTEXT_HISTORY']
+                conversation = ""
+                for pair in history:
+                    conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['answer']
+                formatted_prompt = prompt.format(history=conversation, question=question)
         else:
-            prompt = f"""You are a chatbot assistant providing answers to students and faculty members of a university. Using the information contained in the context, give a detailed answer to the query.\
-If there is no information in the context to support your answer, say so.
-Context (encased in backticks): 
-```
-{context}
-```
-Query: {question}
-Always answer in Vietnamese.\
-Do not write many consecutive paragraphs without headings.\
-Do not add consecutive newlines. Always write the answer in markdown format. Use headings in markdown to make the answer more readable. Do not use the markdown syntax for code blocks.
-Answer: 
-"""
+            if history is None or len(history) == 0:
+                prompt = prompts['CONTEXT_NO_HISTORY']
+                formatted_prompt = prompt.format(context=context, question=question)
+            else:
+                prompt = prompts['CONTEXT_HISTORY_NO_PROFILE']
+                for pair in history:
+                    conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['answer']
+                formatted_prompt = prompt.format(context=context, history=conversation, question=question, theme=theme, theme_context=theme_context)
         params = {
             GenParams.MAX_NEW_TOKENS: max_new_tokens
         }
 
         # formatted_prompt = prompt.replace("\n", "<eos>")
-        formatted_prompt = prompt
+        formatted_prompt = prompt.format(context=context, question=question)
         if not streaming:
             response = self.model.generate_text(formatted_prompt, params=params)
             #response = response.replace("<eos>", "")  # remove eos token

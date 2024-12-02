@@ -117,10 +117,12 @@ def generate():
     query = request.form['query'] # Tin nhắn người dùng
     context = request.form['context'] # Context từ api search
     streaming = request.form['streaming'].lower() == "true"  #True or False 
-    history = json.loads(request.form['history']) 
+    history = json.loads(request.form['history']) # Conversation history
+    theme = request.form['collection_name'] # Collection name
     max_tokens = 1500 
     #-------------------------------------------
-    answer = model.generate(query, context, streaming, max_tokens)
+    theme_context = database._handler.describe_collection(theme)['description']
+    answer = model.generate(query, context, streaming, max_tokens, history=history)
     if streaming:
         return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
     else:
