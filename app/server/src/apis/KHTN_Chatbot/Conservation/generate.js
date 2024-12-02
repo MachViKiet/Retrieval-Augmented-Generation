@@ -3,13 +3,15 @@ import { buildErrObject } from '~/middlewares/utils'
 /* eslint-disable no-unused-vars */
 const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT_PORT}`
 
-export const generate = async (userInput, context, streaming = 'False', history = [], api_key = null) => {
+export const generate = async (userInput, context, streaming = 'False', history = [], user_profile = '', collection_name = '', api_key = null) => {
   const url = `${domain}/generate?`
   const formData = new FormData()
   formData.append('query', userInput )
   formData.append('context', context )
   formData.append('streaming', streaming )
   formData.append('history', JSON.stringify(history) )
+  formData.append('user_profile', user_profile )
+  formData.append('collection_name', JSON.stringify(collection_name) )
 
   const structure = {
     method: 'POST',

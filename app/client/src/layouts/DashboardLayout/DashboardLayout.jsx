@@ -38,7 +38,7 @@ const SubSidebarContainer = styled(Box)(({theme}) => ({
 }))
 
 const ContentContainer_Style = { width: '100%', height: '100vh', maxHeight: '100vh', flexGrow: 1, paddingX: 1, paddingY: 2 }
-const LogoContainer_Style = { background: '#cccccc12', height: '56px', width: '100%', borderRadius: '15px' }
+const LogoContainer_Style = { background: '#cccccc12', height: '44px', width: '100%', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }
 
 function DashboardLayout() {
   const dispatch = useDispatch()
@@ -80,7 +80,19 @@ function DashboardLayout() {
       <SidebarContainer 
         sx = {(theme) =>({ [theme.breakpoints.down('lg')]: { left: isOpenSideBar && '0 !important' } })}>
 
-        <Box sx = {LogoContainer_Style}/>
+        <Box sx = {LogoContainer_Style}>
+          <Typography variant = 'h1' sx = {{ 
+              fontSize: '1.5rem',
+              fontWeight: '800',
+              fontFamily: '"Arial",sans-serif',
+              background: 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
+              color: 'transparent',
+              backgroundSize: '100% 100%',
+              WebkitBackgroundClip : 'text'
+             }}>
+              FIT@HCMUS
+          </Typography>
+        </Box>
 
         <MuiDivider/>
 

@@ -7,7 +7,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
 import { useNavigate } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
-import avatar from '~/assets/10665846.png'
+import avatar from '~/assets/10665849.png'
 
 export function HomePage() {
   const { mode, setMode } = useColorScheme();
@@ -54,17 +54,18 @@ export function HomePage() {
        }}>
         
         <Box sx = {{ 
-          width:  '245px',
+          width:  '295px',
           height:  '200px'
         }}>
-          <img src={avatar} style = {{ width: '100%', height: '100%' }} />
+          <img alt='Chatbot' src={avatar} style = {{ width: '100%', height: '100%' }} />
         </Box>
         <Typography variant='h2' sx = {{ 
           color: theme => theme.palette.text.secondary,
           fontSize: '2.025rem',
           fontWeight: '900',
           fontFamily: '"Arial",sans-serif',
-          background: 'linear-gradient(90deg, #463aa2 4%, color-mix(in oklch, #382e82, #0061cf) 22%, #047aff 45%, color-mix(in oklch, #047aff, #c148ac) 67%, #c148ac 100.2%)',
+          background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)'
+                : 'linear-gradient(90deg, #463aa2 4%, color-mix(in oklch, #382e82, #0061cf) 22%, #047aff 45%, color-mix(in oklch, #047aff, #c148ac) 67%, #c148ac 100.2%)',
           color: 'transparent',
           backgroundSize: '100% 100%',
           WebkitBackgroundClip : 'text'

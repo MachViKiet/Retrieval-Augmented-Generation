@@ -6,7 +6,8 @@ const ErrorMessage = {
 
 const Code = {
     'DEPT-GV' : 'Ban Giáo Vụ',
-    'female': 'Nam',
+    'female': 'Nữ',
+    'male': 'Nam',
     'school_year': 'Năm Học',
     'keywords': 'Từ Khóa',
     'majors': 'Chuyên Ngành',
