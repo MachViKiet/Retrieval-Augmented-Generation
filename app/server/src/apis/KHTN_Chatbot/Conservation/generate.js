@@ -11,7 +11,7 @@ export const generate = async (userInput, context, streaming = 'False', history 
   formData.append('streaming', streaming )
   formData.append('history', JSON.stringify(history) )
   formData.append('user_profile', user_profile )
-  formData.append('collection_name', JSON.stringify(collection_name) )
+  formData.append('collection_name', collection_name )
 
   const structure = {
     method: 'POST',
