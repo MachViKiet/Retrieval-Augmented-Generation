@@ -336,7 +336,7 @@ Danh sách các môn học kỳ này sẽ mở đăng ký lúc mấy giờ?,time
 Làm sao để kiểm tra thời gian học phần thực hành?,timetable
 Trường có học bổng nào dành cho sinh viên có thành tích nghiên cứu khoa học không?,scholarship
 Làm thế nào để xin học bổng của doanh nghiệp hợp tác với trường?,scholarship
-Khi nào là hạn nộp hồ sơ cho học bổng "Sinh viên xuất sắc 2024"?,scholarship
+"Khi nào là hạn nộp hồ sơ cho học bổng ""Sinh viên xuất sắc 2024""?",scholarship
 Có chương trình học bổng nào dành riêng cho sinh viên nữ không?,scholarship
 Em muốn biết thông tin về các học bổng từ các tổ chức quốc tế.,scholarship
 Em muốn biết thông báo về thời gian bảo vệ khóa luận tốt nghiệp.,academic_affairs
@@ -349,9 +349,9 @@ Em muốn biết cách viết CV để ứng tuyển các vị trí thực tập
 Có hội thảo nào về kỹ năng phỏng vấn xin việc không?,recruitment
 Danh sách các công ty tham gia ngày hội việc làm gần nhất là gì?,recruitment
 Chương trình thực tập nào có hỗ trợ tài chính cho sinh viên không?,recruitment
-Hội thảo "Ứng dụng AI trong ngành y tế" sẽ tổ chức vào thời gian nào?,events
+"Hội thảo ""Ứng dụng AI trong ngành y tế"" sẽ tổ chức vào thời gian nào?",events
 Có sự kiện ngoại khóa nào giúp sinh viên cải thiện kỹ năng giao tiếp không?,events
-Em muốn tham gia CLB học thuật của trường, khi nào có buổi tuyển thành viên?,events
+Em muốn tham gia CLB học thuật của trường khi nào có buổi tuyển thành viên?,events
 Các cuộc thi học thuật liên ngành sẽ được tổ chức ở đâu?,events
 Có sự kiện nào kết nối sinh viên với doanh nghiệp khởi nghiệp không?,events
 Khi nào thời khóa biểu học kỳ mới được công bố?,timetable
@@ -361,13 +361,13 @@ Em muốn biết lịch học lớp Thực hành Khoa học Dữ liệu.,timetab
 Có thay đổi gì về lịch học cho sinh viên năm nhất không?,timetable
 Các học bổng dành cho sinh viên có hoàn cảnh khó khăn là gì?,scholarship
 Trường có hỗ trợ làm hồ sơ học bổng du học không?,scholarship
-Điều kiện xét duyệt học bổng "Tài năng trẻ" của trường là gì?,scholarship
+"Điều kiện xét duyệt học bổng ""Tài năng trẻ"" của trường là gì?",scholarship
 Khi nào có kết quả xét học bổng học kỳ này?,scholarship
 Có học bổng nào dành cho sinh viên chuyên ngành công nghệ phần mềm không?,scholarship
 Khi nào thì có buổi hội thảo về lập trình Python?,events
 Hạn cuối để nộp tiền học phí học kỳ này là bao giờ?,academic_affairs
 Có công ty nào sắp tuyển dụng ở trường mình không?,recruitment
-Mình muốn tìm hiểu về học bổng du học, ai có thông tin không?,scholarship
+Mình muốn tìm hiểu về học bổng du học ai có thông tin không?,scholarship
 Lịch học kỳ mùa xuân đã có chưa nhỉ?,timetable
 Trường mình có chương trình thực tập vào mùa hè không?,recruitment
 Đăng ký học phần cho kỳ tới như thế nào nhỉ?,academic_affairs
@@ -381,7 +381,7 @@ Có hội trại sinh viên nào sắp diễn ra không nhỉ?,events
 Quy trình gia hạn thẻ sinh viên là thế nào?,academic_affairs
 Ai có thông tin về học bổng của tập đoàn XYZ không?,scholarship
 Ngày hội việc làm diễn ra vào ngày mấy thế?,recruitment
-Mình cần biết lịch nghỉ Tết của trường, có ai biết không?,timetable
+Mình cần biết lịch nghỉ Tết của trường có ai biết không?,timetable
 Trường mình có buổi giao lưu với doanh nhân không?,events
 Khi nào thì có thông báo đóng bảo hiểm y tế?,academic_affairs
 Sinh viên năm cuối có những cơ hội thực tập nào?,recruitment
@@ -410,7 +410,7 @@ Thủ tục xin học bổng của trường mình ra sao?,scholarship
 Các buổi triển lãm sách sắp tới diễn ra ở đâu?,events
 Có thông báo nào mới về việc đóng tiền bảo hiểm không?,academic_affairs
 Học phí cho kỳ học tới đã có chưa nhỉ?,academic_affairs
-Mình muốn tham gia chương trình trao đổi sinh viên, ai biết thủ tục không?,academic_affairs
+Mình muốn tham gia chương trình trao đổi sinh viên ai biết thủ tục không?,academic_affairs
 Làm sao để cập nhật lịch thi của học kỳ này?,timetable
 Thông tin về hội thảo ngành y dược sắp tới đâu nhỉ?,events
 Có danh sách công ty nào đang tuyển vị trí thực tập không?,recruitment
@@ -418,7 +418,7 @@ Bao giờ có thông báo về thời gian biểu mới?,timetable
 Em cần biết thông tin về học bổng cho ngành công nghệ,scholarship
 Trường có tổ chức ngày hội việc làm vào tháng sau không?,recruitment
 Thủ tục đăng ký học lại môn khi bị rớt thế nào nhỉ?,academic_affairs
-Mình nghe nói có hội chợ sách, ai biết khi nào không?,events
+Mình nghe nói có hội chợ sách ai biết khi nào không?,events
 Có khóa học ngắn hạn nào vào mùa hè không?,academic_affairs
 Mình muốn biết thông tin về lịch thi cuối kỳ,timetable
 Có buổi giới thiệu nào về việc làm thêm cho sinh viên không?,recruitment
@@ -431,7 +431,7 @@ Có công ty nào sẽ phỏng vấn trực tiếp tại trường không?,recru
 Hạn cuối nộp đơn xin học bổng là khi nào?,scholarship
 Có chương trình gì hấp dẫn cho sinh viên vào cuối tuần không?,events
 Sinh viên mới cần hoàn thiện giấy tờ gì?,academic_affairs
-Mình đang tìm kiếm thực tập nghiên cứu, có nơi nào giới thiệu không?,recruitment
+Mình đang tìm kiếm thực tập nghiên cứu có nơi nào giới thiệu không?,recruitment
 Kỳ nghỉ hè bắt đầu từ khi nào?,timetable
 Có học bổng quốc tế nào cho sinh viên không?,scholarship
 Bạn có nghe nói về buổi hội thảo sức khỏe sinh viên?,events
@@ -444,20 +444,20 @@ Có lịch học online không nhỉ?,timetable
 Ai biết buổi nói chuyện về kỹ thuật sắp tới không?,events
 Có thông tin nào mới về các chương trình học bổng không?,scholarship
 Hạn chót nộp đơn thực tập là khi nào?,recruitment
-Nghe nói có buổi gặp gỡ cựu sinh viên, khi nào thế?,events
-Mình cần kết quả đánh giá học phần, làm thế nào để tra cứu?,academic_affairs
-Lịch thi, phòng thi đã công bố chưa nhỉ?,timetable
+Nghe nói có buổi gặp gỡ cựu sinh viên khi nào thế?,events
+Mình cần kết quả đánh giá học phần làm thế nào để tra cứu?,academic_affairs
+Lịch thi phòng thi đã công bố chưa nhỉ?,timetable
 Các công ty nào sắp đến trường tuyển dụng thế nhỉ?,recruitment
 Học bổng cho sinh viên cá biệt có không?,scholarship
 Cần biết giờ lên lớp của môn học mới,timetable
 Trường có hoạt động gì cho ngày môi trường không?,events
 Làm sao để hoàn thiện hồ sơ sức khỏe cho năm học mới?,academic_affairs
 Bạn có biết trường có lớp học hè không?,academic_affairs
-Mình đang tìm học bổng cho nữ sinh, ai biết thông tin không?,scholarship
+Mình đang tìm học bổng cho nữ sinh ai biết thông tin không?,scholarship
 Có sự kiện nào hấp dẫn cho dịp cuối tuần này không?,events
 Trường có chỗ nào để sinh viên đăng ký thực tập không?,recruitment
 Khi nào thì công bố kết quả xét tốt nghiệp?,academic_affairs
-Mình cần lên thời khóa biểu mới, có ai giúp không?,timetable
+Mình cần lên thời khóa biểu mới có ai giúp không?,timetable
 Sinh viên quốc tế có học bổng nào không?,scholarship
 Có hội thảo nào liên quan đến khởi nghiệp không?,events
 Em cần biết thông tin về thời gian đóng tiền học,timetable
@@ -466,337 +466,337 @@ Khi nào có thông báo về các kỳ thi giữa kỳ tiếp theo?,academic_af
 Hội sinh viên có tổ chức sự kiện gì vào cuối tuần không?,events
 Làm sao để tham gia chương trình trao đổi sinh viên ngành y?,academic_affairs
 Có học bổng nào cho sinh viên giỏi toán không?,scholarship
-Nghe nói có ngày hội văn hóa, khi nào diễn ra?,events
+Nghe nói có ngày hội văn hóa khi nào diễn ra?,events
 Trường mình có khóa học nào giúp nâng cao kỹ năng mềm không?,academic_affairs
-Tôi nghe nói có hội thảo về khởi nghiệp, không biết bao giờ diễn ra nhỉ?,events  
-Có thông tin gì về kỳ thực tập sắp tới cho sinh viên CNTT không?,recruitment  
-Học kỳ này mình cần phải đóng học phí vào ngày nào nhỉ?,academic_affairs  
-Có học bổng nào cho sinh viên nghèo vượt khó không?,scholarship  
-Khi nào có lịch thi giữa kỳ vậy?,timetable  
-Trường mình có tổ chức ngày hội việc làm không?,recruitment  
-Làm sao để biết lịch bảo vệ khóa luận tốt nghiệp?,academic_affairs  
-Có sự kiện gì hấp dẫn vào cuối tuần này không?,events  
-Nghe nói có công ty tuyển thực tập sinh, không biết có đúng không?,recruitment  
-Đóng tiền bảo hiểm y tế hạn cuối là khi nào vậy?,academic_affairs  
-Có học bổng nào mới được công bố không?,scholarship  
-Làm sao để biết thông tin về lớp học bị hủy?,timetable  
-Có hội chợ việc làm vào tháng này không nhỉ?,recruitment  
-Mình cần tìm hiểu về các câu lạc bộ trong trường, có thông tin không?,events  
-Khi nào mình có thể nộp đơn xin học bổng?,scholarship  
-Trường có kết nối với doanh nghiệp nào để thực tập không?,recruitment  
-Làm cách nào để biết thông tin về giờ học các môn?,timetable  
-Có sự kiện nào liên quan đến văn hóa sắp tới không?,events  
-Hạn cuối để nộp giấy tờ tốt nghiệp là khi nào?,academic_affairs  
-Có học bổng nào cho sinh viên ngành kỹ thuật không?,scholarship  
-Mình cần thông tin về buổi hội thảo sắp tới trong trường, có ai biết không?,events  
-Mình có thể đăng ký thực tập ở đâu nhỉ?,recruitment  
-Làm sao để biết khi nào có buổi học bù?,timetable  
-Có chương trình học bổng nào dành cho sinh viên giỏi không?,scholarship  
-Nghe nói có công ty đến tuyển dụng trong tháng này, có ai biết chi tiết không?,recruitment  
-Trường có tổ chức lễ hội gì vào tháng tới không?,events  
-Khi nào mình cần phải hoàn thành các giấy tờ đăng ký môn học?,academic_affairs  
-Có ai biết thời gian biểu của kỳ thi cuối kỳ không?,timetable  
-Có học bổng nào dành cho sinh viên ngành y dược không?,scholarship  
-Mình muốn biết về các buổi hội thảo kỹ năng mềm, có thông tin không?,events  
-Khi nào có đợt tuyển dụng thực tập sinh tiếp theo?,recruitment  
-Hạn chót để đăng ký học phần là khi nào vậy?,academic_affairs  
-Có sự kiện thể thao nào sắp diễn ra không?,events  
-Mình cần biết về các chương trình học bổng từ các tổ chức bên ngoài, ai biết không?,scholarship  
-Có thông tin gì mới về lịch học không?,timetable  
-Trường có đối tác nào cho sinh viên thực tập không?,recruitment  
-Có hội thảo nào về công nghệ thông tin diễn ra trong tháng này không?,events  
-Khi nào cần nộp đơn đăng ký môn học cho kỳ tới?,academic_affairs  
-Có học bổng nào cho sinh viên ngành khoa học xã hội không?,scholarship  
-Mình muốn biết về các sự kiện âm nhạc trong trường, có thông tin không?,events  
-Có chương trình gì cho đợt thực tập hè này không?,recruitment  
-Lịch học của tuần này có gì thay đổi không?,timetable  
-Có học bổng nào cho sinh viên quốc tế không?,scholarship  
-Có sự kiện nào dành cho sinh viên năm nhất không?,events  
-Làm sao để biết thông tin về buổi học bù môn toán?,timetable  
-Trường mình có tổ chức hội thảo gì về sức khỏe không?,events  
-Có thông tin gì về các công ty đang tuyển thực tập sinh không?,recruitment  
-Khi nào có lịch bảo vệ đồ án tốt nghiệp?,academic_affairs  
-Nghe nói có học bổng mới từ một doanh nghiệp lớn, ai biết không?,scholarship  
-Hôm nay có sự kiện gì đặc biệt không nhỉ?,events  
-Có thông tin gì về các lớp học thêm không?,timetable  
-Mình có thể tìm thông tin về chương trình thực tập ở đâu nhỉ?,recruitment  
-Hạn cuối để đóng học phí là khi nào?,academic_affairs  
-Có hội thảo nào về kỹ năng mềm trong tháng này không?,events  
-Có học bổng nào dành riêng cho nữ sinh không?,scholarship  
-Làm sao để biết lịch thi của từng môn?,timetable  
-Có đợt tuyển dụng nào sắp tới không?,recruitment  
-Trường mình có tổ chức hội thảo gì về môi trường không?,events  
-Khi nào mình cần hoàn thành việc đăng ký môn học?,academic_affairs  
-Có học bổng nào cho sinh viên ngành nghệ thuật không?,scholarship  
-Làm sao để biết lớp học nào bị thay đổi phòng?,timetable  
-Có sự kiện nào liên quan đến công nghệ diễn ra sắp tới không?,events  
-Trường có hợp tác với công ty nào để tuyển thực tập sinh không?,recruitment  
-Hạn cuối để nộp hồ sơ tốt nghiệp là khi nào?,academic_affairs  
-Có học bổng nào cho sinh viên ngành kinh tế không?,scholarship  
-Có sự kiện nào về giáo dục trong trường sắp diễn ra không?,events  
-Mình cần thông tin về lớp học bị hủy, có ai biết không?,timetable  
-Có thông tin gì mới về các đợt tuyển dụng không?,recruitment  
-Khi nào có hội thảo về kỹ năng lãnh đạo nhỉ?,events  
-Có học bổng nào cho sinh viên từ vùng khó khăn không?,scholarship  
-Làm sao để biết lịch học của tuần này?,timetable  
-Có đợt thực tập nào trong mùa hè không?,recruitment  
-Trường mình có tổ chức ngày hội thể thao không?,events  
-Khi nào cần nộp tiền bảo hiểm y tế?,academic_affairs  
-Có học bổng nào cho sinh viên ngành truyền thông không?,scholarship  
-Có thông tin gì về thời gian biểu của các lớp không?,timetable  
-Có chương trình gì cho đợt tuyển dụng sắp tới không?,recruitment  
-Hội thảo về đổi mới sáng tạo diễn ra khi nào nhỉ?,events  
-Hạn cuối để nộp đơn xin học bổng là khi nào?,scholarship  
-Làm sao để biết thông tin về việc đổi phòng học?,timetable  
-Có sự kiện nào về văn hóa trong trường không?,events  
-Trường mình có tổ chức hội chợ việc làm không?,recruitment  
-Khi nào cần hoàn thành đăng ký học phần?,academic_affairs  
-Có học bổng nào cho sinh viên ngành luật không?,scholarship  
-Có sự kiện gì thú vị trong tuần này không?,events  
-Làm sao để biết lịch thi giữa kỳ?,timetable  
-Có thông tin gì mới về các chương trình thực tập không?,recruitment  
-Hội thảo nào về bảo vệ môi trường diễn ra sắp tới không?,events  
-Hạn cuối để nộp hồ sơ học bổng là khi nào?,scholarship  
-Có thông tin gì về việc đổi giờ học không?,timetable  
-Có đợt tuyển dụng thực tập sinh nào trong tháng này không?,recruitment  
-Trường mình có tổ chức gì cho ngày hội văn hóa không?,events  
-Khi nào cần nộp học phí kỳ mới?,academic_affairs  
-Có học bổng nào cho sinh viên ngành kỹ thuật không?,scholarship  
-Có sự kiện nào về khởi nghiệp sắp tới không?,events  
-Làm sao để biết lớp học nào bị thay đổi thời gian?,timetable  
-Có chương trình thực tập nào cho sinh viên năm cuối không?,recruitment  
-Hội thảo nào về khoa học công nghệ diễn ra trong tháng này không?,events  
-Hạn cuối để đăng ký môn học là khi nào?,academic_affairs  
-Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?,scholarship  
-Có thông tin gì về thời gian biểu của tuần tới không?,timetable  
-Có đợt thực tập nào trong mùa đông không?,recruitment  
-Trường mình có tổ chức ngày hội âm nhạc không?,events  
-Khi nào cần hoàn thành việc đăng ký bảo hiểm y tế?,academic_affairs  
-Có học bổng nào cho sinh viên ngành xã hội học không?,scholarship  
-Có sự kiện nào về công nghệ thông tin sắp diễn ra không?,events  
-Làm sao để biết thông tin về việc đổi phòng học?,timetable  
-Có chương trình gì cho đợt tuyển dụng sắp tới không?,recruitment  
-Hội thảo nào về đổi mới sáng tạo diễn ra khi nào nhỉ?,events  
-Hạn cuối để nộp đơn xin học bổng là khi nào?,scholarship  
-Làm sao để biết thông tin về việc đổi giờ học?,timetable  
-Có sự kiện nào về văn hóa trong trường không?,events  
-Trường mình có tổ chức hội chợ việc làm không?,recruitment  
-Khi nào cần hoàn thành đăng ký học phần?,academic_affairs  
-Có học bổng nào cho sinh viên ngành luật không?,scholarship  
-Có sự kiện gì thú vị trong tuần này không?,events  
-Làm sao để biết lịch thi giữa kỳ?,timetable  
-Có thông tin gì mới về các chương trình thực tập không?,recruitment  
-Hội thảo nào về bảo vệ môi trường diễn ra sắp tới không?,events  
-Hạn cuối để nộp hồ sơ học bổng là khi nào?,scholarship  
-Có thông tin gì về việc đổi giờ học không?,timetable  
-Có đợt tuyển dụng thực tập sinh nào trong tháng này không?,recruitment  
-Trường mình có tổ chức gì cho ngày hội văn hóa không?,events  
-Khi nào cần nộp học phí kỳ mới?,academic_affairs  
-Có học bổng nào cho sinh viên ngành kỹ thuật không?,scholarship  
-Có sự kiện nào về khởi nghiệp sắp tới không?,events  
-Làm sao để biết lớp học nào bị thay đổi thời gian?,timetable  
-Có chương trình thực tập nào cho sinh viên năm cuối không?,recruitment  
-Hội thảo nào về khoa học công nghệ diễn ra trong tháng này không?,events  
-Hạn cuối để đăng ký môn học là khi nào?,academic_affairs  
-Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?,scholarship  
-Có thông tin gì về thời gian biểu của tuần tới không?,timetable  
-Có đợt thực tập nào trong mùa đông không?,recruitment  
-Trường mình có tổ chức ngày hội âm nhạc không?,events  
-Khi nào cần hoàn thành việc đăng ký bảo hiểm y tế?,academic_affairs  
-Có học bổng nào cho sinh viên ngành xã hội học không?,scholarship  
-Có sự kiện nào về công nghệ thông tin sắp diễn ra không?,events  
-Làm sao để biết thông tin về việc đổi phòng học?,timetable  
-Có chương trình gì cho đợt tuyển dụng sắp tới không?,recruitment  
-Hội thảo nào về đổi mới sáng tạo diễn ra khi nào nhỉ?,events  
-Hạn cuối để nộp đơn xin học bổng là khi nào?,scholarship  
-Làm sao để biết thông tin về việc đổi giờ học?,timetable  
-Có sự kiện nào về văn hóa trong trường không?,events  
-Trường mình có tổ chức hội chợ việc làm không?,recruitment  
+Tôi nghe nói có hội thảo về khởi nghiệp không biết bao giờ diễn ra nhỉ?,events
+Có thông tin gì về kỳ thực tập sắp tới cho sinh viên CNTT không?,recruitment
+Học kỳ này mình cần phải đóng học phí vào ngày nào nhỉ?,academic_affairs
+Có học bổng nào cho sinh viên nghèo vượt khó không?,scholarship
+Khi nào có lịch thi giữa kỳ vậy?,timetable
+Trường mình có tổ chức ngày hội việc làm không?,recruitment
+Làm sao để biết lịch bảo vệ khóa luận tốt nghiệp?,academic_affairs
+Có sự kiện gì hấp dẫn vào cuối tuần này không?,events
+Nghe nói có công ty tuyển thực tập sinh không biết có đúng không?,recruitment
+Đóng tiền bảo hiểm y tế hạn cuối là khi nào vậy?,academic_affairs
+Có học bổng nào mới được công bố không?,scholarship
+Làm sao để biết thông tin về lớp học bị hủy?,timetable
+Có hội chợ việc làm vào tháng này không nhỉ?,recruitment
+Mình cần tìm hiểu về các câu lạc bộ trong trường có thông tin không?,events
+Khi nào mình có thể nộp đơn xin học bổng?,scholarship
+Trường có kết nối với doanh nghiệp nào để thực tập không?,recruitment
+Làm cách nào để biết thông tin về giờ học các môn?,timetable
+Có sự kiện nào liên quan đến văn hóa sắp tới không?,events
+Hạn cuối để nộp giấy tờ tốt nghiệp là khi nào?,academic_affairs
+Có học bổng nào cho sinh viên ngành kỹ thuật không?,scholarship
+Mình cần thông tin về buổi hội thảo sắp tới trong trường có ai biết không?,events
+Mình có thể đăng ký thực tập ở đâu nhỉ?,recruitment
+Làm sao để biết khi nào có buổi học bù?,timetable
+Có chương trình học bổng nào dành cho sinh viên giỏi không?,scholarship
+Nghe nói có công ty đến tuyển dụng trong tháng này có ai biết chi tiết không?,recruitment
+Trường có tổ chức lễ hội gì vào tháng tới không?,events
+Khi nào mình cần phải hoàn thành các giấy tờ đăng ký môn học?,academic_affairs
+Có ai biết thời gian biểu của kỳ thi cuối kỳ không?,timetable
+Có học bổng nào dành cho sinh viên ngành y dược không?,scholarship
+Mình muốn biết về các buổi hội thảo kỹ năng mềm có thông tin không?,events
+Khi nào có đợt tuyển dụng thực tập sinh tiếp theo?,recruitment
+Hạn chót để đăng ký học phần là khi nào vậy?,academic_affairs
+Có sự kiện thể thao nào sắp diễn ra không?,events
+Mình cần biết về các chương trình học bổng từ các tổ chức bên ngoài ai biết không?,scholarship
+Có thông tin gì mới về lịch học không?,timetable
+Trường có đối tác nào cho sinh viên thực tập không?,recruitment
+Có hội thảo nào về công nghệ thông tin diễn ra trong tháng này không?,events
+Khi nào cần nộp đơn đăng ký môn học cho kỳ tới?,academic_affairs
+Có học bổng nào cho sinh viên ngành khoa học xã hội không?,scholarship
+Mình muốn biết về các sự kiện âm nhạc trong trường có thông tin không?,events
+Có chương trình gì cho đợt thực tập hè này không?,recruitment
+Lịch học của tuần này có gì thay đổi không?,timetable
+Có học bổng nào cho sinh viên quốc tế không?,scholarship
+Có sự kiện nào dành cho sinh viên năm nhất không?,events
+Làm sao để biết thông tin về buổi học bù môn toán?,timetable
+Trường mình có tổ chức hội thảo gì về sức khỏe không?,events
+Có thông tin gì về các công ty đang tuyển thực tập sinh không?,recruitment
+Khi nào có lịch bảo vệ đồ án tốt nghiệp?,academic_affairs
+Nghe nói có học bổng mới từ một doanh nghiệp lớn ai biết không?,scholarship
+Hôm nay có sự kiện gì đặc biệt không nhỉ?,events
+Có thông tin gì về các lớp học thêm không?,timetable
+Mình có thể tìm thông tin về chương trình thực tập ở đâu nhỉ?,recruitment
+Hạn cuối để đóng học phí là khi nào?,academic_affairs
+Có hội thảo nào về kỹ năng mềm trong tháng này không?,events
+Có học bổng nào dành riêng cho nữ sinh không?,scholarship
+Làm sao để biết lịch thi của từng môn?,timetable
+Có đợt tuyển dụng nào sắp tới không?,recruitment
+Trường mình có tổ chức hội thảo gì về môi trường không?,events
+Khi nào mình cần hoàn thành việc đăng ký môn học?,academic_affairs
+Có học bổng nào cho sinh viên ngành nghệ thuật không?,scholarship
+Làm sao để biết lớp học nào bị thay đổi phòng?,timetable
+Có sự kiện nào liên quan đến công nghệ diễn ra sắp tới không?,events
+Trường có hợp tác với công ty nào để tuyển thực tập sinh không?,recruitment
+Hạn cuối để nộp hồ sơ tốt nghiệp là khi nào?,academic_affairs
+Có học bổng nào cho sinh viên ngành kinh tế không?,scholarship
+Có sự kiện nào về giáo dục trong trường sắp diễn ra không?,events
+Mình cần thông tin về lớp học bị hủy có ai biết không?,timetable
+Có thông tin gì mới về các đợt tuyển dụng không?,recruitment
+Khi nào có hội thảo về kỹ năng lãnh đạo nhỉ?,events
+Có học bổng nào cho sinh viên từ vùng khó khăn không?,scholarship
+Làm sao để biết lịch học của tuần này?,timetable
+Có đợt thực tập nào trong mùa hè không?,recruitment
+Trường mình có tổ chức ngày hội thể thao không?,events
+Khi nào cần nộp tiền bảo hiểm y tế?,academic_affairs
+Có học bổng nào cho sinh viên ngành truyền thông không?,scholarship
+Có thông tin gì về thời gian biểu của các lớp không?,timetable
+Có chương trình gì cho đợt tuyển dụng sắp tới không?,recruitment
+Hội thảo về đổi mới sáng tạo diễn ra khi nào nhỉ?,events
+Hạn cuối để nộp đơn xin học bổng là khi nào?,scholarship
+Làm sao để biết thông tin về việc đổi phòng học?,timetable
+Có sự kiện nào về văn hóa trong trường không?,events
+Trường mình có tổ chức hội chợ việc làm không?,recruitment
 Khi nào cần hoàn thành đăng ký học phần?,academic_affairs
-Em cần biết thông tin về cuộc thi lập trình sắp tới, events  
-Có thông tin gì về chương trình trao đổi sinh viên không?, academic_affairs  
-Làm sao để cập nhật thời khóa biểu mới nhất?, timetable  
-Trường mình có học bổng nào cho sinh viên ngành CNTT không?, scholarship  
-Khi nào thì hạn cuối nộp đơn xin học bổng?, scholarship  
-Em muốn biết về đợt tuyển dụng tiếp theo của các công ty công nghệ, recruitment  
-Có hội thảo nào về trí tuệ nhân tạo sắp diễn ra không?, events  
-Làm sao để đăng ký môn học qua hệ thống?, academic_affairs  
-Đăng ký bảo hiểm y tế ở đâu vậy?, academic_affairs  
-Có thực tập nào phù hợp với sinh viên năm cuối không?, recruitment  
-Lịch bảo vệ đồ án tốt nghiệp đợt này thế nào nhỉ?, academic_affairs  
-Có bao nhiêu suất học bổng cho sinh viên giỏi kỳ này?, scholarship  
-Khi nào trường tổ chức ngày hội việc làm?, recruitment  
-Có sự kiện gì vui sắp diễn ra ở trường không?, events  
-Em muốn tìm thông tin về thay đổi phòng học môn Toán rời rạc, timetable  
-Trường mình có hợp tác với công ty nào trong ngành game không?, recruitment  
-Làm sao để biết mức học bổng mình được nhận?, scholarship  
-Buổi hội thảo về blockchain tổ chức ngày nào nhỉ?, events  
-Có cách nào để tra cứu lịch học nhanh không?, timetable  
-Em cần biết thông tin về việc nộp học phí học kỳ này, academic_affairs  
-Chương trình thực tập hè của công ty A có yêu cầu gì đặc biệt không?, recruitment  
-Làm sao để tham gia câu lạc bộ trong trường?, events  
-Khi nào là hạn cuối đăng ký môn học?, academic_affairs  
-Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?, scholarship  
-Ngày mai có sự kiện gì ở giảng đường chính không?, events  
-Lịch thi cuối kỳ môn Lập trình Java có thay đổi không?, timetable  
-Công ty B đang tuyển vị trí nào cho sinh viên thực tập?, recruitment  
-Làm sao để xem điểm số và bảng điểm của mình?, academic_affairs  
-Chương trình học bổng của công ty C có khó không?, scholarship  
-Có buổi tọa đàm nào với các chuyên gia không?, events  
-Làm sao để biết phòng học của lớp mình?, timetable  
-Trường mình có chương trình gì cho sinh viên quốc tế không?, academic_affairs  
-Đơn xin thực tập cần chuẩn bị những gì?, recruitment  
-Có sự kiện gì dành cho tân sinh viên không?, events  
-Khi nào có thể đăng ký học phần tự chọn?, academic_affairs  
-Có học bổng nào cho nghiên cứu khoa học không?, scholarship  
-Sắp tới có workshop nào về phát triển ứng dụng di động không?, events  
-Làm sao để kiểm tra thời gian biểu cá nhân?, timetable  
-Em muốn biết về các lớp học bù, academic_affairs  
-Có công ty nào đang tuyển dụng vị trí lập trình viên không?, recruitment  
-Trường mình có tổ chức hội thảo về khởi nghiệp không?, events  
-Đăng ký môn học qua ứng dụng di động thế nào?, academic_affairs  
-Có chương trình học bổng nào cho sinh viên quốc tế không?, scholarship  
-Có sự kiện gì thú vị vào cuối tuần này không?, events  
-Làm sao để biết lịch thi lại môn Kỹ thuật phần mềm?, timetable  
-Em muốn cập nhật thông tin mới nhất về bảo hiểm y tế, academic_affairs  
-Công ty D có chương trình thực tập cho sinh viên năm 3 không?, recruitment  
-Có buổi gặp gỡ nào với cựu sinh viên thành đạt không?, events  
-Khi nào có thể bắt đầu đăng ký môn học cho kỳ sau?, academic_affairs  
-Có học bổng nào hỗ trợ chi phí sinh hoạt không?, scholarship  
-Sắp tới có buổi diễn thuyết nào về công nghệ không?, events  
-Làm sao để theo dõi lịch học trực tuyến?, timetable  
-Em muốn biết về quy trình bảo lưu kết quả học tập, academic_affairs  
-Có công ty nào đang cần tuyển thực tập sinh ngành mạng không?, recruitment  
-Trường mình có tổ chức sự kiện nào cho sinh viên quốc tế không?, events  
-Làm sao để biết thông tin về môn học bị hủy?, academic_affairs  
-Có học bổng nào cho sinh viên nữ không?, scholarship  
-Có hội thảo nào về an ninh mạng không?, events  
-Làm sao để cập nhật thời gian biểu mới nhất?, timetable  
-Em cần thông tin về việc đóng bảo hiểm xã hội, academic_affairs  
-Công ty E có đợt tuyển dụng nào sắp tới không?, recruitment  
-Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?, events  
-Khi nào có thể rút môn đã đăng ký?, academic_affairs  
-Có học bổng nào cho sinh viên có thành tích nghiên cứu không?, scholarship  
-Có hội thảo nào về phát triển phần mềm mã nguồn mở không?, events  
-Làm sao để tìm kiếm thông tin lớp học ngoài giờ?, timetable  
-Em cần hướng dẫn về việc đăng ký bảo hiểm y tế, academic_affairs  
-Công ty F có chương trình tuyển dụng nào cho sinh viên mới tốt nghiệp không?, recruitment  
-Trường mình có tổ chức sự kiện nào về đổi mới sáng tạo không?, events  
-Đăng ký môn học qua cổng thông tin sinh viên thế nào?, academic_affairs  
-Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?, scholarship  
-Có workshop nào về kỹ năng mềm sắp diễn ra không?, events  
-Làm sao để biết lịch học chính thức?, timetable  
-Em muốn biết về quy trình xin nghỉ học tạm thời, academic_affairs  
-Công ty G có chương trình thực tập nào phù hợp với ngành mình không?, recruitment  
-Có sự kiện nào để kết nối sinh viên các khoa không?, events  
-Khi nào có thể thay đổi môn học đã đăng ký?, academic_affairs  
-Có học bổng nào hỗ trợ học phí không?, scholarship  
-Sắp tới có hội nghị nào về trí tuệ nhân tạo không?, events  
-Làm sao để tra cứu thời gian biểu cho tuần này?, timetable  
-Em cần thông tin về việc đóng học phí qua ngân hàng, academic_affairs  
-Công ty H có tuyển dụng vị trí nào mới không?, recruitment  
-Có sự kiện nào để gặp gỡ các giảng viên không?, events  
-Khi nào là hạn cuối để nộp hồ sơ xin học bổng?, scholarship  
-Có học bổng nào cho sinh viên nghiên cứu không?, scholarship  
-Có buổi hội thảo nào về phát triển web không?, events  
-Làm sao để cập nhật lịch học của mình?, timetable  
-Em muốn biết về các lớp học ngoài giờ, academic_affairs  
-Có công ty nào đang tuyển dụng vị trí thực tập không?, recruitment  
-Trường mình có tổ chức hội thảo nào về công nghệ mới không?, events  
-Đăng ký môn học qua ứng dụng di động thế nào?, academic_affairs  
-Có học bổng nào cho sinh viên có điểm cao không?, scholarship  
-Có workshop nào về kỹ năng lãnh đạo không?, events  
-Làm sao để biết lịch thi cụ thể?, timetable  
-Em cần thông tin về việc đóng bảo hiểm xã hội, academic_affairs  
-Công ty I có chương trình tuyển dụng nào cho người mới ra trường không?, recruitment  
-Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?, events  
-Khi nào có thể rút môn đã đăng ký?, academic_affairs  
-Có học bổng nào cho sinh viên có thành tích nghiên cứu không?, scholarship  
-Có hội thảo nào về phát triển phần mềm mã nguồn mở không?, events  
-Làm sao để tìm kiếm thông tin lớp học ngoài giờ?, timetable  
-Em cần hướng dẫn về việc đăng ký bảo hiểm y tế, academic_affairs  
-Công ty J có chương trình thực tập nào phù hợp với ngành mình không?, recruitment  
-Có sự kiện nào để kết nối sinh viên các khoa không?, events  
-Khi nào có thể thay đổi môn học đã đăng ký?, academic_affairs  
-Có học bổng nào hỗ trợ học phí không?, scholarship  
-Sắp tới có hội nghị nào về trí tuệ nhân tạo không?, events  
-Làm sao để tra cứu thời gian biểu cho tuần này?, timetable  
-Em cần thông tin về việc đóng học phí qua ngân hàng, academic_affairs  
-Công ty K có tuyển dụng vị trí nào mới không?, recruitment  
-Có sự kiện nào để gặp gỡ các giảng viên không?, events  
-Khi nào là hạn cuối để nộp hồ sơ xin học bổng?, scholarship  
-Có học bổng nào cho sinh viên nghiên cứu không?, scholarship  
-Có buổi hội thảo nào về phát triển web không?, events  
-Làm sao để cập nhật lịch học của mình?, timetable  
-Em muốn biết về các lớp học ngoài giờ, academic_affairs  
-Có công ty nào đang tuyển dụng vị trí thực tập không?, recruitment  
-Trường mình có tổ chức hội thảo nào về công nghệ mới không?, events  
-Đăng ký môn học qua ứng dụng di động thế nào?, academic_affairs  
-Có học bổng nào cho sinh viên có điểm cao không?, scholarship  
-Có workshop nào về kỹ năng lãnh đạo không?, events  
-Làm sao để biết lịch thi cụ thể?, timetable  
-Em cần thông tin về việc đóng bảo hiểm xã hội, academic_affairs  
-Công ty L có chương trình tuyển dụng nào cho người mới ra trường không?, recruitment  
-Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?, events  
-Khi nào có thể rút môn đã đăng ký?, academic_affairs  
-Có học bổng nào cho sinh viên có thành tích nghiên cứu không?, scholarship  
-Có hội thảo nào về phát triển phần mềm mã nguồn mở không?, events  
-Làm sao để tìm kiếm thông tin lớp học ngoài giờ?, timetable  
-Em cần hướng dẫn về việc đăng ký bảo hiểm y tế, academic_affairs  
-Công ty M có chương trình thực tập nào phù hợp với ngành mình không?, recruitment  
-Có sự kiện nào để kết nối sinh viên các khoa không?, events  
-Khi nào có thể thay đổi môn học đã đăng ký?, academic_affairs  
-Có học bổng nào hỗ trợ học phí không?, scholarship  
-Sắp tới có hội nghị nào về trí tuệ nhân tạo không?, events  
-Làm sao để tra cứu thời gian biểu cho tuần này?, timetable  
-Em cần thông tin về việc đóng học phí qua ngân hàng, academic_affairs  
-Công ty N có tuyển dụng vị trí nào mới không?, recruitment  
-Có sự kiện nào để gặp gỡ các giảng viên không?, events  
-Khi nào là hạn cuối để nộp hồ sơ xin học bổng?, scholarship  
-Có học bổng nào cho sinh viên nghiên cứu không?, scholarship  
-Có buổi hội thảo nào về phát triển web không?, events  
-Làm sao để cập nhật lịch học của mình?, timetable  
-Em muốn biết về các lớp học ngoài giờ, academic_affairs  
-Có công ty nào đang tuyển dụng vị trí thực tập không?, recruitment  
-Trường mình có tổ chức hội thảo nào về công nghệ mới không?, events  
-Đăng ký môn học qua ứng dụng di động thế nào?, academic_affairs  
-Có học bổng nào cho sinh viên có điểm cao không?, scholarship  
-Có workshop nào về kỹ năng lãnh đạo không?, events  
-Làm sao để biết lịch thi cụ thể?, timetable  
-Em cần thông tin về việc đóng bảo hiểm xã hội, academic_affairs  
-Công ty O có chương trình tuyển dụng nào cho người mới ra trường không?, recruitment  
-Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?, events  
-Khi nào có thể rút môn đã đăng ký?, academic_affairs  
-Có học bổng nào cho sinh viên có thành tích nghiên cứu không?, scholarship  
-Có hội thảo nào về phát triển phần mềm mã nguồn mở không?, events  
-Làm sao để tìm kiếm thông tin lớp học ngoài giờ?, timetable  
-Em cần hướng dẫn về việc đăng ký bảo hiểm y tế, academic_affairs  
-Công ty P có chương trình thực tập nào phù hợp với ngành mình không?, recruitment  
-Có sự kiện nào để kết nối sinh viên các khoa không?, events  
-Khi nào có thể thay đổi môn học đã đăng ký?, academic_affairs  
-Có học bổng nào hỗ trợ học phí không?, scholarship  
-Sắp tới có hội nghị nào về trí tuệ nhân tạo không?, events  
-Làm sao để tra cứu thời gian biểu cho tuần này?, timetable  
-Em cần thông tin về việc đóng học phí qua ngân hàng, academic_affairs  
-Công ty Q có tuyển dụng vị trí nào mới không?, recruitment  
-Có sự kiện nào để gặp gỡ các giảng viên không?, events  
-Khi nào là hạn cuối để nộp hồ sơ xin học bổng?, scholarship  
-Có học bổng nào cho sinh viên nghiên cứu không?, scholarship  
-Có buổi hội thảo nào về phát triển web không?, events  
-Làm sao để cập nhật lịch học của mình?, timetable  
-Em muốn biết về các lớp học ngoài giờ, academic_affairs  
-Có công ty nào đang tuyển dụng vị trí thực tập không?, recruitment  
-Trường mình có tổ chức hội thảo nào về công nghệ mới không?, events  
-Đăng ký môn học qua ứng dụng di động thế nào?, academic_affairs  
-Có học bổng nào cho sinh viên có điểm cao không?, scholarship  
-Có workshop nào về kỹ năng lãnh đạo không?, events  
-Làm sao để biết lịch thi cụ thể?, timetable  
-Em cần thông tin về việc đóng bảo hiểm xã hội, academic_affairs  
-Công ty R có chương trình tuyển dụng nào cho người mới ra trường không?, recruitment  
-Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?, events  
-Khi nào có thể rút môn đã đăng ký?, academic_affairs  
-Có học bổng nào cho sinh viên có thành tích nghiên cứu không?, scholarship  
-Có hội thảo nào về phát triển phần mềm mã nguồn mở không?, events  
-Làm sao để tìm kiếm thông tin lớp học ngoài giờ?, timetable  
-Em cần hướng dẫn về việc đăng ký bảo hiểm y tế, academic_affairs  
-Công ty S có chương trình thực tập nào phù hợp với ngành mình không?, recruitment
+Có học bổng nào cho sinh viên ngành luật không?,scholarship
+Có sự kiện gì thú vị trong tuần này không?,events
+Làm sao để biết lịch thi giữa kỳ?,timetable
+Có thông tin gì mới về các chương trình thực tập không?,recruitment
+Hội thảo nào về bảo vệ môi trường diễn ra sắp tới không?,events
+Hạn cuối để nộp hồ sơ học bổng là khi nào?,scholarship
+Có thông tin gì về việc đổi giờ học không?,timetable
+Có đợt tuyển dụng thực tập sinh nào trong tháng này không?,recruitment
+Trường mình có tổ chức gì cho ngày hội văn hóa không?,events
+Khi nào cần nộp học phí kỳ mới?,academic_affairs
+Có học bổng nào cho sinh viên ngành kỹ thuật không?,scholarship
+Có sự kiện nào về khởi nghiệp sắp tới không?,events
+Làm sao để biết lớp học nào bị thay đổi thời gian?,timetable
+Có chương trình thực tập nào cho sinh viên năm cuối không?,recruitment
+Hội thảo nào về khoa học công nghệ diễn ra trong tháng này không?,events
+Hạn cuối để đăng ký môn học là khi nào?,academic_affairs
+Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?,scholarship
+Có thông tin gì về thời gian biểu của tuần tới không?,timetable
+Có đợt thực tập nào trong mùa đông không?,recruitment
+Trường mình có tổ chức ngày hội âm nhạc không?,events
+Khi nào cần hoàn thành việc đăng ký bảo hiểm y tế?,academic_affairs
+Có học bổng nào cho sinh viên ngành xã hội học không?,scholarship
+Có sự kiện nào về công nghệ thông tin sắp diễn ra không?,events
+Làm sao để biết thông tin về việc đổi phòng học?,timetable
+Có chương trình gì cho đợt tuyển dụng sắp tới không?,recruitment
+Hội thảo nào về đổi mới sáng tạo diễn ra khi nào nhỉ?,events
+Hạn cuối để nộp đơn xin học bổng là khi nào?,scholarship
+Làm sao để biết thông tin về việc đổi giờ học?,timetable
+Có sự kiện nào về văn hóa trong trường không?,events
+Trường mình có tổ chức hội chợ việc làm không?,recruitment
+Khi nào cần hoàn thành đăng ký học phần?,academic_affairs
+Có học bổng nào cho sinh viên ngành luật không?,scholarship
+Có sự kiện gì thú vị trong tuần này không?,events
+Làm sao để biết lịch thi giữa kỳ?,timetable
+Có thông tin gì mới về các chương trình thực tập không?,recruitment
+Hội thảo nào về bảo vệ môi trường diễn ra sắp tới không?,events
+Hạn cuối để nộp hồ sơ học bổng là khi nào?,scholarship
+Có thông tin gì về việc đổi giờ học không?,timetable
+Có đợt tuyển dụng thực tập sinh nào trong tháng này không?,recruitment
+Trường mình có tổ chức gì cho ngày hội văn hóa không?,events
+Khi nào cần nộp học phí kỳ mới?,academic_affairs
+Có học bổng nào cho sinh viên ngành kỹ thuật không?,scholarship
+Có sự kiện nào về khởi nghiệp sắp tới không?,events
+Làm sao để biết lớp học nào bị thay đổi thời gian?,timetable
+Có chương trình thực tập nào cho sinh viên năm cuối không?,recruitment
+Hội thảo nào về khoa học công nghệ diễn ra trong tháng này không?,events
+Hạn cuối để đăng ký môn học là khi nào?,academic_affairs
+Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?,scholarship
+Có thông tin gì về thời gian biểu của tuần tới không?,timetable
+Có đợt thực tập nào trong mùa đông không?,recruitment
+Trường mình có tổ chức ngày hội âm nhạc không?,events
+Khi nào cần hoàn thành việc đăng ký bảo hiểm y tế?,academic_affairs
+Có học bổng nào cho sinh viên ngành xã hội học không?,scholarship
+Có sự kiện nào về công nghệ thông tin sắp diễn ra không?,events
+Làm sao để biết thông tin về việc đổi phòng học?,timetable
+Có chương trình gì cho đợt tuyển dụng sắp tới không?,recruitment
+Hội thảo nào về đổi mới sáng tạo diễn ra khi nào nhỉ?,events
+Hạn cuối để nộp đơn xin học bổng là khi nào?,scholarship
+Làm sao để biết thông tin về việc đổi giờ học?,timetable
+Có sự kiện nào về văn hóa trong trường không?,events
+Trường mình có tổ chức hội chợ việc làm không?,recruitment
+Khi nào cần hoàn thành đăng ký học phần?,academic_affairs
+Em cần biết thông tin về cuộc thi lập trình sắp tới,events
+Có thông tin gì về chương trình trao đổi sinh viên không?,academic_affairs
+Làm sao để cập nhật thời khóa biểu mới nhất?,timetable
+Trường mình có học bổng nào cho sinh viên ngành CNTT không?,scholarship
+Khi nào thì hạn cuối nộp đơn xin học bổng?,scholarship
+Em muốn biết về đợt tuyển dụng tiếp theo của các công ty công nghệ,recruitment
+Có hội thảo nào về trí tuệ nhân tạo sắp diễn ra không?,events
+Làm sao để đăng ký môn học qua hệ thống?,academic_affairs
+Đăng ký bảo hiểm y tế ở đâu vậy?,academic_affairs
+Có thực tập nào phù hợp với sinh viên năm cuối không?,recruitment
+Lịch bảo vệ đồ án tốt nghiệp đợt này thế nào nhỉ?,academic_affairs
+Có bao nhiêu suất học bổng cho sinh viên giỏi kỳ này?,scholarship
+Khi nào trường tổ chức ngày hội việc làm?,recruitment
+Có sự kiện gì vui sắp diễn ra ở trường không?,events
+Em muốn tìm thông tin về thay đổi phòng học môn Toán rời rạc,timetable
+Trường mình có hợp tác với công ty nào trong ngành game không?,recruitment
+Làm sao để biết mức học bổng mình được nhận?,scholarship
+Buổi hội thảo về blockchain tổ chức ngày nào nhỉ?,events
+Có cách nào để tra cứu lịch học nhanh không?,timetable
+Em cần biết thông tin về việc nộp học phí học kỳ này,academic_affairs
+Chương trình thực tập hè của công ty A có yêu cầu gì đặc biệt không?,recruitment
+Làm sao để tham gia câu lạc bộ trong trường?,events
+Khi nào là hạn cuối đăng ký môn học?,academic_affairs
+Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?,scholarship
+Ngày mai có sự kiện gì ở giảng đường chính không?,events
+Lịch thi cuối kỳ môn Lập trình Java có thay đổi không?,timetable
+Công ty B đang tuyển vị trí nào cho sinh viên thực tập?,recruitment
+Làm sao để xem điểm số và bảng điểm của mình?,academic_affairs
+Chương trình học bổng của công ty C có khó không?,scholarship
+Có buổi tọa đàm nào với các chuyên gia không?,events
+Làm sao để biết phòng học của lớp mình?,timetable
+Trường mình có chương trình gì cho sinh viên quốc tế không?,academic_affairs
+Đơn xin thực tập cần chuẩn bị những gì?,recruitment
+Có sự kiện gì dành cho tân sinh viên không?,events
+Khi nào có thể đăng ký học phần tự chọn?,academic_affairs
+Có học bổng nào cho nghiên cứu khoa học không?,scholarship
+Sắp tới có workshop nào về phát triển ứng dụng di động không?,events
+Làm sao để kiểm tra thời gian biểu cá nhân?,timetable
+Em muốn biết về các lớp học bù,academic_affairs
+Có công ty nào đang tuyển dụng vị trí lập trình viên không?,recruitment
+Trường mình có tổ chức hội thảo về khởi nghiệp không?,events
+Đăng ký môn học qua ứng dụng di động thế nào?,academic_affairs
+Có chương trình học bổng nào cho sinh viên quốc tế không?,scholarship
+Có sự kiện gì thú vị vào cuối tuần này không?,events
+Làm sao để biết lịch thi lại môn Kỹ thuật phần mềm?,timetable
+Em muốn cập nhật thông tin mới nhất về bảo hiểm y tế,academic_affairs
+Công ty D có chương trình thực tập cho sinh viên năm 3 không?,recruitment
+Có buổi gặp gỡ nào với cựu sinh viên thành đạt không?,events
+Khi nào có thể bắt đầu đăng ký môn học cho kỳ sau?,academic_affairs
+Có học bổng nào hỗ trợ chi phí sinh hoạt không?,scholarship
+Sắp tới có buổi diễn thuyết nào về công nghệ không?,events
+Làm sao để theo dõi lịch học trực tuyến?,timetable
+Em muốn biết về quy trình bảo lưu kết quả học tập,academic_affairs
+Có công ty nào đang cần tuyển thực tập sinh ngành mạng không?,recruitment
+Trường mình có tổ chức sự kiện nào cho sinh viên quốc tế không?,events
+Làm sao để biết thông tin về môn học bị hủy?,academic_affairs
+Có học bổng nào cho sinh viên nữ không?,scholarship
+Có hội thảo nào về an ninh mạng không?,events
+Làm sao để cập nhật thời gian biểu mới nhất?,timetable
+Em cần thông tin về việc đóng bảo hiểm xã hội,academic_affairs
+Công ty E có đợt tuyển dụng nào sắp tới không?,recruitment
+Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?,events
+Khi nào có thể rút môn đã đăng ký?,academic_affairs
+Có học bổng nào cho sinh viên có thành tích nghiên cứu không?,scholarship
+Có hội thảo nào về phát triển phần mềm mã nguồn mở không?,events
+Làm sao để tìm kiếm thông tin lớp học ngoài giờ?,timetable
+Em cần hướng dẫn về việc đăng ký bảo hiểm y tế,academic_affairs
+Công ty F có chương trình tuyển dụng nào cho sinh viên mới tốt nghiệp không?,recruitment
+Trường mình có tổ chức sự kiện nào về đổi mới sáng tạo không?,events
+Đăng ký môn học qua cổng thông tin sinh viên thế nào?,academic_affairs
+Có học bổng nào cho sinh viên có hoàn cảnh khó khăn không?,scholarship
+Có workshop nào về kỹ năng mềm sắp diễn ra không?,events
+Làm sao để biết lịch học chính thức?,timetable
+Em muốn biết về quy trình xin nghỉ học tạm thời,academic_affairs
+Công ty G có chương trình thực tập nào phù hợp với ngành mình không?,recruitment
+Có sự kiện nào để kết nối sinh viên các khoa không?,events
+Khi nào có thể thay đổi môn học đã đăng ký?,academic_affairs
+Có học bổng nào hỗ trợ học phí không?,scholarship
+Sắp tới có hội nghị nào về trí tuệ nhân tạo không?,events
+Làm sao để tra cứu thời gian biểu cho tuần này?,timetable
+Em cần thông tin về việc đóng học phí qua ngân hàng,academic_affairs
+Công ty H có tuyển dụng vị trí nào mới không?,recruitment
+Có sự kiện nào để gặp gỡ các giảng viên không?,events
+Khi nào là hạn cuối để nộp hồ sơ xin học bổng?,scholarship
+Có học bổng nào cho sinh viên nghiên cứu không?,scholarship
+Có buổi hội thảo nào về phát triển web không?,events
+Làm sao để cập nhật lịch học của mình?,timetable
+Em muốn biết về các lớp học ngoài giờ,academic_affairs
+Có công ty nào đang tuyển dụng vị trí thực tập không?,recruitment
+Trường mình có tổ chức hội thảo nào về công nghệ mới không?,events
+Đăng ký môn học qua ứng dụng di động thế nào?,academic_affairs
+Có học bổng nào cho sinh viên có điểm cao không?,scholarship
+Có workshop nào về kỹ năng lãnh đạo không?,events
+Làm sao để biết lịch thi cụ thể?,timetable
+Em cần thông tin về việc đóng bảo hiểm xã hội,academic_affairs
+Công ty I có chương trình tuyển dụng nào cho người mới ra trường không?,recruitment
+Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?,events
+Khi nào có thể rút môn đã đăng ký?,academic_affairs
+Có học bổng nào cho sinh viên có thành tích nghiên cứu không?,scholarship
+Có hội thảo nào về phát triển phần mềm mã nguồn mở không?,events
+Làm sao để tìm kiếm thông tin lớp học ngoài giờ?,timetable
+Em cần hướng dẫn về việc đăng ký bảo hiểm y tế,academic_affairs
+Công ty J có chương trình thực tập nào phù hợp với ngành mình không?,recruitment
+Có sự kiện nào để kết nối sinh viên các khoa không?,events
+Khi nào có thể thay đổi môn học đã đăng ký?,academic_affairs
+Có học bổng nào hỗ trợ học phí không?,scholarship
+Sắp tới có hội nghị nào về trí tuệ nhân tạo không?,events
+Làm sao để tra cứu thời gian biểu cho tuần này?,timetable
+Em cần thông tin về việc đóng học phí qua ngân hàng,academic_affairs
+Công ty K có tuyển dụng vị trí nào mới không?,recruitment
+Có sự kiện nào để gặp gỡ các giảng viên không?,events
+Khi nào là hạn cuối để nộp hồ sơ xin học bổng?,scholarship
+Có học bổng nào cho sinh viên nghiên cứu không?,scholarship
+Có buổi hội thảo nào về phát triển web không?,events
+Làm sao để cập nhật lịch học của mình?,timetable
+Em muốn biết về các lớp học ngoài giờ,academic_affairs
+Có công ty nào đang tuyển dụng vị trí thực tập không?,recruitment
+Trường mình có tổ chức hội thảo nào về công nghệ mới không?,events
+Đăng ký môn học qua ứng dụng di động thế nào?,academic_affairs
+Có học bổng nào cho sinh viên có điểm cao không?,scholarship
+Có workshop nào về kỹ năng lãnh đạo không?,events
+Làm sao để biết lịch thi cụ thể?,timetable
+Em cần thông tin về việc đóng bảo hiểm xã hội,academic_affairs
+Công ty L có chương trình tuyển dụng nào cho người mới ra trường không?,recruitment
+Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?,events
+Khi nào có thể rút môn đã đăng ký?,academic_affairs
+Có học bổng nào cho sinh viên có thành tích nghiên cứu không?,scholarship
+Có hội thảo nào về phát triển phần mềm mã nguồn mở không?,events
+Làm sao để tìm kiếm thông tin lớp học ngoài giờ?,timetable
+Em cần hướng dẫn về việc đăng ký bảo hiểm y tế,academic_affairs
+Công ty M có chương trình thực tập nào phù hợp với ngành mình không?,recruitment
+Có sự kiện nào để kết nối sinh viên các khoa không?,events
+Khi nào có thể thay đổi môn học đã đăng ký?,academic_affairs
+Có học bổng nào hỗ trợ học phí không?,scholarship
+Sắp tới có hội nghị nào về trí tuệ nhân tạo không?,events
+Làm sao để tra cứu thời gian biểu cho tuần này?,timetable
+Em cần thông tin về việc đóng học phí qua ngân hàng,academic_affairs
+Công ty N có tuyển dụng vị trí nào mới không?,recruitment
+Có sự kiện nào để gặp gỡ các giảng viên không?,events
+Khi nào là hạn cuối để nộp hồ sơ xin học bổng?,scholarship
+Có học bổng nào cho sinh viên nghiên cứu không?,scholarship
+Có buổi hội thảo nào về phát triển web không?,events
+Làm sao để cập nhật lịch học của mình?,timetable
+Em muốn biết về các lớp học ngoài giờ,academic_affairs
+Có công ty nào đang tuyển dụng vị trí thực tập không?,recruitment
+Trường mình có tổ chức hội thảo nào về công nghệ mới không?,events
+Đăng ký môn học qua ứng dụng di động thế nào?,academic_affairs
+Có học bổng nào cho sinh viên có điểm cao không?,scholarship
+Có workshop nào về kỹ năng lãnh đạo không?,events
+Làm sao để biết lịch thi cụ thể?,timetable
+Em cần thông tin về việc đóng bảo hiểm xã hội,academic_affairs
+Công ty O có chương trình tuyển dụng nào cho người mới ra trường không?,recruitment
+Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?,events
+Khi nào có thể rút môn đã đăng ký?,academic_affairs
+Có học bổng nào cho sinh viên có thành tích nghiên cứu không?,scholarship
+Có hội thảo nào về phát triển phần mềm mã nguồn mở không?,events
+Làm sao để tìm kiếm thông tin lớp học ngoài giờ?,timetable
+Em cần hướng dẫn về việc đăng ký bảo hiểm y tế,academic_affairs
+Công ty P có chương trình thực tập nào phù hợp với ngành mình không?,recruitment
+Có sự kiện nào để kết nối sinh viên các khoa không?,events
+Khi nào có thể thay đổi môn học đã đăng ký?,academic_affairs
+Có học bổng nào hỗ trợ học phí không?,scholarship
+Sắp tới có hội nghị nào về trí tuệ nhân tạo không?,events
+Làm sao để tra cứu thời gian biểu cho tuần này?,timetable
+Em cần thông tin về việc đóng học phí qua ngân hàng,academic_affairs
+Công ty Q có tuyển dụng vị trí nào mới không?,recruitment
+Có sự kiện nào để gặp gỡ các giảng viên không?,events
+Khi nào là hạn cuối để nộp hồ sơ xin học bổng?,scholarship
+Có học bổng nào cho sinh viên nghiên cứu không?,scholarship
+Có buổi hội thảo nào về phát triển web không?,events
+Làm sao để cập nhật lịch học của mình?,timetable
+Em muốn biết về các lớp học ngoài giờ,academic_affairs
+Có công ty nào đang tuyển dụng vị trí thực tập không?,recruitment
+Trường mình có tổ chức hội thảo nào về công nghệ mới không?,events
+Đăng ký môn học qua ứng dụng di động thế nào?,academic_affairs
+Có học bổng nào cho sinh viên có điểm cao không?,scholarship
+Có workshop nào về kỹ năng lãnh đạo không?,events
+Làm sao để biết lịch thi cụ thể?,timetable
+Em cần thông tin về việc đóng bảo hiểm xã hội,academic_affairs
+Công ty R có chương trình tuyển dụng nào cho người mới ra trường không?,recruitment
+Có sự kiện nào để sinh viên gặp gỡ doanh nghiệp không?,events
+Khi nào có thể rút môn đã đăng ký?,academic_affairs
+Có học bổng nào cho sinh viên có thành tích nghiên cứu không?,scholarship
+Có hội thảo nào về phát triển phần mềm mã nguồn mở không?,events
+Làm sao để tìm kiếm thông tin lớp học ngoài giờ?,timetable
+Em cần hướng dẫn về việc đăng ký bảo hiểm y tế,academic_affairs
+Công ty S có chương trình thực tập nào phù hợp với ngành mình không?,recruitment
