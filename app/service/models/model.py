@@ -2,9 +2,8 @@ import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 from dotenv import load_dotenv
-from ibm_watsonx_ai.foundation_models import ModelInference
-from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
 from .prompts import prompts
+from flask import Response, stream_with_context
 
 load_dotenv('../.env')
 
@@ -14,58 +13,103 @@ CACHE_DIR = os.path.normpath(
 )
 
 class ChatModel:
-    def __init__(self, model_id: str = "mistralai/mistral-large", device="cuda"):
-    
-        credentials = {
-            "apikey": os.getenv("WATSONX_APIKEY"),
-            "url": "https://us-south.ml.cloud.ibm.com",
-        }
+    def __init__(self, model_id: str = "mistralai/mistral-large", device="cuda", provider="IBM"):
+        self.provider = provider
+        if provider == "IBM":
+            from ibm_watsonx_ai.foundation_models import ModelInference
+            from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
+            credentials = {
+                "apikey": os.getenv("WATSONX_APIKEY"),
+                "url": "https://us-south.ml.cloud.ibm.com",
+            }
 
-        self.model = ModelInference(
-            model_id=model_id,
-            credentials=credentials,
-            params={
-                GenParams.DECODING_METHOD: "greedy",
-                GenParams.MAX_NEW_TOKENS: 2048,
-                # GenParams.STOP_SEQUENCES: [],
-            },
-            project_id=os.getenv("WATSONX_PROJECT_ID"),
-        )
-        self.chat = []
+            self.model = ModelInference(
+                model_id=model_id,
+                credentials=credentials,
+                params={
+                    GenParams.DECODING_METHOD: "greedy",
+                    GenParams.MAX_NEW_TOKENS: 2048,
+                    # GenParams.STOP_SEQUENCES: [],
+                },
+                project_id=os.getenv("WATSONX_PROJECT_ID"),
+            )
+        elif provider == "OpenAI":
+            import openai
+            client = openai.OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
+            self.model = client
+            # response = client.chat.completions.create(
+            #     model="gpt-4o-mini",
+            #     messages=[{"role": "system", "content": prompt}],
+            #     stream=False,
+            # )
+            # print(response.choices[0].message.content)
+        elif provider == "Google":
+            import google.generativeai as genai
+
+            genai.configure(api_key=os.getenv("GEMINI_APIKEY"))
+            self.model = genai.GenerativeModel("gemini-1.5-flash")
+            # response = model.generate_content("Explain how AI works", )
+            # print(response.text)
+
+    def _generate(self, prompt, max_new_tokens=1000, streaming=False):
+        if self.provider == "IBM":
+            params = {GenParams.MAX_NEW_TOKENS: max_new_tokens}
+            if not streaming:
+                response = self.model.generate_text(prompt, params=params)
+                #response = response.replace("<eos>", "")  # remove eos token
+                return response
+            else:
+                return self.model.generate_text_stream(prompt, params=params)
+        elif self.provider == "OpenAI":
+            response = self.model.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "system", "content": prompt}],
+                stream=streaming,
+                max_completion_tokens=max_new_tokens,
+            )
+            return response
+        elif self.provider == "Google":
+            import google.generativeai as genai
+            params = genai.GenerationConfig(max_output_tokens=max_new_tokens)
+            if not streaming:
+                return self.model.generate_content(prompt, stream=streaming).text
+            else:
+                def gen():
+                    response = self.model.generate_content(prompt, stream=streaming)
+                    for chunk in response:
+                        yield f"{chunk.text}"
+                return stream_with_context(gen())
 
     def generate(self, question: str, context: str = None, streaming=False, max_new_tokens=2048, k=3, history=None, theme=None, theme_context=None):
 
         if context == None or context == "":
             if history is None or len(history) == 0:
                 prompt = prompts['NO_CONTEXT_NO_HISTORY']
+                print("Chosen prompt style: NO_CONTEXT_NO_HISTORY")
                 formatted_prompt = prompt.format(question=question)
             else:
                 prompt = prompts['NO_CONTEXT_HISTORY']
+                print("Chosen prompt style: NO_CONTEXT_HISTORY")
                 conversation = ""
                 for pair in history:
-                    conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['answer']
+                    conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['anwser'] #answer
                 formatted_prompt = prompt.format(history=conversation, question=question)
         else:
             if history is None or len(history) == 0:
                 prompt = prompts['CONTEXT_NO_HISTORY']
+                print("Chosen prompt style: CONTEXT_NO_HISTORY")
                 formatted_prompt = prompt.format(context=context, question=question)
             else:
                 prompt = prompts['CONTEXT_HISTORY_NO_PROFILE']
+                print("Chosen prompt style: CONTEXT_HISTORY_NO_PROFILE")
+                conversation = ""
                 for pair in history:
-                    conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['answer']
+                    conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['anwser']
                 formatted_prompt = prompt.format(context=context, history=conversation, question=question, theme=theme, theme_context=theme_context)
-        params = {
-            GenParams.MAX_NEW_TOKENS: max_new_tokens
-        }
 
         # formatted_prompt = prompt.replace("\n", "<eos>")
-        formatted_prompt = prompt.format(context=context, question=question)
-        if not streaming:
-            response = self.model.generate_text(formatted_prompt, params=params)
-            #response = response.replace("<eos>", "")  # remove eos token
-            return response
-        else:
-            return self.model.generate_text_stream(formatted_prompt, params=params)
+        #formatted_prompt = prompt.format(context=context, question=question)
+        return self._generate(formatted_prompt, max_new_tokens, streaming)
 
 class PhoQueryRouter:
     def __init__(self, model_dir: str = CACHE_DIR):

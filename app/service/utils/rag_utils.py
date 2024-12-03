@@ -4,8 +4,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.utils import DistanceStrategy
 
-from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames as EmbedParams
-from ibm_watsonx_ai.foundation_models import Embeddings
+# from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames as EmbedParams
+# from ibm_watsonx_ai.foundation_models import Embeddings
+from pymilvus.model.dense import SentenceTransformerEmbeddingFunction
 
 import pymongo
 import json
@@ -31,31 +32,33 @@ class Encoder:
     def __init__(
         self, model_name: str = "intfloat/multilingual-e5-large", device="cpu"
     ):
-        my_credentials = {
-            "url": "https://us-south.ml.cloud.ibm.com",
-            "apikey": os.environ['WATSONX_APIKEY'],
-        }
+        # my_credentials = {
+        #     "url": "https://us-south.ml.cloud.ibm.com",
+        #     "apikey": os.environ['WATSONX_APIKEY'],
+        # }
 
-        # model_id = 'sentence-transformers/all-minilm-l12-v2'
-        model_id = 'intfloat/multilingual-e5-large'
-        gen_parms = None
-        project_id = os.environ['WATSONX_PROJECT_ID']
-        space_id = None
-        verify = False
+        # # model_id = 'sentence-transformers/all-minilm-l12-v2'
+        # model_id = 'intfloat/multilingual-e5-large'
+        # gen_parms = None
+        # project_id = os.environ['WATSONX_PROJECT_ID']
+        # space_id = None
+        # verify = False
 
-        # Set the truncate_input_tokens to a value that is equal to or less than the maximum allowed tokens for the embedding model that you are using. If you don't specify this value and the input has more tokens than the model can process, an error is generated.
+        # # Set the truncate_input_tokens to a value that is equal to or less than the maximum allowed tokens for the embedding model that you are using. If you don't specify this value and the input has more tokens than the model can process, an error is generated.
 
-        embed_params = {
-            EmbedParams.TRUNCATE_INPUT_TOKENS: 512,
-        }
+        # embed_params = {
+        #     EmbedParams.TRUNCATE_INPUT_TOKENS: 512,
+        # }
 
-        model = Embeddings(
-            model_id=model_id,
-            credentials=my_credentials,
-            params=embed_params,
-            project_id=project_id,
-            verify=verify
-        )
+        # model = Embeddings(
+        #     model_id=model_id,
+        #     credentials=my_credentials,
+        #     params=embed_params,
+        #     project_id=project_id,
+        #     verify=verify
+        # )
+        model = SentenceTransformerEmbeddingFunction("intfloat/multilingual-e5-large")
+
         self.embedding_function = model
 
 ##DATABASES
@@ -78,6 +81,9 @@ class MilvusDB:
                         port = port)
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
+
+    def describe_collection(self, collection_name):
+        return Collection(collection_name).describe()
 
     def get_collection_schema(self, collection_name, readable=False):
         schema = Collection(collection_name).describe()['fields']
@@ -285,7 +291,7 @@ Answer:
     schema = "\n".join(k + ": " + v for k,v in schema.items())
 
     full_prompt = prompt.format(query=query, schema=schema)
-    result = model.model.generate_text(full_prompt)
+    result = model._generate(full_prompt)
     try:
         result = json.loads(result)
         for k, v in result.items():

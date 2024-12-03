@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response, stream_with_context
 from flask_cors import cross_origin
 from controllers.exampleController import authController
 from werkzeug.utils import secure_filename
@@ -38,7 +38,7 @@ def preload():
     chat_model_id = "meta-llama/llama-3-1-70b-instruct"
     global model
     #model = ChatModel(model_id=chat_model_id)
-    model = ChatModel()
+    model = ChatModel(provider=os.getenv("PROVIDER"))
     print("Chat model loaded.")
     global encoder
     encoder = rag_utils.Encoder()
@@ -95,7 +95,7 @@ def search():
         'student_handbook': ['title', 'article'],
         chosen_collection: ['title', 'article']
     }
-    query_embeddings = encoder.embedding_function.embed_query("query: " + query)
+    query_embeddings = encoder.embedding_function("query: " + query)
     try:
         search_results, source = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions)
     except:
@@ -122,7 +122,7 @@ def generate():
     user_profile = request.form['user_profile'] # User profile
     max_tokens = 1500 
     #-------------------------------------------
-    theme_context = database._handler.describe_collection(theme)['description']
+    theme_context = database.describe_collection(theme)['description']
     answer = model.generate(query, context, streaming, max_tokens, history=history)
     if streaming:
         return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
