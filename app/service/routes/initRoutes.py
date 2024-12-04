@@ -57,10 +57,13 @@ def preload():
     print("All assets loaded.")
     return
 
-@main.route("/generate/determine_collection", methods=["GET"])
+@main.route("/generate/determine_collection", methods=["POST"])
 @cross_origin()
 def determine_collection():
-    query = request.args.get('query')
+    ##PARAMS
+    query = request.form['query']
+    history = json.loads(request.form['history']) # Conversation history
+    
     chosen_collection = pho_queryrouter.classify(query_routing.segment_vietnamese(query))[0]['label']
     # database.load_collection(chosen_collection, persist=True)
     return jsonify({'collection': chosen_collection})

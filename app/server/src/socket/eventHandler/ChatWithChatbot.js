@@ -46,7 +46,7 @@ export const ChatWithChatBot = async (socket) => {
 
       // Step 1
       const start_point_1 = (new Date()).getTime()
-      const chosen_collections = await chatbot.determine_collection(message).then((res) => {
+      const chosen_collections = await chatbot.determine_collection(message, conservationBefore).then((res) => {
         return res.collection
       }).catch((err) => { throw 'Lỗi ở bước determine_collection: ' + JSON.stringify(err) })
       const end_point_1 = (new Date()).getTime()
