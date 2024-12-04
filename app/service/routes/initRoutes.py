@@ -123,7 +123,7 @@ def generate():
     max_tokens = 1500 
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
-    answer = model.generate(query, context, streaming, max_tokens, history=history)
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile)
     if streaming:
         return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
     else:
