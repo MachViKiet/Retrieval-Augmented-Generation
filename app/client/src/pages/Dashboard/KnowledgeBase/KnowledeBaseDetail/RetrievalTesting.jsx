@@ -4,6 +4,7 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import BugReportOutlinedIcon from "@mui/icons-material/BugReportOutlined";
 import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
+import UnknowPage from '~/components/Page/UnknowPage';
 
 function KnowledgeBaseRetrievalTesting() {
   const { id } = useParams();
@@ -40,8 +41,7 @@ function KnowledgeBaseRetrievalTesting() {
   // })
 
   return (
-    <div>
-    </div>
+    <UnknowPage/>
   )
 }
 

@@ -117,7 +117,7 @@ const ChatExtension = styled(Box)(({theme}) => ({
   display: 'flex',
   padding: theme.spacing(1),
   paddingRight: theme.spacing(0),
-  minHeight: '40px'
+  minHeight: '32px'
 }))
 
 const ChatWindow = styled(Box)(({theme}) => ({

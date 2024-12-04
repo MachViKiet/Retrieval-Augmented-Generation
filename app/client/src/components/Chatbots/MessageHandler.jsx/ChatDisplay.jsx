@@ -40,7 +40,6 @@ export const ChatMessage = styled(Box) (({theme}) => ({
 }))
 
 const ModelButton_Style = {
-  marginTop: '8px',
   padding: '3px 10px',
   width: 'fit-content',
   background: '#0214238c',
@@ -55,8 +54,6 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
   const [openDetail, setOpenDetail] = useState(false)
   const [openFeedback, setOpenFeedback] = useState(false)
   const [content, setContent] = useState('')
-
-  console.log(conservation)
 
   return loading ? (
     <Box sx = {ChatBlock_Style}>
@@ -125,7 +122,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
             <BubbleLeft/>
 
             <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
-              <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1 }}>
+              <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
                 {conservation?.source && conservation?.source.map((data) => {
                   return <Box sx = {ModelButton_Style}
                     onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#fff'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>

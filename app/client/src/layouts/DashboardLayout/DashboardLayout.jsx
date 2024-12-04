@@ -38,7 +38,7 @@ const SubSidebarContainer = styled(Box)(({theme}) => ({
 }))
 
 const ContentContainer_Style = { width: '100%', height: '100vh', maxHeight: '100vh', flexGrow: 1, paddingX: 1, paddingY: 2 }
-const LogoContainer_Style = { background: '#cccccc12', height: '44px', width: '100%', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }
+const LogoContainer_Style = { height: '44px', width: '100%', borderRadius: '25px', display: 'flex', alignItems: 'center', justifyContent: 'center' }
 
 function DashboardLayout() {
   const dispatch = useDispatch()
@@ -85,7 +85,8 @@ function DashboardLayout() {
               fontSize: '1.5rem',
               fontWeight: '800',
               fontFamily: '"Arial",sans-serif',
-              background: 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
+              background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #2738f3 4%, color-mix(in oklch, #4058e7, #2e9dda) 22%, #2d3aff 45%, color-mix(in oklch, #b821f7, #4b81ff) 67%, #3592ff 100.2%)'
+               : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
               color: 'transparent',
               backgroundSize: '100% 100%',
               WebkitBackgroundClip : 'text'

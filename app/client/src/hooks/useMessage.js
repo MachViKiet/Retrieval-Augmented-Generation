@@ -30,10 +30,13 @@ const Code = {
     'CNTT': 'Công Nghệ Thông Tin',
     'NONE': 'Không có ( Chưa xét chuyên ngành )',
     'male': 'Nam',
+    
     'student_handbook': 'Sổ tay sinh viên',
     'events': 'Thông tin sự kiện',
     'academic_affairs': 'Nội quy trường',
-    'timetable': 'Thời khóa biểu'
+    'timetable': 'Thời khóa biểu',
+    'recruitment': 'Thông tin tuyển dụng',
+    'scholarship': 'Thông Tin Học Bổng'
 }
 
 export const useErrorMessage = (code) => {

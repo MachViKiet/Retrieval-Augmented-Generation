@@ -7,7 +7,6 @@ const InputGroup = styled(Box)(({theme}) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  padding: theme.spacing(2),
   padding: theme.spacing(1),
   border: 'none'
 }))
@@ -15,7 +14,7 @@ const InputGroup = styled(Box)(({theme}) => ({
 const TextField_Custom = styled(TextField)(({theme}) => ({
   width: '100%',
   '.MuiOutlinedInput-root': {
-    padding: '8px 16px',
+    padding: '4px 16px',
     '.MuiOutlinedInput-notchedOutline' : {
       border: 'none'
     },
