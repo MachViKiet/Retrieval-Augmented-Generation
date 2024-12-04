@@ -155,13 +155,13 @@ class MilvusDB:
         if len(results) == 0: #No matching documents
             return -1
         #Sort by distance and return only k results
-        myKeys = list(results.keys())
-        myKeys.sort()
-        myKeys = myKeys[:k]
-        sorted_list = [results[i][0] for i in myKeys]
+        distances = list(results.keys())
+        distances.sort()
+        distances = distances[:k]
+        sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url')} for i in myKeys]
-        return sorted_list, source
+        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url')} for i in distances]
+        return sorted_list, source, distances
 
 def create_prompt_milvus(question, context, output_fields=['title','article']):
 #     full_context = """

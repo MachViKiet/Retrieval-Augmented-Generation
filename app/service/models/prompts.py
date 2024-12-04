@@ -32,7 +32,6 @@ Answer:""",
 
     "CONTEXT_HISTORY_FULL": """You are a chatbot assistant providing information to students and faculty members of a university. You will be provided the user profile, retrieved context, the current conversation and theme of the conversation.\
 Using the information contained in the context, continue the given conversation and give a detailed answer to the query. You are helpful and always try to answer the user's question.\
-If there is no information in the context to support your answer, then say so.
 The current theme of the conversation is {theme}.\
 Here are some information about the theme: {theme_context}
 NOTE that despite the theme, users can always ask for general information about the school and faculty, and this is sometimes in the context.

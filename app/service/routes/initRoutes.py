@@ -63,8 +63,16 @@ def determine_collection():
     ##PARAMS
     query = request.form['query']
     history = json.loads(request.form['history']) # Conversation history
-    
-    chosen_collection = pho_queryrouter.classify(query_routing.segment_vietnamese(query))[0]['label']
+    conversation = ""
+    for h in history:
+        conversation += h['question'] + ". "
+    prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(conversation + query))[0]
+    chosen_collection = prediction['label']
+    print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
+
+    if prediction['score'] < 0.5: #Unsure
+        prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(query))[0] #Only guessing from the current message
+        chosen_collection = prediction['label']
     # database.load_collection(chosen_collection, persist=True)
     return jsonify({'collection': chosen_collection})
 
@@ -92,6 +100,7 @@ def search():
         filter_expressions = json.loads(request.args.get('filter_expressions')) #
     except json.JSONDecodeError:
         filter_expressions = None
+    k = 3
     #----------------------------------
     database.load_collection(chosen_collection)
     output_fields = {
@@ -100,17 +109,29 @@ def search():
     }
     query_embeddings = encoder.embedding_function("query: " + query)
     try:
-        search_results, source = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions)
+        search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k)
+        search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
+
+        search_results = search_results + search_results_vanilla
+        source = source + source_vanilla
+        distances = distances + distances_vanilla
+        results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
+
+        distances.sort()
+        distances = distances[:k]
+        search_results_final = [results[k][0] for k in distances]
+        source_final = [results[k][1] for k in distances]
     except:
-        search_results, source = database.similarity_search(chosen_collection, query_embeddings)
+        print("Error with filter search")
+        search_results_final, source_final = database.similarity_search(chosen_collection, query_embeddings)
     if search_results != -1:
-        context = rag_utils.create_prompt_milvus(query, search_results)
+        context = rag_utils.create_prompt_milvus(query, search_results_final)
     else:
         context = "No related documents found"
         source = []
     return jsonify({
         'context': context,
-        'source': source
+        'source': source_final
     })
 
 @main.route("/generate", methods=["POST"])
