@@ -10,12 +10,24 @@
 code {
     text-wrap: wrap;
     width: 100%;
+    background: #9fabff;
+    padding: 0 7px
 }
 
-// ol,
-// ul {
-//     list-style: inside;
-// }
+ol,
+li {
+    list-style: inside;
+}
+
+li::marker {
+    width: 8px !important;
+}
+
+li > p, li > div {
+    display: contents;
+}
+
+
 
 a {
     text-decoration: underline;
@@ -23,18 +35,24 @@ a {
 }
 
 h1{
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 900;
+    line-height: 105%;
+    padding-bottom: 5px;
 }
 
 h2{
     font-weight: 800;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+    line-height: 115%;
+    padding-bottom: 5px;
 }
 
 h3{
     font-weight: 700;
     font-size: 0.925rem;
+    line-height: 105%;
+    padding-bottom: 5px;
 }
 
 

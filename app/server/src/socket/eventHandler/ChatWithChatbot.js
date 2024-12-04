@@ -219,8 +219,14 @@ export const ChatWithChatBot = async (socket) => {
 
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
-        'anwser': 'Hệ thống Chatbot hiện không hoạt động !',
+        'anwser': '### Hệ Thống Hiện Không Hoạt Động !\n Tôi rất tiếc, hệ thống chúng tôi đang gặp sự cố và không thể cung cấp thông tin cho bạn.\n Nếu cần thiết bạn có thể liên hệ với giáo vụ để có thông tin một cách nhanh chóng và chính xác nhất.',
         'state': 'fail',
+        'source': [
+          {
+            'collection_name': 'Cổng Thông Tin Chính Thức',
+            'url': 'https://www.fit.hcmus.edu.vn'
+          }
+        ],
         'update_at': getTime(),
         'duration': startTime - new Date().getTime()
       })

@@ -16,6 +16,7 @@ const GuessRoute = ({ children }) => {
     if(token){
       if (!auth.loggedIn) {
         const eventID = processHandler.add('#verifyToken')
+        console.log('guess routing')
         useProfile.verifyToken(token).then((usr_profile) => {
           dispatch(refresh(token, usr_profile))
           processHandler.remove('#verifyToken', eventID)

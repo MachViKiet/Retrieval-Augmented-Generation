@@ -3,6 +3,7 @@ import { useOutletContext, useParams } from 'react-router-dom'
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import BugReportOutlinedIcon from "@mui/icons-material/BugReportOutlined";
 import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
+import UnknowPage from '~/components/Page/UnknowPage';
 
 function KnowledgeBaseConfiguration() {
 
@@ -26,10 +27,7 @@ function KnowledgeBaseConfiguration() {
   }, [])
 
   return (
-      <div>
-
-        
-      </div>
+      <UnknowPage/>
   )
 }
 

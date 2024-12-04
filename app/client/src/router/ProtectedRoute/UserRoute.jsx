@@ -21,6 +21,7 @@ const UserRoute = ({ children }) => {
     if(token){
       if (!auth.loggedIn) {
         const eventID = processHandler.add('#verifyToken')
+        console.log('user routing')
         useProfile.verifyToken(token).then((usr_profile) => {
           dispatch(refresh(token, usr_profile))
           processHandler.remove('#verifyToken', eventID)
