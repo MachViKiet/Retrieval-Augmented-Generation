@@ -160,7 +160,7 @@ class MilvusDB:
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url')} for i in distances]
+        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url')} for i in distances, 'title': results[i][0].get('title')]
         return sorted_list, source, distances
 
 def create_prompt_milvus(question, context, output_fields=['title','article']):
