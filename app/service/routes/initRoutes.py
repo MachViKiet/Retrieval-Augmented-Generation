@@ -63,6 +63,8 @@ def determine_collection():
     ##PARAMS
     query = request.form['query']
     history = json.loads(request.form['history']) # Conversation history
+    threshold = 0.5
+    #----------------------------------
     conversation = ""
     for h in history:
         conversation += h['question'] + ". "
@@ -70,9 +72,11 @@ def determine_collection():
     chosen_collection = prediction['label']
     print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
 
-    if prediction['score'] < 0.5: #Unsure
+    if prediction['score'] < threshold: #Unsure
         prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(query))[0] #Only guessing from the current message
         chosen_collection = prediction['label']
+        if prediction['score'] < threshold: #Still unsure, return empty collection
+            chosen_collection = ""
     # database.load_collection(chosen_collection, persist=True)
     return jsonify({'collection': chosen_collection})
 
