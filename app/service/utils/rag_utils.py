@@ -30,36 +30,48 @@ CACHE_DIR = os.path.normpath(
 ##ENCODER
 class Encoder:
     def __init__(
-        self, model_name: str = "intfloat/multilingual-e5-large", device="cpu"
+        self, model_name: str = "intfloat/multilingual-e5-large", device="cpu", provider="vllm"
     ):
-        # my_credentials = {
-        #     "url": "https://us-south.ml.cloud.ibm.com",
-        #     "apikey": os.environ['WATSONX_APIKEY'],
-        # }
+        if provider == "IBM":
+            my_credentials = {
+                "url": "https://us-south.ml.cloud.ibm.com",
+                "apikey": os.environ['WATSONX_APIKEY'],
+            }
 
-        # # model_id = 'sentence-transformers/all-minilm-l12-v2'
-        # model_id = 'intfloat/multilingual-e5-large'
-        # gen_parms = None
-        # project_id = os.environ['WATSONX_PROJECT_ID']
-        # space_id = None
-        # verify = False
+            # model_id = 'sentence-transformers/all-minilm-l12-v2'
+            model_id = 'intfloat/multilingual-e5-large'
+            gen_parms = None
+            project_id = os.environ['WATSONX_PROJECT_ID']
+            space_id = None
+            verify = False
 
-        # # Set the truncate_input_tokens to a value that is equal to or less than the maximum allowed tokens for the embedding model that you are using. If you don't specify this value and the input has more tokens than the model can process, an error is generated.
+            # Set the truncate_input_tokens to a value that is equal to or less than the maximum allowed tokens for the embedding model that you are using. If you don't specify this value and the input has more tokens than the model can process, an error is generated.
 
-        # embed_params = {
-        #     EmbedParams.TRUNCATE_INPUT_TOKENS: 512,
-        # }
+            embed_params = {
+                EmbedParams.TRUNCATE_INPUT_TOKENS: 512,
+            }
 
-        # model = Embeddings(
-        #     model_id=model_id,
-        #     credentials=my_credentials,
-        #     params=embed_params,
-        #     project_id=project_id,
-        #     verify=verify
-        # )
-        model = SentenceTransformerEmbeddingFunction("intfloat/multilingual-e5-large")
-
-        self.embedding_function = model
+            model = Embeddings(
+                model_id=model_id,
+                credentials=my_credentials,
+                params=embed_params,
+                project_id=project_id,
+                verify=verify
+            )
+            self.embedding_function = model.embed_query()
+        elif provider == "local":
+            model = SentenceTransformerEmbeddingFunction(model_name)
+            self.embedding_function = model
+        elif provider == "vllm":
+            from openai import OpenAI
+            def embed(text):
+                client = OpenAI(base_url=os.environ['VLLM_URL'])
+                return client.embeddings.create(
+                    input=text,
+                    model=model_name
+                )[0]['embedding']
+            self.embedding_function = embed
+            
 
 ##DATABASES
 class MongoDB:
@@ -160,7 +172,7 @@ class MilvusDB:
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url')} for i in distances, 'title': results[i][0].get('title')]
+        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
         return sorted_list, source, distances
 
 def create_prompt_milvus(question, context, output_fields=['title','article']):

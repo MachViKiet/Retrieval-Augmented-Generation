@@ -223,3 +223,20 @@ def chunk_file():
     splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=75)
     chunks = splitter.split_text(data)
     return jsonify(chunks)
+
+@main.route("/collection", methods=["POST"])
+@cross_origin()
+def create_collection():
+    ##PARAMS
+    name = request.form['name']
+    description = request.form['description']
+    metadata = {
+        "title": {"description": "", "datatype": "string", "params": {"max_length": 700}},
+        "article": ...,
+        "embedding": ...,
+        "url": ...,
+        "chunk_id": ...,
+        "created_at": ...,
+        "updated_at": ...,
+        "is_active": ..., #Float,int,string,list,bool
+    }
