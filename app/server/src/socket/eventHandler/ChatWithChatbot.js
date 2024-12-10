@@ -19,8 +19,9 @@ export const ChatWithChatBot = async (socket) => {
     const message = req.message
     const current_session = req?.chat_session
     const conservationBefore = req?.history
+    const collection = req?.collection
 
-    const objectConservation = {
+    let objectConservation = {
       '_id': message_id,
       'sender': socket.user._id,
       'session_id': current_session,
@@ -29,42 +30,67 @@ export const ChatWithChatBot = async (socket) => {
       'state': 'in progress',
       'create_at': getTime(),
       'duration': null,
-      'rating': -1
+      'rating': -1,
+      'resource': {
+        type: 'auto'
+      }
     }
 
     socket.emit('/ChatWithChatBot/userMessage', objectConservation)
 
     try {
 
-      socket.emit('/ChatWithChatBot/isProcessing', [{
-        step_name: 'chosen_collections',
-        notice: 'Xác định nội dung câu hỏi',
-        state: false,
-        data: null,
-        time: null
-      }])
+      socket.emit('/ChatWithChatBot/isProcessing', {
+        'session_id': current_session,
+        notification: [{
+          step_name: 'chosen_collections',
+          notice: 'Xác định nội dung câu hỏi',
+          state: false,
+          data: null,
+          time: null
+        }] })
 
       // Step 1
       const start_point_1 = (new Date()).getTime()
-      const chosen_collections = await chatbot.determine_collection(message, conservationBefore).then((res) => {
-        return res.collection
-      }).catch((err) => { throw 'Lỗi ở bước determine_collection: ' + JSON.stringify(err) })
+      let chosen_collections = null
+      if (collection) {
+        chosen_collections = collection
+        objectConservation = { ...objectConservation, 'resource': { type: 'manual' } }
+      }
+      else {
+        chosen_collections = await chatbot.determine_collection(message, conservationBefore).then((res) => {
+          return res.collection
+        }).catch((err) => { throw 'Lỗi ở bước determine_collection: ' + JSON.stringify(err) })
+      }
       const end_point_1 = (new Date()).getTime()
 
+      socket.emit('/ChatWithChatBot/isProcessing', {
+        'session_id': current_session,
+        notification: [{
+          step_name: 'chosen_collections',
+          notice: 'Xác định nội dung câu hỏi',
+          state: true,
+          data: chosen_collections,
+          time: end_point_1 - start_point_1
+        }, {
+          step_name: 'filter_expressions',
+          notice: 'Rút trích dữ liệu trong câu hỏi',
+          state: false,
+          data: null,
+          time: null
+        }] })
 
-      socket.emit('/ChatWithChatBot/isProcessing', [{
-        step_name: 'chosen_collections',
-        notice: 'Xác định nội dung câu hỏi',
-        state: true,
-        data: chosen_collections,
-        time: end_point_1 - start_point_1
-      }, {
-        step_name: 'filter_expressions',
-        notice: 'Rút trích dữ liệu trong câu hỏi',
-        state: false,
-        data: null,
-        time: null
-      }])
+      if ( chosen_collections == null || chosen_collections == '' || !!!chosen_collections ) {
+        socket.emit('/ChatWithChatBot/EndProcess', {
+          ...objectConservation,
+          'anwser': '',
+          'state': 'request',
+          'source': [],
+          'update_at': getTime(),
+          'duration': startTime - new Date().getTime()
+        })
+        return
+      }
 
 
       // Step 2
@@ -74,25 +100,27 @@ export const ChatWithChatBot = async (socket) => {
       }).catch((err) => { throw 'Lỗi ở bước extract_meta: ' + JSON.stringify(err) })
       const end_point_2 = (new Date()).getTime()
 
-      socket.emit('/ChatWithChatBot/isProcessing', [{
-        step_name: 'chosen_collections',
-        notice: 'Xác định nội dung câu hỏi',
-        state: true,
-        data: chosen_collections,
-        duration: end_point_1 - start_point_1
-      }, {
-        step_name: 'filter_expressions',
-        notice: 'Rút trích dữ liệu trong câu hỏi',
-        state: true,
-        data: filter_expressions,
-        duration: end_point_2 - start_point_2
-      }, {
-        step_name: 'search',
-        notice: 'Tìm kiếm tài liệu trong kho',
-        state: false,
-        data: null,
-        time: null
-      }])
+      socket.emit('/ChatWithChatBot/isProcessing', {
+        'session_id': current_session,
+        notification: [{
+          step_name: 'chosen_collections',
+          notice: 'Xác định nội dung câu hỏi',
+          state: true,
+          data: chosen_collections,
+          duration: end_point_1 - start_point_1
+        }, {
+          step_name: 'filter_expressions',
+          notice: 'Rút trích dữ liệu trong câu hỏi',
+          state: true,
+          data: filter_expressions,
+          duration: end_point_2 - start_point_2
+        }, {
+          step_name: 'search',
+          notice: 'Tìm kiếm tài liệu trong kho',
+          state: false,
+          data: null,
+          time: null
+        }] })
 
       const start_point_3 = (new Date()).getTime()
 
@@ -102,31 +130,33 @@ export const ChatWithChatBot = async (socket) => {
       }).catch((err) => { throw 'Lỗi ở bước search: ' + JSON.stringify(err) })
       const end_point_3 = (new Date()).getTime()
 
-      socket.emit('/ChatWithChatBot/isProcessing', [{
-        step_name: 'chosen_collections',
-        notice: 'Xác định nội dung câu hỏi',
-        state: true,
-        data: chosen_collections,
-        duration: end_point_1 - start_point_1
-      }, {
-        step_name: 'filter_expressions',
-        notice: 'Rút trích dữ liệu trong câu hỏi',
-        state: true,
-        data: filter_expressions,
-        duration: end_point_2 - start_point_2
-      }, {
-        step_name: 'search',
-        notice: 'Tìm kiếm tài liệu trong kho',
-        state: true,
-        data: searchResult.context,
-        duration: end_point_3 - start_point_3
-      }, {
-        step_name: 'generate',
-        notice: 'Tìm kiếm tài liệu trong kho',
-        state: false,
-        data: null,
-        time: null
-      }])
+      socket.emit('/ChatWithChatBot/isProcessing', {
+        'session_id': current_session,
+        notification: [{
+          step_name: 'chosen_collections',
+          notice: 'Xác định nội dung câu hỏi',
+          state: true,
+          data: chosen_collections,
+          duration: end_point_1 - start_point_1
+        }, {
+          step_name: 'filter_expressions',
+          notice: 'Rút trích dữ liệu trong câu hỏi',
+          state: true,
+          data: filter_expressions,
+          duration: end_point_2 - start_point_2
+        }, {
+          step_name: 'search',
+          notice: 'Tìm kiếm tài liệu trong kho',
+          state: true,
+          data: searchResult.context,
+          duration: end_point_3 - start_point_3
+        }, {
+          step_name: 'generate',
+          notice: 'Tìm kiếm tài liệu trong kho',
+          state: false,
+          data: null,
+          time: null
+        }] })
 
       const start_point_4 = (new Date()).getTime()
 
@@ -137,39 +167,42 @@ export const ChatWithChatBot = async (socket) => {
       const end_point_4 = (new Date()).getTime()
 
 
-      socket.emit('/ChatWithChatBot/isProcessing', [{
-        step_name: 'chosen_collections',
-        notice: 'Xác định nội dung câu hỏi',
-        state: true,
-        data: chosen_collections,
-        duration: end_point_1 - start_point_1
-      }, {
-        step_name: 'filter_expressions',
-        notice: 'Rút trích dữ liệu trong câu hỏi',
-        state: true,
-        data: filter_expressions,
-        duration: end_point_2 - start_point_2
-      }, {
-        step_name: 'search',
-        notice: 'Tìm kiếm tài liệu trong kho',
-        state: true,
-        data: searchResult.context,
-        duration: end_point_3 - start_point_3
-      }, {
-        step_name: 'generate',
-        notice: 'Tạo văn bản',
-        state: true,
-        data: null,
-        duration: end_point_4 - start_point_4
-      }, {
-        step_name: 'streaming',
-        notice: 'Đang soạn',
-        state: false,
-        data: null,
-        duration: null
-      }])
+      socket.emit('/ChatWithChatBot/isProcessing', {
+        'session_id': current_session,
+        notification: [{
+          step_name: 'chosen_collections',
+          notice: 'Xác định nội dung câu hỏi',
+          state: true,
+          data: chosen_collections,
+          duration: end_point_1 - start_point_1
+        }, {
+          step_name: 'filter_expressions',
+          notice: 'Rút trích dữ liệu trong câu hỏi',
+          state: true,
+          data: filter_expressions,
+          duration: end_point_2 - start_point_2
+        }, {
+          step_name: 'search',
+          notice: 'Tìm kiếm tài liệu trong kho',
+          state: true,
+          data: searchResult.context,
+          duration: end_point_3 - start_point_3
+        }, {
+          step_name: 'generate',
+          notice: 'Tạo văn bản',
+          state: true,
+          data: null,
+          duration: end_point_4 - start_point_4
+        }, {
+          step_name: 'streaming',
+          notice: 'Đang soạn',
+          state: false,
+          data: null,
+          duration: null
+        }] })
 
       socket.emit('/ChatWithChatBot/Processed', {
+        'session_id': current_session,
         chosen_collections, filter_expressions, finalResponse,
         context : searchResult.context,
         source : searchResult.source,
@@ -188,6 +221,7 @@ export const ChatWithChatBot = async (socket) => {
         done = doneReading
         result += decoder.decode(value, { stream: true })
         socket.emit('/ChatWithChatBot/streamMessages', {
+          'session_id': current_session,
           duration: startTime - new Date().getTime(),
           create_at: getTime(),
           messages: result
@@ -195,6 +229,7 @@ export const ChatWithChatBot = async (socket) => {
       }
 
       socket.emit('/ChatWithChatBot/EndStream', {
+        'session_id': current_session,
         duration: startTime - new Date().getTime(),
         stream_time: (new Date().getTime()) - point_5,
         create_at: getTime(),
@@ -204,6 +239,11 @@ export const ChatWithChatBot = async (socket) => {
       const history = {
         ...objectConservation,
         'source': searchResult.source,
+        'resource': {
+          ...objectConservation.resource,
+          chosen_collections: chosen_collections,
+          filter_expressions: filter_expressions
+        },
         'anwser': result,
         'state': 'success',
         'update_at': getTime(),
@@ -215,12 +255,11 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
-      console.log(error)
 
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': '### Hệ Thống Hiện Không Hoạt Động !\n Tôi rất tiếc, hệ thống chúng tôi đang gặp sự cố và không thể cung cấp thông tin cho bạn.\n Nếu cần thiết bạn có thể liên hệ với giáo vụ để có thông tin một cách nhanh chóng và chính xác nhất.',
-        'state': 'fail',
+        'state': 'success',
         'source': [
           {
             'collection_name': 'Cổng Thông Tin Chính Thức',

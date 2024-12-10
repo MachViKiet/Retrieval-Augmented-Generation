@@ -2,6 +2,7 @@
 import { io } from 'socket.io-client';
 
 let socket = null;
+const domain = import.meta.env.VITE_SERVER
 
 export const disconnectSocket = () => {
   if(socket){
@@ -14,7 +15,7 @@ export const disconnectSocket = () => {
 
 export const connectSocket = (token) => {
   if (!socket) {
-    socket = io('http://localhost:8017', {
+    socket = io( domain, {
       auth: {
         token: token, // Truyền token vào trong auth
       },
