@@ -345,7 +345,8 @@ export function ChatGenerator() {
               }}>
                 <Box sx = {{ 
                   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
-                  background: theme => theme.palette.primary.third,
+                  background: theme => theme.palette.mode == 'dark' ? '#d6d6d685' :
+                    theme.palette.primary.third,
                   borderRadius: '15px'
                 }}>
                   <ChatInput id = 'FormChat_For_Admin' handleSubmit = {ChatAction} messageHandler = { messageHandler } />

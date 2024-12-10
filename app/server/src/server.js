@@ -19,14 +19,14 @@ bootstrap().then(async (server) => {
 
   io.attach(server, {
     cors: {
-      origin: 'http://localhost:5173',
+      origin: process.env.CLIENT, //'http://localhost:5173',
       methods: ['GET', 'POST'],
       credentials: true
     }
   })
 
   console.log('\n')
-  console.log('\x1b[36m', `Server is listening at http://${ process.env.APP_HOST }:${ process.env.APP_PORT }/`)
+  console.log('\x1b[36m', `Server is listening at http://${ process.env.APP_HOSTprocess.env.APP_HOST }:${ process.env.APP_PORT }/`)
 }).catch((err) => {
   console.log(err)
 })

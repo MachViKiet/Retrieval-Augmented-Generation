@@ -45,9 +45,12 @@ export function RecommendChatPage({
             width: 'fit-content',
             paddingBottom: 0.5,
             fontWeight: '900',
-            background: 'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%)',
+            background: theme => theme.palette.mode != 'dark' ? 
+            'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #4654b1 20%, #423397 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #5089ad 56%, #131314 75%, #131314 100%)'
+            // 'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%)'
+            : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
             color: 'transparent',
-            backgroundSize: '400% 100%',
+            backgroundSize: '155% 100%',
             WebkitBackgroundClip : 'text',
             textAlign: 'start',
         }}>Xin Chào Bạn, {username} !</Typography> }
@@ -79,7 +82,7 @@ export function RecommendChatPage({
                 padding: 2,
                 position: 'relative',
                 textAlign: 'start',
-                color: theme => theme.palette.mode == 'dark' ? '#ffffffad' : 'var(--mui-palette-primary-main)',
+                color: theme => theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
                 boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
                 cursor: 'pointer',
                 '&:hover': {
@@ -155,7 +158,7 @@ export function RecommendChatPage({
                     width: 'fit-content',
                     background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
                         : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                    color: theme.palette.mode == 'dark' ? '#ffffffad' : '##000000a3',
+                    color: theme.palette.mode == 'dark' ? '#fff' : '##000000a3',
                     textAlign: 'left',
                     marginRight: 0.75,
                     paddingX: 1.5,

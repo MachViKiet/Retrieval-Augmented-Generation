@@ -18,6 +18,12 @@ const HistorySchema = new mongoose.Schema(
       type: Array,
       default: []
     },
+    resource: {
+      type: Object,
+      default: {
+        type: 'none'
+      }
+    },
     rating: {
       type: Number,
       default: -1

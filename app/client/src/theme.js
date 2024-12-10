@@ -39,6 +39,10 @@ const theme = extendTheme(
 
           info: {
             main: '#005181'
+          },
+
+          warning: {
+            main: '#9c9f05'
           }
         },
       },
@@ -70,6 +74,10 @@ const theme = extendTheme(
 
           info: {
             main: '#005181'
+          },
+
+          warning: {
+            main: '#9c9f05'
           }
         },
       }
