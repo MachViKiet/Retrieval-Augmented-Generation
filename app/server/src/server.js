@@ -26,7 +26,7 @@ bootstrap().then(async (server) => {
   })
 
   console.log('\n')
-  console.log('\x1b[36m', `Server is listening at http://${ process.env.APP_HOSTprocess.env.APP_HOST }:${ process.env.APP_PORT }/`)
+  console.log('\x1b[36m', `Server is listening at http://${ process.env.APP_HOST }:${ process.env.APP_PORT }/`)
 }).catch((err) => {
   console.log(err)
 })
