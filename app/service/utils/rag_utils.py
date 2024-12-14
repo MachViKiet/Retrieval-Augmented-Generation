@@ -65,12 +65,24 @@ class Encoder:
         elif provider == "vllm":
             from openai import OpenAI
             def embed(text):
-                client = OpenAI(base_url=os.environ['VLLM_URL'])
+                client = OpenAI(api_key="EMPTY",base_url=os.environ['VLLM_URL'])
                 return client.embeddings.create(
                     input=text,
                     model=model_name
-                )[0]['embedding']
+                ).data[0].embedding
             self.embedding_function = embed
+        elif provider == "HuggingFace":
+            import requests
+
+            API_URL = "https://api-inference.huggingface.co/models/intfloat/multilingual-e5-large"
+            headers = {"Authorization": os.environ['HF_APIKEY']}
+
+            def query(payload):
+                payload = {"inputs": payload}
+                response = requests.post(API_URL, headers=headers, json=payload)
+                return response.json()
+                
+            self.embedding_function = query
             
 
 ##DATABASES

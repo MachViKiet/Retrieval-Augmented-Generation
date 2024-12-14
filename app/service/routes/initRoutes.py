@@ -41,7 +41,7 @@ def preload():
     model = ChatModel(provider=os.getenv("PROVIDER"))
     print("Chat model loaded.")
     global encoder
-    encoder = rag_utils.Encoder()
+    encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
     print("Encoder loaded.")
     global pho_queryrouter
     pho_queryrouter = PhoQueryRouter()
