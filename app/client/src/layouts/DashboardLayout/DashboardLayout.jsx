@@ -82,11 +82,14 @@ function DashboardLayout() {
 
         <Box sx = {LogoContainer_Style}>
           <Typography variant = 'h1' sx = {{ 
-              fontSize: '1.5rem',
+              padding: 0,
+              fontSize: '1.6rem',
               fontWeight: '800',
               fontFamily: '"Arial",sans-serif',
-              background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #2738f3 4%, color-mix(in oklch, #4058e7, #2e9dda) 22%, #2d3aff 45%, color-mix(in oklch, #b821f7, #4b81ff) 67%, #3592ff 100.2%)'
-               : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
+              // background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #2738f3 4%, color-mix(in oklch, #4058e7, #2e9dda) 22%, #2d3aff 45%, color-mix(in oklch, #b821f7, #4b81ff) 67%, #3592ff 100.2%)'
+              //  : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
+              background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)'
+              : 'linear-gradient(74deg, #ee8ff2 0, #9b72cb 9%, #a0acff 20%, #6f8dfb 24%, #9b72cb 35%, #4285f4 100%)',
               color: 'transparent',
               backgroundSize: '100% 100%',
               WebkitBackgroundClip : 'text'

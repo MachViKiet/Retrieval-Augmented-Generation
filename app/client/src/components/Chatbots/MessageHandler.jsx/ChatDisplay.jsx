@@ -8,6 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import NotifycationModal from '~/components/Mui/NotifycationModal'
 import RotateRightOutlinedIcon from '@mui/icons-material/RotateRightOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 export const ChatBlock_Style = {
   width: '100%',
@@ -54,6 +55,14 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
   const [openDetail, setOpenDetail] = useState(false)
   const [openFeedback, setOpenFeedback] = useState(false)
   const [content, setContent] = useState('')
+
+  const collections = [
+    { title : 'Thông tin nội quy trường học', key: 'academic_affairs' },
+    { title : 'Thông tin thời khóa biểu', key: 'timetable' },
+    { title : 'Thông tin sự kiện', key: 'events' },
+    { title : 'Thông tin tuyển dụng', key: 'recruitment' },
+    { title : 'Thông tin học bổng', key: 'scholarship' }
+  ]
 
   return loading ? (
     <Box sx = {ChatBlock_Style}>
@@ -110,11 +119,41 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
         </ChatMessage>
       </Box>
 
-      { conservation.state != 'in progress' && <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
+      { conservation.state == 'request' && <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
           <ChatMessage sx = {{   
               marginLeft: '20px',
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
               color: '#000'
+            }}>
+            { typeof conservation?.anwser === "string" && <ReactMarkdown>
+              Chào bạn! Để tôi có thể hỗ trợ bạn một cách tốt nhất, bạn vui lòng cho tôi biết bạn đang quan tâm đến thông tin nào trong các chủ đề dưới đây nhé !
+            </ReactMarkdown> }
+            <BubbleLeft/>
+
+            <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
+              <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
+                {collections.map((data) => {
+                  return <Box sx = {ModelButton_Style} 
+                  onClick = {() => action?.chatWithColllection(conservation?.question, data.key)}
+                  >{data.title}</Box>
+                })}
+              </Box>
+              <Box sx = {{ width: '100%', display: 'flex' , justifyContent: 'end', alignItems: 'center'}}>
+                <Button startIcon={<CloseIcon/>} color='error' sx = {{ fontSize: '0.725rem !important' }}>Thoát Cuộc Trò Chuyện</Button>
+              </Box>
+            </Box>
+
+          </ChatMessage>
+          <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
+        </Box>
+      }
+
+      { conservation.state == 'success' && <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
+          <ChatMessage sx = {{   
+              marginLeft: '20px',
+              background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
+              color: '#000',
+              textAlign: 'start'
             }}>
             { typeof conservation?.anwser === "string" && <ReactMarkdown>
               { conservation?.anwser }
@@ -128,7 +167,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
                     onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#fff'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>
                 })}
               </Box>
-              <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime(conservation?.create_at)}</Typography>
+              <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end' }}>{getTime(conservation?.create_at)}</Typography>
             </Box>
           </ChatMessage>
           <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />

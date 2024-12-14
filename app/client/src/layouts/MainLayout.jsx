@@ -118,7 +118,7 @@ function MainLayout() {
           }}> 
           <Box>
             <Typography variant = 'h1' sx = {{ 
-              fontSize: '1.2rem',
+              fontSize: '1.4rem',
               fontWeight: '800',
               fontFamily: '"Arial",sans-serif',
               background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)'

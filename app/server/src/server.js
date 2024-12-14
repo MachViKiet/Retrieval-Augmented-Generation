@@ -19,7 +19,7 @@ bootstrap().then(async (server) => {
 
   io.attach(server, {
     cors: {
-      origin: 'http://localhost:5173',
+      origin: process.env.CLIENT, //'http://localhost:5173',
       methods: ['GET', 'POST'],
       credentials: true
     }
