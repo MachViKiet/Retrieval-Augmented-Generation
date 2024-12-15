@@ -48,8 +48,9 @@ def preload():
     print("Query Router loaded.")
     global database
     database = rag_utils.MilvusDB(
-        host=os.getenv('MILVUS_HOST'), port=os.getenv('MILVUS_PORT'),
+        host=os.getenv('MILVUS_HOST', ""), port=os.getenv('MILVUS_PORT', ""),
         user=os.getenv('MILVUS_USERNAME', ""), password=os.getenv('MILVUS_PASSWORD', ""),
+        uri=os.getenv('MILVUS_URI', ""), token=os.getenv('MILVUS_TOKEN', "")
     )
     database.load_collection('student_handbook', persist=True)
     print("Database loaded.")
