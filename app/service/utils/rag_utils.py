@@ -98,11 +98,17 @@ class MongoDB:
         pass
 
 class MilvusDB:
-    def __init__(self, host,port,password,user,server_pem_path=None,server_name='localhost') -> None:
+    def __init__(self, host,port,password,user,uri,token,server_pem_path=None,server_name='localhost') -> None:
         
-        connections.connect(alias = 'default',
-                        host = host,
-                        port = port)
+        if host != "":
+            connections.connect(alias = 'default',
+                            host = host,
+                            port = port)
+        else: #Remote Zilliz cloud connection
+            connections.connect(alias = 'default',
+                                uri=uri,
+                                token=token,
+            )
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
 
