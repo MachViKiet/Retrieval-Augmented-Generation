@@ -233,11 +233,16 @@ def create_collection():
     description = request.form['description']
     metadata = {
         "title": {"description": "", "datatype": "string", "params": {"max_length": 700}},
-        "article": ...,
-        "embedding": ...,
-        "url": ...,
-        "chunk_id": ...,
-        "created_at": ...,
-        "updated_at": ...,
-        "is_active": ..., #Float,int,string,list,bool
+        "article": {"description": "", "datatype": "string", "params": {"max_length": 5000}},
+        "embedding": {"description": "", "datatype": "vector", "params": {"dim": 1024}},
+        "url": {"description": "", "datatype": "string", "params": {"max_length": 300}},
+        "chunk_id": {"description": "", "datatype": "int", "params": {}},
+        "created_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
+        "updated_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
+        "is_active": {"description": "", "datatype": "bool", "params": {}}, #Float,int,string,list,bool
     }
+    custom_meta = json.loads(request.form['metadata'])
+    metadata.update(custom_meta)
+    #-------------------------------------------
+    database.create_collection(name, description, metadata)
+    return jsonify({'collection_name': name})

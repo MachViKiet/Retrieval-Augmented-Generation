@@ -192,6 +192,23 @@ class MilvusDB:
         #Return the collection name of the source document
         source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
         return sorted_list, source, distances
+    
+    def create_collection(name, description, metadata):
+        fields = []
+        for key, value in metadata.items():
+            if value['datatype'] == 'int':
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.INT64, **value['params']))
+            elif value['datatype'] == 'float':
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.FLOAT, **value['params']))
+            elif value['datatype'] == 'string':
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.STRING, **value['params']))
+            elif value['datatype'] == 'list':
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.ARRAY, **value['params']))
+            elif value['datatype'] == 'bool':
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.BOOL, **value['params']))
+        schema = CollectionSchema(fields=fields, description=description)
+        collection = Collection(name, schema)
+        return True
 
 def create_prompt_milvus(question, context, output_fields=['title','article']):
 #     full_context = """
