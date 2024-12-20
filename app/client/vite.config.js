@@ -15,5 +15,13 @@ export default ({ mode }) => {
     resolve: {
       alias: [{ find: "~", replacement: "/src" }],
     },
+    //change port for dev
+    server: {
+      port: 3006,
+    },
+    //change port for production
+    preview: {
+      port: 80,
+    },
   });
 };
