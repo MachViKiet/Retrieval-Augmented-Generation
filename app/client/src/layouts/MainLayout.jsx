@@ -1,12 +1,17 @@
 import { Box, Typography, ListItemText, ListItemButton, useColorScheme, Button, Tooltip, IconButton } from '@mui/material';
 import React, { useState, useEffect } from 'react'
-import { Link, Outlet, useNavigate, useOutletContext } from 'react-router-dom';
+import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import styled from '@emotion/styled'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { logout } from '~/store/actions/authActions';
 import LoginIcon from '@mui/icons-material/Login';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
+import NotifycationModal from '~/components/Mui/NotifycationModal';
+
 
 const MuiListItemButton = styled(ListItemButton) (({theme}) => ({
   borderRadius: '12px',
@@ -63,21 +68,26 @@ function MainLayout() {
       id: 120,
       text: "Trang chủ",
       link: "/",
+      require: false
     },
     {
       id: 121,
       text: "Trò Chuyện",
       link: "/chat",
+      admin: '/chat_generator',
+      require: true
     },
     {
       id: 122,
       text: "FAQs",
       link: "/faqs",
+      require: false
     },
     {
       id: 123,
       text: "Báo lỗi/Góp ý",
       link: "/feedback",
+      require: true
     },
   ]
 
@@ -86,7 +96,9 @@ function MainLayout() {
 
   const user_profile = useSelector((state) => state.auth.user ? state.auth.user : null);
   const isLogin = useSelector((state) => state.auth.user ? state.auth.loggedIn : null);
-
+  const { mode, setMode } = useColorScheme();
+  const [isOpenModel, setIsOpenModel] = useState(false)
+  const { noticeHandler } = useOutletContext();
   
   
   useEffect(() => {
@@ -94,7 +106,20 @@ function MainLayout() {
   }, [selectedIndexInitial])
 
 
-  const handleListItemClick = (_event, index, address) => {
+  const handleListItemClick = (_event, index, address, admin_address, require) => {
+    if( require && !user_profile ) {
+      noticeHandler.add({
+        status: 'warning',
+        message: 'Vui Lòng Đăng Nhập'
+      })
+      return 
+    }
+
+    if(admin_address && ['administrator', 'academic_administration'].includes(user_profile.role)) {
+      navigate(admin_address)
+      return
+    }
+
     setSelectedIndex(index)
     navigate(address)
   }
@@ -110,6 +135,7 @@ function MainLayout() {
       height: '100vh',
       background: theme => theme.palette.mode == 'dark' ? '#25294a' : '#DDF3FC',
       paddingTop: '72px',
+      position: 'absolute'
      }}>
         <Box 
           sx = {{ 
@@ -143,7 +169,7 @@ function MainLayout() {
                 <MuiListItemButton
                   key = {data.id}
                   selected={(selectedIndex === data.id)}
-                  onClick={(event) => handleListItemClick(event, data.id, data.link)}
+                  onClick={(event) => handleListItemClick(event, data.id, data.link, data?.admin, data?.require)}
                 >
                   <ListItemText primary= {data.text}/>
                 </MuiListItemButton>
@@ -161,7 +187,8 @@ function MainLayout() {
                   gap: 1,
                   color: '#ff5d5d',
                   cursor: 'pointer'
-                }} onClick={logoutClick}>
+                }} 
+                onClick={() => setIsOpenModel(true)}>
                   <LogoutIcon/>
                   <Typography variant='p'> Đăng Xuất</Typography>
                 </Button>
@@ -172,7 +199,8 @@ function MainLayout() {
                   gap: 1,
                   color: theme => theme.palette.mode == 'dark' ? '#fff' : '#047aff',
                   cursor: 'pointer'
-                }} onClick={() => navigate('/user_profile')}>
+                }} 
+                onClick={(event) => handleListItemClick(event, '##login', 'user_profile','admin_profile', true)} >
                   <AccountCircleOutlinedIcon/>
                   <Typography variant='p'>{user_profile.name}</Typography>
                 </Button>
@@ -192,16 +220,24 @@ function MainLayout() {
           </Box>
         </Box>
 
-        {/* <Box sx={ ContentContainer_Style }>
-          <Box sx = {{ overflow: 'auto', height: '100%', paddingX: 1, paddingY: '2px' }}>
-
-            <Outlet  context={useOutletContext()}/>
-
-          </Box>
-        </Box> */}
         <Box sx = {{ overflow: 'auto', height: '100%', paddingY: '2px' }}>
           <Outlet  context={useOutletContext()}/>
         </Box>
+
+        <Box sx = {{ display: 'flex', justifyContent: 'center', position: 'absolute', left: '40px', top: '96px' }}>
+        { mode == 'light' ? <Button onClick={() => setMode('dark')} startIcon = {<LightModeIcon/>} sx = {{ color: '#047aff' }}>Sáng</Button>
+        : ( mode == 'dark' ? <Button onClick={() => setMode('system')} startIcon = {<DarkModeIcon/>} sx = {{ color: '#fff' }}>Tối</Button>
+        :<Button onClick={() => setMode('light')} startIcon = {<SettingsSystemDaydreamIcon/>} sx = {{ color: theme => theme.palette.mode == 'dark' ? '#fff' : '#047aff' }}>Hệ thống</Button> )
+        }
+      </Box>
+
+
+      <NotifycationModal modalHandler = {{
+        state: isOpenModel,
+        close: () => setIsOpenModel(false),
+        action: logoutClick,
+        actionName: 'Đăng Xuất'
+      }} title={' '} content={'Bạn Thật Sự Muốn Đăng Xuất Sao ☹️'}/>
 
     </Box>
   )

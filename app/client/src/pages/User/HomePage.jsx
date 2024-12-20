@@ -2,15 +2,11 @@ import { Box, Button, Typography, useColorScheme } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
 import { useNavigate } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
 import avatar from '~/assets/10665849.png'
 
 export function HomePage() {
-  const { mode, setMode } = useColorScheme();
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const isLogin = useSelector((state) => state.auth.user ? state.auth.loggedIn : null);
@@ -39,28 +35,10 @@ export function HomePage() {
       paddingBottom: '30px',
 
     }}>
-      <Box sx = {{ display: 'flex', justifyContent: 'center', position: 'absolute', left: '40px', top: '12px' }}>
-        { mode == 'light' ? <Button onClick={() => setMode('dark')} startIcon = {<LightModeIcon/>} sx = {{ color: '#047aff' }}>Sáng</Button>
-        : ( mode == 'dark' ? <Button onClick={() => setMode('system')} startIcon = {<DarkModeIcon/>} sx = {{ color: '#fff' }}>Tối</Button>
-        :<Button onClick={() => setMode('light')} startIcon = {<SettingsSystemDaydreamIcon/>} sx = {{ color: theme => theme.palette.mode == 'dark' ? '#fff' : '#047aff' }}>Hệ thống</Button> )
-        }
-      </Box>
-      <Box sx = {{ 
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 2,
-        maxWidth: '460px'
-       }}>
+      <Box sx = {{  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, maxWidth: '460px' }}>
+        <Box sx = {{  width:  '295px', height:  '200px' }}> <img alt='Chatbot' src={avatar} style = {{ width: '100%', height: '100%' }} /> </Box>
         
-        <Box sx = {{ 
-          width:  '295px',
-          height:  '200px'
-        }}>
-          <img alt='Chatbot' src={avatar} style = {{ width: '100%', height: '100%' }} />
-        </Box>
         <Typography variant='h2' sx = {{ 
-          color: theme => theme.palette.text.secondary,
           fontSize: '2.025rem',
           fontWeight: '900',
           fontFamily: '"Arial",sans-serif',
@@ -82,20 +60,20 @@ export function HomePage() {
          
          </Typography>
 
-         <Typography variant='p' sx = {{ 
-          color: theme => theme.palette.text.secondary,
-          textAlign: 'center',
-          fontSize: '1rem'
-          }}>
-            Trợ lý ảo giúp bạn giải đáp thắc mắc, tra cứu thông tin một cách nhanh chóng và chính xác nhất !
-         </Typography>
+        <Typography variant='p' sx = {{ 
+        color: theme => theme.palette.text.secondary,
+        textAlign: 'center',
+        fontSize: '1rem'
+        }}>
+          Trợ lý ảo giúp bạn giải đáp thắc mắc, tra cứu thông tin một cách nhanh chóng và chính xác nhất !
+        </Typography>
 
-         <Button variant='contained' sx = {{ 
-            background: theme => theme.palette.primary.main,
-            '&:hover' : {
-              boxShadow: 'var(--mui-shadows-4)'
-            }
-          }} onClick={Start}>Bắt đầu Ngay</Button>
+        <Button variant='contained' sx = {{ 
+          background: theme => theme.palette.primary.main,
+          '&:hover' : {
+            boxShadow: 'var(--mui-shadows-4)'
+          }
+        }} onClick={Start}>Bắt đầu Ngay</Button>
       </Box>
 
 

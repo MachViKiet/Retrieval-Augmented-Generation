@@ -197,7 +197,7 @@ export function Profile() {
             </Grid>
 
             <Grid size={3}>
-              <Box sx={{ display: 'block', width: 'fit-content', width: '100%' }}>
+              <Box sx={{ display: 'block', width: '100%' }}>
                 <FormLabel htmlFor="department" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Phòng Ban</FormLabel>
                 <Select
                   id="user_department"
@@ -217,7 +217,7 @@ export function Profile() {
             </Grid>
 
             <Grid size={3} offset={0}>
-              <Box sx={{ display: 'block', width: 'fit-content', width: '100%' }}>
+              <Box sx={{ display: 'block', width: '100%' }}>
                 <FormLabel htmlFor="user_position" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Chức Vụ</FormLabel>
                 <Select
                   id="user_position"

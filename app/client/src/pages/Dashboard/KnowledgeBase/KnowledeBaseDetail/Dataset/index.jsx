@@ -32,7 +32,7 @@ const useData = (chunks) => {
       renderCell: (params) => (
       <Tooltip title= {params.id} placement="top-end" >
         <Typography variant='p' component='p' 
-          sx = {{ textAlign: 'justify', padding: '5px 0', display: 'block', height: '100%', paddingX: 1,
+          sx = {{ textAlign: 'justify', padding: '5px 0', height: '100%', paddingX: 1,
             maxHeight: '67px', width: '100%', whiteSpace: 'nowrap', textWrap: 'wrap', lineHeight: '15px', overflow: 'hidden', 
             textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical' }}>
           {params.value}
@@ -130,7 +130,7 @@ function DatasetDetail() {
             sx = {{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <TopicOutlinedIcon/>
           </Link>,
-          <Typography key="62756213" sx = {{ maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}> {documentWithChunk?.document_name} </Typography>
+          <Typography key="62756213" sx = {{ display: 'block', maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}> {documentWithChunk?.document_name} </Typography>
         </Breadcrumbs>
 
         <Box sx = {{ display: 'flex',justifyContent: 'end',  width: 'fit-content', gap: 2 }}>

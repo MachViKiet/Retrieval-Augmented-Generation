@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, CircularProgress, IconButton, Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Button, IconButton, Skeleton, TextField, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import ChatBlock from '~/components/Chatbots/ChatBlock';
@@ -256,57 +256,10 @@ export function ChatGenerator() {
   return (
     <Box sx = {{ width: '100%', height: '100%', paddingY: 3, paddingX: 3 }}>
       <Grid container  spacing={2} sx = {{ height: '100%' }}>
-        <Grid  size={{ xs: 2.5 }}>  
-          <Block sx = {{ 
-              padding: 1,
-              backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
-              display: {
-                xs: 'none',
-                md: 'block'
-              }
-          }}>
-            <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
-              <Typography component='p' sx = {{ fontWeight: '800' }}>Cuộc Trò Chuyện</Typography>
-              <Button component='p' sx = {{ color: 'red', paddingY: 0 }}>Xóa hết </Button>
-            </Box>
 
-            { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
-              sessions.map((session) => (
-                <Box key = {session._id} 
-                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
-                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
-                    onClick = {async (e) => await sessionButtonClick(session)}>
-                  <Box >
-                    <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
-                    <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '100', fontSize: '0.725rem !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_description}</Typography>
-                  </Box>
-                  <IconButton color = 'error' sx = {{ padding: 0.25 }} onClick={async (e) => await removeChatSessionClick(e, session)} >
-                    <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/>
-                    </IconButton>
-                </Box> ))
+        {/* <Grid  size={{ xs: 2.5 }}> </Grid> */}
 
-              }
-
-              { sessions.length == 0 && <> Không có cuộc trò chuyện </> }
-            </Box> }
-
-            { (apiHandler.session || !sessions) && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
-              ['','',''].map((_session, index) => (
-                <Skeleton key={ index * 82715 } variant="rounded" height={62} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
-              ))
-            } </Box> }
-
-            <Box sx = {{ padding: 1, paddingTop: 3 }}>
-              <Button 
-                variant='contained' color='info'
-                startIcon= {<OpenInNewIcon/>}
-                disabled={messageHandler.isProcess}
-                onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>
-            </Box>
-          </Block>
-        </Grid>
-
-        <Grid  size={{ xs: 12, md: 7 }}>
+        <Grid  offset={{ xs: 0, md: 2 }} size={{ xs: 12, md: 7 }}>
           <Block sx = {{ 
             paddingBottom: '60px !important',
             width: '100%',
@@ -356,8 +309,54 @@ export function ChatGenerator() {
           </Block>
         </Grid>
 
-        <Grid  size={{ xs: 2.5 }}>  
-          {/* TODO */}
+        <Grid  size={{ xs: 3 }}>  
+          <Block sx = {{ 
+              padding: 1,
+              backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
+              display: {
+                xs: 'none',
+                md: 'block'
+              }
+          }}>
+            <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
+              <Typography component='p' sx = {{ fontWeight: '800' }}>Cuộc Trò Chuyện</Typography>
+              {/* <Button component='p' sx = {{ color: 'red', paddingY: 0 }}>Xóa hết </Button> */}
+            </Box>
+
+            { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
+              sessions.map((session) => (
+                <Box key = {session._id} 
+                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
+                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
+                    onClick = {async (e) => await sessionButtonClick(session)}>
+                  <Box >
+                    <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
+                    <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '100', fontSize: '0.725rem !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_description}</Typography>
+                  </Box>
+                  <IconButton color = 'error' sx = {{ padding: 0.25 }} onClick={async (e) => await removeChatSessionClick(e, session)} >
+                    <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/>
+                    </IconButton>
+                </Box> ))
+
+              }
+
+              { sessions.length == 0 && <> Không có cuộc trò chuyện </> }
+            </Box> }
+
+            { (apiHandler.session || !sessions) && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
+              ['','',''].map((_session, index) => (
+                <Skeleton key={ index * 82715 } variant="rounded" height={62} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
+              ))
+            } </Box> }
+
+            <Box sx = {{ padding: 1, paddingTop: 3 }}>
+              <Button 
+                variant='contained' color='info'
+                startIcon= {<OpenInNewIcon/>}
+                disabled={messageHandler.isProcess}
+                onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>
+            </Box>
+          </Block>
         </Grid>
 
       </Grid>

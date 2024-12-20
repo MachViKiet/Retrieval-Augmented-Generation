@@ -15,11 +15,10 @@ const PublicRoute = ({ children }) => {
     if(token){
       if (!auth.loggedIn) {
         const eventID = processHandler.add('#verifyToken')
-        console.log('public routing')
         useProfile.verifyToken(token).then((usr_profile) => {
           dispatch(refresh(token, usr_profile))
         }).catch((error) => {
-          console.log(error)
+          console.error(error)
         }).finally(() => processHandler.remove('#verifyToken', eventID))
       }
     }
