@@ -32,7 +32,7 @@ export default function NotifycationModal({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={modalHandler?.action} sx = {{ color: '#1fff3a' }}>{modalHandler?.actionName}</Button>
+          <Button onClick={(e) => { modalHandler?.action(e), modalHandler?.close()}} sx = {{ color: '#1fff3a' }}>{modalHandler?.actionName}</Button>
           <Button onClick={modalHandler?.close} sx = {{ color: '#ff6c57' }}> Đóng</Button>
         </DialogActions>
       </Dialog>

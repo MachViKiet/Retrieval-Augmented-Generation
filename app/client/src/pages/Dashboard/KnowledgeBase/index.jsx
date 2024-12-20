@@ -81,7 +81,7 @@ function KnowledgeBase() {
               {collection.collection_name}</Typography>
             
             <Typography variant='p' component='p' 
-              sx = {{ paddingTop: '2px', fontSize: '0.725rem', fontWeight: '400', width: 'fit-content',  textAlign: 'left',  maxHeight: '160px', width: '170px',
+              sx = {{ paddingTop: '2px', fontSize: '0.725rem', fontWeight: '400', textAlign: 'left',  maxHeight: '160px', width: '170px',
               whiteSpace: 'nowrap', textWrap: 'wrap', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical' }}>
                 {collection.collection_description}</Typography>
             <Box sx = {{  position: 'absolute', height: '50px', display: 'flex', flexDirection: 'column', gap: 0.225, width: '100%', left: 0, bottom: 0, paddingX: 2 }}>

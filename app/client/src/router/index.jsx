@@ -104,10 +104,6 @@ const router = createBrowserRouter([
             element: <UserChat />,
           },
           {
-            path: '/feedback',
-            element: <FeedBack />,
-          },
-          {
             path: '/user_profile',
             element: <UserProfile />,
           }
@@ -123,7 +119,11 @@ const router = createBrowserRouter([
           {
             path: '/faqs',
             element: <FAQs />,
-          }
+          },
+          {
+            path: '/feedback',
+            element: <FeedBack />,
+          },
         ]
       },
     ]

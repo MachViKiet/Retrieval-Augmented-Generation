@@ -265,7 +265,8 @@ const theme = extendTheme(
         styleOverrides: {
           root: ({theme}) => ({
             background: theme.palette.primary.background,
-            color: '#fff'
+            color: '#fff',
+            borderRadius: '15px'
           })
         },
       },

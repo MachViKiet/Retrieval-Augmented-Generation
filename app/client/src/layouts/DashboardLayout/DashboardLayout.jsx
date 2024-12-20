@@ -50,9 +50,8 @@ function DashboardLayout() {
   
   const [selectedIndex, setSelectedIndex] = useState(null)
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
-  const [isOpenModel, setIsOpenModel] = useState(false)
 
-  const { processHandler } = useOutletContext();
+  const { processHandler, getModal } = useOutletContext();
 
   const handleListItemClick = (_event, _index, address) => {
     isOpenSideBar && setIsOpenSideBar(false)
@@ -136,14 +135,14 @@ function DashboardLayout() {
                 {user_profile?.name ? user_profile.name : 'Không tồn tại'}
               </Typography>
               <Typography
-                sx={{ color: 'text.secondary', fontSize: '0.625rem !important', lineHeight: '120%', fontWeight: '400', color: theme => theme.palette.mode == 'light' ? '#505766' : 'rgb(133, 141, 160)',
-                  width: '128px', overflow: 'hidden', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor:'pointer' }} >
+                sx={{ fontSize: '0.625rem !important', lineHeight: '120%', fontWeight: '400', color: theme => theme.palette.mode == 'light' ? '#505766' : 'rgb(133, 141, 160)',
+                  width: '128px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor:'pointer' }} >
                 {user_profile?.email ? user_profile.email : 'Không tồn tại'}
               </Typography>
             </CardContent>
           </Box>
 
-          <ListItemButton onClick={() => setIsOpenModel(true)} // onClick= {logoutClick}
+          <ListItemButton onClick={() => getModal(' ', 'Bạn Thật Sự Muốn Đăng Xuất Sao ☹️', 'Đăng Xuất', logoutClick)}
             sx = {{ background: '#ffffffe8', borderRadius: '8px', 
               '& > div' : { color: '#000', }, '&:hover' : { background: '#fff', fontWeight: 700,    }, '&:active' : { transform: 'scale(0.9)' } }} >
             <ListItemIcon> <ReplyAllIcon/> </ListItemIcon>
@@ -208,15 +207,8 @@ function DashboardLayout() {
 
           <Outlet context={{...useOutletContext(), dashboard}}/>
         </Box>
-      </Box>
-
-      <NotifycationModal modalHandler = {{
-        state: isOpenModel,
-        close: () => setIsOpenModel(false),
-        action: logoutClick,
-        actionName: 'Đăng Xuất'
-      }} title={' '} content={'Bạn Thật Sự Muốn Đăng Xuất Sao ☹️'}/>
-
+      </Box>   
+      
     </DashboardContainer>       
   )
 }

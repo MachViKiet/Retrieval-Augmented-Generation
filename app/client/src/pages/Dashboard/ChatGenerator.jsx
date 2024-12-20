@@ -368,7 +368,7 @@ export function ChatGenerator() {
           <Header/> 
           <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
             <Typography component='p' sx = {{ fontWeight: '800' }}> Cuộc Trò Chuyện </Typography>
-            <Button component='p' sx = {{ paddingY: 0, color: theme => theme.palette.mode == 'dark' ? '#ff9b9b' : '#fc0000' }}> Xóa hết </Button>
+            {/* <Button component='p' sx = {{ paddingY: 0, color: theme => theme.palette.mode == 'dark' ? '#ff9b9b' : '#fc0000' }}> Xóa hết </Button> */}
           </Box>
 
           { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 230px)', overflow: 'auto', padding: 1 }}> {

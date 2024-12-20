@@ -5,6 +5,8 @@ import { Outlet } from 'react-router-dom'
 import { useProfile } from '~/apis/Profile'
 import { connectSocket } from '~/socket'
 import { refresh } from '~/store/actions/authActions'
+import NotifycationModal from '~/components/Mui/NotifycationModal'
+
 
 function AppLayout() {
   const generateRandomId = () => { return Math.floor(Math.random() * 1000000000) + 1 };
@@ -16,6 +18,7 @@ function AppLayout() {
   const [isFirstRendering, setFirstRendering] = useState(true);
   const auth = useSelector(state => state.auth)
   const [notifications, setNotification] = useState([])
+
   const demo  = [{
     status: 'success',
     message: 'Cập nhật thành công'
@@ -30,9 +33,9 @@ function AppLayout() {
   }]
   const noticeHandler = {
     add: (noti_json) => {
-      const id = generateRandomId()
+      const id = '#' + generateRandomId()
       const notice = {...noti_json, id }
-      setNotification(prev => [...prev, notice].slice(0, 5))
+      setNotification(prev => [notice, ...prev])
     },
     remove: (id) => {
       setNotification(prev => prev.filter((prev) => (prev.id != id) ))
@@ -78,13 +81,34 @@ function AppLayout() {
     setFirstRendering(false)
   }, [])
 
+  const [isOpenModel, setIsOpenModel] = useState(false)
+  const [modalObject, setModalObject] = useState({
+    title: '',
+    content: '',
+    actionName: '',
+    action: null
+  })
+
+  const getModal = (title = '',content = '', actionName = '', action = null ) => {
+    console.log('ihihih')
+    setIsOpenModel(true)
+    setModalObject({ title, content, actionName, action })
+  }
+
   return <>
   <Box sx = {{ height: '100vh', position: 'relative' }}>
     {isProcess.length !== 0 && <Box sx = {{ width: '100%', height: '100%', position: 'absolute', background: theme =>theme.palette.mode == 'dark' ? '#414040bf' : '#000000b5', zIndex: '10000', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
       <CircularProgress color="inherit" />
     </Box>}
-    <Outlet context={{ processHandler, noticeHandler }} />
+    <Outlet context={{ processHandler, noticeHandler, getModal }} />
     <BasicAlerts noticeHandler = {noticeHandler} notifications = {notifications}/>
+
+    <NotifycationModal modalHandler = {{
+        state: isOpenModel,
+        close: () => setIsOpenModel(false),
+        action: modalObject?.action,
+        actionName: modalObject?.actionName
+      }} title={modalObject?.title} content={modalObject?.content}/>
   </Box> </>
 
 }
@@ -96,20 +120,20 @@ import Alert from '@mui/material/Alert'
 const BasicAlerts = ({noticeHandler, notifications}) => {
   return <Box sx = {{ position: 'absolute', top: '16px', right: '16px', display: 'flex', gap: 1, flexDirection: 'column' }}>
       {
-        notifications.map((noti, zIndex) => (<>
+        notifications.map((noti, zIndex) => ( <>
           <AlertComponent onClose={() => {noticeHandler.remove(noti?.id)}}
-            key = {noti?.id} severity= {noti.status} message={noti.message} duration = {(zIndex + 1) * 2000}/>
+            key = {noti?.id} id = {noti?.id} zIndex = {zIndex} severity= {noti.status} message={noti.message} duration = {(zIndex + 1) * 1000}/>
         </>))
       }
   </Box>
 }
 
-const AlertComponent = ({ onClose, severity, message, duration }) => {
+const AlertComponent = ({ id , zIndex, onClose, severity, message, duration }) => {
   useEffect(() => {
     const AutoClose = setTimeout(() => onClose(), duration)
     return () => clearTimeout(AutoClose)
   })
 
-  return <Alert severity= {severity} variant = "filled" onClose={onClose} >
-    {message}</Alert>
+  return zIndex < 5 && <Alert severity= {severity} variant = "filled" onClose={onClose} >
+    {message} - {id}</Alert>
 }
