@@ -128,7 +128,7 @@ def search():
         source_final = [results[k][1] for k in distances]
     except:
         print("Error with filter search")
-        search_results_final, source_final = database.similarity_search(chosen_collection, query_embeddings)
+        search_results_final, source_final, _ = database.similarity_search(chosen_collection, query_embeddings)
     if search_results != -1:
         context = rag_utils.create_prompt_milvus(query, search_results_final)
     else:
