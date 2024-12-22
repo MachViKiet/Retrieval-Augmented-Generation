@@ -1,5 +1,5 @@
 import { animate, useMotionValue } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 let delimiter = ""; 
 

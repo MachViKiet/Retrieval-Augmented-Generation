@@ -23,6 +23,7 @@ server/__pycache__
 
 **/package-lock.json
 client/package-lock.json
+client/package-lock.json
 server/.env
 service/.env
 # Editor directories and files

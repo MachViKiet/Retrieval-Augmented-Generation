@@ -35,7 +35,7 @@ function FeedBack() {
             }}>
             Sự đóng góp ý kiến từ các bạn sẽ là sự hỗ trợ đắc lực giúp chúng tôi ngày càng tốt hoàn thiện sản phẩm hơn.</Typography>
 
-            <textarea placeholder="Nhập phản hồi của bạn tại đây!" class="mt-5 mb-3 h-[30%] textarea textarea-bordered textarea-md w-full " style={{height: '164px', padding: '15px', borderRadius: '10px', background: '#fff', color: '#000'}}></textarea>
+            <textarea placeholder="Nhập phản hồi của bạn tại đây!" className="mt-5 mb-3 h-[30%] textarea textarea-bordered textarea-md w-full " style={{height: '164px', padding: '15px', borderRadius: '10px', background: '#fff', color: '#000'}}></textarea>
 
           <Button variant='contained' color='info' fullWidth>Gửi Ý Kiến</Button>
         </Grid>

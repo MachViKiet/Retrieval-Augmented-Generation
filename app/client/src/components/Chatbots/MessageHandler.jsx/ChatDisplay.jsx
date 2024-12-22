@@ -9,11 +9,14 @@ import NotifycationModal from '~/components/Mui/NotifycationModal'
 import RotateRightOutlinedIcon from '@mui/icons-material/RotateRightOutlined';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import CloseIcon from '@mui/icons-material/Close';
+import botAvatar from '~/assets/botAvatar.png'
+import userAvatar from '~/assets/userAvatar.png'
+import FadeIn from 'react-fade-in';
 
 export const ChatBlock_Style = {
   width: '100%',
   textAlign: 'justify',
-  transition: '0.5s all ease',
+  transition: '0.5s all ease-in',
 }
 
 export const ChatDisplay_Style = {
@@ -66,7 +69,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
 
   return loading ? (
     <Box sx = {ChatBlock_Style}>
-      {['',''].map(( _data, index) => ( <div key={ index*1251267 }>
+      {['',''].map(( _data, index) => ( <FadeIn key={ index*1251267 }>
         <Box sx = { ChatDisplay_Style }>
           <Skeleton variant="circular" width={40} height={40} />
           <Skeleton variant="rounded" height={60} sx = {{ width: '100%', marginRight: '20px', maxWidth: '50%'}}/>
@@ -75,51 +78,54 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
         <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
           <Skeleton variant="rounded" height={60} sx = {{ width: '100%', marginLeft: '20px', maxWidth: '70%'}}/>
           <Skeleton variant="circular" width={40} height={40} />
-        </Box> </div>
+        </Box> </FadeIn>
       ))}
 
     </Box>
   ) : (
     <Box sx = {ChatBlock_Style}>
-      <Box sx = { ChatDisplay_Style }>
-        <Avatar alt="User" src=
-          {user?.avatar ? user.avatar : "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png" } />
-          <ChatMessage sx = {{   
-            background: 'linear-gradient(45deg, rgba(73,124,246,1) 47%, rgba(144,95,247,1) 100%)',
-            marginRight: '20px',
-            color: '#fff'
-          }}>
-          <BubbleRight/>
+      <FadeIn>
+        <Box sx = { ChatDisplay_Style }>
+          <Avatar alt="User" src=
+            {user?.avatar ? user.avatar : 
+            ( userAvatar ? userAvatar : (userAvatar ? userAvatar : "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png" ))} />
+            <ChatMessage sx = {{   
+              background: 'linear-gradient(45deg, rgba(73,124,246,1) 47%, rgba(144,95,247,1) 100%)',
+              marginRight: '20px',
+              color: '#fff'
+            }}>
+            <BubbleRight/>
 
-          <Typography sx = {{ fontSize: 'inherit', color: 'inherit' }}>
-            {conservation?.question}
-          </Typography>
+            <Typography sx = {{ fontSize: 'inherit', color: 'inherit' }}>
+              {conservation?.question}
+            </Typography>
 
-          <Box sx = {{  width: '100%', display: 'flex',gap: 1, justifyContent: 'space-between', borderTop: '1px solid #fff', marginTop: 1, paddingTop: 1 }}>
-              { conservation.state != 'in progress' ? <Tooltip title="re_prompt" placement="top">
-                <IconButton 
-                  onClick={() => action?.re_prompt && action.re_prompt(conservation?.question)}
-                  sx = {{ padding: '1px' }}>
-                  <RotateRightOutlinedIcon sx = {{ fontSize: '16px' }}/>
-                </IconButton> 
-              </Tooltip> : <CircularProgress size="14px" sx = {{ color: '#fff' }} /> }
+            <Box sx = {{  width: '100%', display: 'flex',gap: 1, justifyContent: 'space-between', borderTop: '1px solid #fff', marginTop: 1, paddingTop: 1 }}>
+                { conservation.state != 'in progress' ? <Tooltip title="re_prompt" placement="bottom">
+                  <IconButton 
+                    onClick={() => action?.re_prompt && action.re_prompt(conservation?.question)}
+                    sx = {{ padding: '1px' }}>
+                    <RotateRightOutlinedIcon sx = {{ fontSize: '16px' }}/>
+                  </IconButton> 
+                </Tooltip> : <CircularProgress size="14px" sx = {{ color: '#fff' }} /> }
 
-              { conservation.state == 'success' && conservation?.rating == -1 && <Tooltip title="Đánh giá cuộc hội thoại" placement="top">
-                <IconButton 
-                  onClick={() => setOpenFeedback(true)}
-                  sx = {{ padding: '1px' }}>
-                  <QuestionAnswerOutlinedIcon sx = {{ fontSize: '16px' }}/>
-                </IconButton> 
-              </Tooltip> }
+                { conservation.state == 'success' && conservation?.rating == -1 && <Tooltip title="Đánh giá cuộc hội thoại" placement="bottom">
+                  <IconButton 
+                    onClick={() => setOpenFeedback(true)}
+                    sx = {{ padding: '1px' }}>
+                    <QuestionAnswerOutlinedIcon sx = {{ fontSize: '16px' }}/>
+                  </IconButton> 
+                </Tooltip> }
 
-              { conservation?.rating != -1 && <Box sx = {{ display: 'flex' }}>{conservation?.rating}<StarIcon fontSize = 'small' sx = {{ color: 'yellow' }}/></Box> }
+                { conservation?.rating != -1 && <Box sx = {{ display: 'flex' }}>{conservation?.rating}<StarIcon fontSize = 'small' sx = {{ color: 'yellow' }}/></Box> }
 
-              <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime(conservation?.create_at)}</Typography>
-          </Box>
-        </ChatMessage>
-      </Box>
+                <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime(conservation?.create_at)}</Typography>
+            </Box>
+          </ChatMessage>
+        </Box>
+      </FadeIn>
 
-      { conservation.state == 'request' && <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
+      { conservation.state == 'request' && <FadeIn> <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
           <ChatMessage sx = {{   
               marginLeft: '20px',
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
@@ -132,8 +138,8 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
 
             <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
               <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
-                {collections.map((data) => {
-                  return <Box sx = {ModelButton_Style} 
+                {collections.map((data, zIndex) => {
+                  return <Box key = {zIndex*123478931} sx = {ModelButton_Style} 
                   onClick = {() => action?.chatWithColllection(conservation?.question, data.key)}
                   >{data.title}</Box>
                 })}
@@ -144,11 +150,12 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
             </Box>
 
           </ChatMessage>
-          <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
-        </Box>
+          {/* <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" /> */}
+          <Avatar alt="ChatBot" src={botAvatar} />
+        </Box> </FadeIn>
       }
 
-      { conservation.state == 'success' && <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
+      { conservation.state == 'success' && <FadeIn> <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
           <ChatMessage sx = {{   
               marginLeft: '20px',
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
@@ -162,16 +169,17 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
 
             <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
               <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
-                {conservation?.source && conservation?.source.map((data) => {
-                  return <Box sx = {ModelButton_Style}
+                {conservation?.source && conservation?.source.map((data, zIndex) => {
+                  return <Box key = {zIndex*12650} sx = {ModelButton_Style}
                     onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#fff'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>
                 })}
               </Box>
               <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end' }}>{getTime(conservation?.create_at)}</Typography>
             </Box>
           </ChatMessage>
-          <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
-        </Box>
+          {/* <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" /> */}
+          <Avatar alt="ChatBot" src={botAvatar} />
+        </Box>  </FadeIn>
       }
 
       <NotifycationModal

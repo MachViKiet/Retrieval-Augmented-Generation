@@ -22,6 +22,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useConservation } from '~/apis/Conservation';
+import { useOutletContext } from 'react-router-dom';
 
 function NewChatModal({ modalHandler = null }) {
 
@@ -94,7 +95,7 @@ function NewChatModal({ modalHandler = null }) {
 }
 
 
-const ChatWindow = styled(Box)(({theme}) => ({ position: 'absolute', bottom: theme.spacing(0), padding: theme.spacing(2), paddingTop: theme.spacing(0), right: theme.spacing(0), width: '100%', borderRadius: '15px' }))
+const ChatWindow = styled(Box)(({theme}) => ({ position: 'absolute', bottom: theme.spacing(0), padding: theme.spacing(2), paddingBottom: theme.spacing(1), paddingTop: theme.spacing(0), right: theme.spacing(0), width: '100%', borderRadius: '15px' }))
 
 const BlockStyle = { bgColor_dark: 'linear-gradient(30deg, #ffffff2e 0%, #0352c038 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #99c4ff 100%)' }
 
@@ -105,7 +106,8 @@ export function ChatGenerator() {
   const socket = getSocket();
   const user = useSelector((state) => state.auth.user)
   const token = useSelector(state => state.auth.token)
-
+  // setFooter
+  const {processHandler, setFooter } = useOutletContext();
   const [Conservations, setConservations] = useState([])
   const [openCreateChat, setOpenCreateChat] = useState(false)
   const [sessions, setSessions] = useState(null)
@@ -132,6 +134,7 @@ export function ChatGenerator() {
 
   useEffect(() => {
     document.title = 'Chatbot - Trò Chuyện';
+    setFooter(false)
     dispatch(sidebarAction({index: 121}))
 
     if(socket) {
@@ -214,7 +217,7 @@ export function ChatGenerator() {
           create_at: Conservation.create_at,
           question: Conservation.question,
           anwser: Conservation.anwser
-        })) 
+        }))
       })
       setMessageHandler(prev => ({...prev, isProcess: true }))
     }
@@ -305,6 +308,8 @@ export function ChatGenerator() {
                   <ChatInput id = 'FormChat_For_Admin' handleSubmit = {ChatAction} messageHandler = { messageHandler } />
                 </Box>
               </Box>
+
+              <Typography sx = {{ fontSize: '8px !important', color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000', marginTop: '10px' }}>Lưu ý: Mô hình có thể đưa ra câu trả lời không chính xác ở một số trường hợp, vì vậy hãy luôn kiểm chứng thông tin bạn nhé!</Typography>
             </ChatWindow>
           </Block>
         </Grid>
@@ -326,8 +331,10 @@ export function ChatGenerator() {
             { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
               sessions.map((session) => (
                 <Box key = {session._id} 
-                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#000' : '#',
-                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
+                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#000 !important' : '#',
+                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
+                    '&:hover': { background: '#00000045', color: '#fff' }
+                  }}
                     onClick = {async (e) => await sessionButtonClick(session)}>
                   <Box >
                     <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
@@ -358,7 +365,7 @@ export function ChatGenerator() {
             </Box>
           </Block>
         </Grid>
-
+        
       </Grid>
 
       <NewChatModal

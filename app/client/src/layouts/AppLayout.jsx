@@ -120,20 +120,20 @@ import Alert from '@mui/material/Alert'
 const BasicAlerts = ({noticeHandler, notifications}) => {
   return <Box sx = {{ position: 'absolute', top: '16px', right: '16px', display: 'flex', gap: 1, flexDirection: 'column' }}>
       {
-        notifications.map((noti, zIndex) => ( <>
+        notifications.reverse().map((noti, zIndex) => ( 
           <AlertComponent onClose={() => {noticeHandler.remove(noti?.id)}}
             key = {noti?.id} id = {noti?.id} zIndex = {zIndex} severity= {noti.status} message={noti.message} duration = {(zIndex + 1) * 1000}/>
-        </>))
+        ))
       }
   </Box>
 }
-
+import FadeIn from 'react-fade-in';
 const AlertComponent = ({ id , zIndex, onClose, severity, message, duration }) => {
   useEffect(() => {
     const AutoClose = setTimeout(() => onClose(), duration)
     return () => clearTimeout(AutoClose)
   })
 
-  return zIndex < 5 && <Alert severity= {severity} variant = "filled" onClose={onClose} >
-    {message} - {id}</Alert>
+  return zIndex < 5 && <FadeIn ><Alert severity= {severity} variant = "filled" onClose={onClose} >
+    {message} - {id}</Alert> </FadeIn>
 }

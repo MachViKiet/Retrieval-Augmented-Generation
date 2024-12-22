@@ -75,18 +75,6 @@ export function HomePage() {
           }
         }} onClick={Start}>Bắt đầu Ngay</Button>
       </Box>
-
-
-      <Box sx = {{ 
-          width: '100%',
-          height: '30px',
-          background: theme => theme.palette.mode == 'dark' ? '#100a34': '#fff',
-          boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)',
-          position: 'absolute',
-          bottom: 0,
-         }}>
-          <Typography sx = {{ color: theme => theme.palette.mode == 'dark' ? '#ffffff85': '#33333385', width: '100%', textAlign: 'center', lineHeight: '30px' }}>ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa</Typography>
-        </Box>
     </Box>
   )
 }

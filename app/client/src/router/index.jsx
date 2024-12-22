@@ -27,6 +27,7 @@ import FAQs from '~/pages/User/FAQs';
 import PublicRoute from './PublicRoute/PublicRoute';
 import AppLayout from '~/layouts/AppLayout';
 import AppRoute from './AppRoute';
+import Register from '~/pages/Register';
 
 // Define the routes
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
           {
             path: '/signin',
             element: <SignIn />,
+          },
+          {
+            path: '/register',
+            element: <Register />,
           }
         ],
       },

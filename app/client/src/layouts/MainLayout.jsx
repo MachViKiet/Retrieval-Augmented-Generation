@@ -99,6 +99,8 @@ function MainLayout() {
   const { mode, setMode } = useColorScheme();
   const [isOpenModel, setIsOpenModel] = useState(false)
   const { noticeHandler } = useOutletContext();
+
+  const [isFooter, setFooter] = useState(true)
   
   
   useEffect(() => {
@@ -119,7 +121,7 @@ function MainLayout() {
       navigate(admin_address)
       return
     }
-
+    setFooter(true)
     setSelectedIndex(index)
     navigate(address)
   }
@@ -220,16 +222,26 @@ function MainLayout() {
           </Box>
         </Box>
 
-        <Box sx = {{ overflow: 'auto', height: '100%', paddingY: '2px' }}>
-          <Outlet  context={useOutletContext()}/>
+        <Box sx = {{ overflow: 'auto', height: '100%', paddingY: '2px', paddingBottom: isFooter && '32px' }}>
+          <Outlet  context={{...useOutletContext(), setFooter}}/>
         </Box>
 
         <Box sx = {{ display: 'flex', justifyContent: 'center', position: 'absolute', left: '40px', top: '96px' }}>
-        { mode == 'light' ? <Button onClick={() => setMode('dark')} startIcon = {<LightModeIcon/>} sx = {{ color: '#047aff' }}>Sáng</Button>
-        : ( mode == 'dark' ? <Button onClick={() => setMode('system')} startIcon = {<DarkModeIcon/>} sx = {{ color: '#fff' }}>Tối</Button>
-        :<Button onClick={() => setMode('light')} startIcon = {<SettingsSystemDaydreamIcon/>} sx = {{ color: theme => theme.palette.mode == 'dark' ? '#fff' : '#047aff' }}>Hệ thống</Button> )
-        }
-      </Box>
+          { mode == 'light' ? <Button onClick={() => setMode('dark')} startIcon = {<LightModeIcon/>} sx = {{ color: '#047aff' }}>Sáng</Button>
+          : ( mode == 'dark' ? <Button onClick={() => setMode('system')} startIcon = {<DarkModeIcon/>} sx = {{ color: '#fff' }}>Tối</Button>
+          :<Button onClick={() => setMode('light')} startIcon = {<SettingsSystemDaydreamIcon/>} sx = {{ color: theme => theme.palette.mode == 'dark' ? '#fff' : '#047aff' }}>Hệ thống</Button> )
+          }
+        </Box>
+
+        { isFooter && <Box sx = {{ 
+          width: '100%',
+          height: '30px',
+          background: theme => theme.palette.mode == 'dark' ? '#100a34': '#fff',
+          boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)',
+          position: 'absolute',
+          bottom: 0,
+        }}> <Typography sx = {{ color: theme => theme.palette.mode == 'dark' ? '#ffffff85': '#33333385', width: '100%', textAlign: 'center', lineHeight: '30px' }}>ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa</Typography>
+        </Box> }
 
 
       <NotifycationModal modalHandler = {{

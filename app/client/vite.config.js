@@ -19,7 +19,6 @@ export default ({ mode }) => {
     server: {
       port: 3006,
       https: false,
-      host: "172.29.64.142",
       strictPort: true,
     },
     //change port for production

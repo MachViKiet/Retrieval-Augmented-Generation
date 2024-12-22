@@ -8,7 +8,7 @@ import { login } from '~/store/actions/authActions';
 import { useAuth } from '~/apis/Auth';
 import { useErrorMessage } from '~/hooks/useMessage';
 
-const SignInCard = styled(Card)(({ theme }) => ({
+const RegisterCard = styled(Card)(({ theme }) => ({
   display: 'flex', flexDirection: 'column',
   alignSelf: 'center', width: '90vw',
   padding: theme.spacing(4), gap: theme.spacing(2),
@@ -21,7 +21,7 @@ const TextInput = styled(TextField) (({ theme }) => ({
   '&:hover fieldset': { borderColor: `${theme.palette.primary.main} !important` }
 }));
 
-function SignIn() {
+function Register() {
   const [notificationError, setNotification] = useState(null)
 
   const dispatch = useDispatch();
@@ -52,36 +52,42 @@ function SignIn() {
 
     if (notificationError) return
 
-    const logInEvent = processHandler.add('#login')
+    const logInEvent = processHandler.add('#register')
 
     const data = new FormData(event.currentTarget)
-    const userData = { email: data.get('email'), password: data.get('password') };
+    const userData = { email: data.get('email'), password: data.get('password'),  name: data.get('name') };
 
-    await useAuth.login(userData)
+    await useAuth.register(userData)
       .then((userData) => {
-          processHandler.remove('#login', logInEvent)
+          processHandler.remove('#register', logInEvent)
           dispatch(login(userData))}) 
       .catch((err) => {
-        processHandler.remove('#login', logInEvent)
+        processHandler.remove('#register', logInEvent)
         setNotification(useErrorMessage(err))
       })
   };
 
   return (
     <>
-      <SignInCard variant="outlined">
+      <RegisterCard variant="outlined">
         <Typography component="h1" variant="h6"
           sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', color: theme => theme.palette.primary.main }} >
-          Đăng Nhập </Typography>
+          Đăng Kí Tài Khoản </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate
           sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, position: 'relative', color: theme => theme.palette.primary.main }} >
           <FormControl sx={{gap: 1}}>
-            <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Tên đăng nhập</FormLabel>
-            <TextInput id="email" type="username" name="email" placeholder="mssv@email.com"
-              autoComplete="email" autoFocus required fullWidth variant="outlined" />
+            <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Tên tài khoản</FormLabel>
+            <TextInput id="name" type="name" name="name" placeholder="Nguyen Van A"
+               required fullWidth variant="outlined" />
           </FormControl>
-          
+
+          <FormControl sx={{gap: 1}}>
+            <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Tên đăng nhập (Email sinh viên)</FormLabel>
+            <TextInput id="email" type="username" name="email" placeholder="mssv@email.com"
+              autoComplete="email" required fullWidth variant="outlined" />
+          </FormControl>
+
           <FormControl  sx={{gap: 1}}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <FormLabel htmlFor="password" sx = {{ color: 'inherit' }}>Mật khẩu</FormLabel>
@@ -96,21 +102,17 @@ function SignIn() {
 
           <Button type="submit" fullWidth variant="contained" onClick={validateInputs}
             sx = {{ background: theme => theme.palette.primary.main, '&:hover' : { boxShadow: 'var(--mui-shadows-4)' } }} >
-            Đăng nhập </Button>
-
-          <Button type="submit" fullWidth variant="outlined" onClick={() => navigate('/register')}
-            sx = {{ '&:hover' : { boxShadow: 'var(--mui-shadows-4)' } }} >
-            Đăng Kí Tài Khoản</Button>
+            Tạo tài khoản </Button>
 
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography sx={{ textAlign: 'center' }}>
               <span>
                 <Link
-                href="/"
+                href="/signin"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
                 >
-                Trở về trang chủ
+                Trở về đăng nhập
                 </Link>
               </span>
             </Typography>
@@ -132,9 +134,9 @@ function SignIn() {
           </Typography>
         </Box>
 
-      </SignInCard>
+      </RegisterCard>
     </>
   )
 }
 
-export default SignIn
+export default Register

@@ -6,7 +6,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function AccordionUsage( {data = null} ) {
     return (
-        <div style={{ borderRadius: '15px', paddingBottom: '15px'}}>
+        <div style={{ borderRadius: '15px', paddingBottom: '45px'}}>
         {
           data && data.map((data, zIndex) => (
             <Accordion key={data?.id} defaultExpanded = {zIndex == 0} sx = {{ color: '#000', 

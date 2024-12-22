@@ -6,7 +6,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 const path = require('path')
-const index = require('./view')
+
 const app = express()
 
 if (process.env.NODE_ENV === 'development') {

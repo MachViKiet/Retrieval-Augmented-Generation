@@ -158,7 +158,7 @@ export function ChatGenerator() {
 
   useEffect(() => {
     currentChatSession && bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [Conservations, messageHandler ]);
+  }, [Conservations]);
 
   const { dashboard, processHandler } = useOutletContext();
   
@@ -189,6 +189,8 @@ export function ChatGenerator() {
         setConservations((prevs) => { 
           const index = prevs.findIndex(item => item._id === data._id);
           if(index == -1) return [...prevs, data]
+
+          console.log('----------- ', prevs.slice(0, -1))
           return [...prevs.slice(0, -1), data]
         }) 
       } 
@@ -233,7 +235,7 @@ export function ChatGenerator() {
       if (session?._id){
         setCurrentChatSession(session)
         ChatWithChatbot.chat(socket, { message: message, chat_session: session?._id, 
-          history: Conservations.reverse().slice(0,3).map((Conservation) => ({
+          history: Conservations.slice(0,3).map((Conservation) => ({
             update_at: Conservation.update_at,
             create_at: Conservation.create_at,
             question: Conservation.question,
@@ -250,7 +252,7 @@ export function ChatGenerator() {
   const ChatAction_with_collection = (message, collection) => {
     try {
       ChatWithChatbot.chat(socket, { message: message, chat_session: currentChatSession?._id, 
-        history: Conservations.reverse().slice(1,4).map((Conservation) => ({
+        history: Conservations.slice(1,4).map((Conservation) => ({
           update_at: Conservation.update_at,
           create_at: Conservation.create_at,
           question: Conservation.question,
