@@ -6,6 +6,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 const path = require('path')
+const index = require('./view')
 const app = express()
 
 if (process.env.NODE_ENV === 'development') {
@@ -20,7 +21,13 @@ app.use(
 )
 
 // Init all other stuff
-app.use(cors())
+const corsOptions ={
+  origin:'*', 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200,
+}
+
+app.use(cors(corsOptions)) // Use this after the variable declaration
 
 app.use(require('~/routes/v1').default)
 app.set('views', path.join(__dirname, 'views'))

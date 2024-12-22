@@ -4,15 +4,27 @@
  */
 import './app'
 const http = require('http')
+const https = require('https')
 const initMongo = require('./config/mongodb')
 const app = require('./app.js')
 const io = require('./socket')
+var fs = require('fs')
+const path = require('path')
+
+const keyPath = path.join(process.cwd(), './cert/client-key.pem');
+const certPath = path.join(process.cwd(), './cert/client-cert.pem');
+
+var options = {
+  key: fs.readFileSync(keyPath),
+  cert: fs.readFileSync(certPath)
+};
 
 async function bootstrap () {
 
   await initMongo()
 
-  return http.createServer(app).listen(process.env.APP_PORT || 3000)
+  // return http.createServer(app).listen(process.env.APP_PORT || 3000)
+  return https.createServer(options, app).listen(process.env.APP_PORT || 3000)
 }
 
 bootstrap().then(async (server) => {

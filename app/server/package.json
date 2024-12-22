@@ -12,11 +12,12 @@
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel ./src -d ./build/src",
     "build": "npm run clean && npm run build-babel",
-    "production": "npm run build && node ./build/src/server.js",
+    "production": "node ./build/src/server.js",
     "dev": "nodemon --exec babel-node ./src/server.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.22.10",
+    "@jridgewell/gen-mapping": "^0.3.5",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -27,6 +28,7 @@
     "express-form-data": "^2.0.23",
     "express-validator": "^7.2.0",
     "fs": "^0.0.1-security",
+    "https": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
     "mongoose-paginate-v2": "^1.8.5",

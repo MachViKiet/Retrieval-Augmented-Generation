@@ -18,6 +18,8 @@ client/.env
 client/.env
 client/.env
 server/__pycache__
+**/myenv
+/nohup.out
 
 **/package-lock.json
 client/package-lock.json

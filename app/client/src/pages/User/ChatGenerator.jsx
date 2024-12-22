@@ -326,7 +326,7 @@ export function ChatGenerator() {
             { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
               sessions.map((session) => (
                 <Box key = {session._id} 
-                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
+                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#000' : '#',
                     borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
                     onClick = {async (e) => await sessionButtonClick(session)}>
                   <Box >

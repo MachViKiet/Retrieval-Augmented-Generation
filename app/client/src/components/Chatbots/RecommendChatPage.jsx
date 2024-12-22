@@ -111,15 +111,6 @@ export function RecommendChatPage({
         })}
         </Box>
 
-        {/* <Typography variant='h3' sx = {{ 
-            fontSize: '1.5rem',
-            marginBottom: 1,
-            width: 'fit-content',
-            textAlign:'left',
-            color: '#8e9492',
-            fontWeight: '900',
-        }}>Chủ đề bạn có thể quan tâm ! </Typography> */}
-
         <Box sx = {Container_Style} >
         {
             [{

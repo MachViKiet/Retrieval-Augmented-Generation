@@ -27,7 +27,7 @@ function ProcessBlock({messageHandler, sx = {}}) {
                 marginTop: '2px'
               }}/>
 
-              {messageHandler.notification.map((text, index) => (
+              {Array.isArray(messageHandler.notification) && messageHandler.notification.map((text, index) => (
                 <motion.div
                   key={index}
                     initial={{ transform: "scale(0)" }}

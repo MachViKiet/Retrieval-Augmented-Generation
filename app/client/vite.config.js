@@ -18,10 +18,16 @@ export default ({ mode }) => {
     //change port for dev
     server: {
       port: 3006,
+      https: false,
+      host: "172.29.64.142",
+      strictPort: true,
     },
     //change port for production
     preview: {
       port: 80,
+      https: false,
+      host: "172.29.64.142",
+      strictPort: true,
     },
   });
 };
