@@ -182,8 +182,10 @@ class MilvusDB:
             )[0]
             for r in search_results:
                 results[r.distance] = (r.entity, c)
-        if len(results) == 0: #No matching documents
-            return -1
+        if len(results) == 0:
+             #No matching documents
+            print("No matching documents")
+            return -1, -1, -1
         #Sort by distance and return only k results
         distances = list(results.keys())
         distances.sort()

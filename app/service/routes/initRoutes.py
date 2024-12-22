@@ -126,14 +126,15 @@ def search():
         distances = distances[:k]
         search_results_final = [results[k][0] for k in distances]
         source_final = [results[k][1] for k in distances]
-    except:
+    except Exception as e:
         print("Error with filter search")
+        print(e)
         search_results_final, source_final, _ = database.similarity_search(chosen_collection, query_embeddings)
-    if search_results != -1:
+    if search_results_final != -1:
         context = rag_utils.create_prompt_milvus(query, search_results_final)
     else:
         context = "No related documents found"
-        source = []
+        source_final = []
     return jsonify({
         'context': context,
         'source': source_final
