@@ -38,7 +38,7 @@ export const ChatMessage = styled(Box) (({theme}) => ({
   width: 'fit-content',
   height: 'fit-content',
   minWidth: '200px',
-  maxWidth: '70%',
+  maxWidth: { xs: '100%', md: '70%' },
   transform: 'scale(1)',
   transition: '0.5s all ease',
 }))
@@ -67,10 +67,10 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
     { title : 'Thông tin học bổng', key: 'scholarship' }
   ]
 
-  return loading ? (
+  return true ? (
     <Box sx = {ChatBlock_Style}>
-      {['',''].map(( _data, index) => ( <FadeIn key={ index*1251267 }>
-        <Box sx = { ChatDisplay_Style }>
+      {['',''].map(( _data, index) => ( <FadeIn key = {1793*index}>
+        <Box sx = { ChatDisplay_Style }  key = {17934234*index}>
           <Skeleton variant="circular" width={40} height={40} />
           <Skeleton variant="rounded" height={60} sx = {{ width: '100%', marginRight: '20px', maxWidth: '50%'}}/>
         </Box>
@@ -86,15 +86,15 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
     <Box sx = {ChatBlock_Style}>
       <FadeIn>
         <Box sx = { ChatDisplay_Style }>
-          <Avatar alt="User" src=
+          <Avatar alt="User" sx = {{ display: { xs: 'none', md: 'block' } }} src=
             {user?.avatar ? user.avatar : 
             ( userAvatar ? userAvatar : (userAvatar ? userAvatar : "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png" ))} />
             <ChatMessage sx = {{   
               background: 'linear-gradient(45deg, rgba(73,124,246,1) 47%, rgba(144,95,247,1) 100%)',
-              marginRight: '20px',
+              marginRight: {md: '20px', xs: 0},
               color: '#fff'
             }}>
-            <BubbleRight/>
+            <BubbleRight xs = {{ display: { xs: 'none', md: 'block' } }}/>
 
             <Typography sx = {{ fontSize: 'inherit', color: 'inherit' }}>
               {conservation?.question}
@@ -127,14 +127,14 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
 
       { conservation.state == 'request' && <FadeIn> <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
           <ChatMessage sx = {{   
-              marginLeft: '20px',
+              marginLeft: {md: '20px', xs: 0},
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
               color: '#000'
             }}>
             { typeof conservation?.anwser === "string" && <ReactMarkdown>
               Chào bạn! Để tôi có thể hỗ trợ bạn một cách tốt nhất, bạn vui lòng cho tôi biết bạn đang quan tâm đến thông tin nào trong các chủ đề dưới đây nhé !
             </ReactMarkdown> }
-            <BubbleLeft/>
+            <BubbleLeft xs = {{ display: { xs: 'none', md: 'block' } }}/>
 
             <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
               <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
@@ -151,13 +151,13 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
 
           </ChatMessage>
           {/* <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" /> */}
-          <Avatar alt="ChatBot" src={botAvatar} />
+          <Avatar alt="ChatBot" sx = {{ display: { xs: 'none', md: 'block' } }} src={botAvatar} />
         </Box> </FadeIn>
       }
 
       { conservation.state == 'success' && <FadeIn> <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
           <ChatMessage sx = {{   
-              marginLeft: '20px',
+              marginLeft: {md: '20px', xs: 0},
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
               color: '#000',
               textAlign: 'start'
@@ -165,7 +165,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
             { typeof conservation?.anwser === "string" && <ReactMarkdown>
               { conservation?.anwser }
             </ReactMarkdown> }
-            <BubbleLeft/>
+            <BubbleLeft xs = {{ display: { xs: 'none', md: 'block' } }}/>
 
             <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
               <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
@@ -178,7 +178,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
             </Box>
           </ChatMessage>
           {/* <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" /> */}
-          <Avatar alt="ChatBot" src={botAvatar} />
+          <Avatar alt="ChatBot" sx = {{ display: { xs: 'none', md: 'block' } }} src={botAvatar} />
         </Box>  </FadeIn>
       }
 

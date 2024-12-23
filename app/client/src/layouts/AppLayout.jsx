@@ -118,7 +118,7 @@ export default AppLayout
 import Alert from '@mui/material/Alert'
 
 const BasicAlerts = ({noticeHandler, notifications}) => {
-  return <Box sx = {{ position: 'absolute', top: '16px', right: '16px', display: 'flex', gap: 1, flexDirection: 'column' }}>
+  return <Box sx = {{ zIndex: 6, position: 'absolute', top: '24px', right: '16px', display: 'flex', gap: 1, flexDirection: 'column' }}>
       {
         notifications.reverse().map((noti, zIndex) => ( 
           <AlertComponent onClose={() => {noticeHandler.remove(noti?.id)}}
@@ -134,6 +134,6 @@ const AlertComponent = ({ id , zIndex, onClose, severity, message, duration }) =
     return () => clearTimeout(AutoClose)
   })
 
-  return zIndex < 5 && <FadeIn ><Alert severity= {severity} variant = "filled" onClose={onClose} >
+  return zIndex < 5 && <FadeIn ><Alert  severity= {severity} variant = "filled" onClose={onClose} >
     {message} - {id}</Alert> </FadeIn>
 }

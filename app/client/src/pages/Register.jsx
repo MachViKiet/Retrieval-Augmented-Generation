@@ -79,7 +79,7 @@ function Register() {
           <FormControl sx={{gap: 1}}>
             <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Tên tài khoản</FormLabel>
             <TextInput id="name" type="name" name="name" placeholder="Nguyen Van A"
-               required fullWidth variant="outlined" />
+               required fullWidth autoFocus variant="outlined" />
           </FormControl>
 
           <FormControl sx={{gap: 1}}>
@@ -96,7 +96,7 @@ function Register() {
                 Quên mật khẩu ? </Link>
             </Box>
             <TextInput name="password" placeholder="••••••" type="password" id="password"
-              autoComplete="current-password" autoFocus required fullWidth variant="outlined"
+              autoComplete="current-password" required fullWidth variant="outlined"
               sx = {{ color: '#000' }} />
           </FormControl>
 

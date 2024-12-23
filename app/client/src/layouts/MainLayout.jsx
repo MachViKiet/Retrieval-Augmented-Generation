@@ -1,4 +1,4 @@
-import { Box, Typography, ListItemText, ListItemButton, useColorScheme, Button, Tooltip, IconButton } from '@mui/material';
+import { Box, Typography, ListItemText, ListItemButton, useColorScheme, Button, Tooltip, IconButton, ListItemIcon, List, CardContent, Avatar, Card } from '@mui/material';
 import React, { useState, useEffect } from 'react'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import styled from '@emotion/styled'
@@ -11,6 +11,10 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
 import NotifycationModal from '~/components/Mui/NotifycationModal';
+import MenuIcon from '@mui/icons-material/Menu';
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import { deepOrange } from '@mui/material/colors';
+import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 
 
 const MuiListItemButton = styled(ListItemButton) (({theme}) => ({
@@ -60,35 +64,55 @@ const MuiListItemButton = styled(ListItemButton) (({theme}) => ({
 
 }))
 
+const MuiListSubItemButton = styled(MuiListItemButton) (({theme}) => ({
+  '& > div' : {
+    color: '#fff'
+  },
+
+  '&:hover' : {
+    background: '#ffffff14 !important',
+  },
+
+  '&.Mui-selected' : {
+    background: '#047aff !important',
+    '& > div' : {
+      '& > span' : {
+        color: '#fff',
+      }
+    }
+  }
+}))
+
+const SubSidebarContainer = styled(Box)(({theme}) => ({
+  position: 'absolute', top: 0, right: 0, height: '100vh', maxHeight: '100vh', overflow: 'auto', 
+  width: 'fit-content', minWidth: '240px', padding: theme.spacing(2), transform: 'scale(1)', transition: '0.5s all ease', 
+  left: '-100%',
+  borderRadius: '0 15px 15px 0', zIndex: 10,
+  background:  theme.palette.primary.main
+}))
+
+const Backdrop = styled(Box) (() => ({
+  top: 0, background: '#0000008c', height: '100vh', width: '100%', right: 0,
+  position: 'absolute', transform: 'scale(1)', transition: '0.5s all ease',  zIndex: 9, display: 'none'
+}))
+
+const MuiDivider = styled(Box)  (({theme}) => ({
+  background: '#ffffff63', height: '1px', width: '100%', marginTop: theme.spacing(1.5), marginBottom: theme.spacing(1.5), 
+}))
+
+const InformationCard = styled(Card) (({theme}) => ({
+  ...theme.typography.body2, height: 'fit-content', width: '100%', minHeight: '40px', 
+  padding: theme.spacing(1), borderRadius: '10px' }))
+
+
 function MainLayout() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const navigateList = [
-    {
-      id: 120,
-      text: "Trang chủ",
-      link: "/",
-      require: false
-    },
-    {
-      id: 121,
-      text: "Trò Chuyện",
-      link: "/chat",
-      admin: '/chat_generator',
-      require: true
-    },
-    {
-      id: 122,
-      text: "FAQs",
-      link: "/faqs",
-      require: false
-    },
-    {
-      id: 123,
-      text: "Báo lỗi/Góp ý",
-      link: "/feedback",
-      require: true
-    },
+    {id: 120, text: "Trang chủ", link: "/", require: false},
+    {id: 121, text: "Trò Chuyện", link: "/chat", admin: '/chat_generator', require: true},
+    {id: 122, text: "FAQs", link: "/faqs", require: false},
+    {id: 123, text: "Báo lỗi/Góp ý", link: "/feedback", require: true}
   ]
 
   const selectedIndexInitial = useSelector((state) => state.navigate.dashboard?.index ? state.navigate.dashboard.index : null);
@@ -101,7 +125,11 @@ function MainLayout() {
   const { noticeHandler } = useOutletContext();
 
   const [isFooter, setFooter] = useState(true)
-  
+  const [isOpenSideBar, setIsOpenSideBar] = useState(false)
+  const { getModal } = useOutletContext();
+
+  const [menu, setMenu ] = useState(null)
+  const [isOpenMenu, setOpenMenu ] = useState(false)
   
   useEffect(() => {
     setSelectedIndex(selectedIndexInitial)
@@ -109,6 +137,8 @@ function MainLayout() {
 
 
   const handleListItemClick = (_event, index, address, admin_address, require) => {
+    setIsOpenSideBar(false)
+    setOpenMenu(false)
     if( require && !user_profile ) {
       noticeHandler.add({
         status: 'warning',
@@ -137,18 +167,101 @@ function MainLayout() {
       height: '100vh',
       background: theme => theme.palette.mode == 'dark' ? '#25294a' : '#DDF3FC',
       paddingTop: '72px',
-      position: 'absolute'
+      position: 'absolute',
+      overflow: 'hidden'
      }}>
-        <Box 
-          sx = {{ 
-          width: '100%', height: '72px', paddingX: 6, color: '#000', background:  theme => theme.palette.mode == 'dark' ? '#100a34': '#fff',
-          boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)', position: 'absolute', top: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          }}> 
+
+        <Backdrop onClick={() => setIsOpenSideBar(prev => !prev)}
+            sx = {(theme) =>({ [theme.breakpoints.down('lg')]: { display: isOpenSideBar && 'block !important' } })} />
+        
+        <SubSidebarContainer className = 'subNavigate' sx = {(theme) => ({
+          [theme.breakpoints.down('lg')]: { left: isOpenSideBar && '0 !important' } })}>
+
           <Box>
             <Typography variant = 'h1' sx = {{ 
-              fontSize: '1.4rem',
-              fontWeight: '800',
-              fontFamily: '"Arial",sans-serif',
+              fontSize: '1.6rem',
+              fontWeight: '900',
+              fontFamily: '"Arial",sans-serif, "Roboto"',
+              width: '100%', textAlign: 'center',
+              background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)'
+                : 'linear-gradient(90deg, #f8f7ff 4%, color-mix(in oklch, #dcd7ff, #bbdbff) 22%, #add4ff 45%, color-mix(in oklch, #b2d6ff, #ffffff) 67%, #c148ac 100.2%)',
+              color: 'transparent',
+              backgroundSize: '100% 100%',
+              WebkitBackgroundClip : 'text'
+             }}>
+              FIT@HCMUS
+            </Typography>
+          </Box>
+
+          <MuiDivider/>
+
+          {navigateList.map((data, _index) => {
+            return data?.text ? (
+              <MuiListSubItemButton key = {data.id} selected={selectedIndex === data.id}
+              onClick={(event) => handleListItemClick(event, data.id, data.link, data?.admin, data?.require)} >
+                <ListItemText primary= {data.text}/>
+              </MuiListSubItemButton>
+            ) : <></> })}
+
+          <MuiDivider/>
+
+          { !isLogin ? <ListItemButton onClick={() => navigate('/signin')}
+            sx = {{ background: '#ffffffe8', borderRadius: '8px', marginTop: 1,
+              '& > div' : { color: '#000', }, '&:hover' : { background: '#fff', fontWeight: 700,    }, '&:active' : { transform: 'scale(0.9)' } }} >
+            <ListItemIcon> <LoginOutlinedIcon/> </ListItemIcon>
+            <ListItemText primary= "Đăng Nhập" />
+          </ListItemButton> : <>
+          <InformationCard 
+            sx = {{ background: theme => theme.palette.mode == 'light' ? '#b1cee1' : 'rgb(46, 63, 108)' }}>
+
+            <Box onClick= {() => navigate('/user_profile')}
+              sx = {{ display: 'flex', mb: 1, mt: 1, '&:active': { transform: 'scale(0.9)' }}} >
+              <Avatar src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"
+                sx={{ width: 32, height: 32, bgcolor: deepOrange[500], color: '#fff' }}></Avatar>
+              <CardContent sx={{ height: '100%', py: 0, '&:last-child' : {py: 0}, position: 'relation', paddingLeft: 1}}>
+                <Typography component="div" variant="p"
+                  sx = {{ width: '108px', overflow: 'hidden', fontSize:'0.725rem', color :theme => theme.palette.mode == 'light' ? '#000' : '#fff',
+                    whiteSpace: 'nowrap', textOverflow: 'ellipsis', cursor:'pointer', fontWeight: '800' }} >
+                  {user_profile?.name ? user_profile.name : 'Không tồn tại'}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: '0.625rem !important', lineHeight: '120%', fontWeight: '400', color: theme => theme.palette.mode == 'light' ? '#505766' : 'rgb(133, 141, 160)',
+                    width: '128px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor:'pointer' }} >
+                  {user_profile?.email ? user_profile.email : 'Không tồn tại'}
+                </Typography>
+              </CardContent>
+            </Box>
+
+            <ListItemButton onClick={() => getModal(' ', 'Bạn Thật Sự Muốn Đăng Xuất Sao ☹️', 'Đăng Xuất', logoutClick)}
+              sx = {{ background: '#ffffffe8', borderRadius: '8px', 
+                '& > div' : { color: '#000', }, '&:hover' : { background: '#fff', fontWeight: 700,    }, '&:active' : { transform: 'scale(0.9)' } }} >
+              <ListItemIcon> <ReplyAllIcon/> </ListItemIcon>
+              <ListItemText primary= "Đăng Xuất" />
+            </ListItemButton>
+          </InformationCard>
+          </>}
+        </SubSidebarContainer>
+
+        <Backdrop onClick={() => setOpenMenu(prev => !prev)}
+            sx = {(theme) =>({ [theme.breakpoints.down('lg')]: { display: isOpenMenu && 'block !important' } })} />
+        
+        <Box className = 'subNavigate' sx = {(theme) => ({
+          position: 'absolute', top: 0, left: '-100%' , height: '100vh', maxHeight: '100vh', overflow: 'auto', 
+          width: 'fit-content', transform: 'scale(1)', transition: '0.5s all ease', zIndex: 10,
+          background:  theme.palette.primary.main,
+          [theme.breakpoints.down('lg')]: { left: isOpenMenu ? '0' : '-100% !important' }   })}>
+          {menu}
+        </Box>
+
+        <Box sx = {{ 
+          width: '100%', height: '72px', color: '#000', background:  theme => theme.palette.mode == 'dark' ? '#100a34': '#fff',
+          boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)', position: 'absolute', top: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          paddingX: { md: 6, xs: 3 }, zIndex : 5
+        }}> 
+          <Box>
+            <Typography variant = 'h1' sx = {{ 
+              fontSize: { md: '1.4rem', xs: '1.3rem' },
+              fontWeight: '900',
               background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)'
                 : 'linear-gradient(90deg, #463aa2 4%, color-mix(in oklch, #382e82, #0061cf) 22%, #047aff 45%, color-mix(in oklch, #047aff, #c148ac) 67%, #c148ac 100.2%)',
               color: 'transparent',
@@ -159,12 +272,14 @@ function MainLayout() {
             </Typography>
           </Box>
 
-          <Box sx = {{ 
+          <Button onClick={() => setIsOpenSideBar(true)} startIcon= {<MenuIcon fontSize='large'/>} sx= {{ display: { xs: 'block', md: 'none' }, color: theme => theme.palette.text.secondary }}></Button>
+          
+          <Box className = 'Navigate' sx = {{ 
               width: 'fit-content',
-              display: 'flex',
               justifyContent: 'space-evenly',
               alignItems: 'center',
-              gap: 1.5
+              gap: 1.5,
+              display: { md: 'flex', xs: 'none' }
            }}>
             {navigateList.map((data, _index) => {
               return data?.text ? (
@@ -179,7 +294,7 @@ function MainLayout() {
             })}
           </Box>
 
-          <Box sx = {{  display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx = {{  display: { md: 'flex', xs: 'none' }, alignItems: 'center', gap: 1 }}>
             {
               isLogin ?
               <>
@@ -190,7 +305,7 @@ function MainLayout() {
                   color: '#ff5d5d',
                   cursor: 'pointer'
                 }} 
-                onClick={() => setIsOpenModel(true)}>
+                  onClick={() => setIsOpenModel(true)}>
                   <LogoutIcon/>
                   <Typography variant='p'> Đăng Xuất</Typography>
                 </Button>
@@ -204,7 +319,7 @@ function MainLayout() {
                 }} 
                 onClick={(event) => handleListItemClick(event, '##login', 'user_profile','admin_profile', true)} >
                   <AccountCircleOutlinedIcon/>
-                  <Typography variant='p'>{user_profile.name}</Typography>
+                  <Typography variant='p'>{user_profile?.name}</Typography>
                 </Button>
               </> : <>
                 <Button sx = {{ 
@@ -223,10 +338,12 @@ function MainLayout() {
         </Box>
 
         <Box sx = {{ overflow: 'auto', height: '100%', paddingY: '2px', paddingBottom: isFooter && '32px' }}>
-          <Outlet  context={{...useOutletContext(), setFooter}}/>
+          <Outlet  context={{...useOutletContext(), setFooter, menu: {
+            setMenu: setMenu, handle: setOpenMenu
+          }}}/>
         </Box>
 
-        <Box sx = {{ display: 'flex', justifyContent: 'center', position: 'absolute', left: '40px', top: '96px' }}>
+        <Box sx = {{ display: 'flex', justifyContent: 'center', position: 'absolute', left: { md: '40px', xs: '24px' }, top: { md: '96px', xs: '80px' } }}>
           { mode == 'light' ? <Button onClick={() => setMode('dark')} startIcon = {<LightModeIcon/>} sx = {{ color: '#047aff' }}>Sáng</Button>
           : ( mode == 'dark' ? <Button onClick={() => setMode('system')} startIcon = {<DarkModeIcon/>} sx = {{ color: '#fff' }}>Tối</Button>
           :<Button onClick={() => setMode('light')} startIcon = {<SettingsSystemDaydreamIcon/>} sx = {{ color: theme => theme.palette.mode == 'dark' ? '#fff' : '#047aff' }}>Hệ thống</Button> )
@@ -235,12 +352,12 @@ function MainLayout() {
 
         { isFooter && <Box sx = {{ 
           width: '100%',
-          height: '30px',
+          height: 'fit-content',
           background: theme => theme.palette.mode == 'dark' ? '#100a34': '#fff',
           boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)',
           position: 'absolute',
           bottom: 0,
-        }}> <Typography sx = {{ color: theme => theme.palette.mode == 'dark' ? '#ffffff85': '#33333385', width: '100%', textAlign: 'center', lineHeight: '30px' }}>ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa</Typography>
+        }}> <Typography sx = {{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap', paddingX: '9px', color: theme => theme.palette.mode == 'dark' ? '#ffffff85': '#33333385', width: '100%', textAlign: 'center', lineHeight: '30px' }}>ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa</Typography>
         </Box> }
 
 

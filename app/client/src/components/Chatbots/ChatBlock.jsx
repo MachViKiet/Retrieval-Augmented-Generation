@@ -13,7 +13,7 @@ function ChatBlock({children, sx = {}}) {
         <Box sx = {{ 
             position: 'relative',
             width: '100%',
-            paddingX: '20px'
+            paddingX: { md: '20px', xs: '10px' }
          }}>
             {children}
         </Box>

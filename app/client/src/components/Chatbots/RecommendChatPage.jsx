@@ -12,7 +12,7 @@ const Container_Style = {
     display: "flex",
     flexWrap: "wrap",
     gap: 1,
-    paddingBottom: 2,
+    paddingBottom: {md: 2, xs: 1},
     paddingTop: 1
 }
 
@@ -41,13 +41,12 @@ export function RecommendChatPage({
     <Box>
         {!username ? <Skeleton variant="rounded" width={'70%'} height={40} sx = {{ borderRadius: '10px', mb: 1 }} /> 
         : <Typography variant='h2' sx = {{ 
-            fontSize: '2rem',
+            fontSize: { xs: '1.385rem', md: '2rem' },
             width: 'fit-content',
-            paddingBottom: 0.5,
+            paddingBottom: { xs: '0', md: 0.2 },
             fontWeight: '900',
             background: theme => theme.palette.mode != 'dark' ? 
             'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #4654b1 20%, #423397 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #5089ad 56%, #131314 75%, #131314 100%)'
-            // 'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%)'
             : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
             color: 'transparent',
             backgroundSize: '155% 100%',
@@ -56,8 +55,8 @@ export function RecommendChatPage({
         }}>Xin Chào Bạn, {username} !</Typography> }
 
         <Typography variant='h3' sx = {{ 
-            fontSize: '1.5rem',
-            marginBottom: 1,
+            fontSize: { xs: '1.1rem', md: '1.5rem' },
+            marginBottom: {md: 1, xs: 0.2},
             width: 'fit-content',
             textAlign:'left',
             color: '#8e9492',
@@ -65,46 +64,30 @@ export function RecommendChatPage({
         }}>Tôi có thể giúp gì hôm nay ?</Typography>
 
 
-        <Box sx = {{...Container_Style, gap: 2 }}>
+        <Box sx = {{...Container_Style, gap: { md: 2, xs: 1 } }}>
         {['Cho tôi biết danh sách học bổng khuyến học mới nhất',
         'Wifi phòng học của trường KHTN là gì?',
-        'Tôi có thể tra cứu điểm và bảng điểm ở đâu?'].map((question, index) => {
+        'Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 'Giới thiệu trường Khoa Học Tự Nhiên'].map((question, index) => {
             return (
             <Box key = {index} sx = {{ 
-                flex: "0 1 180px"
+                flex:  { xs: "0 1 150px", md: "0 1 180px" },
+                display: { sm: index >= 3 && 'none', xs: 'flex'  }
              }}>
                 <Box sx = {{ 
-                height: '180px',
-                width: '100%',
-                borderRadius: '10px',
+                height: { xs: "150px", md: "180px" }, width: '100%', borderRadius: '10px',
                 backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
                 : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                padding: 2,
-                position: 'relative',
-                textAlign: 'start',
+                padding: 2, position: 'relative', textAlign: 'start',
                 color: theme => theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
                 boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
                 cursor: 'pointer',
                 '&:hover': {
                     color: '#fff',
                     backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041a91 100%)' 
-                    : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
-                },
-                '&:active': {
-                    transform: 'scale(0.9)'
-                }
-                }} onClick = {async () => {
-                    ChatAction && await ChatAction(question)
-                }}>
-                {index + 1}{'. '}{question}
-
-                <span style={{ 
-                    position: 'absolute',
-                    bottom: '16px',
-                    right: '16px'
-                }}>
-                    <TipsAndUpdatesOutlinedIcon/>
-                </span>
+                    : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)' },
+                '&:active': { transform: 'scale(0.9)' } }} onClick = {async () => { ChatAction && await ChatAction(question) }}>
+                    {index + 1}{'. '}{question}
+                <span style={{  position: 'absolute', bottom: '16px', right: '16px' }}> <TipsAndUpdatesOutlinedIcon/> </span>
                 </Box>
             </Box>
             )
@@ -151,8 +134,8 @@ export function RecommendChatPage({
                         : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
                     color: theme.palette.mode == 'dark' ? '#fff' : '##000000a3',
                     textAlign: 'left',
-                    marginRight: 0.75,
-                    paddingX: 1.5,
+                    marginRight: { xs: 0.4, md: 0.75 },
+                    paddingX: 1,
                     borderRadius: '10px',
                     boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 1px 2px rgba(80, 80, 80, 0.1)',
                     "&:hover": {
@@ -165,7 +148,7 @@ export function RecommendChatPage({
                 onClick = {async () => {
                     ChatAction && await ChatAction(data.question)
                 }}>
-                    <Typography variant='p' fontSize={'0.725rem'} color='inherit' sx = {{ whiteSpace: 'pre-line', textIndent: '2px' }}>
+                    <Typography variant='p' color='inherit' sx = {{ fontSize: { xs: '0.655rem', md: '0.725rem' }, whiteSpace: 'pre-line', textIndent: '2px' }}>
                     {data.key}
                     </Typography>
                 </Button>
@@ -174,7 +157,6 @@ export function RecommendChatPage({
         }
         </Box>
 
-        <Box sx ={{ width: '100%', height: 2 }}></Box>  
     </Box>
   )
 }

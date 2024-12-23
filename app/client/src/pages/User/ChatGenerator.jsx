@@ -98,6 +98,12 @@ function NewChatModal({ modalHandler = null }) {
 const ChatWindow = styled(Box)(({theme}) => ({ position: 'absolute', bottom: theme.spacing(0), padding: theme.spacing(2), paddingBottom: theme.spacing(1), paddingTop: theme.spacing(0), right: theme.spacing(0), width: '100%', borderRadius: '15px' }))
 
 const BlockStyle = { bgColor_dark: 'linear-gradient(30deg, #ffffff2e 0%, #0352c038 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #99c4ff 100%)' }
+const Backdrop = styled(Box) (() => ({
+  background: '#0000008c', height: '100%', width: '100%', right: 0, top: '-72px', borderRadius: '15px',
+  position: 'absolute', transform: 'scale(1)', transition: '0.5s all ease',  zIndex: 5, display: 'none'
+}))
+
+import VoicemailOutlinedIcon from '@mui/icons-material/VoicemailOutlined';
 
 export function ChatGenerator() {
 
@@ -107,7 +113,7 @@ export function ChatGenerator() {
   const user = useSelector((state) => state.auth.user)
   const token = useSelector(state => state.auth.token)
   // setFooter
-  const {processHandler, setFooter } = useOutletContext();
+  const { setFooter, menu } = useOutletContext();
   const [Conservations, setConservations] = useState([])
   const [openCreateChat, setOpenCreateChat] = useState(false)
   const [sessions, setSessions] = useState(null)
@@ -133,57 +139,88 @@ export function ChatGenerator() {
 
 
   useEffect(() => {
-    document.title = 'Chatbot - Trò Chuyện';
-    setFooter(false)
-    dispatch(sidebarAction({index: 121}))
+    ChatWithChatbot.userMessage(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setConservations((prev) => ([...prev, data])) })
 
-    if(socket) {
+    ChatWithChatbot.isProcessing(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, notification: data.notification })) })
+  
+    ChatWithChatbot.Processed(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, isProcess: true })) })
+  
+    ChatWithChatbot.streamMessages(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, stream_state: true, stream_message: data.messages })) }) 
+  
+    ChatWithChatbot.EndStream(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, stream_state: false, data, }))  })
+  
+    ChatWithChatbot.EndProcess(socket, async (data) => {
+      if(currentChatSession && currentChatSession._id == data?.session_id){
+        setMessageHandler(prev => ({ ...prev, isProcess: false }))
+        setConservations((prevs) => { 
+          const index = prevs.findIndex(item => item._id === data._id);
+          if(index == -1) return [...prevs, data]
 
-      ChatWithChatbot.userMessage(socket, (data) => {
-        setConservations((prev) => ([...prev, data]))
-      })
-
-      ChatWithChatbot.isProcessing(socket, (data) => {
-        setMessageHandler(prev => ({ ...prev, notification: data }))
-      })
-
-      ChatWithChatbot.Processed(socket, () => {
-        setMessageHandler(prev => ({ ...prev, isProcess: true }))
-      })
-
-      ChatWithChatbot.streamMessages(socket, (data) => {
-        setMessageHandler(prev => ({ ...prev, 
-          stream_state: true,
-          stream_message: data.messages,
-        }))
-      }) 
-
-      ChatWithChatbot.EndStream(socket, (data) => {
-        setMessageHandler(prev => ({ ...prev, 
-          stream_state: false,
-          data,
-        }))
-      })
-
-      ChatWithChatbot.EndProcess(socket, (data) => {
-        setMessageHandler(prev => ({ ...prev, 
-          isProcess: false,
-        }))
-
-        setConservations((prev) => [...prev.slice(0, -1), data])
-      })
-    }
+          return [...prevs.slice(0, -1), data]
+        }) 
+      } 
+    })
 
     return () => (
-      ChatWithChatbot.unsign_all(socket),
-      dispatch(sidebarAction({index: null}))
+      ChatWithChatbot.unsign_all(socket)
     )
-  },[getSocket()])
+  }, [getSocket(), currentChatSession])
 
   useEffect(() => {
     token && loadChatSessionFromDB().then((chatSessionFromDB) => setSessions(chatSessionFromDB))
       .catch((err) => { console.log('loadChatSessionFromDB: ',err); return [] })
   }, [token])
+
+  useEffect(() => {
+    menu.setMenu(      
+    <Block sx = {{ 
+      width: '70vw',
+      backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
+    }}>
+      <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
+        <Typography component='p' sx = {{ fontWeight: '800' }}>Cuộc Trò Chuyện</Typography>
+        {/* <Button component='p' sx = {{ color: 'red', paddingY: 0 }}>Xóa hết </Button> */}
+      </Box>
+
+      { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 152px)', overflow: 'auto', padding: 1 }}> {
+        sessions.map((session) => (
+          <Box key = {session._id} 
+            sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#000 !important' : '#',
+              borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
+              '&:hover': { background: '#00000045', color: '#fff' }
+            }}
+              onClick = {async (e) => await sessionButtonClick(session)}>
+            <Box >
+              <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
+              <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '100', fontSize: '0.725rem !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_description}</Typography>
+            </Box>
+            <IconButton color = 'error' sx = {{ padding: 0.25 }} onClick={async (e) => await removeChatSessionClick(e, session)} >
+              <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/>
+              </IconButton>
+          </Box> ))
+
+        }
+
+        { sessions.length == 0 && <> Không có cuộc trò chuyện </> }
+      </Box> }
+
+      { (apiHandler.session || !sessions) && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 252px)', overflow: 'auto', padding: 1 }}> {
+        ['','',''].map((_session, index) => (
+          <Skeleton key={ index * 82715 } variant="rounded" height={62} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
+        ))
+      } </Box> }
+
+      <Box sx = {{ padding: 1, paddingTop: 3 }}>
+        <Button 
+          variant='contained' color='info'
+          startIcon= {<OpenInNewIcon/>}
+          disabled={messageHandler.isProcess}
+          onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>
+      </Box>
+    </Block>)
+
+    return () => menu.setMenu(null)
+  }, [sessions])
 
   const loadChatSessionFromDB = async () => {
     setApiHandler(prev => ({...prev, session: true}))
@@ -235,6 +272,7 @@ export function ChatGenerator() {
   }
 
   const sessionButtonClick = async (session) => {
+    menu.handle(false)
     try {
       if(!messageHandler.isProcess) {
         const history = await loadHistoryBySession(session)
@@ -257,23 +295,25 @@ export function ChatGenerator() {
   }
 
   return (
-    <Box sx = {{ width: '100%', height: '100%', paddingY: 3, paddingX: 3 }}>
-      <Grid container  spacing={2} sx = {{ height: '100%' }}>
-
-        {/* <Grid  size={{ xs: 2.5 }}> </Grid> */}
+    
+    <Box sx = {{ position: 'relative', width: '100%', height: '100%', paddingTop: { xs : 6, md: 3 }, paddingBottom: 3, paddingX: { xs : 1.5, md: 3 } }}>
+        <Box sx = {{ display: { xs: 'flex', md: 'none' }, width: 'fit-content', position: 'absolute', right: '16px', top: '6px' }}>
+          <Button onClick={() => menu.handle(true)} sx= {{ zIndex: 3, color: theme => theme.palette.text.secondary }} startIcon = {<VoicemailOutlinedIcon/>}>Cuộc Hội Thoại</Button>
+        </Box>
+      <Grid container  spacing={2} sx = {{ height: '100%', '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
 
         <Grid  offset={{ xs: 0, md: 2 }} size={{ xs: 12, md: 7 }}>
-          <Block sx = {{ 
-            paddingBottom: '60px !important',
+          <Block sx = {{
+            paddingBottom: {md: '60px !important', xs: '95px !important'},
             width: '100%',
             backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark 
             : BlockStyle.bgColor_light ,
           }}>
 
             <ChatBlock sx = {{ 
-              maxHeight: 'calc(100vh - 228px)',
+              maxHeight: { xs: 'calc(100vh - 223px)', md: 'calc(100vh - 228px)' },
              }}>
-              <Box sx ={{ width: '100%', height: '20px' }}></Box>
+              <Box sx ={{ width: '100%', height: {xs: '10px', md: '20px'} }}></Box>
 
               { (apiHandler.history || !Conservations ) && <ChatDisplay loading /> }
 
@@ -314,7 +354,7 @@ export function ChatGenerator() {
           </Block>
         </Grid>
 
-        <Grid  size={{ xs: 3 }}>  
+        <Grid  size={{ xs: 0, md: 3 }}>  
           <Block sx = {{ 
               padding: 1,
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,

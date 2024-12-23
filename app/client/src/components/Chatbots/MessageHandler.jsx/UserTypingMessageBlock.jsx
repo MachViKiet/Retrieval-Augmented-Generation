@@ -18,16 +18,16 @@ function UserTypingMessageBlock({messageHandler}) {
 
         <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
           <ChatMessage sx = {{   
-              marginLeft: '20px',
+              marginLeft: {md: '20px', xs: 0},
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
               color: '#000'
             }}>
                 { messageHandler?.stream_message && <ReactMarkdown>
                   {messageHandler?.stream_message}
                 </ReactMarkdown> }
-            <BubbleLeft/>
+            <BubbleLeft xs = {{ display: { xs: 'none', md: 'block' } }}/>
           </ChatMessage>
-          <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
+          <Avatar xs = {{ display: { xs: 'none', md: 'block' } }} alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
         </Box>
     </motion.div>
   )

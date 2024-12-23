@@ -190,7 +190,6 @@ export function ChatGenerator() {
           const index = prevs.findIndex(item => item._id === data._id);
           if(index == -1) return [...prevs, data]
 
-          console.log('----------- ', prevs.slice(0, -1))
           return [...prevs.slice(0, -1), data]
         }) 
       } 
@@ -320,7 +319,7 @@ export function ChatGenerator() {
     return true
   }
 
-  return (<Grid container spacing={2} sx = {{ height: '100%' }}>
+  return (<Grid className = 'kietGrid' container spacing={2} sx = {{ height: '100%', width: '100%' }}>
       
       <Grid  size={{ xs: 12, md: 8.5 }}>
         <Block sx = {{ paddingBottom: '120px !important', paddingTop: '69px !important' }}>
