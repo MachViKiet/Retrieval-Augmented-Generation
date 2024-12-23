@@ -67,7 +67,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
     { title : 'Thông tin học bổng', key: 'scholarship' }
   ]
 
-  return true ? (
+  return loading ? (
     <Box sx = {ChatBlock_Style}>
       {['',''].map(( _data, index) => ( <FadeIn key = {1793*index}>
         <Box sx = { ChatDisplay_Style }  key = {17934234*index}>
