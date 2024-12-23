@@ -32,14 +32,13 @@ export function HomePage() {
       alignItems: 'center',
       justifyContent: 'center',
       position: 'relative',
-      paddingBottom: '30px',
-
+      paddingBottom: { xs: '24px', md: '30px' }
     }}>
-      <Box sx = {{  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, maxWidth: '460px' }}>
+      <Box sx = {{  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: { xs: 1, md: 2 }, maxWidth: '460px' }}>
         <Box sx = {{  width:  '295px', height:  '200px' }}> <img alt='Chatbot' src={avatar} style = {{ width: '100%', height: '100%' }} /> </Box>
         
         <Typography variant='h2' sx = {{ 
-          fontSize: '2.025rem',
+          fontSize: { xs: '1.825rem', md: '2.025rem' },
           fontWeight: '900',
           fontFamily: '"Arial",sans-serif',
           background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)'
@@ -61,9 +60,10 @@ export function HomePage() {
          </Typography>
 
         <Typography variant='p' sx = {{ 
-        color: theme => theme.palette.text.secondary,
-        textAlign: 'center',
-        fontSize: '1rem'
+          color: theme => theme.palette.text.secondary,
+          textAlign: 'center',
+          fontSize: '1rem',
+          maxWidth: '98%'
         }}>
           Trợ lý ảo giúp bạn giải đáp thắc mắc, tra cứu thông tin một cách nhanh chóng và chính xác nhất !
         </Typography>

@@ -23,8 +23,8 @@ import { getDate } from '~/utils/GetDate';
 import { refresh } from '~/store/actions/authActions';
 const Container_Style = { height: 'fit-content', paddingX:1, paddingY: 4,
   background: theme => theme.palette.mode == 'dark' ? '#3e436b' : '#7474742b',
-  minWidth: '900px',
-  width: '70vw'
+  minWidth: {md: '900px', xs: ''},
+  width:{md: '70vw', xs: '90vw'}
  }
 
 export function Profile() {
@@ -112,10 +112,10 @@ export function Profile() {
     <Box sx = {{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', paddingY: 2 }}>
       <Block className = 'Profile_Block' sx = { Container_Style }>
         
-        <Box sx = {{  paddingX: 2,  display: 'flex', flexDirection: 'column', gap: 2  }}>
+        <Box sx = {{  paddingX: {md: 2, xs: 0},  display: 'flex', flexDirection: 'column', gap: 2  }}>
           { user && <>
-          <Box sx = {{ width: '100%', height: '175px', display: 'flex', gap: 6, paddingX: 5 }}>
-            <Box>
+          <Box sx = {{ width: '100%', height: {md: '175px', xs: 'fit-content'}, display: {md: 'flex', xs: 'block'}, gap: 6, paddingX: {md: 5, xs: 0} }}>
+            <Box sx = {{ display: { xs: 'flex', md: 'auto' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
               <Avatar sx={{ background: '#6193a5', height: '140px', width: '140px' }} 
                 src = "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png"/>
               
@@ -124,7 +124,7 @@ export function Profile() {
             </Box>
 
 
-            <Box sx ={{  display: 'flex', position: 'relative', flexDirection: 'column', justifyContent:'center', width: '100%', minWidth: '600px', height: '100%' }}>
+            <Box sx ={{  display: 'flex', position: 'relative', flexDirection: 'column', justifyContent:'center', alignItems: {xs: 'center', md: 'start'}, width: '100%', minWidth: {md: '600px', xs: 'auto' }, height: '100%' }}>
               <Typography sx = {{  fontSize: '1.525rem !important', fontWeight: '900',  width: 'fit-content' }}>
                 {user?.name ? user.name : '#undefine'} </Typography>
 
@@ -159,7 +159,7 @@ export function Profile() {
               <Box sx = {{  display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <DraftsOutlinedIcon sx = {{ fontSize: '1rem' }}/>
                 <Typography sx = {{ width: 'fit-content' }}>
-                  <span style = {{ fontWeight: '600' }}>Email Công Việc : </span>{user?.email ? user.email : '#undefine'}<span></span> ( Mặc Định )
+                  <span style = {{ fontWeight: '600' }}>Email : </span>{user?.email ? user.email : '#undefine'}<span></span> ( Mặc Định )
                 </Typography>
               </Box>
 
@@ -171,15 +171,15 @@ export function Profile() {
 
           <Box sx = {{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'fit-content', gap: 1 }}>
             <PermIdentityOutlinedIcon sx = {{ fontSize: '2.225rem' }}/> 
-            <Typography variant='h1' sx = {{  fontSize: '1.5rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', lineHeight: '100%', }}>
+            <Typography variant='h1' sx = {{  fontSize: {md: '1.5rem', xs: '1.2rem'}, fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', lineHeight: '100%', }}>
               Chỉnh Sửa Thông Tin Cá Nhân</Typography>
           </Box>
 
-          <Box sx = {{ width: '100%', backgroundColor: theme => theme.palette.mode == 'dark' ? '#3c5784' : '#fff', justifyContent: 'space-evenly', padding: 4, paddingBottom: 2, borderRadius: '15px', minWidth: '788px' }} component='form'>
+          <Box sx = {{ width: '100%', backgroundColor: theme => theme.palette.mode == 'dark' ? '#3c5784' : '#fff', justifyContent: 'space-evenly', padding: {md: 4, xs: 2}, paddingBottom: 2, borderRadius: '15px', minWidth: { md: '788px', xs: 'auto' } }} component='form'>
 
             <Grid container spacing={2} sx = {{ width: '100%', height: 'fit-content' }}>
 
-              <Grid size={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Họ Và Tên</FormLabel>
@@ -196,7 +196,7 @@ export function Profile() {
                 </FormControl>
               </Grid>
 
-              <Grid size={2} offset={0.25}>
+              <Grid size={{ xs: 12, md: 2 }} offset={0.25}>
                 <FormLabel htmlFor="password" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start'}}>Giới Tính</FormLabel>
                 <Select
                   id="user_sex"
@@ -211,7 +211,7 @@ export function Profile() {
                 </Select>
               </Grid>
 
-              <Grid size={3.5} offset={0.25}>
+              <Grid size={{ xs: 12, md: 3.5 }} offset={0.25}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <FormLabel htmlFor="birth" sx = {{ color: 'inherit' }}>Ngày Sinh</FormLabel>
@@ -227,7 +227,7 @@ export function Profile() {
                 </FormControl>
               </Grid>
 
-              <Grid size={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <Box sx={{ display: 'block', width: '100%' }}>
                   <FormLabel htmlFor="department" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Chương Trình Đào Tạo</FormLabel>
                   <Select
@@ -247,7 +247,7 @@ export function Profile() {
                 </Box>
               </Grid>
 
-              <Grid size={3} offset={0}>
+              <Grid size={{ xs: 12, md: 3 }} offset={0}>
                 <Box sx={{ display: 'block', width: '100%' }}>
                   <FormLabel htmlFor="user_position" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Khóa Đào Tạo</FormLabel>
                   <Select
@@ -268,7 +268,7 @@ export function Profile() {
                 </Box>
               </Grid>
 
-              <Grid size={7} offset={0}>
+              <Grid size={{ xs: 12, md: 7 }} offset={0}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Email Công Việc</FormLabel>
@@ -285,7 +285,7 @@ export function Profile() {
                 </FormControl>
               </Grid>
 
-              <Grid size={5}>
+              <Grid size={{ xs: 12, md: 5 }}>
                 <FormControl  sx={{gap: 1, display: 'flex', width: '100%'}}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <FormLabel htmlFor="personal_phone" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
@@ -301,7 +301,7 @@ export function Profile() {
                 </FormControl>
               </Grid>
 
-              <Grid size={7}>
+              <Grid size={{ xs: 12, md: 7 }}>
                 <Box sx={{ display: 'block', width: '100%' }}>
                   <FormLabel htmlFor="user_position" sx = {{ color: 'inherit', display: 'block' , marginBottom: 1, textAlign: 'start' }}>Chuyên Ngành</FormLabel>
                   <Select

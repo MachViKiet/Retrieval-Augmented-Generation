@@ -6,7 +6,8 @@ function Block({sx = {}, children, className }) {
     className = { className || 'Custom_Block' }
     sx = {theme => ({
       ...theme.typography.body2,
-      padding: 2,
+      paddingX: {md: 2, xs: 1},
+      paddingY: 1,
       textAlign: 'center',
       width: '100%',
       height: '100%',

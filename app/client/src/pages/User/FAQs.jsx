@@ -40,10 +40,8 @@ function FAQs() {
     }
   ]
   return (
-    <Box sx = {{ width: '100%', height: '100%', paddingY: 3, paddingX: 3 }}>
+    <Box sx = {{ width: '100%', height: '100%', paddingY: { xs : 6, md: 3 }, paddingX: 3 }}>
       <Grid container  spacing={2} sx = {{ height: '100%' }}>
-
-
         <Grid  offset={{ xs: 0, md: 3 }} size={{ xs: 12, md: 6 }}>
           <Typography variant = 'h1' sx = {{ 
             fontSize: '2rem',

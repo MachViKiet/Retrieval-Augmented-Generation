@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-export const BubbleRight = () => ( 
+export const BubbleRight = ({xs = {}}) => ( 
   <>      
     <Box sx = {{ 
       background: 'inherit',
@@ -9,7 +9,8 @@ export const BubbleRight = () => (
       height: '6px',
       top: '5px',
       right: '-10px',
-      borderRadius: '50%'
+      borderRadius: '50%',
+      ...xs
     }}/>
     <Box sx = {{ 
       background: 'inherit',
@@ -18,7 +19,8 @@ export const BubbleRight = () => (
       height: '4px',
       top: '10px',
       right: '-15px',
-      borderRadius: '50%'
+      borderRadius: '50%',
+      ...xs
     }}/>
   </> 
 )

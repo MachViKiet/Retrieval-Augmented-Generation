@@ -14,7 +14,7 @@ function FeedBack() {
     )
   })
   return (
-    <Box sx = {{ width: '100%', height: '100%', paddingY: 3, paddingX: 3 }}>
+    <Box sx = {{ width: '100%', height: '100%', paddingY: { xs : 6, md: 3 }, paddingX: 3 }}>
       <Grid container  spacing={2} sx = {{ height: '100%' }}>
 
 

@@ -12,7 +12,7 @@ import { useColorScheme } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SettingsSystemDaydreamIcon from '@mui/icons-material/SettingsSystemDaydream';
-import NotifycationModal from '~/components/Mui/NotifycationModal';
+import Hidden from '~/components/Page/Hidden';
 
 const DashboardContainer = styled(Box)(({ theme }) => ({ 
   height: '100vh', justifyContent: "center", alignItems: "center", transform: 'scale(1)', transition: '0.5s all ease',
@@ -69,7 +69,7 @@ function DashboardLayout() {
     }
   }
 
-  return (
+  return (<>
     <DashboardContainer sx = {(theme) => ({
         paddingLeft: { xs : isOpenSideBar ? 0 : '85px', lg: `calc(${theme.app.SideBar_Width})` }})}>
 
@@ -85,10 +85,8 @@ function DashboardLayout() {
               fontSize: '1.6rem',
               fontWeight: '800',
               fontFamily: '"Arial",sans-serif',
-              // background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #2738f3 4%, color-mix(in oklch, #4058e7, #2e9dda) 22%, #2d3aff 45%, color-mix(in oklch, #b821f7, #4b81ff) 67%, #3592ff 100.2%)'
-              //  : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
               background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)'
-              : 'linear-gradient(74deg, #ee8ff2 0, #9b72cb 9%, #a0acff 20%, #6f8dfb 24%, #9b72cb 35%, #4285f4 100%)',
+              : 'linear-gradient(90deg, #f8f7ff 4%, color-mix(in oklch, #dcd7ff, #bbdbff) 22%, #add4ff 45%, color-mix(in oklch, #b2d6ff, #ffffff) 67%, #c7f5ff 100.2%)',
               color: 'transparent',
               backgroundSize: '100% 100%',
               WebkitBackgroundClip : 'text'
@@ -159,7 +157,7 @@ function DashboardLayout() {
 
       <SubSidebarContainer sx = {(theme) => ({
           [theme.breakpoints.down('lg')]: { left: isOpenSideBar && '-100% !important' } })}>
-        <Box/>
+
 
         <MuiDivider/>
 
@@ -201,15 +199,20 @@ function DashboardLayout() {
         </ListItemButton >
 
       </SubSidebarContainer>
-
+      
       <Box sx={ ContentContainer_Style }>
-        <Box sx = {{ overflow: 'auto', height: '100%', paddingX: 1, paddingY: '2px' }}>
+        <Box sx = {{ display: {xs: 'none', md: 'flex' }, overflow: 'auto', height: '100%', paddingX: 1, paddingY: '2px' }}>
 
           <Outlet context={{...useOutletContext(), dashboard}}/>
         </Box>
+
+        <Box sx = {{ display: {xs: 'flex', md: 'none' } }}>
+          <Hidden/>
+        </Box>
       </Box>   
       
-    </DashboardContainer>       
+    </DashboardContainer> 
+    </>      
   )
 }
 

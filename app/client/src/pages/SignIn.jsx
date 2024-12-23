@@ -90,7 +90,7 @@ function SignIn() {
                 Quên mật khẩu ? </Link>
             </Box>
             <TextInput name="password" placeholder="••••••" type="password" id="password"
-              autoComplete="current-password" autoFocus required fullWidth variant="outlined"
+              autoComplete="current-password" required fullWidth variant="outlined"
               sx = {{ color: '#000' }} />
           </FormControl>
 
