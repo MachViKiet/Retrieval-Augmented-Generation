@@ -40,12 +40,12 @@ def preload():
     #model = ChatModel(model_id=chat_model_id)
     model = ChatModel(provider=os.getenv("PROVIDER"))
     print("Chat model loaded.")
-    global encoder
-    encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
-    print("Encoder loaded.")
-    global pho_queryrouter
-    pho_queryrouter = PhoQueryRouter()
-    print("Query Router loaded.")
+    # global encoder
+    # encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
+    # print("Encoder loaded.")
+    # global pho_queryrouter
+    # pho_queryrouter = PhoQueryRouter()
+    # print("Query Router loaded.")
     global database
     database = rag_utils.MilvusDB(
         host=os.getenv('MILVUS_HOST', ""), port=os.getenv('MILVUS_PORT', ""),
@@ -65,6 +65,7 @@ def determine_collection():
     query = request.form['query']
     history = json.loads(request.form['history']) # Conversation history
     threshold = 0.5
+    pho_queryrouter = PhoQueryRouter()
     #----------------------------------
     conversation = ""
     for h in history:
@@ -106,6 +107,7 @@ def search():
     except json.JSONDecodeError:
         filter_expressions = None
     k = 3
+    encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
     #----------------------------------
     database.load_collection(chosen_collection)
     output_fields = {
