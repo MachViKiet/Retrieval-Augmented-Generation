@@ -37,7 +37,6 @@ const chat = (socket, message) => {
     socket && socket.emit('/ChatWithChatBot', message )
 }
 
-
 export const ChatWithChatbot = {
     userMessage,
     isProcessing,

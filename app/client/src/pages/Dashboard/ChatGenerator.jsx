@@ -173,26 +173,50 @@ export function ChatGenerator() {
   }, [])
 
   useEffect(() => {
-    ChatWithChatbot.userMessage(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setConservations((prev) => ([...prev, data])) })
+    ChatWithChatbot.userMessage(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
+      }
+    })
 
-    ChatWithChatbot.isProcessing(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, notification: data.notification })) })
-  
-    ChatWithChatbot.Processed(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, isProcess: true })) })
-  
-    ChatWithChatbot.streamMessages(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, stream_state: true, stream_message: data.messages })) }) 
-  
-    ChatWithChatbot.EndStream(socket, (data) => { currentChatSession && currentChatSession._id == data?.session_id && setMessageHandler(prev => ({ ...prev, stream_state: false, data, }))  })
-  
-    ChatWithChatbot.EndProcess(socket, async (data) => {
-      if(currentChatSession && currentChatSession._id == data?.session_id){
-        setMessageHandler(prev => ({ ...prev, isProcess: false }))
-        setConservations((prevs) => { 
-          const index = prevs.findIndex(item => item._id === data._id);
-          if(index == -1) return [...prevs, data]
-
-          return [...prevs.slice(0, -1), data]
-        }) 
+    ChatWithChatbot.isProcessing(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
       } 
+    })
+
+    ChatWithChatbot.Processed(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, ...data })) 
+      }
+    })
+
+    ChatWithChatbot.streamMessages(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: true, stream_message: data.messages, ...data })) 
+      }
+    }) 
+
+    ChatWithChatbot.EndStream(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: false, ...data }))  
+      }
+    })
+
+    ChatWithChatbot.EndProcess(socket, async (data) => {
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler({
+          isProcess: false,
+          notification: [],
+          stream_state: false,
+          stream_load: [],
+          stream_message: null,
+          stream_time: 0,
+          duration: 0,
+          create_at: null
+        })
+        setConservations((prevs) => [...prevs, data]) 
+      }
     })
 
     return () => (
@@ -216,10 +240,10 @@ export function ChatGenerator() {
 
   const loadHistoryBySession = async (session) => {
     setApiHandler(prev => ({...prev, history: true}))
-    return useConservation.getHistory({ session: session?._id }, token).then((historyFromDB) => {{
+    return useConservation.getHistory({ session: session?._id }, token).then((sessionWithHistory) => {{
       setApiHandler(prev => ({...prev, history: false}))
-      return historyFromDB
-    }}).catch((err) => console.error('Có lỗi xảy ra với server'))
+      return sessionWithHistory
+    }})
   }
  
   const ChatAction = async (message) => {
@@ -268,17 +292,15 @@ export function ChatGenerator() {
     return useConservation.create(data, token).then(async (session) => {
       setSessions(prev => ([session, ...prev]))
       setCurrentChatSession(session)
-      const history = await loadHistoryBySession(session)
-      setConservations(history)
+      const sessionWithHistory = await loadHistoryBySession(session)
+      setConservations(sessionWithHistory.history)
       return session
     }).catch(() => 'Server Chatbot Không Hoạt Động')
   }
 
   const sessionButtonClick = async (session) => {
     try {
-        const history = await loadHistoryBySession(session)
         setCurrentChatSession(session)
-        setConservations(history)
         setMessageHandler({
           isProcess: false,
           notification: [],
@@ -289,6 +311,12 @@ export function ChatGenerator() {
           duration: 0,
           create_at: null
         })
+
+        const sessionWithHistory = await loadHistoryBySession(session)
+        setConservations(sessionWithHistory.history)
+        if(sessionWithHistory?.in_progress) {
+          setMessageHandler(sessionWithHistory.in_progress)
+        }
     } catch (error) {
       return error
     }
@@ -307,12 +335,15 @@ export function ChatGenerator() {
   const feedback = async (value) => {
     const sendFeedbackEvent = processHandler.add('#sendFeedback')
     await useConservation.update(value, token)
-    .then((data) => { setConservations(prev => prev.map((prev_consv) => {
-      if(prev_consv._id == data._id){
-        return data
-      }
-      return prev_consv
-    })) })
+    .then((data) => { setConservations(prev => {
+      prev.forEach((prev_consv) => {
+        if(prev_consv._id == data._id){
+          return { ...prev_consv, rating: value }
+        }
+        return prev_consv
+      })
+      return prev
+    })})
     .catch((err) => console.log(err))
     .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
 
@@ -324,17 +355,14 @@ export function ChatGenerator() {
       <Grid  size={{ xs: 12, md: 8.5 }}>
         <Block sx = {{ paddingBottom: '120px !important', paddingTop: '69px !important' }}>
 
-          <Header> 
-            {/* <AvatarUserDefault/> */}
-            {/* <Typography variant='h1' sx = {{ color: '#fff', fontSize: '1.5rem', width: 'fit-content', fontWeight: '900' }}>Chatbot Trợ Lý Sinh Viên</Typography> */}
-          </Header>
+          <Header> </Header>
 
           <ChatBlock>
             <Box sx ={{ width: '100%', height: '10px' }}/>
 
             { (apiHandler.history || !Conservations ) && <ChatDisplay loading /> }
 
-            { !apiHandler.history && Conservations && Conservations.length === 0 && 
+            { !apiHandler.history && Conservations && Conservations.length === 0 && !messageHandler.isProcess &&
               <RecommendChatPage username = {user?.name} ChatAction = {ChatAction}/> }
 
             { !apiHandler.history && Conservations && Conservations.map((conservation) => {
@@ -347,8 +375,20 @@ export function ChatGenerator() {
               </div>
             })}
 
-            <ProcessBlock messageHandler={messageHandler}/>
-            <UserTypingMessageBlock messageHandler={messageHandler}/>
+            {
+              messageHandler.isProcess && (
+                <>
+                  <div key={messageHandler?._id}>
+                    <ChatDisplay conservation = {messageHandler} user={user}  
+                      action = {{ re_prompt : ChatAction }} />
+                  </div>
+    
+                  <ProcessBlock messageHandler={messageHandler}/>
+                  <UserTypingMessageBlock messageHandler={messageHandler}/>
+                </>
+              )
+            }
+
             <div ref={bottomRef} />
           </ChatBlock>
 
@@ -367,7 +407,7 @@ export function ChatGenerator() {
       <Grid  size={{ xs: 3.5, md: 3.5 }} >
         <Block sx = {{ padding: 1, paddingTop: 9, display: { md: 'block', xs: 'none' } }}>
           <Header/> 
-          <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
+          <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1,  paddingTop: 8 }}>
             <Typography component='p' sx = {{ fontWeight: '800' }}> Cuộc Trò Chuyện </Typography>
             {/* <Button component='p' sx = {{ paddingY: 0, color: theme => theme.palette.mode == 'dark' ? '#ff9b9b' : '#fc0000' }}> Xóa hết </Button> */}
           </Box>
@@ -375,8 +415,8 @@ export function ChatGenerator() {
           { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 230px)', overflow: 'auto', padding: 1 }}> {
             sessions.map((session) => (
               <Box key = {session._id} 
-                sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#716576eb' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#fff' : '#',
-                  '&:hover': {background: '#00000091', color: '#fff'},
+                sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', color: currentChatSession && session?._id == currentChatSession._id ? '#000 !important' : '#',
+                  '&:hover': {background: '#00000045', color: '#fff'},
                   borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}
                   onClick = {async (e) => await sessionButtonClick(session)}>
                 <Box >
@@ -404,7 +444,7 @@ export function ChatGenerator() {
 
           <Box sx = {{ padding: 1, paddingTop: 3 }}>
             <Button 
-              variant='contained' color='info'
+              variant='contained' sx = {{ background: theme => theme.palette.primary.main }}
               startIcon= {<OpenInNewIcon/>}
               disabled={messageHandler.isProcess}
               onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>

@@ -119,7 +119,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
 
                 { conservation?.rating != -1 && <Box sx = {{ display: 'flex' }}>{conservation?.rating}<StarIcon fontSize = 'small' sx = {{ color: 'yellow' }}/></Box> }
 
-                <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime(conservation?.create_at)}</Typography>
+                <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime(conservation?.createdAt)}</Typography>
             </Box>
           </ChatMessage>
         </Box>
@@ -176,7 +176,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
                     onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#fff'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>
                 })}
               </Box>
-              <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end' }}>{getTime(conservation?.create_at)}</Typography>
+              <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end' }}>{getTime(conservation?.create_at ? conservation.create_at : conservation?.createdAt)}</Typography>
             </Box>
           </ChatMessage>
           {/* <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" /> */}

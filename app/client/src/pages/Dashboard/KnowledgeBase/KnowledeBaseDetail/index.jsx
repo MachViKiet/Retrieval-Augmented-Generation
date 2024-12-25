@@ -18,6 +18,8 @@ import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import InputFileUpload, { VisuallyHiddenInput } from '~/components/Mui/InputFileUpload';
 import { useDocument } from '~/apis/Document';
+import { Airflow } from '~/socket/Airflow';
+import { getSocket } from '~/socket';
 
 const useData = (documents) => {
   const { id } = useParams();
@@ -28,8 +30,8 @@ const useData = (documents) => {
 
   if(!documents) return {rows: [], columns: [], loading : false}
   const rows = documents.map((document) => {
-    const {_id, document_name, amount_chunking, createdAt, updatedAt, methods, isactive,state} = document
-    return createData(_id, document_name, amount_chunking, formatTime(createdAt), formatTime(updatedAt), methods, isactive,state, ['delete'] )
+    const {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state} = document
+    return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['delete'] )
   })
 
   const condition = (params) => { return ['processed', 'pending', 'failed'].includes(params.row.parsingStatus) }
@@ -84,6 +86,8 @@ function Datasets() {
 
   const { processHandler, noticeHandler, dashboard, subDashboard } = useOutletContext();
 
+  const socket = getSocket();
+
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
     dashboard.navigate.active(346)
@@ -94,7 +98,7 @@ function Datasets() {
       { _id: 564, title: "Thử Nghiệm", icon: <BugReportOutlinedIcon/>, link: "/knowledge_bases/retrieval_testing/" + id },
       { _id: 893, title: "Cấu Hình", icon: <AdjustOutlinedIcon/>, link: "/knowledge_bases/configuration/" + id }]
     )
-    
+
     return () => ( 
       dashboard.navigate.active('#'),
       subDashboard.navigate.active('#')
@@ -115,9 +119,43 @@ function Datasets() {
         subDashboard.addTitle(collectionWithDocuments.collection_name)        
       }).catch((err) => console.log(err))
       .finally(()=> processHandler.remove('#loadCollectionWithDocument', loadCollectionWithDocument))
-
     }
   }, [token])
+
+  useEffect(() => {
+
+    collectionWithDocuments?.documents && collectionWithDocuments?.documents.map((document, index) => {
+      if( document?.document_type && document.document_type == 'Upload' 
+        && document?.state && document?.state == 'queued'){
+        console.log({file_id: document?._id})
+
+
+        Airflow.CheckStatus(socket, {
+          dag_id: document?.dag_id,
+          dag_run_id: document?.dag_run_id,
+          file_id: document?._id
+        })
+
+        Airflow.getStatus(socket , (data) => {
+          if(document._id === data.file_id && document?.state 
+            && collectionWithDocuments.documents[index]?.state != data.state){
+            Array.isArray(collectionWithDocuments?.documents) && setCollectionWithDocuments((prevs) => (
+              { ...prevs, documents: prevs.documents.map(document => {
+                if(document._id === data.file_id && document?.state 
+                  && document.state != data.state) {
+                    return { ...document, state: data.state }
+                }
+                return document
+              }) }
+            ))
+            
+          }
+
+        })
+
+      }
+    })
+  }, [collectionWithDocuments, getSocket()])
 
   const uploadFileHandler = (e) => {
     e.preventDefault()

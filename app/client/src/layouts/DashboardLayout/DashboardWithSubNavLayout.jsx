@@ -41,9 +41,9 @@ function DashboardWithSubNavLayout() {
   }
 
   return (
-    <Box sx = {{ height: '100%', paddingLeft: 28, position: 'relative', transform: 'scale(1)', transition: '0.5s all ease' }}>
+    <Box sx = {{ height: '100%', width: '100%', paddingLeft: 28, position: 'relative', transform: 'scale(1)', transition: '0.5s all ease' }}>
       <Box sx = {{ position: 'absolute', height: '100%', width:  theme =>  theme.spacing(26), left: 0, top: 0, transition: 'inherit' }}>
-        <Block sx ={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Block sx ={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
 
         {
           navInfor ? <>
@@ -83,7 +83,7 @@ function DashboardWithSubNavLayout() {
         </Block>
       </Box>
 
-      <Block>
+      <Block sx ={{ padding: 2, overflow: 'auto' }}>
         <Outlet context={{...useOutletContext(), subDashboard }}/>
       </Block>
     </Box>
