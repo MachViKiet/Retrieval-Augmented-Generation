@@ -38,7 +38,6 @@ export const ChatMessage = styled(Box) (({theme}) => ({
   width: 'fit-content',
   height: 'fit-content',
   minWidth: '200px',
-  maxWidth: { xs: '100%', md: '70%' },
   transform: 'scale(1)',
   transition: '0.5s all ease',
 }))
@@ -92,7 +91,8 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
             <ChatMessage sx = {{   
               background: 'linear-gradient(45deg, rgba(73,124,246,1) 47%, rgba(144,95,247,1) 100%)',
               marginRight: {md: '20px', xs: 0},
-              color: '#fff'
+              color: '#fff',
+              maxWidth: { xs: '100%', md: '70%' }
             }}>
             <BubbleRight xs = {{ display: { xs: 'none', md: 'block' } }}/>
 
@@ -129,7 +129,8 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
           <ChatMessage sx = {{   
               marginLeft: {md: '20px', xs: 0},
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
-              color: '#000'
+              color: '#000',
+              maxWidth: { xs: '100%', md: '70%' }
             }}>
             { typeof conservation?.anwser === "string" && <ReactMarkdown>
               Chào bạn! Để tôi có thể hỗ trợ bạn một cách tốt nhất, bạn vui lòng cho tôi biết bạn đang quan tâm đến thông tin nào trong các chủ đề dưới đây nhé !
@@ -160,7 +161,8 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
               marginLeft: {md: '20px', xs: 0},
               background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
               color: '#000',
-              textAlign: 'start'
+              textAlign: 'start',
+              maxWidth: { xs: '100%', md: '70%' }
             }}>
             { typeof conservation?.anwser === "string" && <ReactMarkdown>
               { conservation?.anwser }

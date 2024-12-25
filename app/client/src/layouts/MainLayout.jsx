@@ -115,8 +115,7 @@ function MainLayout() {
     {id: 123, text: "Báo lỗi/Góp ý", link: "/feedback", require: true}
   ]
 
-  const selectedIndexInitial = useSelector((state) => state.navigate.dashboard?.index ? state.navigate.dashboard.index : null);
-  const [selectedIndex, setSelectedIndex] = useState(selectedIndexInitial)
+  const [selectedIndex, setSelectedIndex] = useState(null)
 
   const user_profile = useSelector((state) => state.auth.user ? state.auth.user : null);
   const isLogin = useSelector((state) => state.auth.user ? state.auth.loggedIn : null);
@@ -131,9 +130,9 @@ function MainLayout() {
   const [menu, setMenu ] = useState(null)
   const [isOpenMenu, setOpenMenu ] = useState(false)
   
-  useEffect(() => {
-    setSelectedIndex(selectedIndexInitial)
-  }, [selectedIndexInitial])
+  // useEffect(() => {
+  //   setSelectedIndex(selectedIndexInitial)
+  // }, [selectedIndexInitial])
 
 
   const handleListItemClick = (_event, index, address, admin_address, require) => {
@@ -340,7 +339,7 @@ function MainLayout() {
         <Box sx = {{ overflow: 'auto', height: '100%', paddingY: '2px', paddingBottom: isFooter && '32px' }}>
           <Outlet  context={{...useOutletContext(), setFooter, menu: {
             setMenu: setMenu, handle: setOpenMenu
-          }}}/>
+          }, mainLayout: { navigate: setSelectedIndex } }}/>
         </Box>
 
         <Box sx = {{ display: 'flex', justifyContent: 'center', position: 'absolute', left: { md: '40px', xs: '24px' }, top: { md: '96px', xs: '80px' } }}>

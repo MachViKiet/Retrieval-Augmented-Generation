@@ -55,7 +55,7 @@ export function RecommendChatPage({
         }}>Xin Chào Bạn, {username} !</Typography> }
 
         <Typography variant='h3' sx = {{ 
-            fontSize: { xs: '1.1rem', md: '1.5rem' },
+            fontSize: { xs: '1.3rem', md: '1.5rem' },
             marginBottom: {md: 1, xs: 0.2},
             width: 'fit-content',
             textAlign:'left',
@@ -70,11 +70,11 @@ export function RecommendChatPage({
         'Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 'Giới thiệu trường Khoa Học Tự Nhiên'].map((question, index) => {
             return (
             <Box key = {index} sx = {{ 
-                flex:  { xs: "0 1 150px", md: "0 1 180px" },
-                display: { sm: index >= 3 && 'none', xs: 'flex'  }
+                flex:  { xs: "0 1 140px", md: "0 1 180px" },
+                display: { sm: index >= 3 && 'none', xs: 'flex' }
              }}>
                 <Box sx = {{ 
-                height: { xs: "150px", md: "180px" }, width: '100%', borderRadius: '10px',
+                height: { xs: "140px", md: "180px" }, width: '100%', borderRadius: '10px',
                 backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
                 : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
                 padding: 2, position: 'relative', textAlign: 'start',

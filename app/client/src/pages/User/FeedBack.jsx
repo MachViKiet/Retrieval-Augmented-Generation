@@ -3,15 +3,14 @@ import { useDispatch } from 'react-redux'
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import Grid from '@mui/material/Grid2'
 import { Box, Button, Typography } from '@mui/material';
+import { useOutletContext } from 'react-router-dom';
 
 function FeedBack() {
-  const dispatch = useDispatch()
+  const { mainLayout } = useOutletContext();
+  
   useEffect(() => {
-    document.title = 'Chatbot - Phản Hồi';
-    dispatch(sidebarAction({index: 123}))
-    return () => (
-      dispatch(sidebarAction({index: null}))
-    )
+    document.title = 'Chatbot - Phản Hồi'
+    mainLayout.navigate(123)
   })
   return (
     <Box sx = {{ width: '100%', height: '100%', paddingY: { xs : 6, md: 3 }, paddingX: 3 }}>

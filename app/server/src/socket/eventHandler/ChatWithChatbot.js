@@ -5,6 +5,7 @@
 
 import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot'
 import { saveConservationToDB } from '~/controllers/conservation/helper/saveConservationToDB'
+import { updateChatSession } from '~/controllers/conservation/helper/updateChatSession'
 import { getProfileToString } from '~/utils/getProfileToString'
 import { getTime } from '~/utils/getTime'
 const { ObjectId } = require('mongodb')
@@ -37,7 +38,7 @@ export const ChatWithChatBot = async (socket) => {
     }
 
     socket.emit('/ChatWithChatBot/userMessage', objectConservation)
-
+    let resp
     try {
 
       socket.emit('/ChatWithChatBot/isProcessing', {
@@ -64,7 +65,7 @@ export const ChatWithChatBot = async (socket) => {
       }
       const end_point_1 = (new Date()).getTime()
 
-      socket.emit('/ChatWithChatBot/isProcessing', {
+      resp = {
         ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
@@ -78,7 +79,11 @@ export const ChatWithChatBot = async (socket) => {
           state: false,
           data: null,
           time: null
-        }] })
+        }] }
+
+      socket.emit('/ChatWithChatBot/isProcessing', resp )
+
+      await updateChatSession({ in_progress: resp })
 
       if ( chosen_collections == null || chosen_collections == '' || !!!chosen_collections ) {
         socket.emit('/ChatWithChatBot/EndProcess', {
@@ -100,7 +105,7 @@ export const ChatWithChatBot = async (socket) => {
       }).catch((err) => { throw 'Lỗi ở bước extract_meta: ' + JSON.stringify(err) })
       const end_point_2 = (new Date()).getTime()
 
-      socket.emit('/ChatWithChatBot/isProcessing', {
+      resp = {
         ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
@@ -120,7 +125,11 @@ export const ChatWithChatBot = async (socket) => {
           state: false,
           data: null,
           time: null
-        }] })
+        }] }
+
+      socket.emit('/ChatWithChatBot/isProcessing', resp )
+
+      await updateChatSession({ in_progress: resp })
 
       const start_point_3 = (new Date()).getTime()
 
@@ -130,7 +139,7 @@ export const ChatWithChatBot = async (socket) => {
       }).catch((err) => { throw 'Lỗi ở bước search: ' + JSON.stringify(err) })
       const end_point_3 = (new Date()).getTime()
 
-      socket.emit('/ChatWithChatBot/isProcessing', {
+      resp = {
         ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
@@ -156,7 +165,11 @@ export const ChatWithChatBot = async (socket) => {
           state: false,
           data: null,
           time: null
-        }] })
+        }] }
+
+      socket.emit('/ChatWithChatBot/isProcessing', resp)
+
+      await updateChatSession({ in_progress: resp })
 
       const start_point_4 = (new Date()).getTime()
 
@@ -166,8 +179,7 @@ export const ChatWithChatBot = async (socket) => {
       }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
       const end_point_4 = (new Date()).getTime()
 
-
-      socket.emit('/ChatWithChatBot/isProcessing', {
+      resp = {
         ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
@@ -199,7 +211,11 @@ export const ChatWithChatBot = async (socket) => {
           state: false,
           data: null,
           duration: null
-        }] })
+        }] }
+
+      socket.emit('/ChatWithChatBot/isProcessing', resp)
+
+      await updateChatSession({ in_progress: resp })
 
       socket.emit('/ChatWithChatBot/Processed', {
         ...objectConservation,
@@ -270,6 +286,8 @@ export const ChatWithChatBot = async (socket) => {
         'duration': startTime - new Date().getTime()
       })
     }
+
+    await updateChatSession({ in_progress: null })
   })
 
 

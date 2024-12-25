@@ -2,21 +2,20 @@ import { Box, Button, Typography, useColorScheme } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
 import avatar from '~/assets/10665849.png'
 
 export function HomePage() {
-  const dispatch = useDispatch()
+  const { mainLayout } = useOutletContext();
+  
   const navigate = useNavigate()
   const isLogin = useSelector((state) => state.auth.user ? state.auth.loggedIn : null);
 
   useEffect(() => {
     document.title = 'Chatbot - Trang Chủ';
-    dispatch(sidebarAction({index: 120}))
-    return () => (
-      dispatch(sidebarAction({index: null}))
-    )
+    mainLayout.navigate(120)
+
   })
   const Start = (e) => {
     isLogin ? navigate('/chat') : navigate('/signin')

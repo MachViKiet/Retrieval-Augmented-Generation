@@ -4,17 +4,15 @@ import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import Grid from '@mui/material/Grid2'
 import { Box, Typography } from '@mui/material';
 import AccordionUsage from '~/components/Mui/AccordionUsage';
+import { useOutletContext } from 'react-router-dom';
 
 function FAQs() {
   
-  const dispatch = useDispatch()
+   const { mainLayout } = useOutletContext();
 
   useEffect(() => {
     document.title = 'Chatbot - FAQs';
-    dispatch(sidebarAction({index: 122}))
-    return () => (
-      dispatch(sidebarAction({index: null}))
-    )
+    mainLayout.navigate(122)
   })
 
   const fags = [

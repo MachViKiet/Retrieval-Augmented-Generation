@@ -56,50 +56,6 @@ function ProcessBlock({messageHandler, sx = {}}) {
         </ChatMessage>
         <Avatar sx = {{ display: { xs: 'none', md: 'block' } }} alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
       </Box>
-
-
-      {/* <BubbleChatLeft
-        sx = {sx?.box}
-        text={
-          <>
-            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-              <Typography variant='p' sx = {{  fontSize: '0.825rem', color: '#000' }}>Đang tìm kiếm</Typography>
-            </Box>
-
-            <LinearProgress color="grey" sx = {{
-              height: '2px',
-              borderRadius: '10px',
-              marginBottom: '5px',
-              marginTop: '2px'
-            }}/>
-
-            {messageHandler.notification.map((text, index) => (
-              <motion.div
-                key={index}
-                  initial={{ transform: "scale(0)" }}
-                  animate={{ transform: "scale(1)" }}
-                  transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 40,
-                }}>
-                <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                  {  !text.state ? 
-                    <CircularProgress size="10px" sx = {{ marginRight: '8px' }}/>
-                    : <CheckIcon sx = {{fontSize:"14px", marginRight: '4px', color: '#09d953' }} />}
-
-                  <Typography variant='p' sx = {{  fontSize: '0.725rem', color: '#000' }}>
-                    {text.notice} 
-                    {'  '}
-                    {'  '}
-                    { text.duration ? text.duration/1000 + 's' : '' }
-                  </Typography>
-                </Box>
-              </motion.div>
-              ))}
-          </>
-      }
-      /> */}
     </>
   )
 }
