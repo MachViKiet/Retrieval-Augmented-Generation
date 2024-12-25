@@ -14,6 +14,9 @@ const ChatSessionSchema = new mongoose.Schema(
     amount_question : {
       type: Number,
       require: true
+    },
+    in_progress : {
+      type: Object
     }
   },
   {

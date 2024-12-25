@@ -3,7 +3,7 @@
  * Updated by Mach Vi Kiet's author on November 3 2024
  */
 import './app'
-const http = require('http')
+// const http = require('http')
 const https = require('https')
 const initMongo = require('./config/mongodb')
 const app = require('./app.js')
