@@ -41,7 +41,7 @@ export const ChatWithChatBot = async (socket) => {
     try {
 
       socket.emit('/ChatWithChatBot/isProcessing', {
-        'session_id': current_session,
+        ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -65,7 +65,7 @@ export const ChatWithChatBot = async (socket) => {
       const end_point_1 = (new Date()).getTime()
 
       socket.emit('/ChatWithChatBot/isProcessing', {
-        'session_id': current_session,
+        ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -101,7 +101,7 @@ export const ChatWithChatBot = async (socket) => {
       const end_point_2 = (new Date()).getTime()
 
       socket.emit('/ChatWithChatBot/isProcessing', {
-        'session_id': current_session,
+        ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -131,7 +131,7 @@ export const ChatWithChatBot = async (socket) => {
       const end_point_3 = (new Date()).getTime()
 
       socket.emit('/ChatWithChatBot/isProcessing', {
-        'session_id': current_session,
+        ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -168,7 +168,7 @@ export const ChatWithChatBot = async (socket) => {
 
 
       socket.emit('/ChatWithChatBot/isProcessing', {
-        'session_id': current_session,
+        ...objectConservation,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -202,7 +202,7 @@ export const ChatWithChatBot = async (socket) => {
         }] })
 
       socket.emit('/ChatWithChatBot/Processed', {
-        'session_id': current_session,
+        ...objectConservation,
         chosen_collections, filter_expressions, finalResponse,
         context : searchResult.context,
         source : searchResult.source,
@@ -221,7 +221,7 @@ export const ChatWithChatBot = async (socket) => {
         done = doneReading
         result += decoder.decode(value, { stream: true })
         socket.emit('/ChatWithChatBot/streamMessages', {
-          'session_id': current_session,
+          ...objectConservation,
           duration: startTime - new Date().getTime(),
           create_at: getTime(),
           messages: result
@@ -229,7 +229,7 @@ export const ChatWithChatBot = async (socket) => {
       }
 
       socket.emit('/ChatWithChatBot/EndStream', {
-        'session_id': current_session,
+        ...objectConservation,
         duration: startTime - new Date().getTime(),
         stream_time: (new Date().getTime()) - point_5,
         create_at: getTime(),
