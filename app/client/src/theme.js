@@ -87,8 +87,8 @@ const theme = extendTheme(
         styleOverrides: {
           body: {
             "*::-webkit-scrollbar": {
-              width: "4px",
-              height: "4px",
+              width: "2px",
+              height: "2px",
               backgroundColor: "transparent",
             },
             "*::-webkit-scrollbar-thumb": {
