@@ -132,6 +132,9 @@ export function ChatGenerator() {
     create_at: null
   })
 
+  const { processHandler } = useOutletContext();
+  
+
   useEffect(() => {
     currentChatSession && bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [Conservations, messageHandler.notification]);
@@ -143,58 +146,57 @@ export function ChatGenerator() {
     mainLayout.navigate(121)
 
 
-      ChatWithChatbot.userMessage(socket, (data) => { 
-        if( currentChatSession && currentChatSession._id == data?.session_id) {
-          // setConservations((prev) => ([...prev, data])) 
-          setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
-        }
-      })
-  
-      ChatWithChatbot.isProcessing(socket, (data) => { 
-        if( currentChatSession && currentChatSession._id == data?.session_id) {
-          setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
-        } 
-      })
-    
-      ChatWithChatbot.Processed(socket, (data) => { 
-        if( currentChatSession && currentChatSession._id == data?.session_id) {
-          setMessageHandler(prev => ({ ...prev, isProcess: true, ...data })) 
-        }
-      })
-    
-      ChatWithChatbot.streamMessages(socket, (data) => { 
-        if( currentChatSession && currentChatSession._id == data?.session_id) {
-          setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: true, stream_message: data.messages, ...data })) 
-        }
-      }) 
-    
-      ChatWithChatbot.EndStream(socket, (data) => { 
-        if( currentChatSession && currentChatSession._id == data?.session_id) {
-          setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: false, ...data }))  
-        }
-      })
-    
-      ChatWithChatbot.EndProcess(socket, async (data) => {
-        if( currentChatSession && currentChatSession._id == data?.session_id) {
-          setMessageHandler({
-            isProcess: false,
-            notification: [],
-            stream_state: false,
-            stream_load: [],
-            stream_message: null,
-            stream_time: 0,
-            duration: 0,
-            create_at: null
-          })
-          setConservations((prevs) => { 
-            // const index = prevs.findIndex(item => item._id === data._id);
-            // if(index == -1) return [...prevs, data]
+    ChatWithChatbot.userMessage(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
+      }
+    })
 
-            // return [...prevs.slice(0, -1), data]
-            return [...prevs, data]
-          }) 
-        }
-      })
+    ChatWithChatbot.isProcessing(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
+      } 
+    })
+
+    ChatWithChatbot.Processed(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, ...data })) 
+      }
+    })
+
+    ChatWithChatbot.streamMessages(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: true, stream_message: data.messages, ...data })) 
+      }
+    }) 
+
+    ChatWithChatbot.EndStream(socket, (data) => { 
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: false, ...data }))  
+      }
+    })
+
+    ChatWithChatbot.EndProcess(socket, async (data) => {
+      if( currentChatSession && currentChatSession._id == data?.session_id) {
+        setMessageHandler({
+          isProcess: false,
+          notification: [],
+          stream_state: false,
+          stream_load: [],
+          stream_message: null,
+          stream_time: 0,
+          duration: 0,
+          create_at: null
+        })
+        setConservations((prevs) => { 
+          // const index = prevs.findIndex(item => item._id === data._id);
+          // if(index == -1) return [...prevs, data]
+
+          // return [...prevs.slice(0, -1), data]
+          return [...prevs, data]
+        }) 
+      }
+    })
 
     return () => (
       ChatWithChatbot.unsign_all(socket)
@@ -266,9 +268,9 @@ export function ChatGenerator() {
 
   const loadHistoryBySession = async (session) => {
     setApiHandler(prev => ({...prev, history: true}))
-    return useConservation.getHistory({ session: session?._id }, token).then((historyFromDB) => {{
+    return useConservation.getHistory({ session: session?._id }, token).then((sessionWithHistory) => {{
       setApiHandler(prev => ({...prev, history: false}))
-      return historyFromDB
+      return sessionWithHistory
     }})
   }
  
@@ -294,15 +296,30 @@ export function ChatGenerator() {
     }
   }
 
+  const ChatAction_with_collection = (message, collection) => {
+    try {
+      ChatWithChatbot.chat(socket, { message: message, chat_session: currentChatSession?._id, 
+        history: Conservations.slice(1,4).map((Conservation) => ({
+          update_at: Conservation.update_at,
+          create_at: Conservation.create_at,
+          question: Conservation.question,
+          anwser: Conservation.anwser
+        })),
+        collection: collection
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const newChatAction = async (data) => {
     return useConservation.create(data, token).then(async (session) => {
-      setSessions(prev => [session, ...prev])
+      setSessions(prev => ([session, ...prev]))
       setCurrentChatSession(session)
-      const history = await loadHistoryBySession(session)
-        .catch((err) => { console.log('historyFromDB: ',err); return [] })
-      setConservations(history)
+      const sessionWithHistory = await loadHistoryBySession(session)
+      setConservations(sessionWithHistory.history)
       return session
-    })
+    }).catch(() => 'Server Chatbot Không Hoạt Động')
   }
 
   const sessionButtonClick = async (session) => {
@@ -320,12 +337,12 @@ export function ChatGenerator() {
           duration: 0,
           create_at: null
         })
-        const history = await loadHistoryBySession(session)
-        setConservations(history)
-        if(session?.in_progress) {
-          setMessageHandler(session?.in_progress)
+
+        const sessionWithHistory = await loadHistoryBySession(session)
+        setConservations(sessionWithHistory.history)
+        if(sessionWithHistory?.in_progress) {
+          setMessageHandler(sessionWithHistory?.in_progress)
         }
-      // }
     } catch (error) {
       return error
     }
@@ -339,6 +356,21 @@ export function ChatGenerator() {
         if (currentChatSession == removed_session._id) setCurrentChatSession(null)
       })
     }
+  }
+
+  const feedback = async (value) => {
+    const sendFeedbackEvent = processHandler.add('#sendFeedback')
+    await useConservation.update(value, token)
+    .then((data) => { setConservations(prev => prev.map((prev_consv) => {
+      if(prev_consv._id == data._id){
+        return data
+      }
+      return prev_consv
+    })) })
+    .catch((err) => console.log(err))
+    .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
+
+    return true
   }
 
   return (
@@ -370,7 +402,11 @@ export function ChatGenerator() {
               { !apiHandler.history && Conservations && Conservations.map((conservation) => {
                 return <div key={conservation?._id}>
                   <ChatDisplay conservation = {conservation} user={user}  
-                    action = {{ re_prompt : ChatAction }} />
+                    action = {{ 
+                      re_prompt : ChatAction,
+                      addFeedback: feedback,
+                      chatWithColllection: ChatAction_with_collection
+                    }} />
                 </div>
               })}
 
@@ -423,7 +459,6 @@ export function ChatGenerator() {
           }}>
             <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
               <Typography component='p' sx = {{ fontWeight: '800' }}>Cuộc Trò Chuyện</Typography>
-              {/* <Button component='p' sx = {{ color: 'red', paddingY: 0 }}>Xóa hết </Button> */}
             </Box>
 
             { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 1 }}> {
@@ -456,7 +491,7 @@ export function ChatGenerator() {
 
             <Box sx = {{ padding: 1, paddingTop: 3 }}>
               <Button 
-                variant='contained' color='info'
+                variant='contained' sx = {{ background: theme => theme.palette.primary.main }}
                 startIcon= {<OpenInNewIcon/>}
                 onClick={() => setOpenCreateChat(true)}>Tạo Mới Trò Chuyện</Button>
             </Box>

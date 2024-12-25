@@ -64,7 +64,7 @@ const StyledChip = styled(Chip)(({ theme }) => ({
     color: (theme.vars || theme).palette.success.dark,
     border: `1px solid ${(theme.vars || theme).palette.success.main}`,
   },
-  '&.processing': {
+  '&.queued': {
     backgroundColor: '#ffa72614',
     color: (theme.vars || theme).palette.warning.dark,
     border: `1px solid ${(theme.vars || theme).palette.warning.main}`,
@@ -84,7 +84,7 @@ const Status = (props) => {
     icon = <ReportProblemIcon className="icon" />;
   } else if (status === 'processed') {
     icon = <DoneIcon className="icon" />;
-  } else if (status === 'processing') {
+  } else if (status === 'queued') {
     icon = <SyncIcon className="icon" />;
 
   } else if (status === 'basic') {
@@ -111,7 +111,7 @@ const Status = (props) => {
     label = 'Thành Công';
   } else if (status === 'pending') {
     label = 'Chưa Xử Lý';
-  } else if (status === 'processing') {
+  } else if (status === 'queued') {
     label = 'Đang Xử Lý';
   } else if (status === 'basic') {
     label = 'Cơ bản';

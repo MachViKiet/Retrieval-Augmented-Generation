@@ -8,7 +8,6 @@ export const getTime = (DateString) => {
 
     // Chuyển sang định dạng 12 giờ
     hours = hours % 12 || 12; // Nếu giờ là 0, chuyển thành 12
-
     // Định dạng chuỗi kết quả
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${period}`;
 }
@@ -16,7 +15,6 @@ export const getTime = (DateString) => {
 export const formatTime = (isoString) => {
     try {
         const date = new Date(isoString);
-
         const options = {
         hour: 'numeric',
         minute: 'numeric',
@@ -28,8 +26,9 @@ export const formatTime = (isoString) => {
         const formatter = new Intl.DateTimeFormat('en-GB', options);
         const [time, datePart] = formatter.format(date).split(','); // Tách thời gian và ngày
     
-        return `${time} lúc  ${datePart}`
+        return `${time} - ${datePart}`
     } catch (err) {
+        console.log(err)
         return '###'
     }
 }

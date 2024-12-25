@@ -36,7 +36,7 @@ function FeedBack() {
 
             <textarea placeholder="Nhập phản hồi của bạn tại đây!" className="mt-5 mb-3 h-[30%] textarea textarea-bordered textarea-md w-full " style={{height: '164px', padding: '15px', borderRadius: '10px', background: '#fff', color: '#000'}}></textarea>
 
-          <Button variant='contained' color='info' fullWidth>Gửi Ý Kiến</Button>
+          <Button variant='contained' sx = {{ background: theme => theme.palette.primary.main, borderRadius: '10px' }} fullWidth>Gửi Ý Kiến</Button>
         </Grid>
 
 

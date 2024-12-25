@@ -395,7 +395,6 @@ function SettingDocumentModal({ document, modalHandler = null }) {
                     <Input endAdornment = {data.value.description && icon}
                       id="Description" value={document.getMetadata()?.[data.key]} 
                       onChange={(e) => {
-                        console.log(e.target.value, Number.isInteger(Number(e.target.value)))
                         if(Number.isInteger(Number(e.target.value))) {
                           document.setMetadata({[data.key]: e.target.value})
                           return 
