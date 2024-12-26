@@ -7,6 +7,22 @@ import { connectSocket } from '~/socket'
 import { refresh } from '~/store/actions/authActions'
 import NotifycationModal from '~/components/Mui/NotifycationModal'
 
+const demo  = [{
+  id: '#542',
+  status: 'success',
+  message: 'Cập nhật thành công',
+  auto: false
+},
+{
+  id: '#541',
+  status: 'warning',
+  message: 'Cập nhật thành công'
+},
+{
+  id: '#545',
+  status: 'error',
+  message: 'Cập nhật thành công'
+}]
 
 function AppLayout() {
   const generateRandomId = () => { return Math.floor(Math.random() * 1000000000) + 1 };
@@ -19,18 +35,6 @@ function AppLayout() {
   const auth = useSelector(state => state.auth)
   const [notifications, setNotification] = useState([])
 
-  const demo  = [{
-    status: 'success',
-    message: 'Cập nhật thành công'
-  },
-  {
-    status: 'warning',
-    message: 'Cập nhật thành công'
-  },
-  {
-    status: 'error',
-    message: 'Cập nhật thành công'
-  }]
   const noticeHandler = {
     add: (noti_json) => {
       const id = '#' + generateRandomId()
@@ -76,6 +80,10 @@ function AppLayout() {
         useProfile.verifyToken(token).then((usr_profile) => {
           dispatch(refresh(token, usr_profile))
         }).finally(() => processHandler.remove('#verifyToken', eventID))
+        .catch(() => noticeHandler.add({
+          status: 'error',
+          message: 'Server không hoạt động !'
+        }))
       }
     }
     setFirstRendering(false)
@@ -90,7 +98,6 @@ function AppLayout() {
   })
 
   const getModal = (title = '',content = '', actionName = '', action = null ) => {
-    console.log('ihihih')
     setIsOpenModel(true)
     setModalObject({ title, content, actionName, action })
   }
@@ -121,17 +128,19 @@ const BasicAlerts = ({noticeHandler, notifications}) => {
   return <Box sx = {{ zIndex: 6, position: 'absolute', top: '24px', right: '16px', display: 'flex', gap: 1, flexDirection: 'column' }}>
       {
         notifications.reverse().map((noti, zIndex) => ( 
-          <AlertComponent onClose={() => {noticeHandler.remove(noti?.id)}}
+          <AlertComponent onClose={() => {noticeHandler.remove(noti?.id)}} autoHidden = {noti?.auto}
             key = {noti?.id} id = {noti?.id} zIndex = {zIndex} severity= {noti.status} message={noti.message} duration = {(zIndex + 1) * 1000}/>
         ))
       }
   </Box>
 }
 import FadeIn from 'react-fade-in';
-const AlertComponent = ({ id , zIndex, onClose, severity, message, duration }) => {
+const AlertComponent = ({ id , zIndex, onClose, severity, message, duration, autoHidden }) => {
   useEffect(() => {
-    const AutoClose = setTimeout(() => onClose(), duration)
-    return () => clearTimeout(AutoClose)
+    if(autoHidden != false){
+      const AutoClose = setTimeout(() => onClose(), duration)
+      return () => clearTimeout(AutoClose)
+    }
   })
 
   return zIndex < 5 && <FadeIn ><Alert  severity= {severity} variant = "filled" onClose={onClose} >

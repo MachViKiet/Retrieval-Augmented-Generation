@@ -163,7 +163,7 @@ function MainLayout() {
   return (
     <Box sx = {{ 
       width: '100%',
-      height: '100vh',
+      height: '100dvh',
       background: theme => theme.palette.mode == 'dark' ? '#25294a' : '#DDF3FC',
       paddingTop: '72px',
       position: 'absolute',
@@ -356,7 +356,15 @@ function MainLayout() {
           boxShadow: '0 2px 3px rgba(0, 0, 0, 0.2)',
           position: 'absolute',
           bottom: 0,
-        }}> <Typography sx = {{ overflow: 'hidden', textOverflow: 'ellipsis', textWrap: 'nowrap', paddingX: '9px', color: theme => theme.palette.mode == 'dark' ? '#ffffff85': '#33333385', width: '100%', textAlign: 'center', lineHeight: '30px' }}>ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa</Typography>
+          display: 'flex',
+          justifyContent: 'center'
+        }}> 
+        <marquee behavior="scroll" style= {{ width: 'fit-content' }} direction="left" id="mymarquee" scrollamount="10">
+        {/* <p>This the the sample</p>
+        <p>of my text</p> */}
+        <Typography sx = {{ overflow: '', textOverflow: 'ellipsis', textWrap: 'nowrap', paddingX: '9px', color: theme => theme.palette.mode == 'dark' ? '#ffffff85': '#33333385', width: '100%', textAlign: 'center', lineHeight: '30px' }}>
+          ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa</Typography>
+        </marquee>
         </Box> }
 
 

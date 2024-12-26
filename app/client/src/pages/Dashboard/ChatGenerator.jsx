@@ -46,7 +46,10 @@ function NewChatModal({ modalHandler = null }) {
       const event = processHandler.add('#createChatSession')
       await modalHandler.submit({ name, description })
         .then(() => { processHandler.remove('#createChatSession', event); modalHandler?.close() })
-        .catch(() => { processHandler.remove('#createChatSession', event); setNotice('Tạo không thành công') })
+        .catch(() => { 
+          processHandler.remove('#createChatSession', event); 
+          setNotice('Tạo không thành công') 
+        })
     }
   }
 
@@ -160,7 +163,7 @@ export function ChatGenerator() {
     currentChatSession && bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [Conservations]);
 
-  const { dashboard, processHandler } = useOutletContext();
+  const { dashboard, processHandler, noticeHandler  } = useOutletContext();
   
   useEffect(() => {
     document.title = 'Chatbot - Trò chuyện';
@@ -227,7 +230,12 @@ export function ChatGenerator() {
   useEffect(() => {
     token && loadChatSessionFromDB().then((chatSessionFromDB) => {
       setSessions(chatSessionFromDB)
-    }).catch((err) => console.log(err))
+    }).catch((err) => {
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
+    })
   }, [token])
 
   const loadChatSessionFromDB = async () => {
@@ -235,7 +243,12 @@ export function ChatGenerator() {
     return useConservation.get(token).then((chatSessionFromDB) => {
       setApiHandler(prev => ({...prev, session: false}))
       return chatSessionFromDB
-    }).catch((err) => console.error('Có lỗi xảy ra với server'))
+    }).catch((err) => {
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
+    })
   }
 
   const loadHistoryBySession = async (session) => {
@@ -267,8 +280,11 @@ export function ChatGenerator() {
         })
         setMessageHandler(prev => ({...prev, isProcess: true }))
       } 
-    } catch (error) {
-      console.log(error)
+    } catch (err) {
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
     }
   }
 
@@ -284,7 +300,10 @@ export function ChatGenerator() {
         collection: collection
       })
     } catch (error) {
-      console.log(error)
+      noticeHandler.add({
+        status: 'error',
+        message: error
+      })
     }
   }
 
@@ -295,7 +314,12 @@ export function ChatGenerator() {
       const sessionWithHistory = await loadHistoryBySession(session)
       setConservations(sessionWithHistory.history)
       return session
-    }).catch(() => 'Server Chatbot Không Hoạt Động')
+    }).catch((error) => {
+      noticeHandler.add({
+        status: 'error',
+        message: error
+      })
+    })
   }
 
   const sessionButtonClick = async (session) => {
@@ -318,7 +342,10 @@ export function ChatGenerator() {
           setMessageHandler(sessionWithHistory.in_progress)
         }
     } catch (error) {
-      return error
+      noticeHandler.add({
+        status: 'error',
+        message: error
+      })
     }
   }
 
@@ -328,7 +355,12 @@ export function ChatGenerator() {
       useConservation.remove({session: session._id}, token).then((removed_session) => {
         setSessions(prev => prev.filter((session) => session._id != removed_session._id))
         if (currentChatSession == removed_session._id) setCurrentChatSession(null)
-      })
+      }).catch((err) => {
+        noticeHandler.add({
+          status: 'error',
+          message: err
+        })}
+      )
     }
   }
 
@@ -344,7 +376,12 @@ export function ChatGenerator() {
       })
       return prev
     })})
-    .catch((err) => console.log(err))
+    .catch((err) => {
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })}
+    )
     .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
 
     return true

@@ -24,7 +24,7 @@ function KnowledgeBase() {
   const PARENT_DIRECTION = '/knowledge_bases/'
   const token = useSelector(state => state.auth.token)
   const [Collections, setCollections] = useState(null)
-  const {processHandler, dashboard } = useOutletContext();
+  const {processHandler, dashboard, noticeHandler } = useOutletContext();
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức'
@@ -46,6 +46,12 @@ function KnowledgeBase() {
     return useCollection.getCollection(token).then((collections) => {
       processHandler.remove('#getCollection', getCollectionEvent)
       return collections
+    }).catch((error) => {
+      processHandler.remove('#getCollection', getCollectionEvent)
+      noticeHandler.add({
+        status: 'error',
+        message: error
+      })
     })
   }
 

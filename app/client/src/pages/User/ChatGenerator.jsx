@@ -44,7 +44,7 @@ function NewChatModal({ modalHandler = null }) {
       await modalHandler.submit({
         name, description
       }).then(() => modalHandler?.close())
-        .catch(() => setNotice('Tạo không thành công'))
+        .catch(() => setNotice('Tạo mới không thành công'))
     }
   }
 
@@ -132,7 +132,7 @@ export function ChatGenerator() {
     create_at: null
   })
 
-  const { processHandler } = useOutletContext();
+  const { processHandler, noticeHandler } = useOutletContext();
   
 
   useEffect(() => {
@@ -204,8 +204,15 @@ export function ChatGenerator() {
   }, [getSocket(), currentChatSession])
 
   useEffect(() => {
-    token && loadChatSessionFromDB().then((chatSessionFromDB) => setSessions(chatSessionFromDB))
-      .catch((err) => { console.log('loadChatSessionFromDB: ',err); return [] })
+    token && loadChatSessionFromDB()
+    .then((chatSessionFromDB) => setSessions(chatSessionFromDB))
+    .catch((err) => { 
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
+      setSessions([]) 
+    })
   }, [token])
 
   useEffect(() => {
@@ -308,7 +315,10 @@ export function ChatGenerator() {
         collection: collection
       })
     } catch (error) {
-      console.log(error)
+      noticeHandler.add({
+        status: 'error',
+        message: error
+      })
     }
   }
 
@@ -319,7 +329,12 @@ export function ChatGenerator() {
       const sessionWithHistory = await loadHistoryBySession(session)
       setConservations(sessionWithHistory.history)
       return session
-    }).catch(() => 'Server Chatbot Không Hoạt Động')
+    }).catch((error) => {
+      noticeHandler.add({
+        status: 'error',
+        message: error
+      })
+    })
   }
 
   const sessionButtonClick = async (session) => {
@@ -344,6 +359,10 @@ export function ChatGenerator() {
           setMessageHandler(sessionWithHistory?.in_progress)
         }
     } catch (error) {
+      noticeHandler.add({
+        status: 'error',
+        message: error
+      })
       return error
     }
   }
@@ -367,7 +386,12 @@ export function ChatGenerator() {
       }
       return prev_consv
     })) })
-    .catch((err) => console.log(err))
+    .catch((err) => {
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
+    })
     .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
 
     return true
@@ -375,7 +399,7 @@ export function ChatGenerator() {
 
   return (
     
-    <Box sx = {{ position: 'relative', width: '100%', height: '100%', paddingTop: { xs : 6, md: 3 }, paddingBottom: 3, paddingX: { xs : 1.5, md: 3 } }}>
+    <Box sx = {{ position: 'relative', width: '100%', height: '100%', paddingTop: { xs : 6, md: 3 }, paddingBottom: { xs : 1.5, md: 2 } , paddingX: { xs : 1.5, md: 3 } }}>
         <Box sx = {{ display: { xs: 'flex', md: 'none' }, width: 'fit-content', position: 'absolute', right: '16px', top: '6px' }}>
           <Button onClick={() => menu.handle(true)} sx= {{ zIndex: 3, color: theme => theme.palette.text.secondary }} startIcon = {<VoicemailOutlinedIcon/>}>Cuộc Hội Thoại</Button>
         </Box>
