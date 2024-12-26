@@ -1,4 +1,5 @@
 const History = require('~/models/history')
+const Chat_session = require('~/models/chat_session')
 const { buildErrObject } = require('~/middlewares/utils')
 
 /**
@@ -10,11 +11,12 @@ export const getHistoryByChatSessionID = async (user = {}, id = '') => {
   const result = await History.find({
     sender: user._id,
     session_id: id
-  }, '-sender').sort({ createdAt: 1 }).then((history) => {
+  }, '-sender').sort({ createdAt: 1 }).then(async (history) => {
     if (!history) {
       return buildErrObject(422, 'NOT_FOUND')
     }
-    return history
+    const session = await Chat_session.findById(id)
+    return {...session._doc, history }
   }).catch((err) => {
     throw buildErrObject(422, err.message)
   })
