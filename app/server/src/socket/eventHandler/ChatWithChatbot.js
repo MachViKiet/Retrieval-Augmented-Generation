@@ -67,6 +67,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
+        "isProcess": true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -83,7 +84,7 @@ export const ChatWithChatBot = async (socket) => {
 
       socket.emit('/ChatWithChatBot/isProcessing', resp )
 
-      await updateChatSession({ in_progress: resp })
+      await updateChatSession(current_session, { in_progress: resp })
 
       if ( chosen_collections == null || chosen_collections == '' || !!!chosen_collections ) {
         socket.emit('/ChatWithChatBot/EndProcess', {
@@ -107,6 +108,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
+        "isProcess": true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -129,7 +131,7 @@ export const ChatWithChatBot = async (socket) => {
 
       socket.emit('/ChatWithChatBot/isProcessing', resp )
 
-      await updateChatSession({ in_progress: resp })
+      await updateChatSession(current_session, { in_progress: resp })
 
       const start_point_3 = (new Date()).getTime()
 
@@ -141,6 +143,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
+        "isProcess": true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -169,7 +172,7 @@ export const ChatWithChatBot = async (socket) => {
 
       socket.emit('/ChatWithChatBot/isProcessing', resp)
 
-      await updateChatSession({ in_progress: resp })
+      await updateChatSession(current_session, { in_progress: resp })
 
       const start_point_4 = (new Date()).getTime()
 
@@ -181,6 +184,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
+        "isProcess": true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -215,7 +219,7 @@ export const ChatWithChatBot = async (socket) => {
 
       socket.emit('/ChatWithChatBot/isProcessing', resp)
 
-      await updateChatSession({ in_progress: resp })
+      await updateChatSession(current_session, { in_progress: resp })
 
       socket.emit('/ChatWithChatBot/Processed', {
         ...objectConservation,
@@ -238,6 +242,8 @@ export const ChatWithChatBot = async (socket) => {
         result += decoder.decode(value, { stream: true })
         socket.emit('/ChatWithChatBot/streamMessages', {
           ...objectConservation,
+          "isProcess": true,
+          "stream_state": true,
           duration: startTime - new Date().getTime(),
           create_at: getTime(),
           messages: result
@@ -246,6 +252,8 @@ export const ChatWithChatBot = async (socket) => {
 
       socket.emit('/ChatWithChatBot/EndStream', {
         ...objectConservation,
+        "isProcess": true,
+        "stream_state": false,
         duration: startTime - new Date().getTime(),
         stream_time: (new Date().getTime()) - point_5,
         create_at: getTime(),
@@ -287,7 +295,7 @@ export const ChatWithChatBot = async (socket) => {
       })
     }
 
-    await updateChatSession({ in_progress: null })
+    await updateChatSession(current_session, { in_progress: null })
   })
 
 

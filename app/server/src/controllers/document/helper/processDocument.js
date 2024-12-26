@@ -53,8 +53,12 @@ export const processDocument = async (id = null, chunks = null) => {
     const result = await insert_file(formData)
       .then((data) => data)
       .catch((err) => { throw buildErrObject(422, err) })
-
-    console.log('API trả về: ', result)
+    console.log(result)
+    await Document.findByIdAndUpdate(_doc._id, {
+      state: result?.state,
+      dag_id: result?.dag_id,
+      dag_run_id: result?.dag_run_id,
+    })
 
     return result
   }).catch((err) => {

@@ -49,10 +49,17 @@ const DocumentSchema = new mongoose.Schema(
       type: Object,
       default: null
     },
+    dag_id: {
+      type: Object,
+      default: null
+    },
+    dag_run_id: {
+      type: Object,
+      default: null
+    },
     state: {
       type: String,
-      enum: ['processed', 'pending', 'processing', 'failed'],
-      default : 'pending'
+      default : 'pending'    
     }
   },
   {
