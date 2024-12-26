@@ -4,7 +4,7 @@ import { buildErrObject } from '~/middlewares/utils'
 const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT_PORT}`
 
 export const extract_meta = async (userInput, chosen_collections, history, api_key = null) => {
-  const url = `${domain}/generate/extract_meta?query=${encodeURIComponent(userInput)}&chosen_collection=${encodeURIComponent(chosen_collections)}&history=${history}`
+  const url = `${domain}/generate/extract_meta?query=${encodeURIComponent(userInput)}&chosen_collection=${encodeURIComponent(chosen_collections)}&history=${encodeURIComponent(history)}`
 
   // Thực hiện GET request
   return fetch(url)

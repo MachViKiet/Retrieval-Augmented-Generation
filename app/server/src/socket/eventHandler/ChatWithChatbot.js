@@ -100,7 +100,7 @@ export const ChatWithChatBot = async (socket) => {
 
       // Step 2
       const start_point_2 = (new Date()).getTime()
-      const filter_expressions = await chatbot.extract_meta(message, chosen_collections, history).then((res) => {
+      const filter_expressions = await chatbot.extract_meta(message, chosen_collections, conservationBefore).then((res) => {
         return res
       }).catch((err) => { throw 'Lỗi ở bước extract_meta: ' + JSON.stringify(err) })
       const end_point_2 = (new Date()).getTime()
