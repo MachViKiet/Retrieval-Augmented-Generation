@@ -15,7 +15,7 @@ function FeedBack() {
     mainLayout.navigate(123)
   }, [])
   const { processHandler, noticeHandler } = useOutletContext();
-  
+
   const submit = (message) => {
     const sendFeedbackEvent = processHandler.add('#sendFeedback')
     useAuth.feedback(token, message).then(() => {
@@ -23,10 +23,10 @@ function FeedBack() {
         status: 'success',
         message: 'Phản hồi của bạn được ghi nhận, Xin cảm ơn !'
       })
-    }).catch(() => {  
+    }).catch((error) => {  
       noticeHandler.add({
         status: 'error',
-        message: 'Phản Hồi Thất Bại !'
+        message: error//'Phản Hồi Thất Bại !'
       })
     })
     .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
