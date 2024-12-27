@@ -37,7 +37,7 @@ const Button_Custom = styled(Button)(({theme}) => ({
    }
 }))
 
-export function ChatInput({ id, handleSubmit = null, messageHandler = null}) {
+export function ChatInput({ id, handleSubmit = null, messageHandler = null, disabled = false}) {
   const [input, setInput] = useState('')
 
   const Submit = async (event) => {
@@ -50,16 +50,17 @@ export function ChatInput({ id, handleSubmit = null, messageHandler = null}) {
       <TextField_Custom
         maxRows={4}
         multiline
+        inputProps={{ maxLength: 3000 }}
         value={input}
-        placeholder='Nhập câu hỏi bạn muốn'
-        disabled = {messageHandler.isProcess}
+        placeholder='Nhập câu hỏi bạn ( tối đa 3000 kí tự )'
+        disabled = {messageHandler.isProcess || disabled}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Enter') Submit(e) }}
         sx = {{ '& > div ': { background: 'transparent !important' } }}
       />
 
-      <Button_Custom type="submit" disabled = {messageHandler.isProcess}>
-        {messageHandler.isProcess ? 
+      <Button_Custom type="submit" disabled = {messageHandler.isProcess || disabled}>
+        {messageHandler.isProcess || disabled ? 
           <CircularProgress color="inherit" size={15} /> 
           : <NearMeIcon fontSize='1.25rem'/> }
       </Button_Custom>

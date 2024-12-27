@@ -18,7 +18,7 @@ import {
 } from '@mui/x-data-grid';
 import AutoFixNormalOutlinedIcon from '@mui/icons-material/AutoFixNormalOutlined';
 
-export const STATUS_OPTIONS = ['Open', 'PartiallyFilled', 'Filled', 'rejected', 'processed'];
+export const STATUS_OPTIONS = ['Open', 'PartiallyFilled', 'Filled', 'rejected', 'processed', 'success' , 'failed'];
 
 const StyledChip = styled(Chip)(({ theme }) => ({
   justifyContent: 'left',
@@ -52,7 +52,19 @@ const StyledChip = styled(Chip)(({ theme }) => ({
     border: `1px solid ${(theme.vars || theme).palette.error.main}`,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
   },
+  '&.failed': {
+    color: '#fff',
+    marginLeft: '0',
+    backgroundColor: (theme.vars || theme).palette.error.dark,
+    border: `1px solid ${(theme.vars || theme).palette.error.main}`,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+  },
   '&.processed': {
+    backgroundColor: '#b8ffb3 !important',
+    color: (theme.vars || theme).palette.success.dark,
+    border: `1px solid ${(theme.vars || theme).palette.success.main}`,
+  },
+  '&.success': {
     backgroundColor: '#b8ffb3 !important',
     color: (theme.vars || theme).palette.success.dark,
     border: `1px solid ${(theme.vars || theme).palette.success.main}`,
@@ -69,10 +81,13 @@ const StyledChip = styled(Chip)(({ theme }) => ({
     color: (theme.vars || theme).palette.warning.dark,
     border: `1px solid ${(theme.vars || theme).palette.warning.main}`,
   },
-  '&.basic': {
-    backgroundColor: '#dadcff !important',
-    color: '#000',
-    border: `1px solid ${(theme.vars || theme).palette.success.main}`,
+  '&.running': {
+    backgroundColor: '#ffa72614',
+    color: (theme.vars || theme).palette.warning.dark,
+    border: `1px solid ${(theme.vars || theme).palette.warning.main}`,
+    // backgroundColor: '#dadcff !important',
+    // color: '#000',
+    // border: `1px solid ${(theme.vars || theme).palette.success.main}`,
   },
 }));
 
@@ -80,14 +95,14 @@ const Status = (props) => {
   const { status } = props;
 
   let icon = null;
-  if (status === 'rejected') {
+  if (status === 'rejected' || status === 'failed') {
     icon = <ReportProblemIcon className="icon" />;
-  } else if (status === 'processed') {
+  } else if (status === 'processed' || status === 'success') {
     icon = <DoneIcon className="icon" />;
   } else if (status === 'queued') {
     icon = <SyncIcon className="icon" />;
 
-  } else if (status === 'basic') {
+  } else if (status === 'running') {
     icon = <AutoFixNormalOutlinedIcon className="icon" />;
 
   } else if (status === 'Open') {
@@ -99,7 +114,7 @@ const Status = (props) => {
   }
 
   let label
-  if (status === 'rejected') {
+  if (status === 'rejected' || status === 'failed') {
     label = 'Không Thành Công';
   } else if (status === 'Open') {
     label = status;
@@ -107,14 +122,14 @@ const Status = (props) => {
     label = status;
   } else if (status === 'Filled') {
     label = status;
-  } else if (status === 'processed') {
+  } else if (status === 'processed' || status === 'success') {
     label = 'Thành Công';
   } else if (status === 'pending') {
     label = 'Chưa Xử Lý';
   } else if (status === 'queued') {
     label = 'Đang Xử Lý';
-  } else if (status === 'basic') {
-    label = 'Cơ bản';
+  } else if (status === 'running') {
+    label = 'Đang Xử Lý';
   }
 
   if (status === 'PartiallyFilled') {
@@ -176,7 +191,7 @@ function EditStatus(props) {
     >
       {STATUS_OPTIONS.map((option) => {
         let IconComponent = null;
-        if (option === 'rejected') {
+        if (option === 'rejected' || option === 'failed') {
           IconComponent = ReportProblemIcon;
         } else if (option === 'Open') {
           IconComponent = InfoIcon;
@@ -184,7 +199,7 @@ function EditStatus(props) {
           IconComponent = AutorenewIcon;
         } else if (option === 'Filled') {
           IconComponent = DoneIcon;
-        } else if (option === 'processed') {
+        } else if (option === 'processed', 'success'  || option === 'success') {
           IconComponent = ReportProblemIcon;
         }
 

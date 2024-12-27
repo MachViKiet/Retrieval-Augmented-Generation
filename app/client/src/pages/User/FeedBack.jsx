@@ -1,17 +1,37 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import Grid from '@mui/material/Grid2'
 import { Box, Button, Typography } from '@mui/material';
 import { useOutletContext } from 'react-router-dom';
+import { useAuth } from '~/apis/Auth';
 
 function FeedBack() {
   const { mainLayout } = useOutletContext();
+  const token = useSelector(state => state.auth.token)
   
   useEffect(() => {
     document.title = 'Chatbot - Phản Hồi'
     mainLayout.navigate(123)
-  })
+  }, [])
+  const { processHandler, noticeHandler } = useOutletContext();
+  
+  const submit = (message) => {
+    const sendFeedbackEvent = processHandler.add('#sendFeedback')
+    useAuth.feedback(token, message).then(() => {
+      noticeHandler.add({
+        status: 'success',
+        message: 'Phản hồi của bạn được ghi nhận, Xin cảm ơn !'
+      })
+    }).catch(() => {  
+      noticeHandler.add({
+        status: 'error',
+        message: 'Phản Hồi Thất Bại !'
+      })
+    })
+    .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
+
+  }
   return (
     <Box sx = {{ width: '100%', height: '100%', paddingY: { xs : 6, md: 3 }, paddingX: 3 }}>
       <Grid container  spacing={2} sx = {{ height: '100%' }}>
@@ -36,7 +56,7 @@ function FeedBack() {
 
             <textarea placeholder="Nhập phản hồi của bạn tại đây!" className="mt-5 mb-3 h-[30%] textarea textarea-bordered textarea-md w-full " style={{height: '164px', padding: '15px', borderRadius: '10px', background: '#fff', color: '#000'}}></textarea>
 
-          <Button variant='contained' sx = {{ background: theme => theme.palette.primary.main, borderRadius: '10px' }} fullWidth>Gửi Ý Kiến</Button>
+          <Button onClick={submit} variant='contained' sx = {{ background: theme => theme.palette.primary.main, borderRadius: '10px' }} fullWidth>Gửi Ý Kiến</Button>
         </Grid>
 
 

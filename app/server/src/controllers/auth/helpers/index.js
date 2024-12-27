@@ -7,6 +7,7 @@ const { returnRegisterToken } = require('./returnRegisterToken')
 const { registerUser } = require('./registerUser')
 const { getUserInfo } = require('./getUserInfo')
 const { checkPermissions } = require('./checkPermissions')
+const { createFeedback } = require('./createFeedback')
 
 module.exports = {
   checkLoginAttemptsAndBlockExpires,
@@ -17,5 +18,6 @@ module.exports = {
   returnRegisterToken,
   registerUser,
   getUserInfo,
-  checkPermissions
+  checkPermissions,
+  createFeedback
 }

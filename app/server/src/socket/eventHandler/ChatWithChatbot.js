@@ -67,7 +67,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
-        "isProcess": true,
+        'isProcess': true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -108,7 +108,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
-        "isProcess": true,
+        'isProcess': true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -143,7 +143,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
-        "isProcess": true,
+        'isProcess': true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -184,7 +184,7 @@ export const ChatWithChatBot = async (socket) => {
 
       resp = {
         ...objectConservation,
-        "isProcess": true,
+        'isProcess': true,
         notification: [{
           step_name: 'chosen_collections',
           notice: 'Xác định nội dung câu hỏi',
@@ -242,8 +242,8 @@ export const ChatWithChatBot = async (socket) => {
         result += decoder.decode(value, { stream: true })
         socket.emit('/ChatWithChatBot/streamMessages', {
           ...objectConservation,
-          "isProcess": true,
-          "stream_state": true,
+          'isProcess': true,
+          'stream_state': true,
           duration: startTime - new Date().getTime(),
           create_at: getTime(),
           messages: result
@@ -252,8 +252,8 @@ export const ChatWithChatBot = async (socket) => {
 
       socket.emit('/ChatWithChatBot/EndStream', {
         ...objectConservation,
-        "isProcess": true,
-        "stream_state": false,
+        'isProcess': true,
+        'stream_state': false,
         duration: startTime - new Date().getTime(),
         stream_time: (new Date().getTime()) - point_5,
         create_at: getTime(),
@@ -294,8 +294,11 @@ export const ChatWithChatBot = async (socket) => {
         'duration': startTime - new Date().getTime()
       })
     }
-
-    await updateChatSession(current_session, { in_progress: null })
+    try {
+      await updateChatSession(current_session, { in_progress: null })
+    } catch (error) {
+      console.log(error)
+    }
   })
 
 

@@ -119,7 +119,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
 
                 { conservation?.rating != -1 && <Box sx = {{ display: 'flex' }}>{conservation?.rating}<StarIcon fontSize = 'small' sx = {{ color: 'yellow' }}/></Box> }
 
-                <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime(conservation?.createdAt)}</Typography>
+                <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime((conservation?.create_at ? conservation.create_at : conservation?.createdAt))}</Typography>
             </Box>
           </ChatMessage>
         </Box>

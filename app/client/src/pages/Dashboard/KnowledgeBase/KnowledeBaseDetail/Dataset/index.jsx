@@ -92,6 +92,13 @@ function DatasetDetail() {
   }
 
   const DocumentUpdate = async (new_data) => {
+    if(documentWithChunk?.state=='processed' || documentWithChunk?.state=='success'){
+      noticeHandler.add({
+        status: 'error',
+        message: 'Cập Nhật Thất Bại, Tài Liệu Này Đã Được Xử Lý !'
+      })
+      return 
+    }
     const UpdateDocumentEvent = processHandler.add('#UpdateDocument')
     await useDocument.update(new_data, token).then((document) => {
       setDocumentWithChunk(prev => ( {...document, chunks: prev.chunks, amount_chunking: prev.chunks.length}))
@@ -110,13 +117,35 @@ function DatasetDetail() {
   }
 
   const ProcessButton = async () => {
+    if(documentWithChunk?.state=='processed' || documentWithChunk?.state=='success'){
+      noticeHandler.add({
+        status: 'warning',
+        auto: false,
+        message: 'Tài Liệu Này Đã Được Xử Lý !'
+      })
+      return 
+    }
     const data = {
       id: id,
       chunks: documentWithChunk.chunks.map((data) => data.chunk)
     }
     const processDocumentEvent = processHandler.add('#processDocument')
-    useDocument.process(data, token).then((res) => console.log('Dữ Liệu Trả Về: ', res))
-    .catch((err) => console.log(err))
+    useDocument.process(data, token).then(
+      () => {
+        noticeHandler.add({
+          status: 'success',
+          message: 'Tài Liệu Đã Được Đưa Vào Hàng Đợi Xử Lý'
+        })
+        navigate(`/knowledge_bases/${collection}`)
+      }
+    )
+    .catch(() => {
+      noticeHandler.add({
+        status: 'error',
+        auto: false,
+        message: 'Lỗi hàng Đợi, Vui Lòng Thử Lại Sau !'
+      })
+    })
     .finally(()=> processHandler.remove('#processDocument', processDocumentEvent))
   }
 
@@ -153,7 +182,7 @@ function DatasetDetail() {
               Chỉnh Sửa Thông Tin
           </Button>
 
-          <Button disabled = { documentWithChunk?.state=='processed' } component="label" startIcon={<MemoryIcon />} color={'error'} onClick={ProcessButton} variant='contained'
+          <Button component="label" startIcon={<MemoryIcon />} color={'error'} onClick={ProcessButton} variant='contained'
             sx = {{ paddingX: 2, paddingY: 1, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} 
             > Xử Lý Tài Liệu
           </Button>

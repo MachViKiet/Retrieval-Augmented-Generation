@@ -10,7 +10,8 @@ const {
 
 const {
   login,
-  register
+  register,
+  feedback
 } = require('~/controllers/auth')
 
 /*
@@ -19,5 +20,6 @@ const {
 router.post('/login', trimRequest.all, validateLogin, login)
 
 router.post('/register', trimRequest.all, validateRegister, register)
+router.post('/feedback', trimRequest.all, trimRequest.all, feedback)
 
 module.exports = router

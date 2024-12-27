@@ -28,10 +28,12 @@ export const connectSocket = (token) => {
     });
 
     socket.on('connect_error', (err) => {
+      socket = null
       console.error('Connection error:', err.message);
     });
 
     socket.on('disconnect', () => {
+      socket = null
       console.log('Socket disconnected');
     });
   }

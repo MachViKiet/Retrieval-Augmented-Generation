@@ -126,14 +126,15 @@ function Datasets() {
 
     collectionWithDocuments?.documents && collectionWithDocuments?.documents.map((document, index) => {
       if( document?.document_type && document.document_type == 'Upload' 
-        && document?.state && document?.state == 'queued'){
+        && document?.state && ( document?.state == 'queued' || document?.state == 'running')){
         console.log({file_id: document?._id})
 
 
         Airflow.CheckStatus(socket, {
           dag_id: document?.dag_id,
           dag_run_id: document?.dag_run_id,
-          file_id: document?._id
+          file_id: document?._id,
+          state: document?.state
         })
 
         Airflow.getStatus(socket , (data) => {
