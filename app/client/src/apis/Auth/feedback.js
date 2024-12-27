@@ -3,6 +3,7 @@ const domain = import.meta.env.VITE_SERVER
 export const feedback = async (token = null, data, api_key = null) => {
 	const url = `${domain}/feedback`;
 	console.log(url)
+    console.log(data)
 	const structure = {
 		method: 'POST',
 		headers: {

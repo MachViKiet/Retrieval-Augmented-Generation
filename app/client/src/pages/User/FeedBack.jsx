@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { navigate as sidebarAction } from '~/store/actions/navigateActions';
 import Grid from '@mui/material/Grid2'
@@ -18,12 +18,14 @@ function FeedBack() {
 
   const submit = (message) => {
     const sendFeedbackEvent = processHandler.add('#sendFeedback')
-    useAuth.feedback(token, message).then(() => {
+    useAuth.feedback(token, {message}).then(() => {
       noticeHandler.add({
         status: 'success',
         message: 'Phản hồi của bạn được ghi nhận, Xin cảm ơn !'
       })
+      setValue(null)
     }).catch((error) => {  
+      console.log(error)
       noticeHandler.add({
         status: 'error',
         message: error//'Phản Hồi Thất Bại !'
@@ -32,6 +34,7 @@ function FeedBack() {
     .finally(() => processHandler.remove('#sendFeedback', sendFeedbackEvent))
 
   }
+  const [value, setValue] = useState(null)
   return (
     <Box sx = {{ width: '100%', height: '100%', paddingY: { xs : 6, md: 3 }, paddingX: 3 }}>
       <Grid container  spacing={2} sx = {{ height: '100%' }}>
@@ -54,9 +57,9 @@ function FeedBack() {
             }}>
             Sự đóng góp ý kiến từ các bạn sẽ là sự hỗ trợ đắc lực giúp chúng tôi ngày càng tốt hoàn thiện sản phẩm hơn.</Typography>
 
-            <textarea placeholder="Nhập phản hồi của bạn tại đây!" className="mt-5 mb-3 h-[30%] textarea textarea-bordered textarea-md w-full " style={{height: '164px', padding: '15px', borderRadius: '10px', background: '#fff', color: '#000'}}></textarea>
+            <textarea value={value} onChange={(e) => setValue(e.target.value)} placeholder="Nhập phản hồi của bạn tại đây!" className="mt-5 mb-3 h-[30%] textarea textarea-bordered textarea-md w-full " style={{height: '164px', padding: '15px', borderRadius: '10px', background: '#fff', color: '#000'}}></textarea>
 
-          <Button onClick={submit} variant='contained' sx = {{ background: theme => theme.palette.primary.main, borderRadius: '10px' }} fullWidth>Gửi Ý Kiến</Button>
+          <Button onClick={() => submit(value)} variant='contained' sx = {{ background: theme => theme.palette.primary.main, borderRadius: '10px' }} fullWidth>Gửi Ý Kiến</Button>
         </Grid>
 
 

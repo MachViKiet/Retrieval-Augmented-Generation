@@ -1,6 +1,28 @@
+import { Box, Typography } from '@mui/material';
+import styled from '@emotion/styled';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import React, { useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom';
-import Hidden from '~/components/Page/Hidden';
+import { BarChart } from '@mui/x-charts/BarChart';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+// import Hidden from '~/components/Page/Hidden';
+// import Skeleton from '@mui/material/Skeleton';
+const Container_Style = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 1,
+  paddingBottom: {md: 2, xs: 1},
+  paddingTop: 1
+}
+const Block = styled(Box) (({theme}) => ({ 
+  width: '100%', borderRadius: '10px',
+  backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
+  : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+  position: 'relative', textAlign: 'start',
+  color: theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
+  boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
+  cursor: 'pointer',
+  '&:active': { transform: 'scale(0.98)' } }))
 
 function Dashboard() {
   const {processHandler, dashboard } = useOutletContext();
@@ -13,8 +35,141 @@ function Dashboard() {
   })
 
   return (
-    <Hidden></Hidden>
+    // <Hidden></Hidden>
+    <Box sx ={{ width: '100%', height: '100%', padding: 3 }}>
+        <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 0.5 }}>
+          <Typography variant='h1' 
+            sx = {{ fontSize: '2.4rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
+              <HomeOutlinedIcon fontSize='large'/> Trang Chủ </Typography>
+        </Box>
+        <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 } }}>
+
+            <Box  sx = {{ 
+                flex:  { xs: "0 1 140px", md: "0 1 300px" },
+                display: 'flex',
+                position: 'relative'
+             }}>
+                <Block sx ={{  height: { xs: "140px", md: "160px" }, padding: '20px' }}>
+                  <Typography>Người Sử Dụng</Typography>
+                  <Typography sx = {{ fontSize: '28px !important' }}> 14 Users</Typography>
+                </Block>
+                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
+                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 27/12/2024</Typography>
+                </Block>
+
+            </Box>
+            
+            <Box  sx = {{ 
+                flex:  { xs: "0 1 140px", md: "0 1 300px" },
+                display: 'flex',
+                position: 'relative'
+             }}>
+                <Block sx ={{  height: { xs: "140px", md: "160px" }, padding: '20px' }}>
+                  <Typography>Documents</Typography>
+                  <Typography sx = {{ fontSize: '28px !important' }}>643 Files</Typography>
+                </Block>
+                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
+                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024</Typography>
+                </Block>
+
+            </Box>
+            
+            <Box  sx = {{ 
+                flex:  { xs: "0 1 140px", md: "0 1 300px" },
+                display: 'flex',
+                position: 'relative'
+             }}>
+                <Block sx ={{  height: { xs: "140px", md: "160px" }, padding: '20px' }}>
+                  <Typography>Lượt Sử dụng</Typography>
+                  <Typography sx = {{ fontSize: '28px !important' }}>763 lần</Typography>
+                </Block>
+                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
+                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024</Typography>
+                </Block>
+
+            </Box>
+        </Box >
+
+        <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative'}}>
+          <Block sx = {{ width: '100%', height: 'fit-content', paddingY: '32px !important'}}>
+            <SimpleBarChart/>
+          </Block>
+          
+          <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: '20px', backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
+            
+            <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024 </Typography>
+          </Block>
+        </Box >
+
+        <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative', paddingBottom: '20px'}}>
+          <Block sx = {{ width: '100%', height: 'fit-content', paddingY: '32px !important'}}>
+            <BasicPie/>
+          </Block>
+
+          <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: '20px', backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
+            
+            <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024 </Typography>
+          </Block>
+        </Box >
+
+        {/* <Skeleton variant="rounded" width={'100%'} height={360} /> */}
+        {/* <Skeleton variant="rounded" width={'100%'} height={360} /> */}
+    </Box>
   )
 }
 
 export default Dashboard
+
+
+
+const pData = [24, 13, 98, 39, 48, 38, 43];
+const xLabels = [
+  'T.Dụng',
+  'TKBiểu',
+  'H.Bổng',
+  'S.Kiện',
+  'N.Quy',
+];
+
+function SimpleBarChart() {
+  const BarChartCustom = styled(BarChart) (({theme}) => ({
+    '--mui-palette-text-primary': '#000',
+    width: '100%'
+  }))
+  return (
+    <BarChartCustom
+      width={900}
+      height={300}
+      layout="horizontal"
+      grid={{ vertical: true }}
+      series={[
+        { data: pData, label: 'Lượt Chủ Đề Truy Cập', id: 'pvId' },
+      ]}
+      yAxis={[{ data: xLabels, scaleType: 'band' }]}
+    />
+  );
+}
+import { PieChart } from '@mui/x-charts/PieChart';
+export function BasicPie() {
+  const PieChartCustom = styled(PieChart) (({theme}) => ({
+    '--mui-palette-text-primary': '#000',
+    '--mui-palette-background-paper': '#12121203'
+  }))
+  return (
+    <PieChartCustom
+      series={[
+        {
+          data: [
+            { id: 0, value: 15, label: 'Rất Hài Lòng', color: '#99CC00' },
+            { id: 1, value: 5, label: 'Hài Lòng', color: '#99CC33'   },
+            { id: 2, value: 2, label: 'Tương Đối', color: '#99CC66'  },
+            { id: 3, value: 2, label: 'Rất Hạn Chế', color: '#99CC99'  },
+            { id: 4, value: 1, label: 'Rất Tệ', color: '#aac9aa'  },
+          ],
+        },
+      ]}
+      width={400}
+      height={200}
+    />
+  );
+}

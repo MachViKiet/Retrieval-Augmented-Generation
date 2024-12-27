@@ -199,7 +199,7 @@ function DatasetDetail() {
             background: theme => theme.palette.mode == 'dark' ? '#323639' : '#323639',
             boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
           }}>
-          <ExternalWebsite url = {documentWithChunk?.url}/>
+          <ExternalWebsite name = {documentWithChunk?.document_name_in_storage} type = { documentWithChunk?.document_type} url = {documentWithChunk?.url}/>
         </Box>
       </Box>
 
