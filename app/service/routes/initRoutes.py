@@ -86,8 +86,8 @@ def determine_collection():
 @cross_origin()
 def extract_metadata():
     ##PARAMS
-    query = request.args.get['query']
-    chosen_collection = request.args.get['chosen_collection']
+    query = request.args.get('query')
+    chosen_collection = request.args.get('chosen_collection')
     schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
     history = json.loads(request.form['history']) # Conversation history
     n_new_queries = 2
