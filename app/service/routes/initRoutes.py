@@ -82,19 +82,48 @@ def determine_collection():
     # database.load_collection(chosen_collection, persist=True)
     return jsonify({'collection': chosen_collection})
 
-@main.route("/generate/extract_meta", methods=['GET'])
+@main.route("/generate/extract_meta", methods=['POST'])
 @cross_origin()
 def extract_metadata():
-    query = request.args.get('query')
-    chosen_collection = request.args.get('chosen_collection')
+    ##PARAMS
+    query = request.form['query']
+    chosen_collection = request.form['chosen_collection']
     schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
+    history = json.loads(request.form['history']) # Conversation history
+    n_new_queries = 2
+    #----------------------------------
+    conversation = ""
+    for h in history:
+        conversation += h['question'] + ". "
     #extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
-    extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
-    if extracted_metadata != -1: #No metadata found
-        filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+    is_old_extract = False
+    if is_old_extract: #OLD METADATA EXTRACTION
+        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
+        if extracted_metadata != -1: #No metadata found
+            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+        else:
+            filter_expressions = {}
+        return jsonify(filter_expressions)
+    
+    rewritten_queries = rag_utils.rewrite_query(conversation=conversation, model=model, k=n_new_queries)
+    if rewritten_queries == -1:
+        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
+        if extracted_metadata != -1: #No metadata found
+            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+        else:
+            filter_expressions = {}
+        return jsonify(filter_expressions)
     else:
-        filter_expressions = {}
-    return jsonify(filter_expressions)
+        filter_expressions = []
+        for q in rewritten_queries:
+            extracted_metadata = rag_utils.metadata_extraction_v2(q, model, chosen_collection)
+            if extracted_metadata != -1: #No metadata found
+                expr = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+            else:
+                expr = {}
+            filter_expressions.append({q: expr})
+        return jsonify(filter_expressions)
+        
 
 @main.route("/generate/search", methods=["GET"])
 @cross_origin()
@@ -106,41 +135,55 @@ def search():
         filter_expressions = json.loads(request.args.get('filter_expressions')) #
     except json.JSONDecodeError:
         filter_expressions = None
-    k = 3
+    k = 4
     encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
     #----------------------------------
     database.load_collection(chosen_collection)
-    output_fields = {
-        'student_handbook': ['title', 'article'],
-        chosen_collection: ['title', 'article']
-    }
-    query_embeddings = encoder.embedding_function("query: " + query)
-    try:
-        search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k)
-        search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
+    # output_fields = {
+    #     'student_handbook': ['title', 'article'],
+    #     chosen_collection: ['title', 'article']
+    # }
+    if type(filter_expressions) == dict:
+        query_embeddings = encoder.embedding_function("query: " + query)
+        try:
+            search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k)
+            search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
 
-        search_results = search_results + search_results_vanilla
-        source = source + source_vanilla
-        distances = distances + distances_vanilla
-        results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
+            search_results = search_results + search_results_vanilla
+            source = source + source_vanilla
+            distances = distances + distances_vanilla
+            results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
 
-        distances.sort()
-        distances = distances[:k]
-        search_results_final = [results[k][0] for k in distances]
-        source_final = [results[k][1] for k in distances]
-    except Exception as e:
-        print("Error with filter search")
-        print(e)
-        search_results_final, source_final, _ = database.similarity_search(chosen_collection, query_embeddings)
-    if search_results_final != -1:
-        context = rag_utils.create_prompt_milvus(query, search_results_final)
-    else:
-        context = "No related documents found"
-        source_final = []
+            distances.sort()
+            distances = distances[:k]
+            search_results_final = [results[k][0] for k in distances]
+            source_final = [results[k][1] for k in distances]
+        except Exception as e:
+            print("Error with filter search")
+            print(e)
+            search_results_final, source_final, _ = database.similarity_search(chosen_collection, query_embeddings)
+        if search_results_final != -1:
+            context = rag_utils.create_prompt_milvus(query, search_results_final)
+        else:
+            context = "No related documents found"
+            source_final = []
+    elif type(filter_expressions) == list: #Filter expressions contain rewritten queries - perform hybrid search
+        search_results_final, source_final, _ = database.hybrid_search(
+            collection=chosen_collection, 
+            query_embeddings=[encoder.embedding_function("query: " + list(q.keys())[0]) for q in filter_expressions], 
+            k=k,
+            limit_per_req=3,
+            filters=[list(q.values())[0] for q in filter_expressions]
+            )
+        if search_results_final != -1:
+            context = rag_utils.create_prompt_milvus(query, search_results_final)
+        else:
+            context = "No related documents found"
+            source_final = []
     return jsonify({
         'context': context,
         'source': source_final
-    })
+        })
 
 @main.route("/generate", methods=["POST"])
 @cross_origin()

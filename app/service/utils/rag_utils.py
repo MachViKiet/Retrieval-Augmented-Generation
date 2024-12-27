@@ -20,7 +20,9 @@ from pymilvus import(
     FieldSchema,
     DataType,
     Collection,
-    CollectionSchema
+    CollectionSchema,
+    AnnSearchRequest,
+    RRFRanker
 )
 
 CACHE_DIR = os.path.normpath(
@@ -112,6 +114,9 @@ class MilvusDB:
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
 
+    def _insert_document(self, collection_name, document, metadata):
+        pass #DEPRECATED
+
     def describe_collection(self, collection_name):
         return Collection(collection_name).describe()
 
@@ -184,6 +189,51 @@ class MilvusDB:
                 results[r.distance] = (r.entity, c)
         if len(results) == 0:
              #No matching documents
+            print("No matching documents")
+            return -1, -1, -1
+        #Sort by distance and return only k results
+        distances = list(results.keys())
+        distances.sort()
+        distances = distances[:k]
+        sorted_list = [results[i][0] for i in distances]
+        #Return the collection name of the source document
+        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
+        return sorted_list, source, distances
+    
+    def hybrid_search(self, collection, query_embeddings, limit_per_req=3, k=4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None):
+        '''Perform hybrid search among the currently loaded collections. Using filter expressions to for metadata filtering'''
+        results = {}
+        source = []
+        reranker = RRFRanker()
+        if search_params is None:
+            search_params = {
+                "metric_type": "L2",
+                "params": {"nprobe": 5}
+            }
+        if filters is None:
+            filters = {}
+        
+        for c in self.persistent_collections + [collection]: #Search from default collections + currently loaded collection
+            reqs = []
+            for q, filter in zip(query_embeddings, filters):
+                reqs.append(AnnSearchRequest(
+                    data=[q],
+                    anns_field="embedding",
+                    param=search_params,
+                    limit=limit_per_req,
+                    expr=filter.get(c, None),
+                )) #Search with filters
+                reqs.append(AnnSearchRequest(
+                    data=[q],
+                    anns_field="embedding",
+                    param=search_params,
+                    limit=limit_per_req,
+                )) #Search without filters
+                search_results = Collection(c).hybrid_search(reqs, rerank=reranker, limit=k, output_fields=output_fields if type(output_fields) == list else output_fields[c])[0]
+                for r in search_results:
+                    results[r.distance] = (r.entity, c)
+        if len(results) == 0:
+            #No matching documents
             print("No matching documents")
             return -1, -1, -1
         #Sort by distance and return only k results
@@ -305,9 +355,12 @@ def compile_filter_expression(metadata, loaded_collections: list):
             elif short_schema[attr] == DataType.VARCHAR:
                 expressions[c] += attr + f' == "{val}"' + " || "
             elif short_schema[attr] == DataType.ARRAY:
-                if type(ast.literal_eval(val)) is list:
-                    expressions[c] += f"array_contains_any({attr}, {val}) || "
-                else:
+                try:
+                    if type(ast.literal_eval(val)) is list:
+                        expressions[c] += f"array_contains_any({attr}, {val}) || "
+                    else:
+                        expressions[c] += f"array_contains_any({attr}, [{val}]) || "
+                except ValueError:
                     expressions[c] += f"array_contains_any({attr}, [{val}]) || "
         # Reformat
         expressions[c] = expressions[c].removesuffix(' || ')
@@ -320,7 +373,6 @@ def metadata_extraction_v2(query, model, collection_name):
 
     prompt = prompt = """Extract metadata from the user's query using the provided schema.
 Do not include the metadata if not found.
-For any metadata whose value is a list, write the list as a string (surrounded by '').
 User's query: {query}
 Schema:
 {schema}
@@ -352,9 +404,35 @@ Answer:
         try:
             result = result.replace("`", '').replace("json", '')
             result = json.loads(result)
+            for k, v in result.items():
+                if type(v) is str:
+                    result[k] = v.lower()
+                elif type(v) is list:
+                    result[k] = [x.lower() for x in v]
         except json.JSONDecodeError:
             print("Metadata Extraction: Couldn't decode JSON - " + result)
             result = -1
+    return result
+
+def rewrite_query(conversation, model, k=2):
+    '''Rewrite the user's query using the context of the conversation'''
+    prompt = """Summarize the user's conversation into a query to be used as a search query.
+User's conversation:
+\\
+{conversation}
+\\
+Note that the user can change the topic in the middle of the conversation, only consider the newest topic.
+Summarize in {k} different ways. Don't change the language of the query. (Mostly Vietnamese)
+Use this JSON schema, answer with the JSON string representation ONLY:
+Return: list[str]"""
+    full_prompt = prompt.format(conversation=conversation, k=k)
+    try:
+        response = model._generate(full_prompt)
+        response = response.replace("`", '').replace("json", '')
+        result = json.loads(response)
+    except json.JSONDecodeError:
+        print("Couldn't decode JSON - " + response)
+        result = -1
     return result
 
 def get_document(filename, collection_name):
