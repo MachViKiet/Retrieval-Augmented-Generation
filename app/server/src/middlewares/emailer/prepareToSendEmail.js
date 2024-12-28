@@ -22,7 +22,7 @@ const prepareToSendEmail = (user = {}, subject = '') => {
   <p>Để hoàn tất việc <u>xác minh tài khoản</u> , vui lòng sử dụng click vào đường dẫn bên dưới: </p>
   
   <strong> Liên kết: </strong> 
-  <a href="${ process.env.APP_PROTOCOL }://${ process.env.APP_HOST }:${ process.env.APP_PORT }/${user.verification}" target="_blank">Liên Kết Xác Thực Tài Khoản</a>
+  <a href="${ process.env.APP_PROTOCOL }://${ process.env.APP_HOST }:${ process.env.APP_PORT }/verifyEmail?_id=${user.verification}" target="_blank">Liên Kết Xác Thực Tài Khoản</a>
   
   <p>Mã sẽ hết hiệu lực vào 12h tối cùng ngày và tài khoản này sẽ bị xóa nếu chưa được xác thực</p>
   
@@ -39,7 +39,7 @@ const prepareToSendEmail = (user = {}, subject = '') => {
   const data = {
     user,
     subject,
-    html
+    htmlMessage : html
   }
   if (process.env.NODE_ENV === 'production') {
     sendEmail(data, (messageSent) =>
@@ -48,7 +48,7 @@ const prepareToSendEmail = (user = {}, subject = '') => {
         : console.log(`Email FAILED to: ${user.email}`)
     )
   } else if (process.env.NODE_ENV === 'development') {
-    console.log(data)
+    console.log('Xác thực email thành công')
   }
 }
 

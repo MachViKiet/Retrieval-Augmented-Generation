@@ -26,7 +26,7 @@ function Register() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { processHandler } = useOutletContext();   
+  const { processHandler, noticeHandler } = useOutletContext();   
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -60,7 +60,16 @@ function Register() {
     await useAuth.register(userData)
       .then((userData) => {
           processHandler.remove('#register', logInEvent)
-          dispatch(login(userData))}) 
+          noticeHandler.add({
+            id: '#542',
+            status: 'success',
+            message: 'Tạo tài khoản thành công, hãy kiểm tra email để xác thực tài khoản bạn nhé !',
+            auto: false
+          })
+          setTimeout(() => {
+            navigate('/signin')
+          }, 5000);
+        }) 
       .catch((err) => {
         processHandler.remove('#register', logInEvent)
         setNotification(useErrorMessage(err))

@@ -19,7 +19,7 @@ const checkPassword = async (password = '', user = {}) => {
       resolve(true)
     })
   })
-  
+
 }
 
 module.exports = { checkPassword }

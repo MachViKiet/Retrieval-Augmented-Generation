@@ -44,7 +44,6 @@ export const uploadFile = async (req, res) => {
         formData.append('text', content)
         chunks = await chunk_file(formData).catch(() => { resolve(buildErrObject(422, 'Cannot chunk file')) })
 
-        console.log(chunks)
         try {
           chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
         } catch (error) {

@@ -23,6 +23,7 @@ const TextInput = styled(TextField) (({ theme }) => ({
 
 function SignIn() {
   const [notificationError, setNotification] = useState(null)
+  const [notificationSuccess, setNotificationSuccess] = useState(null)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,10 +36,12 @@ function SignIn() {
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
  
       setNotification('Vui lòng nhập email hợp lệ !')
+      setNotificationSuccess(null)
       return false;
     }
 
     if (!password.value || password.value.length < 6) {
+      setNotificationSuccess(null)
       setNotification('Password phải tối thiểu có 6 kí tự !')
       return false;
     }
@@ -64,6 +67,31 @@ function SignIn() {
       .catch((err) => {
         processHandler.remove('#login', logInEvent)
         setNotification(useErrorMessage(err))
+      })
+  };
+
+  const handleVerifyEmail = async (event) => {
+    event.preventDefault()
+    const email = document.getElementById('email');
+
+    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+ 
+      setNotification('Vui lòng nhập email hợp lệ !')
+      setNotificationSuccess(null)
+      return false;
+    }
+    const logInEvent = processHandler.add('#verifyEmail')
+
+    await useAuth.send_verifyEmail(email.value)
+      .then(() => {
+          processHandler.remove('#verifyEmail', logInEvent)
+          setNotificationSuccess('Gởi Yêu Câu Trong Giây Lát, Kiểm Tra Email Của Bạn !')
+          setNotification()
+        }) 
+      .catch((err) => {
+        processHandler.remove('#verifyEmail', logInEvent)
+        setNotification(useErrorMessage(err))
+        setNotificationSuccess(null)
       })
   };
 
@@ -117,11 +145,11 @@ function SignIn() {
             <Typography sx={{ textAlign: 'center' }}>
               <span>
                 <Link
-                href="/lisences"
+                onClick = {handleVerifyEmail}
                 variant="body2"
-                sx={{ alignSelf: 'center' }}
+                sx={{ alignSelf: 'center', cursor: 'pointer' }}
                 >
-                Quy định & điều khoản
+                Yêu Cầu Xác Minh Tài Khoản !
                 </Link>
               </span>
             </Typography>
@@ -129,6 +157,9 @@ function SignIn() {
 
           <Typography sx = {{ width: '100%' , textAlign: 'end', color: 'red' }}>
             {notificationError}
+          </Typography>
+          <Typography sx = {{ width: '100%' , textAlign: 'end', color: 'green' }}>
+            {notificationSuccess}
           </Typography>
         </Box>
 

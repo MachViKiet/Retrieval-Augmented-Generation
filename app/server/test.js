@@ -8,23 +8,6 @@ var transporter = nodemailer.createTransport({
   }
 })
 const subject = 'Dự án Chatbot tư vấn FIT-HCMUS'
-const html = `
-<h1>Thư Xác Nhận</h1>
-Kính chào quý thầy cô/bạn sinh viên,
-
-<p>Để hoàn tất việc đăng ký, vui lòng sử dụng mã đăng ký bên dưới:</p>
-
-<a>a06280be-209a-4709-aca7-b66b0e978cd0</a>
-
-<p>Mã sẽ hết hiệu lực vào 12h tối cùng ngày và tài khoản này sẽ bị xóa nếu chưa được xác thực</p>
-
-<p>Trân trọng,</p>
-
-<h3>Dự án Chatbot tư vấn FIT-HCMUS</h3>
-------------------------
-<br>Nhóm sinh viên thực hiện: </br>
-<p>Nguyễn Duy Đăng Khoa, Mạch Vĩ Kiệt</p>
-`
 var mailOptions = {
   from: 'UniBot-KHTN (2024) <machkiet2003@gmail.com>',
   to: 'machkiet252003@gmail.com',

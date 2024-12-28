@@ -11,7 +11,8 @@ const registerUser = async (req = {}) => {
     name: req.name,
     email: req.email,
     password: req.password,
-    verification: uuid.v4()
+    verification: uuid.v4(),
+    verified: process.env.NODE_ENV === 'production'
   })
 
   const res = user.save().then(item => item).catch((err) => buildErrObject(422, err.message))

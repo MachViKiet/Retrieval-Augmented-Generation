@@ -12,7 +12,7 @@ const path = require('path')
 
 const { getChunkInDocument, uploadFile, updateDocument, processDocument } = require('~/controllers/document')
 
-const directory = './src/storage'
+// const directory = './src/storage'
 
 router.get('/chunks', requireAuth, trimRequest.all, getChunkInDocument)
 

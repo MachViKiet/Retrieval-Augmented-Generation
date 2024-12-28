@@ -1,6 +1,7 @@
 const { feedback } = require('./feedback')
 const { login } = require('./login')
 const { register } = require('./register')
+const { request_validateEmail } = require('./request_validateEmail')
 const { roleAuthorization } = require('./roleAuthorization')
 const { validateEmail } = require('./validateEmail')
 
@@ -9,5 +10,6 @@ module.exports = {
   register,
   roleAuthorization,
   feedback,
-  validateEmail
+  validateEmail,
+  request_validateEmail
 }
