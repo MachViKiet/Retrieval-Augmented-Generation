@@ -22,6 +22,7 @@ def segment_vietnamese(text):
     result = rdrsegmenter.word_segment(text)
     result = ' '.join([''.join(x) for x in result])
     del rdrsegmenter
+    os.chdir('../..')
     return result
 
 print("Done.")
