@@ -4,8 +4,7 @@ const pdfParse = require('pdf-parse')
 
 
 // Đường dẫn tới file PDF
-export const read_pdf = async (filename) => {
-  const pdfPath = path.join(__dirname, '../storage', filename)
+export const read_pdf = async (pdfPath) => {
 
   return new Promise((resolve, reject) => {
     fs.readFile(pdfPath, (err, data) => {

@@ -70,6 +70,7 @@ def determine_collection():
     conversation = ""
     for h in history:
         conversation += h['question'] + ". "
+    conversation += query
     prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(conversation + query))[0]
     chosen_collection = prediction['label']
     print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
@@ -94,7 +95,8 @@ def extract_metadata():
     #----------------------------------
     conversation = ""
     for h in history:
-        conversation += h['question'] + ". "
+        conversation += h['question'] + ".\n"
+    conversation += query
     #extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
     is_old_extract = False
     if is_old_extract: #OLD METADATA EXTRACTION
@@ -198,7 +200,7 @@ def generate():
     max_tokens = 1500 
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
-    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile)
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context)
     if streaming:
         return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
     else:

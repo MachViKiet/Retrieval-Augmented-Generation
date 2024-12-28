@@ -229,12 +229,16 @@ export function ChatGenerator() {
       { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 152px)', overflow: 'auto', padding: 1 }}> {
         sessions.map((session) => (
           <Box key = {session._id} 
-            sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', color: '#000 !important',
+            sx ={{ width: '100%', 
+              background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', 
+              color: theme => currentChatSession && session?._id == currentChatSession?._id ? '#000 important' : (
+                theme.palette.mode == 'dark' ? '#fff' : '#000'
+              ),
               borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
-              '&:hover': { background: '#00000045', color: '#fff' }
+              '&:hover': { background: theme => theme.palette.mode == 'dark' ? '#00000045' : '#818fb033', color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000' }
             }}
               onClick = {async (e) => await sessionButtonClick(session)}>
-            <Box >
+            <Box>
               <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
               <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '100', fontSize: '0.725rem !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_description}</Typography>
             </Box>
@@ -564,9 +568,13 @@ export function ChatGenerator() {
             { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 1 }}> {
               sessions.map((session) => (
                 <Box key = {session._id} 
-                  sx ={{ width: '100%', background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', color: '#000 !important',
+                  sx ={{ width: '100%', 
+                    background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', 
+                    color: theme => currentChatSession && session?._id == currentChatSession?._id ? '#000 important' : (
+                      theme.palette.mode == 'dark' ? '#fff' : '#000'
+                    ),
                     borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
-                    '&:hover': { background: '#00000045', color: '#fff' }
+                    '&:hover': { background: theme => theme.palette.mode == 'dark' ? '#00000045' : '#818fb033', color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000' }
                   }}
                     onClick = {async (e) => await sessionButtonClick(session)}>
                   <Box >

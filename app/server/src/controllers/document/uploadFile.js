@@ -26,7 +26,7 @@ export const uploadFile = async (req, res) => {
     const id_in_storage = new Date().getTime().toString() + '-' + (Math.random()*900+100).toFixed(0)
     const filename = decodeURI(removeFileExtension(req.body.filename))
     const extensionFile = getFileExtension(req.file.originalname)
-    const filePath = path.join(__dirname, '../../storage', `${id_in_storage}-${filename}${extensionFile}`)
+    const filePath = path.join(process.cwd(), '/public/storage', `${id_in_storage}-${filename}${extensionFile}`)
 
     const action = new Promise((resolve, reject) => {
       fs.writeFile(filePath, req.file.buffer, async (err) => {
@@ -36,7 +36,7 @@ export const uploadFile = async (req, res) => {
         }
 
         let content = null
-        content = await read_pdf(`${id_in_storage}-${filename}${extensionFile}`)
+        content = await read_pdf(filePath)
           .catch(() => { resolve(buildErrObject(422, 'Cannot read file for getting chunk')) })
 
         let chunks
@@ -44,8 +44,12 @@ export const uploadFile = async (req, res) => {
         formData.append('text', content)
         chunks = await chunk_file(formData).catch(() => { resolve(buildErrObject(422, 'Cannot chunk file')) })
 
-        chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
-
+        console.log(chunks)
+        try {
+          chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
+        } catch (error) {
+          resolve(buildErrObject(422, 'Cannot chunk file'))
+        }
         const document = new Document({
           owner: id,
           originalName: `${filename}${extensionFile}`,

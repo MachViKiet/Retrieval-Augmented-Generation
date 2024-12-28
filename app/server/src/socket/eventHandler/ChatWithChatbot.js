@@ -279,7 +279,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
-
+      console.log(error)
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': '### Hệ Thống Hiện Không Hoạt Động !\n Tôi rất tiếc, hệ thống chúng tôi đang gặp sự cố và không thể cung cấp thông tin cho bạn.\n Nếu cần thiết bạn có thể liên hệ với giáo vụ để có thông tin một cách nhanh chóng và chính xác nhất.',
