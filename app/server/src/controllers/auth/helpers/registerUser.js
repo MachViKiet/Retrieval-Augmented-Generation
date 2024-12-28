@@ -14,8 +14,6 @@ const registerUser = async (req = {}) => {
     verification: uuid.v4()
   })
 
-  console.log('user', user)
-
   const res = user.save().then(item => item).catch((err) => buildErrObject(422, err.message))
 
   return res

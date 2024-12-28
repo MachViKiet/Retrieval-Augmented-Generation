@@ -8,6 +8,7 @@ const { registerUser } = require('./registerUser')
 const { getUserInfo } = require('./getUserInfo')
 const { checkPermissions } = require('./checkPermissions')
 const { createFeedback } = require('./createFeedback')
+const { validateTokenAndUpdate } = require('./validateTokenAndUpdate')
 
 module.exports = {
   checkLoginAttemptsAndBlockExpires,
@@ -19,5 +20,6 @@ module.exports = {
   registerUser,
   getUserInfo,
   checkPermissions,
-  createFeedback
+  createFeedback,
+  validateTokenAndUpdate
 }

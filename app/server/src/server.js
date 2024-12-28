@@ -11,13 +11,13 @@ const io = require('./socket')
 var fs = require('fs')
 const path = require('path')
 
-const keyPath = path.join(process.cwd(), './cert/client-key.pem');
-const certPath = path.join(process.cwd(), './cert/client-cert.pem');
+const keyPath = path.join(process.cwd(), './cert/client-key.pem')
+const certPath = path.join(process.cwd(), './cert/client-cert.pem')
 
 var options = {
   key: fs.readFileSync(keyPath),
   cert: fs.readFileSync(certPath)
-};
+}
 
 async function bootstrap () {
 
@@ -38,7 +38,7 @@ bootstrap().then(async (server) => {
   })
 
   console.log('\n')
-  console.log('\x1b[36m', `Server is listening at http://${ process.env.APP_HOST }:${ process.env.APP_PORT }/`)
+  console.log('\x1b[36m', `Server is listening at ${ process.env.APP_PROTOCOL }://${ process.env.APP_HOST }:${ process.env.APP_PORT }/`)
 }).catch((err) => {
   console.log(err)
 })

@@ -37,7 +37,6 @@ const ActionContainer = ({params}) => {
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        paddingLeft: '15px'
     }}>
         {params && params.map((type,index) => (
         <Box key = {index} 
