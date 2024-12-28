@@ -357,11 +357,11 @@ def compile_filter_expression(metadata, loaded_collections: list):
             elif short_schema[attr] == DataType.ARRAY:
                 try:
                     if type(ast.literal_eval(val)) is list:
-                        expressions[c] += f"array_contains_any({attr}, {val}) || "
+                        expressions[c] += f"array_contains_any({attr}, {ast.literal_eval(val)}) || "
                     else:
-                        expressions[c] += f"array_contains_any({attr}, [{val}]) || "
+                        expressions[c] += f"array_contains_any({attr}, {val}) || "
                 except ValueError:
-                    expressions[c] += f"array_contains_any({attr}, [{val}]) || "
+                    expressions[c] += f"array_contains_any({attr}, {val}) || "
         # Reformat
         expressions[c] = expressions[c].removesuffix(' || ')
     return expressions
@@ -426,6 +426,9 @@ Summarize in {k} different ways. Don't change the language of the query. (Mostly
 Use this JSON schema, answer with the JSON string representation ONLY:
 Return: list[str]"""
     full_prompt = prompt.format(conversation=conversation, k=k)
+    print("Rewriting Queries--------")
+    print(full_prompt)
+    print("-------END--------")
     try:
         response = model._generate(full_prompt)
         response = response.replace("`", '').replace("json", '')
