@@ -12,13 +12,14 @@ load_dotenv('.env')
 # path = path.replace('\\', '/')
 # #path = r'{}'.format(path)
 # rdrsegmenter = py_vncorenlp.VnCoreNLP(annotators=["wseg"], save_dir=path)
+vncorenlp_path = os.path.abspath('./utils/vncorenlp')
 
 def segment_vietnamese(text):
-    path = "./utils/vncorenlp"
-    path = os.path.abspath(path)
-    path = path.replace('\\', '/')
+    # path = "./utils/vncorenlp"
+    # path = os.path.abspath(path)
+    # path = path.replace('\\', '/')
     #path = r'{}'.format(path)
-    rdrsegmenter = py_vncorenlp.VnCoreNLP(annotators=["wseg"], save_dir=path)
+    rdrsegmenter = py_vncorenlp.VnCoreNLP(annotators=["wseg"], save_dir=vncorenlp_path)
     result = rdrsegmenter.word_segment(text)
     result = ' '.join([''.join(x) for x in result])
     del rdrsegmenter
