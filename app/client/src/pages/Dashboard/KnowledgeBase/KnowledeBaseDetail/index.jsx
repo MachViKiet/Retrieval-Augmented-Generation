@@ -24,13 +24,19 @@ import { getSocket } from '~/socket';
 const useData = (documents) => {
   const { id } = useParams();
 
-  function createData(id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action) {
+  function createData(id = Math.floor(Math.random() * 72658721) , name= null, chunkNumber= null, upload_date= null, updated_date= null, chunkMethod= null, enable= null, parsingStatus= null, action= null) {
     return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action };
   }
 
   if(!documents) return {rows: [], columns: [], loading : false}
-  const rows = documents.map((document) => {
-    const {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state} = document
+  const rows = Array.isArray(documents) && documents.map((document) => {
+    let _id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state
+    try {
+      ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state} = document )
+    } catch (error) {
+      console.log(document)
+      console.error('Có lỗi Xảy ra khi đọc tài liệu')      
+    }
     return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['delete'] )
   })
 
@@ -123,39 +129,42 @@ function Datasets() {
   }, [token])
 
   useEffect(() => {
+    try{
+      collectionWithDocuments?.documents && Array.isArray(collectionWithDocuments?.documents) && collectionWithDocuments?.documents.map((document, index) => {
+        if( document?.document_type && document.document_type == 'Upload' 
+          && document?.state && ( document?.state == 'queued' || document?.state == 'running')){
+          console.log({file_id: document?._id})
 
-    collectionWithDocuments?.documents && collectionWithDocuments?.documents.map((document, index) => {
-      if( document?.document_type && document.document_type == 'Upload' 
-        && document?.state && ( document?.state == 'queued' || document?.state == 'running')){
-        console.log({file_id: document?._id})
 
+          Airflow.CheckStatus(socket, {
+            dag_id: document?.dag_id,
+            dag_run_id: document?.dag_run_id,
+            file_id: document?._id,
+            state: document?.state
+          })
 
-        Airflow.CheckStatus(socket, {
-          dag_id: document?.dag_id,
-          dag_run_id: document?.dag_run_id,
-          file_id: document?._id,
-          state: document?.state
-        })
+          Airflow.getStatus(socket , (data) => {
+            if(document._id === data.file_id && document?.state 
+              && collectionWithDocuments.documents[index]?.state != data.state){
+              Array.isArray(collectionWithDocuments?.documents) && setCollectionWithDocuments((prevs) => (
+                { ...prevs, documents: prevs.documents.map(document => {
+                  if(document._id === data.file_id && document?.state 
+                    && document.state != data.state) {
+                      return { ...document, state: data.state }
+                  }
+                  return document
+                }) }
+              ))
+              
+            }
 
-        Airflow.getStatus(socket , (data) => {
-          if(document._id === data.file_id && document?.state 
-            && collectionWithDocuments.documents[index]?.state != data.state){
-            Array.isArray(collectionWithDocuments?.documents) && setCollectionWithDocuments((prevs) => (
-              { ...prevs, documents: prevs.documents.map(document => {
-                if(document._id === data.file_id && document?.state 
-                  && document.state != data.state) {
-                    return { ...document, state: data.state }
-                }
-                return document
-              }) }
-            ))
-            
-          }
+          })
 
-        })
-
-      }
-    })
+        }
+      })
+    } catch (e) {
+      noticeHandler.add({ status: 'error', message: 'Lỗi Xảy Ra Khi Tải Dữ Liệu' })
+    }
   }, [collectionWithDocuments, getSocket()])
 
   const uploadFileHandler = (e) => {
@@ -167,6 +176,7 @@ function Datasets() {
 
     const uploadFileEvent = processHandler.add('#uploadFile')
     useDocument.uploadFile(formData, token).then((newDocument) => {
+      console.log('newDocument  ', newDocument)
       setCollectionWithDocuments(prev => ({ ...prev, documents: [newDocument.document, ...prev.documents ] }))
       noticeHandler.add({ status: 'success', message: 'Thêm tài liệu thành công' })
     }).catch((err) => noticeHandler.add({ status: 'error', message: err }))

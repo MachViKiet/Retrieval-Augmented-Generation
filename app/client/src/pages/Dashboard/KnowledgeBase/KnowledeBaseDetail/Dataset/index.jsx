@@ -131,7 +131,8 @@ function DatasetDetail() {
     }
     const processDocumentEvent = processHandler.add('#processDocument')
     useDocument.process(data, token).then(
-      () => {
+      (data) => {
+        console.log('fafadf', data)
         noticeHandler.add({
           status: 'success',
           message: 'Tài Liệu Đã Được Đưa Vào Hàng Đợi Xử Lý'

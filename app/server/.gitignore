@@ -17,6 +17,7 @@
 
 /public/storage
 
+**storage
 # misc
 .DS_Store
 .env.local

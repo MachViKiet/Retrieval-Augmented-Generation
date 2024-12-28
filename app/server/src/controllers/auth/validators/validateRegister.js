@@ -18,13 +18,14 @@ const validateRegister = [
     .withMessage('IS_EMPTY')
     .isEmail()
     .withMessage('EMAIL_IS_NOT_VALID')
+    // eslint-disable-next-line no-unused-vars
     .custom((value) => {
-      if (!(value.endsWith('@clc.fitus.edu.vn') || value.endsWith('hcmus.edu.vn'))) {
-        throw new Error('Email phải có tên miền @hcmus.edu.vn hoặc @clc.fitus.edu.vn')
-      }
+      // if (!(value.endsWith('@clc.fitus.edu.vn') || value.endsWith('hcmus.edu.vn'))) {
+      //   throw new Error('Email phải có tên miền @hcmus.edu.vn hoặc @clc.fitus.edu.vn')
+      // }
       return true
     })
-    ,
+  ,
   check('password')
     .exists()
     .withMessage('MISSING')
