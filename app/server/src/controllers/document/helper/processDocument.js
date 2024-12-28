@@ -11,7 +11,7 @@ export const processDocumentHelper = async (id = null, chunks = null) => {
       throw new Error('NOT_FOUND')
     }
 
-    if (_doc?.state != 'pending') {
+    if (_doc?.state == 'running' || _doc?.state == 'queued') {
       throw new Error('Tài Liệu Đã hoặc Đang Được Xử Lý')
     }
 
