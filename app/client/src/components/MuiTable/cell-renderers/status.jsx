@@ -25,8 +25,6 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   borderRadius: '8px',
   fontSize: 'inherit',
   fontWeight: '700',
-  marginLeft: '20px',
-  marginBottom: '5px',
   '&:hover': {
     cursor: 'pointer'
   },
@@ -130,7 +128,10 @@ const Status = (props) => {
     label = 'Đang Xử Lý';
   } else if (status === 'running') {
     label = 'Đang Xử Lý';
+  } else if (status === 'basic') {
+    label = 'Cơ Bản';
   }
+
 
   if (status === 'PartiallyFilled') {
     label = 'Partially Filled';

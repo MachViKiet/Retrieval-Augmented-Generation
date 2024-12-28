@@ -17,7 +17,7 @@ const Container_Style = {
 const Block = styled(Box) (({theme}) => ({ 
   width: '100%', borderRadius: '10px',
   backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
-  : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+  : 'linear-gradient(135deg, #e2e8ff 0%, #6994d9 100%)',
   position: 'relative', textAlign: 'start',
   color: theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
   boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
@@ -90,8 +90,9 @@ function Dashboard() {
             </Box>
         </Box >
 
-        <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative'}}>
-          <Block sx = {{ width: '100%', height: 'fit-content', paddingY: '32px !important'}}>
+        <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative' }}>
+          <Block sx = {{ width: '100%', height: 'fit-content', paddingY: '32px !important' , backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%) !important' 
+            :'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important'}}>
             <SimpleBarChart/>
           </Block>
           
@@ -101,7 +102,7 @@ function Dashboard() {
           </Block>
         </Box >
 
-        <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative', paddingBottom: '20px'}}>
+        {/* <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative', paddingBottom: '20px'}}>
           <Block sx = {{ width: '100%', height: 'fit-content', paddingY: '32px !important'}}>
             <BasicPie/>
           </Block>
@@ -110,7 +111,7 @@ function Dashboard() {
             
             <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024 </Typography>
           </Block>
-        </Box >
+        </Box > */}
 
         {/* <Skeleton variant="rounded" width={'100%'} height={360} /> */}
         {/* <Skeleton variant="rounded" width={'100%'} height={360} /> */}

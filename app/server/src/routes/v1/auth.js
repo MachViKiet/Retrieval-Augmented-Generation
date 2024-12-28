@@ -5,7 +5,8 @@ const trimRequest = require('trim-request')
 
 const {
   validateLogin,
-  validateRegister
+  validateRegister,
+  validateVerifyEmail
 } = require('~/controllers/auth/validators')
 const passport = require('passport')
 const requireAuth = passport.authenticate('jwt', {
@@ -14,7 +15,9 @@ const requireAuth = passport.authenticate('jwt', {
 const {
   login,
   register,
-  feedback
+  feedback,
+  validateEmail,
+  request_validateEmail
 } = require('~/controllers/auth')
 
 /*
@@ -24,5 +27,7 @@ router.post('/login', trimRequest.all, validateLogin, login)
 
 router.post('/register', trimRequest.all, validateRegister, register)
 router.post('/feedback', requireAuth, trimRequest.all, feedback)
+router.get('/verifyEmail', trimRequest.all, validateEmail)
+router.get('/request_verifyEmail', trimRequest.all, validateVerifyEmail, request_validateEmail)
 
 module.exports = router

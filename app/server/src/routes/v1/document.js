@@ -8,10 +8,11 @@ const passport = require('passport')
 const requireAuth = passport.authenticate('jwt', {
   session: false
 })
+const path = require('path')
 
-const { getChunkInDocument, uploadFile, updateDocument, process } = require('~/controllers/document')
+const { getChunkInDocument, uploadFile, updateDocument, processDocument } = require('~/controllers/document')
 
-const directory = './src/storage'
+// const directory = './src/storage'
 
 router.get('/chunks', requireAuth, trimRequest.all, getChunkInDocument)
 
@@ -19,11 +20,11 @@ router.post('/upload', requireAuth, trimRequest.all, upload.single('file'), uplo
 
 router.patch('/', requireAuth, trimRequest.all, updateDocument)
 
-router.post('/process', requireAuth, trimRequest.all, process)
+router.post('/process', requireAuth, trimRequest.all, processDocument)
 
 
 router.get('/', async (req, res) => {
-  const filePath = `${directory}/${req.query.name}`
+  const filePath = path.join(process.cwd(), '/public/storage', `${req.query.name}`)
 
   try {
     if (fs.existsSync(filePath)) {

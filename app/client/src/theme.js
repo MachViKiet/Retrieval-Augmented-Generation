@@ -1,3 +1,4 @@
+import { BorderBottom } from '@mui/icons-material';
 import { extendTheme } from '@mui/material/styles'
 import { viVN } from "@mui/x-data-grid/locales";
 const SIDEBAR_WIDTH = "220px";
@@ -106,57 +107,47 @@ const theme = extendTheme(
           root: ({ theme }) => ({
             borderRadius: "10px",
             fontSize: "0.725rem",
-            border: "none",
-            boxShadow:
-              "0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)",
-          }),
-          columnHeaders: ({ theme }) => ({
-            "& .MuiDataGrid-filler": {
-              background: theme.palette.primary.main,
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)",
+            '--mui-palette-TableCell-border': theme.palette.mode == "dark" ? '#ffffff30' : '#00000030',
+            '--DataGrid-containerBackground':  theme.palette.primary.main,
+            '--mui-palette-text-primary':  theme.palette.text.secondary,
+            '--unstable_DataGrid-overlayBackground': 'transparent',
+            '--mui-palette-action-disabled': theme.palette.mode == "dark" ? '#ffffff4f' : '#0000004f',
+            '.MuiDataGrid-columnHeaderTitleContainer': {
+              justifyContent: 'center',
+              color: '#fff'
             },
+            '.MuiDataGrid-filler': {
+              display: 'none'
+            }
           }),
           columnHeader: ({ theme }) => ({
-            background: theme.palette.primary.main,
-            color: "#fff",
-            "& .MuiButtonBase-root.MuiCheckbox-root": {
-              color: "inherit",
-            },
-            "& .MuiDataGrid-container--top": {
-              background: theme.palette.primary.main,
-            },
+            '--DataGrid-rowBorderColor': theme.palette.primary.main,
           }),
           row: ({ theme }) => ({
-            background: theme.palette.mode == "dark" ? "#1f2640" : "#f7fbff63",
-            color: theme.palette.mode == "dark" ? "#fff" : "#000",
-            "& .MuiButtonBase-root.MuiCheckbox-root": {
-              color: "inherit",
-            },
-            "&.Mui-selected": {
-              background:
-                theme.palette.mode == "dark" ? "#1f2640d6" : "#d6d4d480",
-            },
-            "&:hover": {
-              background:
-                theme.palette.mode == "dark" ? "#1f2640d6" : "#d6d4d480",
-            },
+            "&.Mui-selected": { background: theme.palette.mode == "dark" ? "#1f2640d6" : "#d6d4d480" },
+            "&:hover": { background: theme.palette.mode == "dark" ? "#465076d6" : "#d6d4d480" },
           }),
-          cell: {
-            // "&:focus": {
+          cell: ({ theme }) => ( {
+            '--rowBorderColor': theme.palette.mode == "dark" ? '#ffffff30' : '#00000030',
             outline: "none !important",
             textAlign: "left",
-            padding: "2px 0",
             cursor: "pointer",
-            // },
-          },
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderTop: '1px solid var(--rowBorderColor)',
+            borderBottom: '1px solid var(--rowBorderColor)'
+          }),
           footerContainer: ({ theme }) => ({
-            background: theme.palette.primary.main,
-            color: "#fff",
+            '--mui-palette-text-primary':  theme.palette.text.secondary,
+            '--rowBorderColor': theme.palette.mode == "dark" ? '#ffffff30' : '#000',
             ".MuiDataGrid-selectedRowCount": {
               color: "inherit",
             },
           }),
           columnSeparator: ({ theme }) => ({
-            color: theme.palette.primary.main,
+            // color: theme.palette.primary.main,
           }),
         },
       },

@@ -2,7 +2,8 @@ const ErrorMessage = {
     'WRONG_PASSWORD' : 'Tài Khoản hoặc mật khẩu không hợp lệ',
     'USER_DOES_NOT_EXIST': 'Tài Khoản hoặc mật khẩu không hợp lệ',
     'ERR_CONNECTION_REFUSED': 'Server Không Hoạt Động',
-    'EMAIL_ALREADY_EXISTS': 'Email đã tồn tại. Vui lòng nhập tài khoản khác !'
+    'EMAIL_ALREADY_EXISTS': 'Email đã tồn tại. Vui lòng nhập tài khoản khác !',
+    'THIS ACCOUNT HAVE BEEN VERIFIED': 'Tài Khoản Này Đã Được Xác Minh !'
 }
 
 const Code = {

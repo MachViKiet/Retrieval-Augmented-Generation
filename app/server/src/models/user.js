@@ -67,7 +67,7 @@ const UserSchema = new mongoose.Schema(
     },
     verified: {
       type: Boolean,
-      default: true
+      default: false
     },
     message: {
       type: String

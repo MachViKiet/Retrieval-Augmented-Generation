@@ -5,9 +5,9 @@ const { registerUser, getUserInfo, returnRegisterToken } = require('./helpers')
 const { handleError } = require('../../middlewares/utils')
 const { emailExists } = require('../emailer')
 
-// const {
-//   // sendRegistrationEmailMessage
-// } = require('../../middleware/emailer')
+const {
+  prepareToSendEmail
+} = require('../../middlewares/emailer')
 
 /**
  * Register function called by route
@@ -27,7 +27,7 @@ const register = async (req, res) => {
       const item = await registerUser(req)
       const userInfo = getUserInfo(item)
       const response = returnRegisterToken(item, userInfo)
-      // sendRegistrationEmailMessage(locale, item)
+      prepareToSendEmail(item)
       res.status(201).json(response)
       return
     }
