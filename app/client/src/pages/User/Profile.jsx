@@ -66,7 +66,7 @@ export function Profile() {
   useEffect(() => {
     token && getUser(token)
       .then((usr) => { setUser(usr), usr.interest ? setInterest(usr.interest) : setInterest([])})
-      .catch((err) => { console.log(err) })
+      .catch((err) => { console.error("Lấy Thông Tin User Thất Bại !") })
   },[token])
 
   const getUser = async (token) => {
@@ -79,7 +79,6 @@ export function Profile() {
   const updateClick = async (e) => {
     e.preventDefault()
     const updateUserEvent = processHandler.add('#UpdateUser')
-    console.log({...user, interest })
     useProfile.update({...user, interest }, token)
     .then(async (user) => {
       setUser(user)
@@ -94,7 +93,11 @@ export function Profile() {
         message: 'Cập nhật thành công'
       })
     }).catch((err) => {
-      console.log('update Thất bại  ', err)
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
+      console.error('Cập Nhật Thông Tin User Thất Bại !')
     }).finally(() => processHandler.remove('#UpdateUser', updateUserEvent))
   }
 
@@ -329,28 +332,18 @@ export function Profile() {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <FormLabel htmlFor="preferences" sx = {{ color: 'inherit' }}>Chủ Đề Quan Tâm</FormLabel>
                   </Box>
-                  <Box sx = {{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  <Box key = '45612857' sx = {{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     {interestList.map((data) => {
                       return <>
-                      <Chip label= {data.text} onClick={() => chipClick(data.id)}
-                      color= { interest.includes(data.id) ? 'info' : ''}
-                      sx = {{ 
-                        border: '1px solid #ccc' , 
-                        color: theme => interest.includes(data.id) ? '#ffffff' : theme.palette.text.secondary,
-                        
-                      }} />
+                      <Chip key = {data?.id} label= {data.text} onClick={() => chipClick(data.id)}
+                        color= { (data?.id == 'student_handbook' || interest.includes(data.id)) ? 'info' : ''}
+                        sx = {{ 
+                          border: '1px solid #ccc' ,
+                          color: theme => data?.id == 'student_handbook' || interest.includes(data.id) ? '#ffffff' : theme.palette.text.secondary,
+                        }} />
                       </>
                     })}
                   </Box>
-                  {/* <TextField
-                    multiline
-                    id="preferences"
-                    name= "preferences"
-                    value={user?.preferences}
-                    spellCheck = {false}
-                    rows={4}
-                    onChange={(e) => setUser((prev) => ({...prev, preferences : e.target.value}))}
-                  /> */}
                 </FormControl>
               </Grid>
 

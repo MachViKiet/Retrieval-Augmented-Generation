@@ -25,7 +25,6 @@ function FeedBack() {
       })
       setValue(null)
     }).catch((error) => {  
-      console.log(error)
       noticeHandler.add({
         status: 'error',
         message: error//'Phản Hồi Thất Bại !'

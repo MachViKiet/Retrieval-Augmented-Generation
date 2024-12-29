@@ -2,7 +2,6 @@ const { matchedData } = require('express-validator')
 
 const {
   findUser,
-  userIsBlocked,
   passwordsDoNotMatch,
   saveUserAccessAndReturnToken
 } = require('~/controllers/auth/helpers')

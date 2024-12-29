@@ -1,3 +1,4 @@
+const { buildErrObject } = require('~/middlewares/utils')
 const User = require('~/models/user')
 
 /**
@@ -9,9 +10,9 @@ const validateTokenAndUpdate = async (_id = '') => {
   return User.findOneAndUpdate({ verification: _id }, { $set: { verified: true } }, { new: true })
     .then(() => ({
       'message': 'Đăng Kí Thành Công'
-    })).catch((e) => ({
-      'message': e
-    }))
+    })).catch((e) => {
+      throw buildErrObject(422, e.message)
+    })
 }
 
 module.exports = { validateTokenAndUpdate }

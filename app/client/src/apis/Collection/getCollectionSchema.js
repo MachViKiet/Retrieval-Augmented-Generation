@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const getCollectionSchema = async (_id = null ,token = null) => {
 	const url = `${domain}/collections/schema?_id=${encodeURIComponent(_id)}`;
-	console.log(url)
 	const structure = {
 		method: 'GET',
 		headers: {
@@ -24,6 +23,7 @@ export const getCollectionSchema = async (_id = null ,token = null) => {
 			return data
 		})
 		.catch((err) => {
+			console.error('Lấy thông tin collections schema thất bại ! ', err)
 			if(typeof(err) == "object"){
 				throw 'ERR_CONNECTION_REFUSED'
 			}

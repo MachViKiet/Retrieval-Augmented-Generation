@@ -1,33 +1,40 @@
+import React, { Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import DashboardLayout from '~/layouts/DashboardLayout/DashboardLayout'
+import SignIn from '~/pages/SignIn'
+import AdminRoute from './ProtectedRoute/AdminRoute'
+import GuessRoute from './GuessRoute/GuessRoute'
+import KnowledgeBase from '~/pages/Dashboard/KnowledgeBase'
+import ModelsManager from '~/pages/Dashboard/ModelsManager'
+import Setting from '~/pages/Dashboard/Setting'
+import DashboardWithSubNavLayout from '~/layouts/DashboardLayout/DashboardWithSubNavLayout'
+import KnowledgeBaseConfiguration from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Configuration'
+import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/RetrievalTesting'
+import UserRoute from './ProtectedRoute/UserRoute'
+import MainLayout from '~/layouts/MainLayout'
+import UnknowPage from '~/components/Page/UnknowPage'
+import UserProfile from '~/pages/User/Profile'
+import AdminProfile from '~/pages/Dashboard/Profile'
+import HomePage from '~/pages/User/HomePage'
+import FeedBack from '~/pages/User/FeedBack'
+import FAQs from '~/pages/User/FAQs'
+import PublicRoute from './PublicRoute/PublicRoute'
+import AppRoute from './AppRoute'
+import Register from '~/pages/Register'
 import AuthLayout from '~/layouts/AuthLayout'
-import DashboardLayout from '~/layouts/DashboardLayout/DashboardLayout';
-import Dashboard from '~/pages/Dashboard/Dashboard';
-import SignIn from '~/pages/SignIn';
-import AdminRoute from './ProtectedRoute/AdminRoute';
-import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator';
-import GuessRoute from './GuessRoute/GuessRoute';
-import KnowledgeBase from '~/pages/Dashboard/KnowledgeBase';
-import ModelsManager from '~/pages/Dashboard/ModelsManager';
-import AccountManager from '~/pages/Dashboard/AccountManager';
-import Setting from '~/pages/Dashboard/Setting';
-import Datasets from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail';
-import DashboardWithSubNavLayout from '~/layouts/DashboardLayout/DashboardWithSubNavLayout';
-import KnowledgeBaseConfiguration from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Configuration';
-import KnowledgeBaseRetrievalTesting from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/RetrievalTesting';
-import DatasetDetail from '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Dataset';
-import UnknowPage from '~/components/Page/UnknowPage';
-import { Profile as UserProfile} from '~/pages/User/Profile';
-import { Profile as AdminProfile} from '~/pages/Dashboard/Profile';
-import UserRoute from './ProtectedRoute/UserRoute';
-import MainLayout from '~/layouts/MainLayout';
-import HomePage from '~/pages/User/HomePage';
-import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
-import FeedBack from '~/pages/User/FeedBack';
-import FAQs from '~/pages/User/FAQs';
-import PublicRoute from './PublicRoute/PublicRoute';
-import AppLayout from '~/layouts/AppLayout';
-import AppRoute from './AppRoute';
-import Register from '~/pages/Register';
+import AppLayout from '~/layouts/AppLayout'
+
+// import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
+// import AuthLayout from '~/layouts/AuthLayout'
+// import Dashboard from '~/pages/Dashboard/Dashboard';
+// import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator';
+// import AppLayout from '~/layouts/AppLayout';
+const Dashboard = React.lazy(() => import('~/pages/Dashboard/Dashboard'))
+const AdminChat = React.lazy(() => import('~/pages/Dashboard/ChatGenerator'))
+const UserChat = React.lazy(() => import('~/pages/User/ChatGenerator'))
+const DatasetDetail = React.lazy(() => import( '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Dataset'))
+const Datasets = React.lazy(() => import( '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail'))
+const AccountManager = React.lazy(() => import( '~/pages/Dashboard/AccountManager'))
 
 // Define the routes
 const router = createBrowserRouter([
@@ -52,11 +59,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/dashboard',
-            element: <Dashboard />,
+            element: <Suspense fallback={<div>Loading...</div>}><Dashboard /></Suspense>,
           },
           {
             path: '/chat_generator',
-            element: <AdminChat />,
+            element: <Suspense fallback={<div>Loading...</div>}><AdminChat /></Suspense>,
           },
           {
             path: '/knowledge_bases',
@@ -67,7 +74,7 @@ const router = createBrowserRouter([
             children: [
               {
                 path: '/knowledge_bases/:id/',
-                element: <Datasets/>,
+                element: <Suspense fallback={<div>Loading...</div>}><Datasets/></Suspense>,
               },
               {
                 path: '/knowledge_bases/configuration/:id',
@@ -81,7 +88,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/knowledge_bases/:collection/:id',
-            element: <DatasetDetail/>,
+            element:  <Suspense fallback={<div>Loading...</div>}><DatasetDetail/></Suspense>,
           },
           {
             path: '/models_manager',
@@ -89,7 +96,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/user_accounts',
-            element: <AccountManager />,
+            element: <Suspense fallback={<div>Loading...</div>}><AccountManager /></Suspense>,
           },
           {
             path: '/setting',
@@ -106,7 +113,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/chat',
-            element: <UserChat />,
+            element: <Suspense fallback={<div>Loading...</div>}><UserChat /></Suspense>,
           },
           {
             path: '/user_profile',

@@ -13,7 +13,7 @@ export const getProfileFromDB = async (id = '') => {
     }
     return user
   }).catch((err) => {
-    throw buildErrObject(422, err.message)
+    throw buildErrObject(422, err.message, 'Lỗi Cập Nhật Profile Người Dùng: ' + err.message)
   })
 
   return result

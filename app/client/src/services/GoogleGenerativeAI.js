@@ -35,7 +35,6 @@ export function GoogleGenerativeAI(
             "role": "bot",
             "message": result.response.text()
         }}).catch((e) => { 
-          console.log('error: ', e)
           return {
             "id": Math.floor(10000 + Math.random() * 90000),
             "role": "bot",
@@ -53,7 +52,7 @@ export function GoogleGenerativeAI(
     return genAIModel
 
   } catch (error) {
-    console.log('Erroe: ', error)
+    console.error('Erroe: ', error)
     return null
   }
 }

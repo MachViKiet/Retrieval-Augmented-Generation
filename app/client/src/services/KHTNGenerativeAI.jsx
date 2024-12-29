@@ -8,7 +8,6 @@ const KHTNGenerativeAI = (
 ) =>  {
 
   const checkIsFunction = (variable) => {
-    console.log('typeOf: ',typeof variable)
     return typeof variable === 'function'
   }
 
@@ -62,10 +61,8 @@ const KHTNGenerativeAI = (
 
     chat: async (usrInput, setStream) => {
       const startTime = (new Date()).getTime()
-      console.log('++', startTime)
       const chosen_collections = await step_1(usrInput).then((res) => {
         checkIsFunction(after_step1) && after_step1(res.collection, (new Date()).getTime() - startTime)
-        console.log((new Date()).getTime() - startTime)
         return res.collection
       })
 

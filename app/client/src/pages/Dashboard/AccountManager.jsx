@@ -59,8 +59,7 @@ const useData = (documents) => {
     try {
       ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state} = document )
     } catch (error) {
-      console.log(document)
-      console.error('Có lỗi Xảy ra khi đọc tài liệu')      
+      console.error('Có lỗi Xảy Ra Khi Đọc Tài Liệu')      
     }
     return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['delete'] )
   })

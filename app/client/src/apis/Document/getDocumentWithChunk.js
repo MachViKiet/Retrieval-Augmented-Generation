@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const getDocumentWithChunk = async (_id = null, token = null) => {
 	const url = `${domain}/documents/chunks?_id=${encodeURIComponent(_id)}`;
-	console.log(url)
 	const structure = {
 		method: 'GET',
 		headers: {

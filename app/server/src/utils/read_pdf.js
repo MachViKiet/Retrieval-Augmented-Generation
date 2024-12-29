@@ -21,7 +21,3 @@ export const read_pdf = async (pdfPath) => {
   })
 
 }
-
-// read_pdf('1732287800631-967-Đề_Cương_Luận_ăn.pdf').then((data) => {
-//   console.log(data)
-// }).catch((data) => console.log(data))

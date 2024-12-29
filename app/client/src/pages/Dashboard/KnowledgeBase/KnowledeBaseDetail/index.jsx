@@ -34,7 +34,6 @@ const useData = (documents) => {
     try {
       ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state} = document )
     } catch (error) {
-      console.log(document)
       console.error('Có lỗi Xảy ra khi đọc tài liệu')      
     }
     return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['delete'] )
@@ -123,7 +122,7 @@ function Datasets() {
       loadDocumentByCollectionID(id, token).then((collectionWithDocuments) => {
         setCollectionWithDocuments(collectionWithDocuments)
         subDashboard.addTitle(collectionWithDocuments.collection_name)        
-      }).catch((err) => console.log(err))
+      }).catch((err) => console.error('Lấy Dữ Liệu Files Trong Collection Thất Bại'))
       .finally(()=> processHandler.remove('#loadCollectionWithDocument', loadCollectionWithDocument))
     }
   }, [token])
@@ -133,8 +132,6 @@ function Datasets() {
       collectionWithDocuments?.documents && Array.isArray(collectionWithDocuments?.documents) && collectionWithDocuments?.documents.map((document, index) => {
         if( document?.document_type && document.document_type == 'Upload' 
           && document?.state && ( document?.state == 'queued' || document?.state == 'running')){
-          console.log({file_id: document?._id})
-
 
           Airflow.CheckStatus(socket, {
             dag_id: document?.dag_id,
@@ -176,7 +173,6 @@ function Datasets() {
 
     const uploadFileEvent = processHandler.add('#uploadFile')
     useDocument.uploadFile(formData, token).then((newDocument) => {
-      console.log('newDocument  ', newDocument)
       setCollectionWithDocuments(prev => ({ ...prev, documents: [newDocument.document, ...prev.documents ] }))
       noticeHandler.add({ status: 'success', message: 'Thêm tài liệu thành công' })
     }).catch((err) => noticeHandler.add({ status: 'error', message: err }))

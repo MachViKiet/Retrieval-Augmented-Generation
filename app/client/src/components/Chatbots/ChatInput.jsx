@@ -52,7 +52,7 @@ export function ChatInput({ id, handleSubmit = null, messageHandler = null, disa
         multiline
         inputProps={{ maxLength: 3000 }}
         value={input}
-        placeholder='Nhập câu hỏi bạn ( tối đa 3000 kí tự )'
+        placeholder='Nhập câu hỏi - tối đa 3000 kí tự'
         disabled = {messageHandler.isProcess || disabled}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Enter') Submit(e) }}

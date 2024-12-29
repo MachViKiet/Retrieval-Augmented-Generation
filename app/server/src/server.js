@@ -40,7 +40,7 @@ bootstrap().then(async (server) => {
   console.log('\n')
   console.log('\x1b[36m', `Server is listening at ${ process.env.APP_PROTOCOL }://${ process.env.APP_HOST }:${ process.env.APP_PORT }/`)
 }).catch((err) => {
-  console.log(err)
+  console.log('Khởi Động Server Thất Bại !', err)
 })
 
 module.exports = app

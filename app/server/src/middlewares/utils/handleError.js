@@ -4,21 +4,20 @@
  * @param {Object} err - error object
  */
 const handleError = (res = {}, err = {}) => {
-  // Prints error in console
+
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-console
-    // console.log(err)
+    console.log(err?.message)
   }
-  console.log({
+
+  if (err?.notice && err.notice != null) {
+    // eslint-disable-next-line no-console
+    console.log ('Notification Errors:', err.notice)
+  }
+
+  res.status(err?.code).json({
     errors: {
-      msg: err.message,
-      code: err.code
-    }
-  })
-  // Sends error to user
-  res.status(err.code).json({
-    errors: {
-      msg: err.message
+      msg: err?.message
     }
   })
 }

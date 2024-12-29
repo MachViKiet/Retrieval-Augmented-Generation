@@ -32,7 +32,7 @@ export const uploadFile = async (req, res) => {
       fs.writeFile(filePath, req.file.buffer, async (err) => {
 
         if (err) {
-          reject(buildErrObject(500, err))
+          reject(buildErrObject(500, err, 'Lỗi Ghi File'))
         }
 
         let content = null
@@ -47,7 +47,7 @@ export const uploadFile = async (req, res) => {
         try {
           chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
         } catch (error) {
-          resolve(buildErrObject(422, 'Cannot chunk file'))
+          resolve(buildErrObject(422, 'Cannot chunk file', 'Lỗi Ở Bước Chunking Text' + error?.message))
         }
         const document = new Document({
           owner: id,
@@ -64,7 +64,7 @@ export const uploadFile = async (req, res) => {
 
         document.save()
           .then((document) => resolve({ document }) )
-          .catch((err) => { reject(buildErrObject(422, err.message)) })
+          .catch((err) => { reject(buildErrObject(422, err.message, 'Lỗi Ở Bước Save Document' + err?.message)) })
 
       })
     })

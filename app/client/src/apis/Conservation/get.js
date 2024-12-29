@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const get = async (token = null) => {
 	const url = `${domain}/chatSession`;
-	console.log(url)
 	const structure = {
 		method: 'GET',
 		headers: {

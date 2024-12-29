@@ -12,20 +12,8 @@ const findUser = (id = '') => {
     }
     return
   }).catch((err) => {
-    return buildErrObject(422, err.message)
+    return buildErrObject(422, err.message, 'Lỗi Tìm Thông Tin User ' + err.message )
   })
-
-
-  // return new Promise((resolve, reject) => {
-  //   User.findById(id, 'password email', async (err, user) => {
-  //     try {
-  //       await itemNotFound(err, user, 'USER_DOES_NOT_EXIST')
-  //       resolve(user)
-  //     } catch (error) {
-  //       reject(error)
-  //     }
-  //   })
-  // })
 }
 
 module.exports = { findUser }

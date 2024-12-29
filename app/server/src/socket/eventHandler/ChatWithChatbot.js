@@ -85,6 +85,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/isProcessing', resp )
 
       await updateChatSession(current_session, { in_progress: resp })
+        .catch((err) => { throw 'Cập Nhật ChatSession Thất Bại' + JSON.stringify(err) })
 
       if ( chosen_collections == null || chosen_collections == '' || !!!chosen_collections ) {
         socket.emit('/ChatWithChatBot/EndProcess', {
@@ -132,6 +133,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/isProcessing', resp )
 
       await updateChatSession(current_session, { in_progress: resp })
+        .catch((err) => { throw 'Cập Nhật ChatSession Thất Bại' + JSON.stringify(err) })
 
       const start_point_3 = (new Date()).getTime()
 
@@ -173,7 +175,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/isProcessing', resp)
 
       await updateChatSession(current_session, { in_progress: resp })
-
+        .catch((err) => { throw 'Cập Nhật ChatSession Thất Bại' + JSON.stringify(err) })
       const start_point_4 = (new Date()).getTime()
 
       // Step 4
@@ -220,6 +222,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/isProcessing', resp)
 
       await updateChatSession(current_session, { in_progress: resp })
+        .catch((err) => { throw 'Cập Nhật ChatSession Thất Bại' + JSON.stringify(err) })
 
       socket.emit('/ChatWithChatBot/Processed', {
         ...objectConservation,
@@ -274,12 +277,13 @@ export const ChatWithChatBot = async (socket) => {
         'duration': startTime - new Date().getTime()
       }
 
-      await saveConservationToDB(history)
+      await saveConservationToDB(history).catch(() => {
+        throw 'Lưu Cuộc Trò Chuyện Thất Bại: '
+      })
 
       socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
-      console.log(error)
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': '### Hệ Thống Hiện Không Hoạt Động !\n Tôi rất tiếc, hệ thống chúng tôi đang gặp sự cố và không thể cung cấp thông tin cho bạn.\n Nếu cần thiết bạn có thể liên hệ với giáo vụ để có thông tin một cách nhanh chóng và chính xác nhất.',
@@ -296,6 +300,9 @@ export const ChatWithChatBot = async (socket) => {
     }
     try {
       await updateChatSession(current_session, { in_progress: null })
+        .catch(() => {
+          throw 'Cập Nhật ChatSession Thất Bại '
+        })
     } catch (error) {
       console.log(error)
     }

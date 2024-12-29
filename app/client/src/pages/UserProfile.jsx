@@ -31,12 +31,10 @@ export function UserProfile() {
     dispatch(sidebarAction({index: 912}))
 
     useProfile.get(token).then(async(user) => {
-      // setTimeout(() => {
-        setUser(user)
-        setHide(false)
-      // }, 500)
+      setUser(user)
+      setHide(false)
     }).catch((err) => {
-      console.log(err)
+      console.error('Lấy thông tin user thất bại!')
     })
 
     return () => (
@@ -48,18 +46,15 @@ export function UserProfile() {
     e.preventDefault()
     setUpdateButtonActive(false)
     useProfile.update(user, token).then(async (user) => {
-
-      setTimeout(() => {
-        setUpdateButtonActive(true)
-        setUser(user)
-        dispatch(refresh(token, {
-          name: user?.name,
-          role: user?.role,
-          email: user?.email
-        }))
-      }, 500);
+      setUpdateButtonActive(true)
+      setUser(user)
+      dispatch(refresh(token, {
+        name: user?.name,
+        role: user?.role,
+        email: user?.email
+      }))
     }).catch((err) => {
-      console.log('update Thất bại  ', err)
+      console.error('update Thất bại  ', err)
 
     })
   }

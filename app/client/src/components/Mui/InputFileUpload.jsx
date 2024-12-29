@@ -27,7 +27,7 @@ export default function InputFileUpload() {
       Upload files
       <VisuallyHiddenInput
         type="file"
-        onChange={(event) => console.log(event.target.files)}
+        onChange={(event) => console.log('Render tasks have been done !!')}
         multiple
       />
     </Button>

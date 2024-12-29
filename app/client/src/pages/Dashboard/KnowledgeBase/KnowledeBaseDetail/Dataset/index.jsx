@@ -65,7 +65,6 @@ function DatasetDetail() {
     
     return () => {
       dashboard.navigate.active('#')
-      console.log('destructor')
     }
   }, [])
  
@@ -73,12 +72,12 @@ function DatasetDetail() {
     if(token) {
       const event = processHandler.add('#loadDocumentWithChunk')
       loadDocumentWithChunk(id, token).then((documentWithChunk) => { setDocumentWithChunk(documentWithChunk) })
-      .catch((err) => console.log('error ',err))
+      .catch((err) => console.error('Tải Thông Tin Tài Liệu (Chunks) Thất Bại !'))
       .finally(() =>  processHandler.remove('#loadDocumentWithChunk', event)) 
 
       const loadCollectionSchemaEvent = processHandler.add('#loadCollectionSchema')
       loadCollectionSchema(collection, token).then((schema) => setSchema(schema))
-      .catch((err) => console.log(err))
+      .catch((err) => console.error("Tải Thông Tin Collections Schema Thất Bại !"))
       .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionSchemaEvent))
     }
   },[token])
@@ -132,7 +131,6 @@ function DatasetDetail() {
     const processDocumentEvent = processHandler.add('#processDocument')
     useDocument.process(data, token).then(
       (data) => {
-        console.log('fafadf', data)
         noticeHandler.add({
           status: 'success',
           message: 'Tài Liệu Đã Được Đưa Vào Hàng Đợi Xử Lý'

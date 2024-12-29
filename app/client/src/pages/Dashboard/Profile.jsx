@@ -42,7 +42,7 @@ export function Profile() {
   useEffect(() => {
     token && getUser(token)
       .then((usr) => setUser(usr))
-      .catch((err) => { console.log(err) })
+      .catch((err) => { console.error('Lấy Thông Tin User Thất Bại !') })
   },[token])
 
   const getUser = async (token) => {
@@ -69,7 +69,7 @@ export function Profile() {
         message: 'Cập nhật thành công'
       })
     }).catch((err) => {
-      console.log('update Thất bại  ', err)
+      console.error('update Thất bại  ', err)
     }).finally(() => processHandler.remove('#UpdateUser', updateUserEvent))
   }
 
@@ -125,18 +125,6 @@ export function Profile() {
 
           </Box>
         </Box>
-
-        {/* <Box sx = {{ width: '100%', height: '175px', paddingY: 2, display: 'flex', gap: 6, paddingX: 5 }}>
-          <Skeleton variant="circular" width={140} height={140} />
-          
-          <Box sx ={{  display: 'flex', position: 'relative', flexDirection: 'column', minWidth: '600px', gap: 1 }}>
-
-            <Skeleton variant="rounded" width={'100%'} height={40} />
-
-            {['','','',''].map(() => (<Skeleton variant="rounded" width={'100%'} height={15} />))}
-
-          </Box>
-        </Box> */}
 
         <Box sx = {{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 'fit-content', gap: 1 }}>
           <PermIdentityOutlinedIcon sx = {{ fontSize: '2.225rem' }}/> 

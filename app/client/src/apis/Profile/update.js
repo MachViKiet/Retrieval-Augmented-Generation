@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const update = async (data, token = null) => {
 	const url = `${domain}/`;
-	console.log(url)
 	const structure = {
 		method: 'PATCH',
 		headers: {
@@ -25,6 +24,9 @@ export const update = async (data, token = null) => {
 			return data
 		})
 		.catch((err) => {
+			if( Array.isArray(err) ) {
+				throw 'Thất Bại: Vui Lòng Nhập Đủ Các Thông Tin !'
+			}
 			if(typeof(err) == "object"){
 				throw 'ERR_CONNECTION_REFUSED'
 			}

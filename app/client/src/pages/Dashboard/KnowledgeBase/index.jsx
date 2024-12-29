@@ -37,7 +37,7 @@ function KnowledgeBase() {
     if(token){
       getCollection(token).then((collections) => {
         setCollections(collections)
-      }).catch((err) => console.log(err))
+      }).catch((err) => console.error('Lấy Danh Sách Collection Thất Bại !'))
     }
   }, [token])
 

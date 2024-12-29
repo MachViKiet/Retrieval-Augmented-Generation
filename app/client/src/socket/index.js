@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 
 let socket = null;
 const domain = import.meta.env.VITE_SERVER
+const env = import.meta.env?.VITE_ENVIRONMENT
 
 export const disconnectSocket = () => {
   if(socket){
@@ -24,17 +25,17 @@ export const connectSocket = (token) => {
     });
 
     socket.on('connect', () => {
-      console.log('Socket connected:', socket.id);
+      env == 'development' && console.log('Socket connected:', socket.id);
     });
 
     socket.on('connect_error', (err) => {
       socket = null
-      console.error('Connection error:', err.message);
+      env == 'development' &&  console.error('Connection error:', err.message);
     });
 
     socket.on('disconnect', () => {
       socket = null
-      console.log('Socket disconnected');
+      env == 'development' &&  console.error('Socket disconnected');
     });
   }
 

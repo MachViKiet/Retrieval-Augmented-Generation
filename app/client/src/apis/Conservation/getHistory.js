@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const getHistory = async (data = null ,token = null) => {
 	const url = `${domain}/historyInChatSession`;
-	console.log(url)
 	const structure = {
 		method: 'POST',
 		headers: {
@@ -25,7 +24,6 @@ export const getHistory = async (data = null ,token = null) => {
 			return data
 		})
 		.catch((err) => {
-			console.log(err)
 			if(typeof(err) == "object"){
 				throw 'ERR_CONNECTION_REFUSED'
 			}

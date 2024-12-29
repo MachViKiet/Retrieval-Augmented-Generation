@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const send_verifyEmail = async (email, api_key = null) => {
 	const url = `${domain}/request_verifyEmail?email=${email}`;
-	console.log(url)
 	const structure = {
 		method: 'GET',
 		headers: {
@@ -23,6 +22,7 @@ export const send_verifyEmail = async (email, api_key = null) => {
 			return data
 		})
 		.catch((err) => {
+			console.error('Yêu cầu xác thực thất bại !', err)
 			if(typeof(err) == "object"){
 				throw 'ERR_CONNECTION_REFUSED'
 			}

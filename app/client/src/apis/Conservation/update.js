@@ -24,7 +24,6 @@ export const update = async (data = null ,token = null) => {
 			return data
 		})
 		.catch((err) => {
-			console.log(err)
 			if(typeof(err) == "object"){
 				throw 'ERR_CONNECTION_REFUSED'
 			}

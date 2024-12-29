@@ -1,8 +1,6 @@
-const {
-  validateTokenAndUpdate
-} = require('~/controllers/auth/helpers')
+import { validateTokenAndUpdate } from '~/controllers/auth/helpers'
 
-const { handleError } = require('~/middlewares/utils')
+import { buildErrObject, handleError } from '~/middlewares/utils'
 
 /**
  * Login function called by route
@@ -12,15 +10,15 @@ const { handleError } = require('~/middlewares/utils')
 const validateEmail = async (req, res) => {
   try {
     const id = req.query?._id
+
     if ( id ) {
       return res.status(200).json( await validateTokenAndUpdate(id))
     }
-    return res.status(200).json({
-      message: 'ID Không tồn tại'
-    })
+
+    throw buildErrObject(422, 'Xác Thực ID Không tồn tại!')
   } catch (error) {
     handleError(res, error)
   }
 }
 
-module.exports = { validateEmail }
+export default { validateEmail }

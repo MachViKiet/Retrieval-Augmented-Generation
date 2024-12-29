@@ -13,7 +13,7 @@ const getUserByToken = async (id = '') => {
     }
     return user
   }).catch((err) => {
-    throw buildErrObject(422, err.message)
+    throw buildErrObject(422, err.message, 'Lỗi Khi Lấy Profile Người Dùng Từ DB: ' + err.message)
   })
 
   return result

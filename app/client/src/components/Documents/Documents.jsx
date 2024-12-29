@@ -70,7 +70,7 @@ function Documents({scroll = 1}) {
 
   const handleRenderError = (error) => {
     if (error.name === 'AbortException') {
-      console.log('Render task cancelled. Ignoring the error.');
+      console.error('Render task cancelled. Ignoring the error.');
     } else {
       console.error('Render error:', error);
     }

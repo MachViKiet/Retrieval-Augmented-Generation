@@ -15,7 +15,7 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
     let chunks = null
 
     try {
-      if ((_doc.state == 'processing')) {
+      if ((_doc.state == 'processing' || _doc.state == 'running' || _doc.state == 'queued')) {
         throw 'Đang xử lý'
       }
       if (_doc?.document_type && _doc?.document_type == 'Upload') {
@@ -29,7 +29,7 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
         formData.append('collection_name', collection_name )
         formData.append('document_id', _doc._id )
         chunks = await useKHTN_Chatbot().get_chunk_file(formData)
-          .catch(() => { throw buildErrObject(422, 'Không thể đọc chunk từ db') })
+          .catch(() => { throw buildErrObject(422, 'Không thể đọc chunk từ db chatbot', 'Không thể đọc chunk từ api chatbot') })
         chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
       }
 

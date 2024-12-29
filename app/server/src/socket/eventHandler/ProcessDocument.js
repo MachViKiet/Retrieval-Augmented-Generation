@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useAirflow } from '~/apis/Airflow'
 import { saveNewDocumentToDB } from '~/controllers/document/helper/saveNewDocumentToDB'
 
@@ -20,6 +21,7 @@ export const ProcessDocument = async (socket) => {
 
 
     } catch (error) {
+      socket.emit('/airflow/checkstatus/error', { 'message': 'Tự Động Cập Nhật Trạng Thái Thất Bại' })
       console.log('Ghi nhận lịch sử thất bại')
     }
   })

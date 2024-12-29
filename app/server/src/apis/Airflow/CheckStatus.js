@@ -8,17 +8,16 @@ export const CheckStatus = async (dag_id = null, dag_run_id = null, api_key = nu
 
   // Thực hiện GET request
   return fetch(url, {
-        method: 'GET',  // Sử dụng phương thức POST
-        headers: {
-            'Content-Type': 'application/json',  // Đặt header cho content type là JSON
-            'username': 'airflow',               
-            'password': 'airflow' ,
-            'Authorization': 'Basic ' + btoa('airflow' + ":" + 'airflow'),    
-        }
-    })
+    method: 'GET', // Sử dụng phương thức POST
+    headers: {
+      'Content-Type': 'application/json', // Đặt header cho content type là JSON
+      'username': 'airflow',
+      'password': 'airflow',
+      'Authorization': 'Basic ' + btoa('airflow' + ':' + 'airflow')
+    }
+  })
     .then(response => {
       if (!response.ok) {
-        console.log(response)
         throw new Error('Network response was not ok')
       }
       return response.json()

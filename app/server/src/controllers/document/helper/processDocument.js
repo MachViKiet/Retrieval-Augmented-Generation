@@ -60,7 +60,6 @@ export const processDocumentHelper = async (id = null, chunks = null) => {
 
     return result
   }).catch((err) => {
-    console.log(err)
     throw buildErrObject(422, err.message)
   })
 

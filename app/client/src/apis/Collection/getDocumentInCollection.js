@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const getDocumentInCollection = async (_id = null, token = null) => {
 	const url = `${domain}/collections/documents?collection_id=${encodeURIComponent(_id)}`;
-	console.log(url)
 	const structure = {
 		method: 'GET',
 		headers: {
@@ -24,6 +23,7 @@ export const getDocumentInCollection = async (_id = null, token = null) => {
 			return data
 		})
 		.catch((err) => {
+			console.error('Lấy Tài Liệu trong collection thất bại ! ', err)
 			if(typeof(err) == "object"){
 				throw 'ERR_CONNECTION_REFUSED'
 			}

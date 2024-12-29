@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 var nodemailer = require('nodemailer')
 
 var transporter = nodemailer.createTransport({
@@ -38,8 +39,8 @@ Trân trọng,
 
 transporter.sendMail(mailOptions, function(error, info) {
   if (error) {
-    console.log(error)
+    console.log('Gởi Email Thất Bại: ', error)
   } else {
-    console.log('Email sent: ' + info.response)
+    console.log('Gởi Email Thành Công: ' + info.response)
   }
 })

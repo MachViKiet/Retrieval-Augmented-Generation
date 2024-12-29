@@ -2,7 +2,6 @@ const domain = import.meta.env.VITE_SERVER
 
 export const login = async (data, api_key = null) => {
 	const url = `${domain}/login`;
-	console.log(url)
 	const structure = {
 		method: 'POST',
 		headers: {

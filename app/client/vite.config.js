@@ -15,6 +15,9 @@ export default ({ mode }) => {
     resolve: {
       alias: [{ find: "~", replacement: "/src" }],
     },
+    build: {
+      chunkSizeWarningLimit: 1600,
+    },
     //change port for dev
     server: {
       port: 3006,
