@@ -1,4 +1,4 @@
-const { buildErrObject } = require('~/middlewares/utils')
+import buildErrObject from '../utils/buildErrObject'
 
 /**
  * Checks is password matches
@@ -6,20 +6,24 @@ const { buildErrObject } = require('~/middlewares/utils')
  * @param {Object} user - user object
  * @returns {boolean}
  */
-const checkPassword = async (password = '', user = {}) => {
+export const checkPassword = async (password = '', user = {}) => {
 
   return new Promise((resolve, reject) => {
-    user.comparePassword(password, (err, isMatch) => {
-      if (err) {
-        return reject(buildErrObject(422, err.message))
-      }
-      if (!isMatch) {
-        resolve(false)
-      }
-      resolve(true)
-    })
+    try {
+      user.comparePassword(password, (err, isMatch) => {
+        if (err) {
+          return reject(buildErrObject(422, err.message))
+        }
+        if (!isMatch) {
+          resolve(false)
+        }
+        resolve(true)
+      })
+    } catch (error) {
+      resolve(false)
+    }
   })
 
 }
 
-module.exports = { checkPassword }
+export default checkPassword

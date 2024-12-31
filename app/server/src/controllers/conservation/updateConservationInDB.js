@@ -1,4 +1,4 @@
-import { handleError } from '~/middlewares/utils'
+import { handleError } from '../../middlewares/utils'
 import { updateConservation } from './helper/updateConservation'
 
 export const updateConservationInDB = async (req, res) => {
@@ -8,3 +8,5 @@ export const updateConservationInDB = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default updateConservationInDB

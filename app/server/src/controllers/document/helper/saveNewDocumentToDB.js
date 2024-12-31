@@ -1,6 +1,6 @@
-import { buildErrObject } from '~/middlewares/utils'
+import { buildErrObject } from '../../../middlewares/utils'
 
-const Document = require('~/models/document')
+import Document from '../../../models/document'
 
 export const saveNewDocumentToDB = async (id = null, data = null) => {
   const result = await Document.findByIdAndUpdate(id, data, { new: true }).then(async (_doc) => {
@@ -15,3 +15,5 @@ export const saveNewDocumentToDB = async (id = null, data = null) => {
 
   return result
 }
+
+export default saveNewDocumentToDB

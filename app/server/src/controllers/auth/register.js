@@ -1,20 +1,18 @@
-const { matchedData } = require('express-validator')
+import { matchedData } from 'express-validator'
 
-const { registerUser, getUserInfo, returnRegisterToken } = require('./helpers')
+import { registerUser, getUserInfo, returnRegisterToken } from './helpers'
 
-const { handleError } = require('../../middlewares/utils')
-const { emailExists } = require('../emailer')
+import { handleError } from '../../middlewares/utils'
+import { emailExists } from '../emailer'
 
-const {
-  prepareToSendEmail
-} = require('../../middlewares/emailer')
+import { prepareToSendEmail } from '../../middlewares/emailer'
 
 /**
  * Register function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
-const register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     // Gets locale from header 'Accept-Language'
     // const locale = req.getLocale()
@@ -39,4 +37,4 @@ const register = async (req, res) => {
   }
 }
 
-module.exports = { register }
+export default register

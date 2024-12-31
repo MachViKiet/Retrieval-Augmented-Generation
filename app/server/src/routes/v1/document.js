@@ -2,15 +2,15 @@ const express = require('express')
 const fs = require('fs')
 const router = express.Router()
 const trimRequest = require('trim-request')
-import { buildErrObject, handleError } from '~/middlewares/utils'
-import { upload } from '~/multer'
+import { buildErrObject, handleError } from '../../middlewares/utils'
+import { upload } from '../../multer'
 const passport = require('passport')
 const requireAuth = passport.authenticate('jwt', {
   session: false
 })
 const path = require('path')
 
-const { getChunkInDocument, uploadFile, updateDocument, processDocument } = require('~/controllers/document')
+import { getChunkInDocument, uploadFile, updateDocument, processDocument } from '../../controllers/document'
 
 // const directory = './src/storage'
 

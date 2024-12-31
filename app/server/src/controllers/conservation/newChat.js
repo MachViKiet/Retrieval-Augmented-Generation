@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { createSessionAndReturnSession } from './helper/createSessionAndReturnSession'
 
 export const newChat = async (req, res) => {
@@ -9,3 +9,5 @@ export const newChat = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default newChat

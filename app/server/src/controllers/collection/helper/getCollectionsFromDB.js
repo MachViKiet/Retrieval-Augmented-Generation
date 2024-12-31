@@ -1,5 +1,5 @@
-const Collection = require('~/models/collection')
-const { buildErrObject } = require('~/middlewares/utils')
+import Collection from '../../../models/collection'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Gets collection from database by id
@@ -17,3 +17,5 @@ export const getCollectionsFromDB = async () => {
 
   return result
 }
+
+export default getCollectionsFromDB

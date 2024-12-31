@@ -1,8 +1,8 @@
-const { validateLogin } = require('./validateLogin')
-const { validateRegister } = require('./validateRegister')
-const { validateVerifyEmail } = require('./validateVerifyEmail')
+import { validateLogin } from './validateLogin'
+import { validateRegister } from './validateRegister'
+import { validateVerifyEmail } from './validateVerifyEmail'
 
-module.exports = {
+export default {
   validateLogin,
   validateRegister,
   validateVerifyEmail

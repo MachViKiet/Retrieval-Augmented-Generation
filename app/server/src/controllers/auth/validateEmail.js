@@ -1,13 +1,13 @@
-import { validateTokenAndUpdate } from '~/controllers/auth/helpers'
+import { validateTokenAndUpdate } from './helpers'
 
-import { buildErrObject, handleError } from '~/middlewares/utils'
+import { buildErrObject, handleError } from '../../middlewares/utils'
 
 /**
  * Login function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
-const validateEmail = async (req, res) => {
+export const validateEmail = async (req, res) => {
   try {
     const id = req.query?._id
 
@@ -21,4 +21,4 @@ const validateEmail = async (req, res) => {
   }
 }
 
-export default { validateEmail }
+export default validateEmail

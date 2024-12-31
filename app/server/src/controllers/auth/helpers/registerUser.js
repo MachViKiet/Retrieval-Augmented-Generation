@@ -1,17 +1,17 @@
-const uuid = require('uuid')
-const User = require('~/models/user')
-const { buildErrObject } = require('~/middlewares/utils')
+import { v4 } from 'uuid'
+import User from '../../../models/user'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Registers a new user in database
  * @param {Object} req - request object
  */
-const registerUser = async (req = {}) => {
+export const registerUser = async (req = {}) => {
   const user = new User({
     name: req.name,
     email: req.email,
     password: req.password,
-    verification: uuid.v4(),
+    verification: v4(),
     verified: process.env.NODE_ENV === 'production'
   })
 
@@ -21,4 +21,4 @@ const registerUser = async (req = {}) => {
 
 }
 
-module.exports = { registerUser }
+export default registerUser

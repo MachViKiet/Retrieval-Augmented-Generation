@@ -3,7 +3,7 @@ import { Router } from 'express'
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
 
-require('~/config/passport')
+import '../../config/passport'
 const router = Router()
 /*
  * Load routes statically and/or dynamically

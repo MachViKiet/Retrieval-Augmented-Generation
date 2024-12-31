@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Button, Chip, FormControl, IconButton, Input, InputLabel, Link, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Breadcrumbs, Button, Chip, FormControl, IconButton, Input, InputLabel, Link, Skeleton, TextField, Tooltip, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
@@ -77,7 +77,7 @@ function DatasetDetail() {
 
       const loadCollectionSchemaEvent = processHandler.add('#loadCollectionSchema')
       loadCollectionSchema(collection, token).then((schema) => setSchema(schema))
-      .catch((err) => console.error("Tải Thông Tin Collections Schema Thất Bại !"))
+      .catch((err) => { console.error("Tải Thông Tin Collections Schema Thất Bại !"); setSchema(null) } )
       .finally(()=> processHandler.remove('#loadCollectionSchema', loadCollectionSchemaEvent))
     }
   },[token])
@@ -124,6 +124,15 @@ function DatasetDetail() {
       })
       return 
     }
+    if( documentWithChunk?.metadata==null ){
+      noticeHandler.add({
+        status: 'warning',
+        auto: false,
+        message: 'Bạn Phải Điền Đầy Đủ Thông Tin Cần Có !'
+      })
+      return 
+    }
+    metadata
     const data = {
       id: id,
       chunks: documentWithChunk.chunks.map((data) => data.chunk)
@@ -348,110 +357,122 @@ function SettingDocumentModal({ document, modalHandler = null }) {
         </DialogTitle>
         <DialogContent >
           <Box sx = {{ display: 'flex', flexWrap: "wrap",  paddingBottom: 1, gap: 2 }}>
-            <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
-              <InputLabel sx = {{  color: 'inherit !important' }}>Tên Tài Liệu</InputLabel>
-              <Input id="Description" value={document.getName()} onChange={(e) => {
-                if(e.target.value.length > 50){
-                  setError_message('Trường Dữ Liệu Không được quá 50 kí tự')
-                  return 
-                }
-                document.setName(e.target.value) 
-              }}
-                sx = {{  color: 'inherit', '&:before, &:after':{ borderBottom: `1px solid #fff` } }}/>
-            </FormControl>
-
-            <Grid container spacing={3} sx = {{ width: '100%' }}>
             {
-              getSchema(modalHandler.buffer).map((data) => {
+              modalHandler.buffer ? 
+              <>
+                <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
+                  <InputLabel sx = {{  color: 'inherit !important' }}>Tên Tài Liệu</InputLabel>
+                  <Input id="Description" value={document.getName()} onChange={(e) => {
+                    if(e.target.value.length > 50){
+                      setError_message('Trường Dữ Liệu Không được quá 50 kí tự')
+                      return 
+                    }
+                    document.setName(e.target.value) 
+                  }}
+                    sx = {{  color: 'inherit', '&:before, &:after':{ borderBottom: `1px solid #fff` } }}/>
+                </FormControl>
 
-                const element_type = data.value?.element_type
-                const type = data.value.type
-                const required = data.value.required
-                const name = data.key
-                const max_size = data.value?.max_size
+                <Grid container spacing={3} sx = {{ width: '100%' }}>
+                {
+                  getSchema(modalHandler.buffer).map((data) => {
 
-                const icon  = ( <Tooltip title={data.value.description} placement="top">
-                    <IconButton aria-label="information" color='inherit'>
-                      <HelpOutlineOutlinedIcon />
-                    </IconButton>
-                  </Tooltip> )
+                    const element_type = data.value?.element_type
+                    const type = data.value.type
+                    const required = data.value.required
+                    const name = data.key
+                    const max_size = data.value?.max_size
 
-                if(type == 'list') {
+                    const icon  = ( <Tooltip title={data.value.description} placement="top">
+                        <IconButton aria-label="information" color='inherit'>
+                          <HelpOutlineOutlinedIcon />
+                        </IconButton>
+                      </Tooltip> )
 
-                  const ChipList = <Box sx = {{ padding: 1, paddingRight: 2, display: 'flex', gap: 1, flexWrap: 'wrap', width: '700px', background: '#f0f8ff0f', borderRadius: '10px', marginBottom: 1, marginRight: 1 }}>
-                    {dataList?.[name] && dataList[name].map((data) => {
-                      return <Chip label={data} onDelete={() => {
-                        setDataList(prev => ({
-                          ...prev, [name] : prev[name].filter((dataInList) => dataInList != data) }) )
-                      }} />
-                    })}
-                  </Box>
+                    if(type == 'list') {
 
-                  // document.getMetadata()?.[data.key] && setDataList(prev => ({ ...prev, [data.key]: document.getMetadata()?.[data.key] }))
+                      const ChipList = <Box sx = {{ padding: 1, paddingRight: 2, display: 'flex', gap: 1, flexWrap: 'wrap', width: '700px', background: '#f0f8ff0f', borderRadius: '10px', marginBottom: 1, marginRight: 1 }}>
+                        {dataList?.[name] && dataList[name].map((data) => {
+                          return <Chip label={data} onDelete={() => {
+                            setDataList(prev => ({
+                              ...prev, [name] : prev[name].filter((dataInList) => dataInList != data) }) )
+                          }} />
+                        })}
+                      </Box>
 
-                  return <>
-                    <Grid size={12}>
+                      // document.getMetadata()?.[data.key] && setDataList(prev => ({ ...prev, [data.key]: document.getMetadata()?.[data.key] }))
+
+                      return <>
+                        <Grid size={12}>
+                          <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
+                            <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
+                            <Input endAdornment = {data.value.description && icon} startAdornment = {dataList?.[name] && dataList?.[name] != [] && ChipList}
+                              id="Description" 
+                              // value={document.getMetadata()?.[data.key]} 
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  setDataList( prev => {
+                                    if(prev?.[name]) {
+                                      if(max_size && prev?.[name].length < max_size && e.target.value != '')
+                                        return {...prev, [name]: prev[name].concat(e.target.value)}
+                                      setError_message(`Trường dữ liệu ${name} không được vượt quá ${max_size} hoặc bỏ trống`)
+                                      return prev
+                                    }
+                                    return {...prev, [name]: [e.target.value]}
+                                  })
+                                  e.target.value = ''
+                                }
+                              }}
+                              sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
+                          </FormControl>
+                        </Grid>   
+                      </>
+                    }
+
+                    if(type == 'int') {
+                      return  <Grid size={6}>
                       <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
                         <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
-                        <Input endAdornment = {data.value.description && icon} startAdornment = {dataList?.[name] && dataList?.[name] != [] && ChipList}
-                          id="Description" 
-                          // value={document.getMetadata()?.[data.key]} 
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              setDataList( prev => {
-                                if(prev?.[name]) {
-                                  if(max_size && prev?.[name].length < max_size && e.target.value != '')
-                                    return {...prev, [name]: prev[name].concat(e.target.value)}
-                                  setError_message(`Trường dữ liệu ${name} không được vượt quá ${max_size} hoặc bỏ trống`)
-                                  return prev
-                                }
-                                return {...prev, [name]: [e.target.value]}
-                              })
-                              e.target.value = ''
+                        <Input endAdornment = {data.value.description && icon}
+                          id="Description" value={document.getMetadata()?.[data.key]} 
+                          onChange={(e) => {
+                            if(Number.isInteger(Number(e.target.value))) {
+                              document.setMetadata({[data.key]: e.target.value})
+                              return 
                             }
+                            setError_message(`Trường dữ liệu ${name} phải có giá trị là số nguyên`)
+                            e.target.value = document.getMetadata()?.[data.key] || ''
                           }}
                           sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
                       </FormControl>
+                    </Grid> 
+                    }
+
+                    // String value
+                    return  <Grid size={6}>
+                      <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
+                        <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
+                        <Input endAdornment = {data.value.description && icon}
+                          id="Description" value={document.getMetadata()?.[data.key]} onChange={(e) => document.setMetadata({[data.key]: e.target.value}) }
+                          sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
+                      </FormControl>
                     </Grid>   
-                  </>
+                  })
                 }
-
-                if(type == 'int') {
-                  return  <Grid size={6}>
-                  <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
-                    <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
-                    <Input endAdornment = {data.value.description && icon}
-                      id="Description" value={document.getMetadata()?.[data.key]} 
-                      onChange={(e) => {
-                        if(Number.isInteger(Number(e.target.value))) {
-                          document.setMetadata({[data.key]: e.target.value})
-                          return 
-                        }
-                        setError_message(`Trường dữ liệu ${name} phải có giá trị là số nguyên`)
-                        e.target.value = document.getMetadata()?.[data.key] || ''
-                      }}
-                      sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
-                  </FormControl>
-                </Grid> 
-                }
-
-                // String value
-                return  <Grid size={6}>
-                  <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
-                    <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
-                    <Input endAdornment = {data.value.description && icon}
-                      id="Description" value={document.getMetadata()?.[data.key]} onChange={(e) => document.setMetadata({[data.key]: e.target.value}) }
-                      sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
-                  </FormControl>
-                </Grid>   
-              })
+                </Grid>
+              </> : <>
+                <Skeleton variant="rounded" width={'100%'} height={40} />
+                <Skeleton variant="rounded" width={'100%'} height={40} />
+                <Skeleton variant="rounded" width={'100%'} height={40} />
+                <Skeleton variant="rounded" width={'100%'} height={40} />
+              </>
             }
-            </Grid>
           </Box>
         <Typography sx = {{ color: '#ff6262', fontWeight: '900' }}>{error_message}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleSubmit} sx = {{ color: '#fff' }}>Lưu Thay Đổi</Button>
+          { modalHandler.buffer ? 
+            <Button loading onClick={handleSubmit} sx = {{ color: '#fff' }}>Lưu Thay Đổi</Button>
+            : <Skeleton variant="rounded" width={90} height={30} /> }
         </DialogActions>
       </Dialog>
     </React.Fragment>

@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { saveNewDocumentToDB } from './helper/saveNewDocumentToDB'
 
 export const updateDocument = async (req, res) => {
@@ -9,3 +9,5 @@ export const updateDocument = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default updateDocument

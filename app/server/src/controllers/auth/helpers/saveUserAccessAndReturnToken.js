@@ -1,18 +1,14 @@
-const UserAccess = require('~/models/userAccess')
-const { getUserInfo } = require('./getUserInfo')
-const { generateToken } = require('./generateToken')
-const {
-  getIP,
-  getBrowserInfo,
-  buildErrObject
-} = require('~/middlewares/utils')
+import UserAccess from '../../../models/userAccess'
+import { getUserInfo } from './getUserInfo'
+import generateToken from './generateToken'
+import { getIP, getBrowserInfo, buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Saves a new user access and then returns token
  * @param {Object} req - request object
  * @param {Object} user - user object
  */
-const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
+export const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
   const token = generateToken(user._id)
 
   const userAccess = new UserAccess({
@@ -39,4 +35,4 @@ const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
   return result
 }
 
-module.exports = { saveUserAccessAndReturnToken }
+export default saveUserAccessAndReturnToken

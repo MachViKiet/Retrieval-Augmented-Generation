@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import { useAirflow } from '~/apis/Airflow'
-import { saveNewDocumentToDB } from '~/controllers/document/helper/saveNewDocumentToDB'
+import { useAirflow } from '../../apis/Airflow'
+import { saveNewDocumentToDB } from '../../controllers/document/helper/saveNewDocumentToDB'
 
 const airflow = useAirflow()
 function delay(ms) {
@@ -26,3 +26,5 @@ export const ProcessDocument = async (socket) => {
     }
   })
 }
+
+export default ProcessDocument

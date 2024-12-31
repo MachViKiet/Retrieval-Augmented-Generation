@@ -1,11 +1,11 @@
-const User = require('../../models/user')
-const { buildErrObject } = require('../../middlewares/utils')
+import User from '../../models/user'
+import { buildErrObject } from '../../middlewares/utils'
 
 /**
  * Checks User model if user with an specific email exists
  * @param {string} email - user email
  */
-const emailExists = (email = '') => {
+export const emailExists = (email = '') => {
   return new Promise((resolve, reject) => {
     User.findOne(
       {
@@ -25,4 +25,4 @@ const emailExists = (email = '') => {
   })
 }
 
-module.exports = { emailExists }
+export default emailExists

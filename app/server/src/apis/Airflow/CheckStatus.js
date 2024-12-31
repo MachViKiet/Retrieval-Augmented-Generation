@@ -1,4 +1,4 @@
-import { buildErrObject } from '~/middlewares/utils'
+import buildErrObject from '../../middlewares/utils/buildErrObject'
 
 /* eslint-disable no-unused-vars */
 const domain = `http://${process.env.AIRFLOW_HOST}:${process.env.AIRFLOW_PORT}`

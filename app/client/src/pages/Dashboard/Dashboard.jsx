@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import React, { useEffect } from 'react'
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { BarChart } from '@mui/x-charts/BarChart';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 // import Hidden from '~/components/Page/Hidden';
@@ -16,8 +16,10 @@ const Container_Style = {
 }
 const Block = styled(Box) (({theme}) => ({ 
   width: '100%', borderRadius: '10px',
-  backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
-  : 'linear-gradient(135deg, #e2e8ff 0%, #6994d9 100%)',
+  // backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
+  //   : 'linear-gradient(135deg, #e2e8ff 0%, #6994d9 100%)',
+  backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%) !important' 
+            :'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)!important',
   position: 'relative', textAlign: 'start',
   color: theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
   boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
@@ -26,7 +28,7 @@ const Block = styled(Box) (({theme}) => ({
 
 function Dashboard() {
   const {processHandler, dashboard } = useOutletContext();
-
+  const navigate = useNavigate()
   useEffect(() => {
     document.title = 'Chatbot - Trang Chủ';
     dashboard.navigate.active(234)
@@ -39,7 +41,14 @@ function Dashboard() {
     <Box sx ={{ width: '100%', height: '100%', padding: 3 }}>
         <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 0.5 }}>
           <Typography variant='h1' 
-            sx = {{ fontSize: '2.4rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
+            onClick = {() => { 
+              const navigateEvent = processHandler.add('#navigate')
+              setTimeout(() => {
+                processHandler.remove('#navigate', navigateEvent)
+                navigate('/')
+              }, 500)
+            }}
+            sx = {{ '&:hover': { cursor: 'pointer' }, fontSize: '2.4rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
               <HomeOutlinedIcon fontSize='large'/> Trang Chủ </Typography>
         </Box>
         <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 } }}>
@@ -134,7 +143,7 @@ const xLabels = [
 
 function SimpleBarChart() {
   const BarChartCustom = styled(BarChart) (({theme}) => ({
-    '--mui-palette-text-primary': '#000',
+    '--mui-palette-text-primary': theme.palette.text.secondary,
     width: '100%'
   }))
   return (

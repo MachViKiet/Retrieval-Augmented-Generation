@@ -1,9 +1,9 @@
-import { chunk_file } from '~/apis/KHTN_Chatbot/Document/chunk_file'
-import { buildErrObject, handleError, isIDGood } from '~/middlewares/utils'
-import { read_pdf } from '~/utils/read_pdf'
+import { chunk_file } from '../../apis/KHTN_Chatbot/Document/chunk_file'
+import { buildErrObject, handleError, isIDGood } from '../../middlewares/utils'
+import { read_pdf } from '../../utils/read_pdf'
 const path = require('path')
 const fs = require('fs')
-const Document = require('~/models/document')
+import Document from '../../models/document'
 const { v4: uuidv4 } = require('uuid')
 
 function getFileExtension(fileName) {
@@ -85,3 +85,5 @@ const ensureUploadDir = () => {
   }
 }
 ensureUploadDir()
+
+export default uploadFile

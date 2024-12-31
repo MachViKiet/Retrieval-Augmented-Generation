@@ -1,4 +1,4 @@
-import { buildErrObject } from '~/middlewares/utils'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /* eslint-disable no-unused-vars */
 const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT_PORT}`

@@ -1,8 +1,7 @@
+import User from '../models/user'
+import { decrypt } from '../middlewares/auth'
 const passport = require('passport')
-const User = require('~/models/user')
-const auth = require('~/middlewares/auth')
 const JwtStrategy = require('passport-jwt').Strategy
-
 /**
  * Extracts token from: header, body or query
  * @param {Object} req - request object
@@ -22,7 +21,7 @@ const jwtExtractor = (req) => {
 
   if (token) {
     // Decrypts token
-    token = auth.decrypt(token)
+    token = decrypt(token)
   }
   return token
 }
@@ -45,6 +44,5 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
     return done(err, false)
   })
 })
-
 
 passport.use(jwtLogin)

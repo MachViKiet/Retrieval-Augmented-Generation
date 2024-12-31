@@ -9,7 +9,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "host": "vite --host",
-    "predeploy": "npm run build",
+    "production": "npm run build && npm run preview",
     "deploy": "gh-pages -d build"
   },
   "dependencies": {

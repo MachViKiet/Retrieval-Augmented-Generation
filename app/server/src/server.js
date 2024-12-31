@@ -2,15 +2,13 @@
 /**
  * Updated by Mach Vi Kiet's author on November 3 2024
  */
-import './app'
-// const http = require('http')
-const https = require('https')
-const initMongo = require('./config/mongodb')
+
+import initMongo from './config/mongodb.js'
 const app = require('./app.js')
+const https = require('https')
 const io = require('./socket')
 var fs = require('fs')
 const path = require('path')
-
 const keyPath = path.join(process.cwd(), './cert/client-key.pem')
 const certPath = path.join(process.cwd(), './cert/client-cert.pem')
 
@@ -18,17 +16,14 @@ var options = {
   key: fs.readFileSync(keyPath),
   cert: fs.readFileSync(certPath)
 }
-
 async function bootstrap () {
 
   await initMongo()
-
   // return http.createServer(app).listen(process.env.APP_PORT || 3000)
   return https.createServer(options, app).listen(process.env.APP_PORT || 3000)
 }
 
 bootstrap().then(async (server) => {
-
   io.attach(server, {
     cors: {
       origin: process.env.CLIENT, //'http://localhost:5173',

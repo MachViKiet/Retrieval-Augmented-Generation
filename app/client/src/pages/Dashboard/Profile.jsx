@@ -69,7 +69,11 @@ export function Profile() {
         message: 'Cập nhật thành công'
       })
     }).catch((err) => {
-      console.error('update Thất bại  ', err)
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
+      console.error('Cập Nhật Thông Tin User Thất Bại !')
     }).finally(() => processHandler.remove('#UpdateUser', updateUserEvent))
   }
 

@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { getHistoryByChatSessionID } from './helper/getHistoryByChatSessionID'
 
 export const loadHistoryInSession = async (req, res) => {
@@ -9,3 +9,5 @@ export const loadHistoryInSession = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default loadHistoryInSession

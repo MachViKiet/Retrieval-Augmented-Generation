@@ -2,7 +2,7 @@
  * Updated by Mach Vi Kiet's author on November 15 2024
  */
 
-const UserAccess = require('~/models/userAccess')
+import UserAccess from '../../models/userAccess'
 
 export const savetoken = async (token, socketId) => {
   try {
@@ -20,3 +20,5 @@ export const savetoken = async (token, socketId) => {
     }
   }
 }
+
+export default savetoken

@@ -1,12 +1,12 @@
-const User = require('~/models/user')
-const { buildErrObject } = require('~/middlewares/utils')
+import User from '../../../models/user'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Checks against user if has quested role
  * @param {Object} data - data object
  * @param {*} next - next callback
  */
-const checkPermissions = async ({ id = '', roles = [] }, next) => {
+export const checkPermissions = async ({ id = '', roles = [] }, next) => {
   await User.findById(id).then(async (result) => {
     if (!result) {
       throw buildErrObject(404, 'USER_NOT_FOUND')
@@ -21,4 +21,4 @@ const checkPermissions = async ({ id = '', roles = [] }, next) => {
   })
 }
 
-module.exports = { checkPermissions }
+export default checkPermissions

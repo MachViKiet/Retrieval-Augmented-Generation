@@ -1,15 +1,13 @@
-const {
-  validateTokenAndSendRequest
-} = require('~/controllers/auth/helpers')
+import { validateTokenAndSendRequest } from './helpers'
 
-const { handleError } = require('~/middlewares/utils')
+import { handleError } from '../../middlewares/utils'
 
 /**
  * Login function called by route
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
-const request_validateEmail = async (req, res) => {
+export const request_validateEmail = async (req, res) => {
   try {
     const id = req.query?.email
     if ( id ) {
@@ -23,4 +21,4 @@ const request_validateEmail = async (req, res) => {
   }
 }
 
-module.exports = { request_validateEmail }
+export default request_validateEmail

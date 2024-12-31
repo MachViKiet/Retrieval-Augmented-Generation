@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const { sendEmail } = require('./sendEmail')
+import { sendEmail } from './sendEmail'
 
 /**
  * Prepares to send email
@@ -52,4 +52,4 @@ const prepareToSendEmail = (user = {}, subject = '') => {
   }
 }
 
-module.exports = { prepareToSendEmail }
+export default { prepareToSendEmail }

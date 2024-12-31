@@ -1,6 +1,6 @@
 const { emailExists } = require('./emailExists')
 const { emailExistsExcludingMyself } = require('./emailExistsExcludingMyself')
-const { prepareToSendEmail } = require('./prepareToSendEmail')
+const { prepareToSendEmail } = require('./prepareToSendEmail').default
 const { sendEmail } = require('./sendEmail')
 const {
   sendRegistrationEmailMessage

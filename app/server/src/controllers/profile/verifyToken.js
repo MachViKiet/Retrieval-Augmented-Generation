@@ -1,5 +1,5 @@
-const { isIDGood, handleError } = require('~/middlewares/utils')
-const { getUserByToken } = require('./helpers')
+import { isIDGood, handleError } from '../../middlewares/utils'
+import { getUserByToken } from './helpers'
 
 export const verifyToken = async (req, res) => {
   try {
@@ -10,3 +10,5 @@ export const verifyToken = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default verifyToken

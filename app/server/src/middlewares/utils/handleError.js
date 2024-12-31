@@ -3,11 +3,11 @@
  * @param {Object} res - response object
  * @param {Object} err - error object
  */
-const handleError = (res = {}, err = {}) => {
+export const handleError = (res = {}, err = {}) => {
 
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-console
-    console.log(err?.message)
+    console.log(err)
   }
 
   if (err?.notice && err.notice != null) {
@@ -22,4 +22,4 @@ const handleError = (res = {}, err = {}) => {
   })
 }
 
-module.exports = { handleError }
+export default handleError

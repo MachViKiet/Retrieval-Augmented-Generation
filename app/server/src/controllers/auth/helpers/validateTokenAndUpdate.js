@@ -1,11 +1,11 @@
-const { buildErrObject } = require('~/middlewares/utils')
-const User = require('~/models/user')
+import { buildErrObject } from '../../../middlewares/utils'
+import User from '../../../models/user'
 
 /**
  * Finds user by email
  * @param {string} email - user´s email
  */
-const validateTokenAndUpdate = async (_id = '') => {
+export const validateTokenAndUpdate = async (_id = '') => {
 
   return User.findOneAndUpdate({ verification: _id }, { $set: { verified: true } }, { new: true })
     .then(() => ({
@@ -15,4 +15,4 @@ const validateTokenAndUpdate = async (_id = '') => {
     })
 }
 
-module.exports = { validateTokenAndUpdate }
+export default validateTokenAndUpdate
