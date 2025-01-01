@@ -265,6 +265,19 @@ def insert_file():
     
     return jsonify({'status': 'success'})
 
+@main.route("/delete_file", methods=["POST"])
+@cross_origin()
+def delete_file():
+    ##PARAMS
+    document_id = request.form['document_id']
+    collection_name = request.form['collection_name']
+    #-------------------------------------------
+    status, msg = database.delete_document(document_id, collection_name)
+    if status:
+        return jsonify({'status': 'success'})
+    else:
+        return jsonify({'status': 'failed', 'message': msg})
+
 @main.route("/chunk_file", methods=["POST"])
 @cross_origin()
 def chunk_file():

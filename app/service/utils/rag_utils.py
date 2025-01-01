@@ -22,7 +22,8 @@ from pymilvus import(
     Collection,
     CollectionSchema,
     AnnSearchRequest,
-    RRFRanker
+    RRFRanker,
+    MilvusException
 )
 
 CACHE_DIR = os.path.normpath(
@@ -262,6 +263,12 @@ class MilvusDB:
         collection = Collection(name, schema)
         return True
 
+    def delete_document(self, collection_name, document_id):
+        try:
+            Collection(collection_name).delete(expr=f"document_id == '{document_id}'")
+            return True, "Success"
+        except MilvusException as e:
+            return False, e.message
 def create_prompt_milvus(question, context, output_fields=['title','article']):
 #     full_context = """
 # You always answer with markdown formatting using GitHub syntax. Do not use ordered or numbered lists.
