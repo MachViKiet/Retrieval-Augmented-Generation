@@ -1,12 +1,12 @@
-const User = require('~/models/user')
-const { itemNotFound, buildErrObject } = require('~/middlewares/utils')
-const { prepareToSendEmail } = require('~/middlewares/emailer')
+import User from '../../../models/user'
+import { itemNotFound, buildErrObject } from '../../../middlewares/utils'
+import { prepareToSendEmail } from '../../../middlewares/emailer'
 
 /**
  * Finds user by email
  * @param {string} email - user´s email
  */
-const validateTokenAndSendRequest = async (email = '') => {
+export const validateTokenAndSendRequest = async (email = '') => {
   const items = await User.findOne({ email }).then(async (item) => {
     await itemNotFound(false, item, 'USER_DOES_NOT_EXIST')
     if (item) {
@@ -20,9 +20,9 @@ const validateTokenAndSendRequest = async (email = '') => {
     return {}
   }).catch(async (err) => {
     await itemNotFound(err, null, 'USER_DOES_NOT_EXIST')
-    return err
+    throw buildErrObject(404, err.message)
   })
   return items
 }
 
-module.exports = { validateTokenAndSendRequest }
+export default validateTokenAndSendRequest

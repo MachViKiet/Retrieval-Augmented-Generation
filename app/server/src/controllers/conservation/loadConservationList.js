@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { getConservationFromDB } from './helper/getConservationFromDB'
 
 export const loadConservationList = async (req, res) => {
@@ -9,3 +9,5 @@ export const loadConservationList = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default loadConservationList

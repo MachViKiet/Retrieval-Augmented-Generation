@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { processDocumentHelper } from './helper/processDocument'
 
 export const processDocument = async (req, res) => {
@@ -9,3 +9,5 @@ export const processDocument = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default processDocument

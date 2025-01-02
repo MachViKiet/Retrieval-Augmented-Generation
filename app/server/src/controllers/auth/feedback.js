@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { createFeedback } from './helpers'
 
 export const feedback = async (req, res) => {
@@ -9,3 +9,5 @@ export const feedback = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default feedback

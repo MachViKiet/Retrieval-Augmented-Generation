@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // const { prepareToSendEmail } = require('./prepareToSendEmail')
 
 /**
@@ -5,8 +6,8 @@
  * @param {string} locale - locale
  * @param {Object} user - user object
  */
-const sendResetPasswordEmailMessage = (locale = '', user = {}) => {
+export const sendResetPasswordEmailMessage = (locale = '', user = {}) => {
   // prepareToSendEmail(user, subject, htmlMessage)
 }
 
-module.exports = { sendResetPasswordEmailMessage }
+export default sendResetPasswordEmailMessage

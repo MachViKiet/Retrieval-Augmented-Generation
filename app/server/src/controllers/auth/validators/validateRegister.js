@@ -1,9 +1,9 @@
-const { handleError, buildErrObject } = require('~/middlewares/utils')
-const { check, validationResult } = require('express-validator')
+import { handleError, buildErrObject } from '../../../middlewares/utils'
+import { check, validationResult } from 'express-validator'
 /**
  * Validates register request
  */
-const validateRegister = [
+export const validateRegister = [
   check('name')
     .exists()
     .withMessage('MISSING')
@@ -50,4 +50,4 @@ const validateRegister = [
   }
 ]
 
-module.exports = { validateRegister }
+export default validateRegister

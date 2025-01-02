@@ -1,4 +1,4 @@
-const Session = require('~/models/chat_session')
+import Session from '../../../models/chat_session'
 
 export const createSessionAndReturnSession = async (res = {}, usr_id = null ) => {
 
@@ -24,3 +24,5 @@ export const createSessionAndReturnSession = async (res = {}, usr_id = null ) =>
 
   return chat_session
 }
+
+export default createSessionAndReturnSession

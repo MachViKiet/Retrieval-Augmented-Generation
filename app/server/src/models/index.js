@@ -1,7 +1,7 @@
 import { readdirSync } from 'fs'
 const modelsPath = `${__dirname}/`
 
-module.exports = () => {
+export const loadModels = () => {
   /*
    * Load models dynamically
    */
@@ -14,3 +14,5 @@ module.exports = () => {
     return modelFile !== 'index' ? require(`./${modelFile}`) : ''
   })
 }
+
+export default loadModels

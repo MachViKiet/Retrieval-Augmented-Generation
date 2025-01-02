@@ -6,13 +6,13 @@ const requireAuth = passport.authenticate('jwt', {
   session: false
 })
 
-const {
+import {
   newChat,
   loadConservationList,
   loadHistoryInSession,
   removeConservationInDB,
   updateConservationInDB
-} = require('~/controllers/conservation')
+} from '../../controllers/conservation'
 
 router.post('/newChat', requireAuth, trimRequest.all, newChat)
 router.get('/chatSession', requireAuth, trimRequest.all, loadConservationList)

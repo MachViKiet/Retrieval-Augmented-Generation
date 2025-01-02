@@ -4,6 +4,16 @@ module.exports = {
   extends: [
     'eslint:recommended'
   ],
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['~', './src']
+        ],
+        extensions: ['.js', '.jsx', '.ts']
+      }
+    }
+  },
   parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaVersion: 'latest',

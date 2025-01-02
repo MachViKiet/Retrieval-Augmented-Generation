@@ -1,8 +1,8 @@
-import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot'
-import { buildErrObject } from '~/middlewares/utils'
+import { useKHTN_Chatbot } from '../../../apis/KHTN_Chatbot'
+import { buildErrObject } from '../../../middlewares/utils'
 
-const Document = require('~/models/document')
-const Collection = require('~/models/collection')
+import Document from '../../../models/document'
+import Collection from '../../../models/collection'
 
 const { v4: uuidv4 } = require('uuid')
 
@@ -44,3 +44,5 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
 
   return result
 }
+
+export default getChunkFromdbByDocumentID

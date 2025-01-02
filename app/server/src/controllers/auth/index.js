@@ -1,15 +1,6 @@
-const { feedback } = require('./feedback')
-const { login } = require('./login')
-const { register } = require('./register')
-const { request_validateEmail } = require('./request_validateEmail')
-const { roleAuthorization } = require('./roleAuthorization')
-const { validateEmail } = require('./validateEmail').default
-
-module.exports = {
-  login,
-  register,
-  roleAuthorization,
-  feedback,
-  validateEmail,
-  request_validateEmail
-}
+export { feedback } from './feedback'
+export { login } from './login'
+export { register } from './register'
+export { request_validateEmail } from './request_validateEmail'
+export { roleAuthorization } from './roleAuthorization'
+export { validateEmail } from './validateEmail'

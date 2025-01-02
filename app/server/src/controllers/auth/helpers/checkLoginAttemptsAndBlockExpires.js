@@ -1,10 +1,10 @@
-const { buildErrObject } = require('~/middlewares/utils')
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  *
  * @param {Object} user - user object.
  */
-const checkLoginAttemptsAndBlockExpires = (user = {}) => {
+export const checkLoginAttemptsAndBlockExpires = (user = {}) => {
 
   const LOGIN_ATTEMPTS = 5
 
@@ -29,4 +29,4 @@ const checkLoginAttemptsAndBlockExpires = (user = {}) => {
   })
 }
 
-module.exports = { checkLoginAttemptsAndBlockExpires }
+export default checkLoginAttemptsAndBlockExpires

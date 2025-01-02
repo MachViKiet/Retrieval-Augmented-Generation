@@ -184,6 +184,33 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
         </Box>  </FadeIn>
       }
 
+      { conservation.state == 'failed' && <FadeIn> <Box sx = {{ ...ChatDisplay_Style, justifyContent: 'start' }}>
+          <ChatMessage sx = {{   
+              marginLeft: {md: '20px', xs: 0},
+              background: 'linear-gradient(319deg, rgb(255 255 255) 0%, rgb(186 173 255) 100%)',
+              color: '#000',
+              textAlign: 'start',
+              maxWidth: { xs: '100%', md: '70%' }
+            }}>
+            { typeof conservation?.anwser === "string" && <ReactMarkdown>
+              { conservation?.anwser }
+            </ReactMarkdown> }
+            <BubbleLeft xs = {{ display: { xs: 'none', md: 'block' } }}/>
+
+            <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
+              <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
+                {conservation?.source && conservation?.source.map((data, zIndex) => {
+                  return <Box key = {zIndex*12650} sx = {ModelButton_Style}
+                    onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#fff'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>
+                })}
+              </Box>
+              <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end' }}>{getTime(conservation?.create_at ? conservation.create_at : conservation?.createdAt)}</Typography>
+            </Box>
+          </ChatMessage>
+          <Avatar alt="ChatBot" sx = {{ display: { xs: 'none', md: 'block' } }} src={botAvatar} />
+        </Box>  </FadeIn>
+      }
+
       <NotifycationModal
         content={content}
         modalHandler = {{

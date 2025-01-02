@@ -66,7 +66,8 @@ function NewChatModal({ modalHandler = null }) {
         </DialogTitle>
         <DialogContent >
           <DialogContentText sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
+            <TextField 
+              inputProps={{ maxLength: 40 }}
               variant="standard"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -76,6 +77,7 @@ function NewChatModal({ modalHandler = null }) {
               }}
               placeholder='Tên Cuộc Trò Chuyện'/>
             <TextField 
+              inputProps={{ maxLength: 50 }}
               variant="standard"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -178,37 +180,37 @@ export function ChatGenerator() {
 
   useEffect(() => {
     ChatWithChatbot.userMessage(socket, (data) => { 
-      if( currentChatSession && currentChatSession._id == data?.session_id) {
+      if( currentChatSession && currentChatSession?._id == data?.session_id) {
         setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
       }
     })
 
     ChatWithChatbot.isProcessing(socket, (data) => { 
-      if( currentChatSession && currentChatSession._id == data?.session_id) {
+      if( currentChatSession && currentChatSession?._id == data?.session_id) {
         setMessageHandler(prev => ({ ...prev, isProcess: true, ...data }))
       } 
     })
 
     ChatWithChatbot.Processed(socket, (data) => { 
-      if( currentChatSession && currentChatSession._id == data?.session_id) {
+      if( currentChatSession && currentChatSession?._id == data?.session_id) {
         setMessageHandler(prev => ({ ...prev, isProcess: true, ...data })) 
       }
     })
 
     ChatWithChatbot.streamMessages(socket, (data) => { 
-      if( currentChatSession && currentChatSession._id == data?.session_id) {
+      if( currentChatSession && currentChatSession?._id == data?.session_id) {
         setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: true, stream_message: data.messages, ...data })) 
       }
     }) 
 
     ChatWithChatbot.EndStream(socket, (data) => { 
-      if( currentChatSession && currentChatSession._id == data?.session_id) {
+      if( currentChatSession && currentChatSession?._id == data?.session_id) {
         setMessageHandler(prev => ({ ...prev, isProcess: true, stream_state: false, ...data }))  
       }
     })
 
     ChatWithChatbot.EndProcess(socket, async (data) => {
-      if( currentChatSession && currentChatSession._id == data?.session_id) {
+      if( currentChatSession && currentChatSession?._id == data?.session_id) {
         setMessageHandler({
           isProcess: false,
           notification: [],
@@ -354,7 +356,7 @@ export function ChatGenerator() {
 
   const [isRcmt, setRcmt] = useState(true)
   const sessionButtonClick = async (session) => {
-    if(currentChatSession && session._id === currentChatSession._id) return 
+    if(currentChatSession && session?._id === currentChatSession?._id) return 
     try {
         setCurrentChatSession(session)
         setMessageHandler({
@@ -390,9 +392,9 @@ export function ChatGenerator() {
   const removeChatSessionClick = async (event, session) => {
     event.stopPropagation()
     if(!messageHandler.isProcess) {
-      setRemoveSessionEvent(prev => [...prev, session._id])
-      useConservation.remove({session: session._id}, token).then((removed_session) => {
-        setSessions(prev => prev.filter((session) => session._id != removed_session._id))
+      setRemoveSessionEvent(prev => [...prev, session?._id])
+      useConservation.remove({session: session?._id}, token).then((removed_session) => {
+        setSessions(prev => prev.filter((session) => session?._id != removed_session?._id))
         noticeHandler.add({
           status: 'success',
           message: 'Xóa cuộc hội thoại thành công !',
@@ -419,7 +421,7 @@ export function ChatGenerator() {
           auto: false
         })}
       )
-      .finally(() => setRemoveSessionEvent(prevs => prevs.filter((prev) => prev != session._id)))
+      .finally(() => setRemoveSessionEvent(prevs => prevs.filter((prev) => prev != session?._id)))
 
     }
   }
@@ -429,7 +431,7 @@ export function ChatGenerator() {
     await useConservation.update(value, token)
     .then((data) => { setConservations(prev => {
       prev.forEach((prev_consv) => {
-        if(prev_consv._id == data._id){
+        if(prev_consv?._id == data?._id){
           return { ...prev_consv, rating: value }
         }
         return prev_consv
@@ -490,7 +492,7 @@ export function ChatGenerator() {
           </ChatBlock>
 
           <ChatWindow>
-            <Box sx = {{ borderRadius: '15px', background: theme => theme.palette.primary.main, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+            <Box sx = {{ borderRadius: '15px', background: theme => theme.palette.primary.main, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}>
               <ChatExtension/>
               <Box sx = {{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', background: theme => theme.palette.primary.third, borderRadius: '0 0 15px 15px' }}>
                 <ChatInput id = 'FormChat_For_Admin'  disabled = {sessions == null || !isRcmt} handleSubmit = {ChatAction} messageHandler = { messageHandler } />
@@ -510,8 +512,8 @@ export function ChatGenerator() {
           </Box>
 
           { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 230px)', overflow: 'auto', padding: 1 }}> {
-            sessions.map((session) => (
-              <Box key = {session._id} 
+            sessions.map((session, index) => (
+              <Box key = {session?._id || index * 7561295} 
                 sx ={{ width: '100%',
                   background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', 
                   color: theme => {

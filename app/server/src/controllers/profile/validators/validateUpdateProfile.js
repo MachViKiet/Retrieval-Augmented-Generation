@@ -1,11 +1,11 @@
-const { handleError, buildErrObject } = require('~/middlewares/utils')
-// const validator = require('validator')
-const { check, validationResult } = require('express-validator')
+import { handleError, buildErrObject } from '../../../middlewares/utils'
+// import validator = require('validator'
+import { check, validationResult } from 'express-validator'
 
 /**
  * Validates update profile request
  */
-const validateUpdateProfile = [
+export const validateUpdateProfile = [
   check('name')
     .exists()
     .withMessage('MISSING')
@@ -44,4 +44,4 @@ const validateUpdateProfile = [
   }
 ]
 
-module.exports = { validateUpdateProfile }
+export default validateUpdateProfile

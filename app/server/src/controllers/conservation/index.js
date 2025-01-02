@@ -1,13 +1,5 @@
-const { loadConservationList } = require('./loadConservationList')
-const { loadHistoryInSession } = require('./loadHistoryInSession')
-const { removeConservationInDB } = require('./removeConservationInDB')
-const { newChat } = require('./newChat')
-const { updateConservationInDB } = require('./updateConservationInDB')
-
-module.exports = {
-  newChat,
-  loadConservationList,
-  loadHistoryInSession,
-  removeConservationInDB,
-  updateConservationInDB
-}
+export { loadConservationList } from './loadConservationList'
+export { loadHistoryInSession } from './loadHistoryInSession'
+export { removeConservationInDB } from './removeConservationInDB'
+export { updateConservationInDB } from './updateConservationInDB'
+export { newChat } from './newChat'

@@ -2,7 +2,7 @@
  * Creates an object with user info
  * @param {Object} req - request object
  */
-const getUserInfo = (req = {}) => {
+export const getUserInfo = (req = {}) => {
 
   let user = {
     name: req.name,
@@ -13,4 +13,4 @@ const getUserInfo = (req = {}) => {
   return user
 }
 
-module.exports = { getUserInfo }
+export default getUserInfo

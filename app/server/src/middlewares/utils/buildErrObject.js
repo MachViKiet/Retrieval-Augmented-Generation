@@ -3,7 +3,7 @@
  * @param {number} code - error code
  * @param {string} message - error text
  */
-const buildErrObject = (code = '', message = '', notice = null) => {
+export const buildErrObject = (code = '', message = '', notice = null) => {
   return {
     code,
     message,
@@ -11,4 +11,4 @@ const buildErrObject = (code = '', message = '', notice = null) => {
   }
 }
 
-module.exports = { buildErrObject }
+export default buildErrObject

@@ -1,6 +1,6 @@
-const History = require('~/models/history')
-const Chat_session = require('~/models/chat_session')
-const { buildErrObject } = require('~/middlewares/utils')
+import History from '../../../models/history'
+import Chat_session from '../../../models/chat_session'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Gets profile from database by id
@@ -16,10 +16,12 @@ export const getHistoryByChatSessionID = async (user = {}, id = '') => {
       return buildErrObject(422, 'NOT_FOUND')
     }
     const session = await Chat_session.findById(id)
-    return {...session._doc, history }
+    return { ...session._doc, history }
   }).catch((err) => {
     throw buildErrObject(422, err.message)
   })
 
   return result
 }
+
+export default getHistoryByChatSessionID

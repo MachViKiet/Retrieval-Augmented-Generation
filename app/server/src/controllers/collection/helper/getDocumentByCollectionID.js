@@ -1,6 +1,6 @@
-const Collection = require('~/models/collection')
-const { buildErrObject } = require('~/middlewares/utils')
-const { ObjectId } = require('mongodb')
+import Collection from '../../../models/collection'
+import { buildErrObject } from '../../../middlewares/utils'
+import { ObjectId } from 'mongodb'
 /**
  * Gets document from database by collection id
  * @param {string} id - collection id
@@ -35,3 +35,5 @@ export const getDocumentByCollectionID = async (id = '') => {
 
   return result
 }
+
+export default getDocumentByCollectionID
