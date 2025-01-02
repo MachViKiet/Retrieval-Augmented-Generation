@@ -6,7 +6,8 @@ from langchain_community.vectorstores.utils import DistanceStrategy
 
 # from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames as EmbedParams
 # from ibm_watsonx_ai.foundation_models import Embeddings
-from pymilvus.model.dense import SentenceTransformerEmbeddingFunction
+# from pymilvus.model.dense import SentenceTransformerEmbeddingFunction
+from sentence_transformers import SentenceTransformer
 
 import pymongo
 import json
@@ -63,8 +64,8 @@ class Encoder:
             )
             self.embedding_function = model.embed_query()
         elif provider == "local":
-            model = SentenceTransformerEmbeddingFunction(model_name)
-            self.embedding_function = model
+            model = SentenceTransformer(model_name)
+            self.embedding_function = model.encode
         elif provider == "vllm":
             from openai import OpenAI
             def embed(text):
