@@ -67,6 +67,7 @@ function NewChatModal({ modalHandler = null }) {
         <DialogContent >
           <DialogContentText sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField 
+              inputProps={{ maxLength: 40 }}
               variant="standard"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -76,6 +77,7 @@ function NewChatModal({ modalHandler = null }) {
               }}
               placeholder='Tên Cuộc Trò Chuyện'/>
             <TextField 
+              inputProps={{ maxLength: 100 }}
               variant="standard"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -485,7 +487,45 @@ export function ChatGenerator() {
         </Box>
       <Grid container  spacing={2} sx = {{ height: '100%', '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
 
-        <Grid  offset={{ xs: 0, md: 2 }} size={{ xs: 12, md: 7 }} sx = {{ height: '100%'}} >
+        <Grid  size={{ xs: 0, md: 2 }} sx = {{ height: '100%' }}>  
+          <Box sx = {{ display: 'flex', flexDirection: 'column',paddingTop: '55px', height: '100%'}}>
+            <Block sx = {{ 
+              padding: 1, paddingLeft: 0.5, maxHeight: '350px',
+              backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
+              display: { xs: 'none', md: 'block' }
+            }}>
+              
+              <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
+              <Typography component='p' sx = {{ fontWeight: '800' }}>Các câu hỏi phổ biến</Typography>
+            </Box>
+
+            <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 0.2 }}> {
+              [].map((session, index) => (
+                <Box key = {index*735921} 
+                  sx ={{ width: '100%', 
+                    background: '#00000024', 
+                    color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000',
+                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
+                    '&:hover': { background: theme => theme.palette.mode == 'dark' ? '#00000045' : '#818fb033', color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000' }
+                  }}
+                    onClick = {async (e) => await sessionButtonClick(session)}>
+                  <Box >
+                    <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400 !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
+                  </Box>
+                </Box> ))}
+
+                {
+                  ['','','', ''].map((_session, index) => (
+                    <Skeleton key={ index * 82710 } variant="rounded" height={48} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
+                  ))
+                } 
+
+            </Box>
+            </Block>
+          </Box>
+        </Grid>
+
+        <Grid  offset={{ xs: 0, md: 0 }} size={{ xs: 12, md: 7 }} sx = {{ height: '100%'}} >
           <Block sx = {{
             paddingBottom: {md: '95px !important', xs: '95px !important'},
             width: '100%',

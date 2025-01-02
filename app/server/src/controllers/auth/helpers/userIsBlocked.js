@@ -1,10 +1,9 @@
-const { buildErrObject } = require('~/middlewares/utils')
-
+import { buildErrObject } from '../../../middlewares/utils'
 /**
  * Checks if blockExpires from user is greater than now
  * @param {Object} user - user object
  */
-const userIsBlocked = (user = {}) => {
+export const userIsBlocked = (user = {}) => {
   return new Promise((resolve, reject) => {
     if (user.blockExpires > new Date()) {
       return reject(buildErrObject(409, 'BLOCKED_USER'))
@@ -13,4 +12,4 @@ const userIsBlocked = (user = {}) => {
   })
 }
 
-module.exports = { userIsBlocked }
+export default userIsBlocked

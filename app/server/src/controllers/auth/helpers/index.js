@@ -1,27 +1,12 @@
-const { findUser } = require('./findUser')
-const { checkLoginAttemptsAndBlockExpires } = require('./checkLoginAttemptsAndBlockExpires')
-const { passwordsDoNotMatch } = require('./passwordsDoNotMatch')
-const { saveUserAccessAndReturnToken } = require('./saveUserAccessAndReturnToken')
-const { userIsBlocked } = require('./userIsBlocked')
-const { returnRegisterToken } = require('./returnRegisterToken')
-const { registerUser } = require('./registerUser')
-const { getUserInfo } = require('./getUserInfo')
-const { checkPermissions } = require('./checkPermissions')
-const { createFeedback } = require('./createFeedback')
-const { validateTokenAndUpdate } = require('./validateTokenAndUpdate')
-const { validateTokenAndSendRequest } = require('./validateTokenAndSendRequest')
-
-module.exports = {
-  checkLoginAttemptsAndBlockExpires,
-  findUser,
-  passwordsDoNotMatch,
-  saveUserAccessAndReturnToken,
-  userIsBlocked,
-  returnRegisterToken,
-  registerUser,
-  getUserInfo,
-  checkPermissions,
-  createFeedback,
-  validateTokenAndUpdate,
-  validateTokenAndSendRequest
-}
+export { findUser } from './findUser'
+export { checkLoginAttemptsAndBlockExpires } from './checkLoginAttemptsAndBlockExpires'
+export { passwordsDoNotMatch } from './passwordsDoNotMatch'
+export { saveUserAccessAndReturnToken } from './saveUserAccessAndReturnToken'
+export { userIsBlocked } from './userIsBlocked'
+export { returnRegisterToken } from './returnRegisterToken'
+export { registerUser } from './registerUser'
+export { getUserInfo } from './getUserInfo'
+export { checkPermissions } from './checkPermissions'
+export { createFeedback } from './createFeedback'
+export { validateTokenAndUpdate } from './validateTokenAndUpdate'
+export { validateTokenAndSendRequest } from './validateTokenAndSendRequest'

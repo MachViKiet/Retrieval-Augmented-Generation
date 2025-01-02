@@ -1,12 +1,12 @@
-const { handleError, buildErrObject } = require('~/middlewares/utils')
-const { check, validationResult } = require('express-validator')
+import { handleError, buildErrObject } from '../../../middlewares/utils'
+import { check, validationResult } from 'express-validator'
 /**
  * Validates register request
  */
 /**
  * Validates login request
  */
-const validateLogin = [
+export const validateLogin = [
   check('email')
     .exists()
     .withMessage('MISSING')
@@ -39,4 +39,4 @@ const validateLogin = [
   }
 ]
 
-module.exports = { validateLogin }
+export default validateLogin

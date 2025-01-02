@@ -69,7 +69,11 @@ export function Profile() {
         message: 'Cập nhật thành công'
       })
     }).catch((err) => {
-      console.error('update Thất bại  ', err)
+      noticeHandler.add({
+        status: 'error',
+        message: err
+      })
+      console.error('Cập Nhật Thông Tin User Thất Bại !')
     }).finally(() => processHandler.remove('#UpdateUser', updateUserEvent))
   }
 
@@ -142,6 +146,7 @@ export function Profile() {
                   <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Họ Và Tên</FormLabel>
                 </Box>
                 <TextField
+                  inputProps={{ maxLength: 25 }}
                   id="user_name"
                   required
                   spellCheck = { false }
@@ -230,6 +235,7 @@ export function Profile() {
                   <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Email Công Việc</FormLabel>
                 </Box>
                 <TextField
+                  inputProps={{ maxLength: 40 }}
                   required
                   id="user_email"
                   name= "user_email"
@@ -247,6 +253,7 @@ export function Profile() {
                   <FormLabel htmlFor="personal_phone" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
                 </Box>
                 <TextField
+                  inputProps={{ maxLength: 40 }}
                   id="personal_phone"
                   name= "personal_phone"
                   value={user?.phone}
@@ -263,6 +270,7 @@ export function Profile() {
                   <FormLabel htmlFor="personal_email" sx = {{ color: 'inherit' }}>Email Cá Nhân</FormLabel>
                 </Box>
                 <TextField
+                  inputProps={{ maxLength: 40 }}
                   id="personal_email"
                   name= "personal_email"
                   value={user?.personal_email}
@@ -279,6 +287,7 @@ export function Profile() {
                   <FormLabel htmlFor="preferences" sx = {{ color: 'inherit' }}>Mô Tả Công Việc</FormLabel>
                 </Box>
                 <TextField
+                  inputProps={{ maxLength: 200 }}
                   multiline
                   id="preferences"
                   name= "preferences"

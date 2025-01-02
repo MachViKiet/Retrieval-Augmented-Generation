@@ -1,12 +1,12 @@
-const User = require('~/models/user')
-const { buildErrObject } = require('~/middlewares/utils')
+import User from '../../../models/user'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Updates profile in database
  * @param {Object} req - request object
  * @param {string} id - user id
  */
-const updateProfileInDB = async (req = {}, id = '') => {
+export const updateProfileInDB = async (req = {}, id = '') => {
   const user = await User.findByIdAndUpdate( id, req, {
     new: true,
     runValidators: true,
@@ -21,4 +21,4 @@ const updateProfileInDB = async (req = {}, id = '') => {
   return user
 }
 
-module.exports = { updateProfileInDB }
+export default updateProfileInDB

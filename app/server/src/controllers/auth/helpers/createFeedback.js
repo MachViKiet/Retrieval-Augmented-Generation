@@ -1,4 +1,4 @@
-const Feedback = require('~/models/feedbacks')
+import Feedback from '../../../models/feedbacks'
 
 export const createFeedback = async (res = {}, usr_id = null ) => {
 
@@ -15,3 +15,5 @@ export const createFeedback = async (res = {}, usr_id = null ) => {
 
   return feedback
 }
+
+export default createFeedback

@@ -1,5 +1,5 @@
-const User = require('~/models/user')
-const { buildErrObject } = require('~/middlewares/utils')
+import User from '../../../models/user'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Gets profile from database by id
@@ -18,3 +18,5 @@ export const getProfileFromDB = async (id = '') => {
 
   return result
 }
+
+export default getProfileFromDB

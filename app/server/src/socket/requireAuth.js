@@ -6,15 +6,16 @@ import { savetoken } from './helper/savetoken'
 
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
-const auth = require('~/middlewares/auth')
+import { decrypt } from '../middlewares/auth'
 
 export const requireAuth = async (socket, next) => {
+  console.log(socket)
   const token = socket.handshake.auth.token
   if (!token) {
     return next(new Error('Authentication error: Token required'))
   }
 
-  jwt.verify(auth.decrypt(token), process.env.JWT_SECRET, async (err) => {
+  jwt.verify(decrypt(token), process.env.JWT_SECRET, async (err) => {
     if (err) {
       return next(new Error('Authentication error: Invalid token'))
     }
@@ -34,3 +35,5 @@ export const requireAuth = async (socket, next) => {
     }
   })
 }
+
+export default requireAuth

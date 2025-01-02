@@ -163,6 +163,7 @@ export function UserProfile() {
                     <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Họ Và Tên</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 25 }}
                     id="user_name"
                     required
                     fullWidth
@@ -277,6 +278,7 @@ export function UserProfile() {
                     <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Email Công Việc</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 40 }}
                     required
                     id="user_email"
                     name= "user_email"
@@ -300,6 +302,7 @@ export function UserProfile() {
                     <FormLabel htmlFor="personal_email" sx = {{ color: 'inherit' }}>Email Cá Nhân</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 40 }}
                     id="personal_email"
                     name= "personal_email"
                     value={user?.personal_email}
@@ -322,6 +325,7 @@ export function UserProfile() {
                     <FormLabel htmlFor="personal_phone" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 12 }}
                     id="personal_phone"
                     name= "personal_phone"
                     value={user?.phone}
@@ -344,6 +348,7 @@ export function UserProfile() {
                     <FormLabel htmlFor="preferences" sx = {{ color: 'inherit' }}>Mục Tiêu Công Việc</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 200 }}
                     multiline
                     id="preferences"
                     name= "preferences"

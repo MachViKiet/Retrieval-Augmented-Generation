@@ -42,7 +42,7 @@ export function ChatInput({ id, handleSubmit = null, messageHandler = null, disa
 
   const Submit = async (event) => {
     event.preventDefault();
-    if(input != '') handleSubmit(input) && setInput('')
+    if(input != '') handleSubmit(input) && setInput(null)
   }
 
   return (
@@ -51,7 +51,7 @@ export function ChatInput({ id, handleSubmit = null, messageHandler = null, disa
         maxRows={4}
         multiline
         inputProps={{ maxLength: 3000 }}
-        value={input}
+        value={input || ''}
         placeholder='Nhập câu hỏi - tối đa 3000 kí tự'
         disabled = {messageHandler.isProcess || disabled}
         onChange={(e) => setInput(e.target.value)}

@@ -1,5 +1,1 @@
-const { validateUpdateProfile } = require('./validateUpdateProfile')
-
-module.exports = {
-  validateUpdateProfile
-}
+export { validateUpdateProfile } from './validateUpdateProfile'

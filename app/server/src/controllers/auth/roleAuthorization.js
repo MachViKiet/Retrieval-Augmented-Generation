@@ -1,12 +1,12 @@
-const { checkPermissions } = require('./helpers')
+import { checkPermissions } from './helpers'
 
-const { handleError } = require('~/middlewares/utils')
+import { handleError } from '../../middlewares/utils'
 
 /**
  * Roles authorization function called by route
  * @param {Array} roles - roles specified on the route
  */
-const roleAuthorization = (roles) => async (req, res, next) => {
+export const roleAuthorization = (roles) => async (req, res, next) => {
   try {
     const data = {
       id: req.user._id,
@@ -18,4 +18,4 @@ const roleAuthorization = (roles) => async (req, res, next) => {
   }
 }
 
-module.exports = { roleAuthorization }
+export default roleAuthorization

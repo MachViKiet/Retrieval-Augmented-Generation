@@ -28,8 +28,8 @@ const corsOptions ={
 }
 
 app.use(cors(corsOptions)) // Use this after the variable declaration
-
-app.use(require('~/routes/v1').default)
+import router from './routes/v1'
+app.use(router)
 app.set('views', path.join(path.join(process.cwd(), '/public/views')))
 app.set('storage', path.join(path.join(process.cwd(), '/public/storage')))
 app.engine('html', require('ejs').renderFile)

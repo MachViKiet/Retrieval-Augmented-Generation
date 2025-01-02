@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer')
  * @param {Object} data - data
  * @param {boolean} callback - callback
  */
-const sendEmail = async (data = {}, callback) => {
+export const sendEmail = async (data = {}, callback) => {
   // const auth = {
   //   auth: {
   //     // eslint-disable-next-line camelcase
@@ -35,4 +35,4 @@ const sendEmail = async (data = {}, callback) => {
   })
 }
 
-module.exports = { sendEmail }
+export default sendEmail

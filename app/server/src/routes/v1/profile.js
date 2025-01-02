@@ -6,15 +6,16 @@ const requireAuth = passport.authenticate('jwt', {
 })
 const trimRequest = require('trim-request')
 
-const { roleAuthorization } = require('~/controllers/auth')
+import validateUpdateProfile from '../../controllers/profile/validators/validateUpdateProfile'
 
-const {
+import {
   getProfile,
   updateProfile,
   verifyToken
-} = require('~/controllers/profile')
+} from '../../controllers/profile'
 
-const { validateUpdateProfile } = require('~/controllers/profile/validators')
+import roleAuthorization from '../../controllers/auth/roleAuthorization'
+
 
 router.get(
   '/',

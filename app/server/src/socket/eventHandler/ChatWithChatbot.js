@@ -3,11 +3,11 @@
  * Updated by Mach Vi Kiet's author on November 15 2024
  */
 
-import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot'
-import { saveConservationToDB } from '~/controllers/conservation/helper/saveConservationToDB'
-import { updateChatSession } from '~/controllers/conservation/helper/updateChatSession'
-import { getProfileToString } from '~/utils/getProfileToString'
-import { getTime } from '~/utils/getTime'
+import { useKHTN_Chatbot } from '../../apis/KHTN_Chatbot'
+import { saveConservationToDB } from '../../controllers/conservation/helper/saveConservationToDB'
+import { updateChatSession } from '../../controllers/conservation/helper/updateChatSession'
+import { getProfileToString } from '../../utils/getProfileToString'
+import { getTime } from '../../utils/getTime'
 const { ObjectId } = require('mongodb')
 
 const chatbot = useKHTN_Chatbot()
@@ -287,7 +287,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': '### Hệ Thống Hiện Không Hoạt Động !\n Tôi rất tiếc, hệ thống chúng tôi đang gặp sự cố và không thể cung cấp thông tin cho bạn.\n Nếu cần thiết bạn có thể liên hệ với giáo vụ để có thông tin một cách nhanh chóng và chính xác nhất.',
-        'state': 'success',
+        'state': 'failed',
         'source': [
           {
             'collection_name': 'Cổng Thông Tin Chính Thức',
@@ -311,3 +311,5 @@ export const ChatWithChatBot = async (socket) => {
 
   return socket
 }
+
+export default ChatWithChatBot

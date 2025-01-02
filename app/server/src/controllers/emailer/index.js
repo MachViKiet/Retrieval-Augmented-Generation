@@ -1,3 +1,1 @@
-const { emailExists } = require('./emailExists')
-
-module.exports = { emailExists }
+export { emailExists } from './emailExists'

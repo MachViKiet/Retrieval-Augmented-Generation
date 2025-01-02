@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { removeConservationByID } from './helper/removeConservationByID'
 
 export const removeConservationInDB = async (req, res) => {
@@ -9,3 +9,5 @@ export const removeConservationInDB = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default removeConservationInDB

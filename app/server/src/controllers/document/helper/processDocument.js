@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-import { insert_file } from '~/apis/KHTN_Chatbot/Document/insert_file'
-import { buildErrObject } from '~/middlewares/utils'
+import { insert_file } from '../../../apis/KHTN_Chatbot/Document/insert_file'
+import { buildErrObject } from '../../../middlewares/utils'
 
-const Document = require('~/models/document')
-const Collection = require('~/models/collection')
+import Document from '../../../models/document'
+import Collection from '../../../models/collection'
 
 export const processDocumentHelper = async (id = null, chunks = null) => {
   const result = await Document.findById(id).then(async (_doc) => {
@@ -65,3 +65,5 @@ export const processDocumentHelper = async (id = null, chunks = null) => {
 
   return result
 }
+
+export default processDocumentHelper

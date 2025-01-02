@@ -188,6 +188,7 @@ export function Profile() {
                     <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Họ Và Tên</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 25 }}
                     id="user_name"
                     required
                     spellCheck = { false }
@@ -277,6 +278,7 @@ export function Profile() {
                     <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Email Công Việc</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 40 }}
                     required
                     id="user_email"
                     name= "user_email"
@@ -294,6 +296,7 @@ export function Profile() {
                     <FormLabel htmlFor="personal_phone" sx = {{ color: 'inherit' }}>Số Điện Thoại</FormLabel>
                   </Box>
                   <TextField
+                    inputProps={{ maxLength: 40 }}
                     id="personal_phone"
                     name= "personal_phone"
                     value={user?.phone}
@@ -316,13 +319,13 @@ export function Profile() {
                     }}
                     onChange={(e) => setUser((prev) => ({...prev, major : e.target.value}))}
                   >
-                    <MenuItem value={'KHMT'}>Khoa Học Máy Tính</MenuItem>
-                    <MenuItem value={'CNPM'}>Công Nghệ Phần Mềm</MenuItem>
-                    <MenuItem value={'HTTT'}>Hệ Thống Thông Tin</MenuItem>
-                    <MenuItem value={'TGMT'}>Thị Giác Máy Tính</MenuItem>
-                    <MenuItem value={'CNTTHUC'}>Công Nghệ Tri Thức</MenuItem>
-                    <MenuItem value={'CNTT'}>Công Nghệ Thông Tin</MenuItem>
-                    <MenuItem value={'NONE'}>Không Có ( Chưa xét chuyên ngành )</MenuItem>
+                    <MenuItem key={'KHMT'} value={'KHMT'}>Khoa Học Máy Tính</MenuItem>
+                    <MenuItem key={'CNPM'} value={'CNPM'}>Công Nghệ Phần Mềm</MenuItem>
+                    <MenuItem key={'HTTT'} value={'HTTT'}>Hệ Thống Thông Tin</MenuItem>
+                    <MenuItem key={'TGMT'} value={'TGMT'}>Thị Giác Máy Tính</MenuItem>
+                    <MenuItem key={'CNTTHUC'} value={'CNTTHUC'}>Công Nghệ Tri Thức</MenuItem>
+                    <MenuItem key={'CNTT'} value={'CNTT'}>Công Nghệ Thông Tin</MenuItem>
+                    <MenuItem key={'NONE'} value={'NONE'}>Không Có ( Chưa xét chuyên ngành )</MenuItem>
                   </Select>
                 </Box>
               </Grid>

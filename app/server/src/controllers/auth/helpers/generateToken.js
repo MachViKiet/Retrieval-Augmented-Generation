@@ -1,11 +1,11 @@
-const jwt = require('jsonwebtoken')
-const { encrypt } = require('~/middlewares/auth')
+import { sign } from 'jsonwebtoken'
+import { encrypt } from '../../../middlewares/auth'
 
 /**
  * Generates a token
  * @param {Object} user - user object
  */
-const generateToken = (user = '') => {
+export const generateToken = (user = '') => {
   try {
     // Gets expiration time
     const expiration =
@@ -13,7 +13,7 @@ const generateToken = (user = '') => {
 
     // returns signed and encrypted token
     return encrypt(
-      jwt.sign(
+      sign(
         {
           data: {
             _id: user
@@ -28,4 +28,4 @@ const generateToken = (user = '') => {
   }
 }
 
-module.exports = { generateToken }
+export default generateToken

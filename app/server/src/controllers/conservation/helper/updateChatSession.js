@@ -1,5 +1,5 @@
-import { buildErrObject } from '~/middlewares/utils'
-const Chat_session = require('~/models/chat_session')
+import { buildErrObject } from '../../../middlewares/utils'
+import Chat_session from '../../../models/chat_session'
 
 export const updateChatSession = async (id, data = null) => {
   const result = await Chat_session.findByIdAndUpdate(id, data, { new: true }).then(async (_doc) => {
@@ -14,3 +14,5 @@ export const updateChatSession = async (id, data = null) => {
 
   return result
 }
+
+export default updateChatSession

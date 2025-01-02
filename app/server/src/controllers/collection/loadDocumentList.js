@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { getDocumentByCollectionID } from './helper/getDocumentByCollectionID'
 
 export const loadDocumentList = async (req, res) => {
@@ -9,3 +9,5 @@ export const loadDocumentList = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default loadDocumentList

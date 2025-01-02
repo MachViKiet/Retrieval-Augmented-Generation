@@ -1,12 +1,12 @@
-const User = require('../../models/user')
-const { buildErrObject } = require('../../middlewares/utils')
+import User from '../../models/user'
+import { buildErrObject } from '../../middlewares/utils'
 
 /**
  * Checks User model if user with an specific email exists but excluding user id
  * @param {string} id - user id
  * @param {string} email - user email
  */
-const emailExistsExcludingMyself = (id = '', email = '') => {
+export const emailExistsExcludingMyself = (id = '', email = '') => {
   return new Promise((resolve, reject) => {
     User.findOne(
       {
@@ -30,4 +30,4 @@ const emailExistsExcludingMyself = (id = '', email = '') => {
   })
 }
 
-module.exports = { emailExistsExcludingMyself }
+export default emailExistsExcludingMyself

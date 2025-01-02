@@ -1,6 +1,6 @@
-import { buildErrObject } from '~/middlewares/utils'
+import { buildErrObject } from '../../../middlewares/utils'
 
-const History = require('~/models/history')
+import History from '../../../models/history'
 
 export const saveConservationToDB = async (conservation = {}) => {
   const history = new History({
@@ -23,3 +23,5 @@ export const saveConservationToDB = async (conservation = {}) => {
 
   return result
 }
+
+export default saveConservationToDB

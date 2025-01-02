@@ -1,5 +1,5 @@
-const Chat_session = require('~/models/chat_session')
-const { buildErrObject } = require('~/middlewares/utils')
+import Chat_session from '../../../models/chat_session'
+import { buildErrObject } from '../../../middlewares/utils'
 
 /**
  * Gets profile from database by id
@@ -21,3 +21,5 @@ export const removeConservationByID = async ( user = '', id = '' ) => {
 
   return result
 }
+
+export default removeConservationByID

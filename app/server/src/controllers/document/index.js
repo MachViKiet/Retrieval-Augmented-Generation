@@ -1,11 +1,4 @@
-const { getChunkInDocument } = require('./getChunkInDocument')
-const { updateDocument } = require('./updateDocument')
-const { uploadFile } = require('./uploadFile')
-const { processDocument } = require('./process')
-
-module.exports = {
-  getChunkInDocument,
-  uploadFile,
-  updateDocument,
-  processDocument
-}
+export { getChunkInDocument } from './getChunkInDocument'
+export { updateDocument } from './updateDocument'
+export { uploadFile } from './uploadFile'
+export { processDocument } from './process'

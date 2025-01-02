@@ -1,4 +1,4 @@
-const { prepareToSendEmail } = require('./prepareToSendEmail')
+const { prepareToSendEmail } = require('./prepareToSendEmail').default
 
 /**
  * Sends registration email

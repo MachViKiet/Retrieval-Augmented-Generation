@@ -2,7 +2,7 @@
 import { io } from 'socket.io-client';
 
 let socket = null;
-const domain = import.meta.env.VITE_SERVER
+const domain = import.meta.env.VITE_SOCKET
 const env = import.meta.env?.VITE_ENVIRONMENT
 
 export const disconnectSocket = () => {
@@ -16,26 +16,28 @@ export const disconnectSocket = () => {
 
 export const connectSocket = (token) => {
   if (!socket) {
-    socket = io( domain, {
+    socket = io( {
       auth: {
         token: token, // Truyền token vào trong auth
       },
-      transports: ['websocket'], // Chỉ sử dụng WebSocket
-      reconnection: true, // Tự động kết nối lại khi bị ngắt
+      path: "/socket.io/",
+      withCredentials: true,
+      transports: ['websocket', 'polling'], // Chỉ sử dụng WebSocket
+      reconnection: false, // Tự động kết nối lại khi bị ngắt
     });
 
     socket.on('connect', () => {
-      env == 'development' && console.log('Socket connected:', socket.id);
+      console.log('Socket connected:', socket);
     });
 
     socket.on('connect_error', (err) => {
       socket = null
-      env == 'development' &&  console.error('Connection error:', err.message);
+      console.error('Connection error:', err);
     });
 
     socket.on('disconnect', () => {
       socket = null
-      env == 'development' &&  console.error('Socket disconnected');
+      console.error('Socket disconnected');
     });
   }
 

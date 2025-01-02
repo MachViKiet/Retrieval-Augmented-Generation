@@ -79,7 +79,8 @@ export function RecommendChatPage({
                 : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
                 padding: 2, position: 'relative', textAlign: 'start',
                 color: theme => theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
-                boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
+                boxShadow: theme => theme.palette.mode == 'dark' ? 
+                '0px 2px 4px rgb(255,255,255,0.25), 0px 2px 4px rgb(255,255,255 ,0.1)' : '0px 2px 4px rgb(0 ,0 ,0 , 0.25), 0px 2px 4px rgb(0, 0, 0 ,0.1)',
                 cursor: 'pointer',
                 '&:hover': {
                     color: '#fff',
@@ -137,7 +138,8 @@ export function RecommendChatPage({
                     marginRight: { xs: 0.4, md: 0.75 },
                     paddingX: 1,
                     borderRadius: '10px',
-                    boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 1px 2px rgba(80, 80, 80, 0.1)',
+                    boxShadow: theme => theme.palette.mode == 'dark' ? 
+                    '0px 2px 4px rgb(255,255,255,0.1), 0px 2px 4px rgb(255,255,255 ,0.1)' : '0px 2px 4px rgb(0 ,0 ,0 , 0.25), 0px 2px 4px rgb(0, 0, 0 ,0.1)',
                     "&:hover": {
                         background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041a91 100%)' 
                             : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',

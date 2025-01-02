@@ -1,4 +1,4 @@
-import { handleError, isIDGood } from '~/middlewares/utils'
+import { handleError, isIDGood } from '../../middlewares/utils'
 import { getChunkFromdbByDocumentID } from './helper/getChunkFromdbByDocumentID'
 
 export const getChunkInDocument = async (req, res) => {
@@ -9,3 +9,5 @@ export const getChunkInDocument = async (req, res) => {
     handleError(res, error)
   }
 }
+
+export default getChunkInDocument
