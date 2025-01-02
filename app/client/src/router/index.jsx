@@ -23,6 +23,7 @@ import AppRoute from './AppRoute'
 import Register from '~/pages/Register'
 import AuthLayout from '~/layouts/AuthLayout'
 import AppLayout from '~/layouts/AppLayout'
+import VerifyEmail from '~/pages/VerifyEmail';
 
 // import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
 // import AuthLayout from '~/layouts/AuthLayout'
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
           {
             path: '/register',
             element: <Register />,
+          },
+          {
+            path: '/validateEmail',
+            element: <VerifyEmail />,
           }
         ],
       },

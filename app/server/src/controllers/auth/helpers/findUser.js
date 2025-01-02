@@ -12,10 +12,10 @@ export const findUser = async (email = '') => {
       return new User(item)
     }).catch(async (err) => {
       await itemNotFound(err, null, 'USER_DOES_NOT_EXIST')
-      return err
+      throw err
     })
   } catch (error) {
-    return buildErrObject(300, error.message)
+    throw buildErrObject(300, error.message)
   }
 }
 

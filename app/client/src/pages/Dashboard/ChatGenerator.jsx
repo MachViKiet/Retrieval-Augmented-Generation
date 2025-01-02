@@ -66,7 +66,8 @@ function NewChatModal({ modalHandler = null }) {
         </DialogTitle>
         <DialogContent >
           <DialogContentText sx = {{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
+            <TextField 
+              inputProps={{ maxLength: 40 }}
               variant="standard"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -76,6 +77,7 @@ function NewChatModal({ modalHandler = null }) {
               }}
               placeholder='Tên Cuộc Trò Chuyện'/>
             <TextField 
+              inputProps={{ maxLength: 50 }}
               variant="standard"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -490,7 +492,7 @@ export function ChatGenerator() {
           </ChatBlock>
 
           <ChatWindow>
-            <Box sx = {{ borderRadius: '15px', background: theme => theme.palette.primary.main, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}>
+            <Box sx = {{ borderRadius: '15px', background: theme => theme.palette.primary.main, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.1)' }}>
               <ChatExtension/>
               <Box sx = {{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', background: theme => theme.palette.primary.third, borderRadius: '0 0 15px 15px' }}>
                 <ChatInput id = 'FormChat_For_Admin'  disabled = {sessions == null || !isRcmt} handleSubmit = {ChatAction} messageHandler = { messageHandler } />

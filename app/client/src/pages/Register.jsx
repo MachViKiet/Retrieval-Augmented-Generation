@@ -67,8 +67,8 @@ function Register() {
             auto: false
           })
           setTimeout(() => {
-            navigate('/signin')
-          }, 5000);
+            navigate('/validateEmail')
+          }, 500);
         }) 
       .catch((err) => {
         processHandler.remove('#register', logInEvent)
@@ -87,13 +87,13 @@ function Register() {
           sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, position: 'relative', color: theme => theme.palette.primary.main }} >
           <FormControl sx={{gap: 1}}>
             <FormLabel htmlFor="name" sx = {{ color: 'inherit' }}>Tên tài khoản</FormLabel>
-            <TextInput id="name" type="name" name="name" placeholder="Nguyen Van A"
+            <TextInput id="name" type="name" name="name" placeholder="Nguyen Van A" inputProps={{ maxLength: 25 }}
                required fullWidth autoFocus variant="outlined" />
           </FormControl>
 
           <FormControl sx={{gap: 1}}>
             <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Tên đăng nhập (Email sinh viên)</FormLabel>
-            <TextInput id="email" type="username" name="email" placeholder="mssv@email.com"
+            <TextInput id="email" type="username" name="email" placeholder="mssv@email.com" inputProps={{ maxLength: 40 }}
               autoComplete="email" required fullWidth variant="outlined" />
           </FormControl>
 
@@ -104,7 +104,7 @@ function Register() {
                 sx={{ alignSelf: 'baseline', color: 'inherit' }}>
                 Quên mật khẩu ? </Link>
             </Box>
-            <TextInput name="password" placeholder="••••••" type="password" id="password"
+            <TextInput name="password" placeholder="••••••" type="password" id="password" inputProps={{ maxLength: 25 }}
               autoComplete="current-password" required fullWidth variant="outlined"
               sx = {{ color: '#000' }} />
           </FormControl>

@@ -9,16 +9,16 @@ const router = Router()
  * Load routes statically and/or dynamically
  */
 
-router.use('/', require('./auth'))
-router.use('/', require('./profile'))
-router.use('/', require('./conservation'))
-router.use('/collections', require('./collection'))
-router.use('/documents', require('./document'))
+router.use('/api/', require('./auth'))
+router.use('/api/', require('./profile'))
+router.use('/api/', require('./conservation'))
+router.use('/api/collections', require('./collection'))
+router.use('/api/documents', require('./document'))
 
 /*
  * Setup routes for index
  */
-router.get('/admin', (req, res) => {
+router.get('/api/admin', (req, res) => {
   res.render('index')
 })
 
@@ -83,7 +83,7 @@ router.get('/proxy', async (req, res) => {
 router.use('*', (req, res) => {
   res.status(404).json({
     errors: {
-      msg: 'URL_NOT_FOUND'
+      msg: 'URL_NOT_FOUNDDDD'
     }
   })
 })

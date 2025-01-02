@@ -43,7 +43,7 @@ ENV EMAIL_PASSWORD="uboy zuwd vpjf cyjl"
 
 ENV STORAGE="http://localhost:8017"
 
-ENV CLIENT="http://localhost:8017"
+ENV CLIENT="http://client:3000"
 
 EXPOSE 8017
 

@@ -41,15 +41,22 @@ const prepareToSendEmail = (user = {}, subject = '') => {
     subject,
     htmlMessage : html
   }
-  if (process.env.NODE_ENV === 'production') {
-    sendEmail(data, (messageSent) =>
-      messageSent
-        ? console.log(`Email SENT to: ${user.email}`)
-        : console.log(`Email FAILED to: ${user.email}`)
-    )
-  } else if (process.env.NODE_ENV === 'development') {
-    console.log('Xác thực email thành công')
-  }
+
+  sendEmail(data, (messageSent) =>
+    messageSent
+      ? console.log(`Email SENT to: ${user.email}`)
+      : console.log(`Email FAILED to: ${user.email}`)
+  )
+
+  // if (process.env.NODE_ENV === 'production') {
+  //   sendEmail(data, (messageSent) =>
+  //     messageSent
+  //       ? console.log(`Email SENT to: ${user.email}`)
+  //       : console.log(`Email FAILED to: ${user.email}`)
+  //   )
+  // } else if (process.env.NODE_ENV === 'development') {
+  //   console.log('Xác thực email thành công')
+  // }
 }
 
 export default { prepareToSendEmail }

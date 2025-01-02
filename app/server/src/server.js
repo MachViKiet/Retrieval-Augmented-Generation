@@ -5,7 +5,8 @@
 
 import initMongo from './config/mongodb.js'
 const app = require('./app.js')
-const https = require('https')
+// const https = require('https')
+const https = require('http')
 const io = require('./socket')
 var fs = require('fs')
 const path = require('path')
@@ -26,10 +27,11 @@ async function bootstrap () {
 bootstrap().then(async (server) => {
   io.attach(server, {
     cors: {
-      origin: process.env.CLIENT, //'http://localhost:5173',
+      origin: '*', //process.env.CLIENT, //'http://localhost:5173',
       methods: ['GET', 'POST'],
-      credentials: true
-    }
+      // credentials: true
+    },
+    transports: ['websocket', 'polling']
   })
 
   console.log('\n')

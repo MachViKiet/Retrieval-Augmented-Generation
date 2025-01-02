@@ -11,12 +11,12 @@ export const passwordsDoNotMatch = async (user = {}) => {
       // user.loginAttempts += 1
       // await saveLoginAttemptsToDB(user)
       if (user.loginAttempts <= LOGIN_ATTEMPTS) {
-        return buildErrObject(409, 'WRONG_PASSWORD')
+        throw buildErrObject(409, 'WRONG_PASSWORD')
       }
       // await blockUser(user)
     } catch (error) {
       // TODO :
-      return error
+      throw buildErrObject(409, error.message)
     }
   }
   const res = await run()

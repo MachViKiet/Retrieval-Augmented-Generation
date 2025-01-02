@@ -42,6 +42,20 @@ services:
     networks:
       - luanvan-network
 
+  nginx:
+    image: nginx:1.18.0
+    ports:
+      - "8000:8000"  # Chạy nginx trên cổng 8000
+    restart: unless-stopped  # Tự động khởi động lại container nếu nó dừng bất ngờ
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Cấu hình Nginx
+      - ./client:/usr/share/nginx/html  # Mount mã nguồn client
+    depends_on:
+      - client
+      - server
+    networks:
+      - luanvan-network
+
 networks:
   luanvan-network:
     driver: bridge  # Sử dụng mạng `host` có sẵn trên hệ thống

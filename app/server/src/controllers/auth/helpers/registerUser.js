@@ -15,7 +15,7 @@ export const registerUser = async (req = {}) => {
     verified: process.env.NODE_ENV === 'production'
   })
 
-  const res = user.save().then(item => item).catch((err) => buildErrObject(422, err.message))
+  const res = user.save().then(item => item).catch((err) => { throw buildErrObject(422, err.message) })
 
   return res
 

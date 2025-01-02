@@ -21,6 +21,9 @@ export const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
     socketid: null
   })
 
+  console.log('login 6')
+
+
   const result = await userAccess.save().then(async () => {
     const userInfo = getUserInfo(user)
     // Returns data with access token
@@ -29,6 +32,7 @@ export const saveUserAccessAndReturnToken = async (req = {}, user = {}) => {
       user: userInfo
     })
   }).catch((err) => {
+    console.log(err)
     return buildErrObject(422, err.message)
   })
 

@@ -10,12 +10,15 @@ export const handleError = (res = {}, err = {}) => {
     console.log(err)
   }
 
+  console.log(err)
+
+
   if (err?.notice && err.notice != null) {
     // eslint-disable-next-line no-console
     console.log ('Notification Errors:', err.notice)
   }
 
-  res.status(err?.code).json({
+  res.status(err?.code || 404).json({
     errors: {
       msg: err?.message
     }

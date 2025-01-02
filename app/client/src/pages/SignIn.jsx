@@ -87,12 +87,14 @@ function SignIn() {
           processHandler.remove('#verifyEmail', logInEvent)
           setNotificationSuccess('Gởi Yêu Câu Trong Giây Lát, Kiểm Tra Email Của Bạn !')
           setNotification()
+          navigate('/validateEmail')
         }) 
       .catch((err) => {
         processHandler.remove('#verifyEmail', logInEvent)
         setNotification(useErrorMessage(err))
         setNotificationSuccess(null)
       })
+    
   };
 
   return (
@@ -106,7 +108,7 @@ function SignIn() {
           sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2, position: 'relative', color: theme => theme.palette.primary.main }} >
           <FormControl sx={{gap: 1}}>
             <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Tên đăng nhập</FormLabel>
-            <TextInput id="email" type="username" name="email" placeholder="mssv@email.com"
+            <TextInput id="email" type="username" name="email" placeholder="mssv@email.com" inputProps={{ maxLength: 40 }}
               autoComplete="email" autoFocus required fullWidth variant="outlined" />
           </FormControl>
           
@@ -118,7 +120,7 @@ function SignIn() {
                 Quên mật khẩu ? </Link>
             </Box>
             <TextInput name="password" placeholder="••••••" type="password" id="password"
-              autoComplete="current-password" required fullWidth variant="outlined"
+              autoComplete="current-password" required fullWidth variant="outlined" inputProps={{ maxLength: 40 }}
               sx = {{ color: '#000' }} />
           </FormControl>
 

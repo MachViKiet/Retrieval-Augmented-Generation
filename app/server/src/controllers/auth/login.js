@@ -15,7 +15,12 @@ export const login = async (req, res) => {
     const data = matchedData(req)
     const user = await findUser(data.email)
 
+    if (user == null) {
+      handleError(res, buildErrObject(422, 'Account not exists.'))
+    }
+
     const isPasswordMatch = await checkPassword(data.password, user)
+
     if (!isPasswordMatch ) {
       handleError(res, await passwordsDoNotMatch(user))
     } else if (user?.verified) {

@@ -20,7 +20,7 @@ export const validateTokenAndSendRequest = async (email = '') => {
     return {}
   }).catch(async (err) => {
     await itemNotFound(err, null, 'USER_DOES_NOT_EXIST')
-    return err
+    throw buildErrObject(404, err.message)
   })
   return items
 }
