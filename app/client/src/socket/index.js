@@ -23,7 +23,7 @@ export const connectSocket = (token) => {
       path: "/socket.io/",
       withCredentials: true,
       transports: ['websocket', 'polling'], // Chỉ sử dụng WebSocket
-      reconnection: false, // Tự động kết nối lại khi bị ngắt
+      reconnection: true, // Tự động kết nối lại khi bị ngắt
     });
 
     socket.on('connect', () => {

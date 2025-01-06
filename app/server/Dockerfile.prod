@@ -18,9 +18,7 @@ RUN npm i esm --save
 
 RUN npm i ts-node -D
 
-COPY ./ /app
-
-ENV PROTOCOL="https"
+ENV PROTOCOL="http"
 
 ENV APP_HOST="localhost"
 
@@ -30,7 +28,6 @@ ENV APP_PROTOCOL="https"
 
 ENV NODE_ENV="production"
 
-# ENV MONGODB_URI="mongodb+srv://machkiet252003:i1SsJiOcJ3aydIqB@userstorages.6akwp.mongodb.net/luan_van_2024"
 ENV MONGODB_URI="mongodb://mongo:27017/luan_van_2024"
 
 ENV JWT_SECRET="Machvikietdeptraihocgioianhvan"
@@ -45,8 +42,16 @@ ENV STORAGE="http://localhost:8017"
 
 ENV CLIENT="http://client:3000"
 
+ENV KHTNCHATBOT_HOST="host.docker.internal"
+ENV KHTNCHATBOT_PORT="8000"
+
+ENV AIRFLOW_HOST="host.docker.internal"
+ENV AIRFLOW_PORT="8080"
+
+COPY ./ /app
+
 EXPOSE 8017
 
-COPY . .
+# COPY . .
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "deploy"]

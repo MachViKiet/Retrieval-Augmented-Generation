@@ -176,8 +176,8 @@ function DatasetDetail() {
             DocumentUpdate({
               id: id,
               update: {
-                chunks: documentWithChunk.chunks,
-                metadata: documentWithChunk.metadata
+                chunks: documentWithChunk?.chunks,
+                metadata: documentWithChunk?.metadata
               }
             })
           }}

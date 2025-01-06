@@ -9,7 +9,7 @@ const ExternalWebsite = ({ url = null, name = null, type = null }) => {
       setExternalWebsite(`${domain}/documents?name=${name}`)
 
     } else {
-      setExternalWebsite(`${domain}/proxy?url=${url}`)
+      setExternalWebsite(`/proxy?url=${url}`)
     }
   }, [url])
 

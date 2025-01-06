@@ -51,7 +51,7 @@ export const processDocumentHelper = async (id = null, chunks = null) => {
 
     const result = await insert_file(formData)
       .then((data) => data)
-      .catch((err) => { throw buildErrObject(422, err) })
+      .catch((err) => { throw buildErrObject(422, err.message) })
     await Document.findByIdAndUpdate(_doc._id, {
       state: result?.state,
       dag_id: result?.dag_id,

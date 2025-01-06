@@ -37,17 +37,17 @@ export const uploadFile = async (req, res) => {
 
         let content = null
         content = await read_pdf(filePath)
-          .catch(() => { resolve(buildErrObject(422, 'Cannot read file for getting chunk')) })
+          .catch(() => { reject(buildErrObject(422, 'Cannot read file for getting chunk')) })
 
         let chunks
         const formData = new FormData()
         formData.append('text', content)
-        chunks = await chunk_file(formData).catch(() => { resolve(buildErrObject(422, 'Cannot chunk file')) })
+        chunks = await chunk_file(formData).catch(() => { reject(buildErrObject(422, 'Cannot chunk file')) })
 
         try {
           chunks = chunks.map((chunk) => ({ id: uuidv4(), chunk }))
         } catch (error) {
-          resolve(buildErrObject(422, 'Cannot chunk file', 'Lỗi Ở Bước Chunking Text' + error?.message))
+          reject(buildErrObject(422, 'Cannot chunk file', 'Lỗi Ở Bước Chunking Text' + error?.message))
         }
         const document = new Document({
           owner: id,
@@ -57,9 +57,10 @@ export const uploadFile = async (req, res) => {
           document_name_in_storage: `${id_in_storage}-${filename}${extensionFile}`,
           document_description: req.body?.description,
           chunks: chunks,
-          amount_chunking: chunks.length,
+          amount_chunking: chunks?.length,
           document_type: 'Upload',
-          url: `${process.env.STORAGE}/documents?name=${id_in_storage}-${filename}${extensionFile}`
+          url: `${process.env.STORAGE}/documents?name=${id_in_storage}-${filename}${extensionFile}`,
+          metadata: null
         })
 
         document.save()
@@ -74,7 +75,7 @@ export const uploadFile = async (req, res) => {
     }).catch((err) => handleError(res, err))
 
   } catch (error) {
-    handleError(res, error)
+    handleError(res, error.message)
   }
 }
 

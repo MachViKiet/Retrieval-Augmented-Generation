@@ -15,8 +15,8 @@
     "build-babel": "babel ./src -d ./build/src",
     "build": "npm run clean && npm run build-babel",
     "production": "node --env-file=.env ./build/src/server.js",
-    "deploy": "nodemon --exec babel-node --env-file=.development.env ./build/src/server.js",
     "dev": "nodemon --exec babel-node --env-file=.development.env ./src/server.js",
+    "deploy": "nodemon --exec babel-node ./src/server.js",
     "test": "nodemon -r esm  ./src/server.js"
   },
   "dependencies": {

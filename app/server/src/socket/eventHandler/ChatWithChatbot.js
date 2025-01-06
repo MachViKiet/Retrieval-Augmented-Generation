@@ -51,6 +51,9 @@ export const ChatWithChatBot = async (socket) => {
           time: null
         }] })
 
+      await updateChatSession(current_session, { in_progress: objectConservation })
+      .catch((err) => { throw 'Cập Nhật ChatSession Thất Bại' + JSON.stringify(err) })
+
       // Step 1
       const start_point_1 = (new Date()).getTime()
       let chosen_collections = null
@@ -284,6 +287,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
+      console.log('Lỗi ở bước chat: ',error)
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': '### Hệ Thống Hiện Không Hoạt Động !\n Tôi rất tiếc, hệ thống chúng tôi đang gặp sự cố và không thể cung cấp thông tin cho bạn.\n Nếu cần thiết bạn có thể liên hệ với giáo vụ để có thông tin một cách nhanh chóng và chính xác nhất.',
@@ -304,7 +308,7 @@ export const ChatWithChatBot = async (socket) => {
           throw 'Cập Nhật ChatSession Thất Bại '
         })
     } catch (error) {
-      console.log(error)
+      console.log('Lỗi ở bước cập nhật chat session',error)
     }
   })
 

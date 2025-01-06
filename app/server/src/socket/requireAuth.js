@@ -9,7 +9,6 @@ const passport = require('passport')
 import { decrypt } from '../middlewares/auth'
 
 export const requireAuth = async (socket, next) => {
-  console.log(socket)
   const token = socket.handshake.auth.token
   if (!token) {
     return next(new Error('Authentication error: Token required'))

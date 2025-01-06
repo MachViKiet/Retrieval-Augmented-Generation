@@ -28,32 +28,32 @@ export default ({ mode }) => {
     server: {
       // https: true,
       https: false,
-      proxy: {
-        '/api': {
-          target: 'http://localhost:8017', // Địa chỉ của API server
-          rewrite: (path) => path.replace(/^\/api/, ''), // Loại bỏ /api trước khi gửi yêu cầu đến API server
-          secure: false,
-          ws: true,
-          configure: (proxy, _options) => {
-            proxy.on('error', (err, _req, _res) => {
-              console.log('proxy error', err);
-            });
-            proxy.on('proxyReq', (proxyReq, req, _res) => {
-              console.log('Sending Request to the Target:', req.method, req.url);
-            });
-            proxy.on('proxyRes', (proxyRes, req, _res) => {
-              console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
-            });
-          },
-        },
+      // proxy: {
+      //   '/api': {
+      //     target: 'http://localhost:8017', // Địa chỉ của API server
+      //     rewrite: (path) => path.replace(/^\/api/, ''), // Loại bỏ /api trước khi gửi yêu cầu đến API server
+      //     secure: false,
+      //     ws: true,
+      //     configure: (proxy, _options) => {
+      //       proxy.on('error', (err, _req, _res) => {
+      //         console.log('proxy error', err);
+      //       });
+      //       proxy.on('proxyReq', (proxyReq, req, _res) => {
+      //         console.log('Sending Request to the Target:', req.method, req.url);
+      //       });
+      //       proxy.on('proxyRes', (proxyRes, req, _res) => {
+      //         console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+      //       });
+      //     },
+      //   },
 
-        // '/socket.io': {
-        //   target: 'ws://172.0.0.1:8017', // Địa chỉ của API server
-        //   secure: false,
-        //   changeOrigin: true,
-        //   ws: true,
-        // }
-      },
+      //   // '/socket.io': {
+      //   //   target: 'ws://172.0.0.1:8017', // Địa chỉ của API server
+      //   //   secure: false,
+      //   //   changeOrigin: true,
+      //   //   ws: true,
+      //   // }
+      // },
       // port: 3000,
       // strictPort: true,
       host: '0.0.0.0',

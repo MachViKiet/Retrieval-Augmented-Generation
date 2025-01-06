@@ -12,7 +12,7 @@ export const registerUser = async (req = {}) => {
     email: req.email,
     password: req.password,
     verification: v4(),
-    verified: process.env.NODE_ENV === 'production'
+    verified: process.env.NODE_ENV !== 'production'
   })
 
   const res = user.save().then(item => item).catch((err) => { throw buildErrObject(422, err.message) })
