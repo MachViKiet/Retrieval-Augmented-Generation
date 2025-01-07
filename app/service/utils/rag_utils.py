@@ -361,7 +361,7 @@ def compile_filter_expression(metadata, loaded_collections: list):
                 continue
 
             if short_schema[attr] == DataType.INT8 or short_schema[attr] == DataType.INT16 or short_schema[attr] == DataType.INT32 or short_schema[attr] == DataType.INT64 or short_schema[attr] == DataType.FLOAT: #intege
-                expressions[c] += attr + ' == ' + val + " || "
+                expressions[c] += attr + ' == ' + str(val) + " || "
             elif short_schema[attr] == DataType.VARCHAR:
                 expressions[c] += attr + f' == "{val}"' + " || "
             elif short_schema[attr] == DataType.ARRAY:
