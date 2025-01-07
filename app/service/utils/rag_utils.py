@@ -260,6 +260,8 @@ class MilvusDB:
                 fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.ARRAY, **value['params']))
             elif value['datatype'] == 'bool':
                 fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.BOOL, **value['params']))
+            elif value['datatype'] == 'vector':
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.FLOAT_VECTOR, **value['params']))
         schema = CollectionSchema(fields=fields, description=description)
         collection = Collection(name, schema)
         return True
