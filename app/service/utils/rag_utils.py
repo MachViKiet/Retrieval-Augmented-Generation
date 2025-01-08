@@ -422,6 +422,7 @@ Answer:
         except json.JSONDecodeError:
             print("Metadata Extraction: Couldn't decode JSON - " + result)
             result = -1
+    result = result.replace('"', '\"') #Escape quotes
     return result
 
 def rewrite_query(conversation, model, k=2):
