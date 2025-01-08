@@ -403,6 +403,7 @@ Answer:
 
     full_prompt = prompt.format(query=query, schema=schema)
     result = model._generate(full_prompt)
+    result = result.replace('"', '\"') #Escape quotes
     try:
         result = json.loads(result)
         for k, v in result.items():
@@ -422,7 +423,6 @@ Answer:
         except json.JSONDecodeError:
             print("Metadata Extraction: Couldn't decode JSON - " + result)
             result = -1
-    result = result.replace('"', '\"') #Escape quotes
     return result
 
 def rewrite_query(conversation, model, k=2):
