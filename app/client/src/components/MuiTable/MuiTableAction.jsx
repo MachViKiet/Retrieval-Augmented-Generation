@@ -51,12 +51,11 @@ const ActionContainer = ({params, data}) => {
              }}
             onClick={(event) => {
                 event.stopPropagation();
-                if(type === 'see') {
-                    window.open(data?.url, '_blank', 'noopener,noreferrer');
-                }
+                if(type?.action) type?.action(data)
+
             }}>
-            <Tooltip title={ACTION_LIST_DEFINE[type].tooltip}>
-                {ACTION_LIST_DEFINE[type].icon}
+            <Tooltip title={ACTION_LIST_DEFINE[type?.code || type].tooltip}>
+                {ACTION_LIST_DEFINE[type?.code || type].icon}
             </Tooltip>
         </Box>))} 
     </Box>

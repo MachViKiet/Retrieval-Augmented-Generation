@@ -9,8 +9,9 @@ const requireAuth = passport.authenticate('jwt', {
   session: false
 })
 const path = require('path')
+import roleAuthorization from '../../controllers/auth/roleAuthorization'
 
-import { getChunkInDocument, uploadFile, updateDocument, processDocument } from '../../controllers/document'
+import { getChunkInDocument, uploadFile, updateDocument, processDocument, deleteFile } from '../../controllers/document'
 
 // const directory = './src/storage'
 
@@ -22,6 +23,13 @@ router.patch('/', requireAuth, trimRequest.all, updateDocument)
 
 router.post('/process', requireAuth, trimRequest.all, processDocument)
 
+router.delete(
+  '/',
+  requireAuth,
+  roleAuthorization(['administrator', 'researcher']),
+  trimRequest.all,
+  deleteFile
+)
 
 router.get('/', async (req, res) => {
   const filePath = path.join(process.cwd(), '/public/storage', `${req.query.name}`)

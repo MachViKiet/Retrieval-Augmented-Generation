@@ -164,7 +164,7 @@ import { DataGrid, gridStringOrNumberComparator, useGridApiRef } from '@mui/x-da
 //   return { columns,  rows}
 // }
 
-export default function MuiTable({ useData, getRowHeight, rowHeight, onRowClick }) {
+export default function MuiTable({ useData, getRowHeight, rowHeight, onRowClick, loading = false }) {
   const apiRef = useGridApiRef();
   const data = useData ? useData : mockData(30);
   return (
@@ -177,7 +177,7 @@ export default function MuiTable({ useData, getRowHeight, rowHeight, onRowClick 
         rowHeight  = {rowHeight}
         onRowClick = {onRowClick}
         pageSizeOptions={[10,20,  100]}
-        // loading
+        loading = {loading}
         initialState={{
           ...data.initialState,
           pagination: { paginationModel: { pageSize: 20 } },

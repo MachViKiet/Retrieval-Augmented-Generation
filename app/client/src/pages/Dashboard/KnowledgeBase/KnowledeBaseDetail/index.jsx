@@ -20,13 +20,15 @@ import InputFileUpload, { VisuallyHiddenInput } from '~/components/Mui/InputFile
 import { useDocument } from '~/apis/Document';
 import { Airflow } from '~/socket/Airflow';
 import { getSocket } from '~/socket';
+import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot';
 
-const useData = (documents) => {
+const useData = (documents, deleteDocument) => {
   const { id } = useParams();
-
   function createData(id = Math.floor(Math.random() * 72658721) , name= null, chunkNumber= null, upload_date= null, updated_date= null, chunkMethod= null, enable= null, parsingStatus= null, action= null, url = null) {
     return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action , url};
   }
+
+  const directUrl = async (data) => window.open(data?.url, '_blank', 'noopener,noreferrer')
 
   if(!documents) return {rows: [], columns: [], loading : false}
   const rows = Array.isArray(documents) && documents.map((document) => {
@@ -36,7 +38,10 @@ const useData = (documents) => {
     } catch (error) {
       console.error('Có lỗi Xảy ra khi đọc tài liệu')      
     }
-    return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['see','delete'], url )
+    return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), 
+    formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, 
+    [{code: 'see', action: directUrl},
+      {code: 'detele', action: deleteDocument}], url )
   })
 
   const condition = (params) => { return ['processed', 'pending', 'failed', 'success'].includes(params.row.parsingStatus) }
@@ -90,8 +95,10 @@ function Datasets() {
   const [collectionWithDocuments, setCollectionWithDocuments] = useState(null)
 
   const { processHandler, noticeHandler, dashboard, subDashboard } = useOutletContext();
+  const [loadTable, setLoadTable] = useState(false)
 
   const socket = getSocket();
+  const KHTN_Chatbot =  useKHTN_Chatbot()
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
@@ -113,7 +120,10 @@ function Datasets() {
   const { id } = useParams();
 
   const loadDocumentByCollectionID = async (collection_id, token) => {
-    return useCollection.getDocumentInCollection(collection_id, token).then((document) => document )
+    setLoadTable(true)
+    return useCollection.getDocumentInCollection(collection_id, token)
+    .then((document) => { setLoadTable(false); return document })
+    .catch((error) => { setLoadTable(false); return error })
   }
 
   useEffect(() => {
@@ -179,6 +189,29 @@ function Datasets() {
     .finally(() => processHandler.remove('#uploadFile', uploadFileEvent))
   }
 
+  const refreshData = async () => {
+    const loadCollectionWithDocument = processHandler.add('#loadCollectionWithDocument')
+    loadDocumentByCollectionID(id, token).then((collectionWithDocuments) => {
+      setCollectionWithDocuments(collectionWithDocuments)
+      subDashboard.addTitle(collectionWithDocuments.collection_name)        
+    }).catch((err) => console.error('Lấy Dữ Liệu Files Trong Collection Thất Bại'))
+    .finally(()=> processHandler.remove('#loadCollectionWithDocument', loadCollectionWithDocument))
+  }
+
+  const deleteDocument = async (data) => {
+    if(data?.id){
+      const deleteEvent = processHandler.add('#deleteDocument')
+      await KHTN_Chatbot.deleteDocument({id: data?._id})
+      .then(async () => { 
+        noticeHandler.add({ status: 'success', message: 'Xóa Tài Liệu Thành Công' })
+        await refreshData()
+        .catch(() => noticeHandler.add({ status: 'error', message: 'Refresh Trang Xảy Ra Lỗi' }))
+      })
+      .catch(() => noticeHandler.add({ status: 'error', message: 'Xóa Tài Liệu Thất Bại' }))
+      .finally(() => processHandler.remove('#deleteDocument', deleteEvent))
+    }
+  }
+  
   return (
     <>
       <Box sx ={{ width: '100%', height: 'auto', marginBottom: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -209,7 +242,7 @@ function Datasets() {
       </Box>
       
       <Box sx={{ maxHeight: 'calc(100vh - 130px)', height: '100%',  width: '100%', background: 'transparent' }}>
-        <MuiTable useData = {useData(collectionWithDocuments?.documents)}/>
+        <MuiTable useData = {useData(collectionWithDocuments?.documents, deleteDocument)}/>
       </Box>
     </>
   )
