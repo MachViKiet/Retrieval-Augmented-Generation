@@ -23,11 +23,17 @@ const CollectionSchema = new mongoose.Schema(
       type: String,
       enum: ['obliged', 'option'],
       default: 'option'
-    }
+    },
+    updatedAt: { type: Date, default: Date.now }
   },
   {
     versionKey: false,
     timestamps: true
   }
 )
+
+CollectionSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
 module.exports = mongoose.model('Collection', CollectionSchema)

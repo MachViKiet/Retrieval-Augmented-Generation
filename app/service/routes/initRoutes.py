@@ -81,7 +81,7 @@ def determine_collection():
         if prediction['score'] < threshold: #Still unsure, return empty collection
             chosen_collection = ""
     # database.load_collection(chosen_collection, persist=True)
-    #del pho_queryrouter
+    del pho_queryrouter
     return jsonify({'collection': chosen_collection})
 
 @main.route("/generate/extract_meta", methods=['POST'])

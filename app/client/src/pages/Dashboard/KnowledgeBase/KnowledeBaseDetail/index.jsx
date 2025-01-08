@@ -24,22 +24,22 @@ import { getSocket } from '~/socket';
 const useData = (documents) => {
   const { id } = useParams();
 
-  function createData(id = Math.floor(Math.random() * 72658721) , name= null, chunkNumber= null, upload_date= null, updated_date= null, chunkMethod= null, enable= null, parsingStatus= null, action= null) {
-    return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action };
+  function createData(id = Math.floor(Math.random() * 72658721) , name= null, chunkNumber= null, upload_date= null, updated_date= null, chunkMethod= null, enable= null, parsingStatus= null, action= null, url = null) {
+    return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action , url};
   }
 
   if(!documents) return {rows: [], columns: [], loading : false}
   const rows = Array.isArray(documents) && documents.map((document) => {
-    let _id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state
+    let _id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state, url
     try {
-      ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state} = document )
+      ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state, url} = document )
     } catch (error) {
       console.error('Có lỗi Xảy ra khi đọc tài liệu')      
     }
-    return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['delete'] )
+    return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['see','delete'], url )
   })
 
-  const condition = (params) => { return ['processed', 'pending', 'failed'].includes(params.row.parsingStatus) }
+  const condition = (params) => { return ['processed', 'pending', 'failed', 'success'].includes(params.row.parsingStatus) }
   // const condition = () => true
   const getLinkToDocument = (params) => { return `/knowledge_bases/${id}/${params.row.id}`}
 
@@ -76,7 +76,7 @@ const useData = (documents) => {
       renderCell: renderStatus,
     },
     {
-      field: 'action', headerName: '', width: 40,
+      field: 'action', headerName: '', width: 90,
       renderCell: renderTableAction
     }
   ];

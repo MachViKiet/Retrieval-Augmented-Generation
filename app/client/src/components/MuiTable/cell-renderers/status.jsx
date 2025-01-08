@@ -17,7 +17,7 @@ import {
   useGridRootProps,
 } from '@mui/x-data-grid';
 import AutoFixNormalOutlinedIcon from '@mui/icons-material/AutoFixNormalOutlined';
-
+import CircularProgress from '@mui/material/CircularProgress';
 export const STATUS_OPTIONS = ['Open', 'PartiallyFilled', 'Filled', 'rejected', 'processed', 'success' , 'failed'];
 
 const StyledChip = styled(Chip)(({ theme }) => ({
@@ -98,10 +98,13 @@ const Status = (props) => {
   } else if (status === 'processed' || status === 'success') {
     icon = <DoneIcon className="icon" />;
   } else if (status === 'queued') {
-    icon = <SyncIcon className="icon" />;
+    // icon = <SyncIcon className="icon" />;
+    icon =  <CircularProgress size="25px" className="icon" />
 
   } else if (status === 'running') {
-    icon = <AutoFixNormalOutlinedIcon className="icon" />;
+    // icon = <AutoFixNormalOutlinedIcon className="icon" />;
+    icon =  <CircularProgress size="25px" className="icon" />
+
 
   } else if (status === 'Open') {
     icon = <InfoIcon className="icon" />;
@@ -125,7 +128,7 @@ const Status = (props) => {
   } else if (status === 'pending') {
     label = 'Chưa Xử Lý';
   } else if (status === 'queued') {
-    label = 'Đang Xử Lý';
+    label = 'Đợi Xử Lý';
   } else if (status === 'running') {
     label = 'Đang Xử Lý';
   } else if (status === 'basic') {

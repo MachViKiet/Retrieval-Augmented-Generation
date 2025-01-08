@@ -4,8 +4,9 @@ import { read_pdf } from '../../utils/read_pdf'
 const path = require('path')
 const fs = require('fs')
 import Document from '../../models/document'
+import Collection from '../../models/collection'
 const { v4: uuidv4 } = require('uuid')
-
+const { ObjectId } = require('mongodb')
 function getFileExtension(fileName) {
   return path.extname(fileName)
 }
@@ -63,10 +64,14 @@ export const uploadFile = async (req, res) => {
           metadata: null
         })
 
-        document.save()
-          .then((document) => resolve({ document }) )
-          .catch((err) => { reject(buildErrObject(422, err.message, 'Lỗi Ở Bước Save Document' + err?.message)) })
+        Collection.updateMany(
+            { _id: ObjectId(req.body?.collection)},
+            { $inc: { amount_document: 1 } }
+        ).catch((err) => { reject(buildErrObject(422, err.message, 'Lỗi Ở Bước Save Document' + err?.message)) })
 
+        document.save()
+        .then((document) => resolve({ document }) )
+        .catch((err) => { reject(buildErrObject(422, err.message, 'Lỗi Ở Bước Save Document' + err?.message)) })
       })
     })
 

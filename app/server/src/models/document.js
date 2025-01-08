@@ -60,11 +60,19 @@ const DocumentSchema = new mongoose.Schema(
     state: {
       type: String,
       default : 'pending'    
-    }
+    },
+    updatedAt: { type: Date, default: Date.now }
   },
   {
     versionKey: false,
     timestamps: true
   }
 )
+
+
+DocumentSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
 module.exports = mongoose.model('Document', DocumentSchema)

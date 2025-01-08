@@ -6,7 +6,7 @@ export function ControlledSwitches({isChecked}) {
   const [checked, setChecked] = React.useState(isChecked);
 
   const handleChange = (event) => {
-    setChecked(event.target.checked);
+    // setChecked(event.target.checked);
   };
 
   return (

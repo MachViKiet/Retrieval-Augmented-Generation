@@ -35,11 +35,18 @@ const HistorySchema = new mongoose.Schema(
     duration : {
       type: String,
       require: true
-    }
+    },
+    updatedAt: { type: Date, default: Date.now }
   },
   {
     versionKey: false,
     timestamps: true
   }
 )
+
+HistorySchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
 module.exports = mongoose.model('History', HistorySchema)

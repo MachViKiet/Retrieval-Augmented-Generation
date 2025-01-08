@@ -38,14 +38,14 @@ ENV EMAIL_ADDRESS="mvkiet21@clc.fitus.edu.vn"
 
 ENV EMAIL_PASSWORD="uboy zuwd vpjf cyjl"
 
-ENV STORAGE="http://localhost:8017"
+ENV STORAGE="https://services.fit.hcmus.edu.vn:1013"
 
 ENV CLIENT="http://client:3000"
 
 ENV KHTNCHATBOT_HOST="host.docker.internal"
 ENV KHTNCHATBOT_PORT="8000"
 
-ENV AIRFLOW_HOST="host.docker.internal"
+ENV AIRFLOW_HOST="airflowv2-airflow-webserver-1"
 ENV AIRFLOW_PORT="8080"
 
 COPY ./ /app

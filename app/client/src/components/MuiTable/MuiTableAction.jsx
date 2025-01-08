@@ -5,11 +5,15 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import SyncIcon from '@mui/icons-material/Sync';
-
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 const ACTION_LIST_DEFINE = {
     'rename': {
         icon: <DriveFileRenameOutlineOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#ac8dff' : '#2196f3', alignSelf: 'center', fontSize: '1rem' }} />,
         tooltip: 'Đổi Tên'
+    },
+    'see': {
+        icon: <RemoveRedEyeOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#fff' : '#2196f3', alignSelf: 'center', fontSize: '1rem' }} />,
+        tooltip: 'Trang Chính'
     },
     'delete': {
         icon: <DeleteOutlineOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? 'red' : 'red', alignSelf: 'center', fontSize: '1rem' }} />,
@@ -29,7 +33,7 @@ const ACTION_LIST_DEFINE = {
     },
 }
 
-const ActionContainer = ({params}) => {
+const ActionContainer = ({params, data}) => {
     return ( 
     <Box sx= {{ 
         width: '100%',
@@ -47,6 +51,9 @@ const ActionContainer = ({params}) => {
              }}
             onClick={(event) => {
                 event.stopPropagation();
+                if(type === 'see') {
+                    window.open(data?.url, '_blank', 'noopener,noreferrer');
+                }
             }}>
             <Tooltip title={ACTION_LIST_DEFINE[type].tooltip}>
                 {ACTION_LIST_DEFINE[type].icon}

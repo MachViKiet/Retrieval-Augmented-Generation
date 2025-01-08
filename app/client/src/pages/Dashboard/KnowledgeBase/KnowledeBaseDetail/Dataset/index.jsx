@@ -132,7 +132,6 @@ function DatasetDetail() {
       })
       return 
     }
-    metadata
     const data = {
       id: id,
       chunks: documentWithChunk.chunks.map((data) => data.chunk)

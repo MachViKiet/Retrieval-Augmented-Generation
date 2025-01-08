@@ -16,13 +16,13 @@ export const ProcessDocument = async (socket) => {
           socket.emit('/airflow/checkstatus', { 'file_id': req?.file_id, state: res.state })
           await saveNewDocumentToDB(req?.file_id, { state: res.state })
         }
-        await delay(5000)
+        await delay(3000)
       } while (res.state != 'success' && res.state != 'failed')
 
 
     } catch (error) {
       socket.emit('/airflow/checkstatus/error', { 'message': 'Tự Động Cập Nhật Trạng Thái Thất Bại' })
-      console.log('Ghi nhận lịch sử thất bại')
+      console.log('Ghi nhận lịch sử thất bại', error)
     }
   })
 }
