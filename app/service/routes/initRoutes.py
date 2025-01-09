@@ -276,7 +276,7 @@ def delete_file():
     if status:
         return jsonify({'status': 'success'})
     else:
-        return jsonify({'status': 'failed', 'message': msg})
+        return jsonify({'status': 'failed', 'message': msg}), 500
 
 @main.route("/chunk_file", methods=["POST"])
 @cross_origin()
