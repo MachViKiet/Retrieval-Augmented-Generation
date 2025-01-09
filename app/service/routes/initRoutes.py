@@ -272,7 +272,7 @@ def delete_file():
     document_id = request.form['document_id']
     collection_name = request.form['collection_name']
     #-------------------------------------------
-    status, msg = database.delete_document(document_id, collection_name)
+    status, msg = database.delete_document(document_id=document_id, collection_name=collection_name)
     if status:
         return jsonify({'status': 'success'})
     else:
