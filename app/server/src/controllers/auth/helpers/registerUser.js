@@ -11,7 +11,7 @@ export const registerUser = async (req = {}) => {
     name: req.name,
     email: req.email,
     password: req.password,
-    verification: v4(),
+    verification: Math.floor(10000000 + Math.random() * 90000000),
     verified: process.env.NODE_ENV !== 'production'
   })
 

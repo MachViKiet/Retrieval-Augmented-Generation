@@ -66,8 +66,8 @@ export function RecommendChatPage({
 
         <Box sx = {{...Container_Style, gap: { md: 2, xs: 1 } }}>
         {['Cho tôi biết danh sách học bổng khuyến học mới nhất',
-        'Wifi phòng học của trường KHTN là gì?',
-        'Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 'Giới thiệu trường Khoa Học Tự Nhiên'].map((question, index) => {
+        'Giới thiệu trường Khoa Học Tự Nhiên năm 2025',
+        'Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 'Giới Thiệu về bộ môn Hệ Thống Thông Tin'].map((question, index) => {
             return (
             <Box key = {index} sx = {{ 
                 flex:  { xs: "0 1 140px", md: "0 1 180px" },
@@ -101,12 +101,12 @@ export function RecommendChatPage({
             id: '12310',
             key: 'Nội quy trường học',
             icon: <ViewStreamIcon/>,
-            question: 'Giới Thiệu Khoa Công Nghệ thông Tin'
+            question: 'Khái quát nội quy trường học Khoa Học Tự Nhiên năm 2025'
             },{
             id: '12315',
             key: 'Thông tin sổ tay sinh viên',
             icon: <ContactSupportOutlinedIcon/>,
-            question: 'Khái quát nội quy trường học Khoa Học Tự Nhiên'
+            question: 'Tóm Tắt Thông Tin Sổ Tay Sinh Viên Năm 2025'
             },{
             id: '12314',
             key: 'Chính Sách Học Bổng',
@@ -116,17 +116,17 @@ export function RecommendChatPage({
             id: '12326',
             key: 'Thời Khóa Biểu',
             icon: <CalendarMonthOutlinedIcon/>,
-            question: 'Chính Sách Học Bổng Mới Nhất 2024'
+            question: 'Lịch Cập Nhật Thời Khóa Biểu Mới Nhất Học Kì 2 2025'
             },{
             id: '12216',
             key: 'Thông Tin Sự Kiện',
             icon: <FestivalOutlinedIcon/>,
-            question: 'Thông Tin Sự Kiện'
+            question: 'Thông Tin Sự Kiện Mới Nhất Năm 2025'
             },{
             id: '13316',
             key: 'Thông Tin Tuyển Dụng',
             icon: <PaymentsOutlinedIcon/>,
-            question: 'Thông Tin Tuyển Dụng'
+            question: 'Thông Tin Tuyển Dụng Gần Nhất'
             }].map((data) => {
             return (
                 <Button key = {data.id} sx = {(theme) => ({ 

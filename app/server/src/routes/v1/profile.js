@@ -11,6 +11,7 @@ import validateUpdateProfile from '../../controllers/profile/validators/validate
 import {
   getProfile,
   updateProfile,
+  dashboardData,
   verifyToken
 } from '../../controllers/profile'
 
@@ -34,6 +35,14 @@ router.patch(
   trimRequest.all,
   validateUpdateProfile,
   updateProfile
+)
+
+router.get(
+  '/dashboard',
+  requireAuth,
+  roleAuthorization(['administrator', 'researcher', 'acadamic_administrator']),
+  trimRequest.all,
+  dashboardData
 )
 
 module.exports = router

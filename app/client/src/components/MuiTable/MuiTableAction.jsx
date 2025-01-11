@@ -49,13 +49,13 @@ const ActionContainer = ({params, data}) => {
                     transform: 'scale(0.9)'
                 }
              }}
-            onClick={(event) => {
+            onClick={async (event) => {
                 event.stopPropagation();
-                if(type?.action) type?.action(data)
+                if(type?.action) { await type?.action(data) }
 
             }}>
-            <Tooltip title={ACTION_LIST_DEFINE[type?.code || type].tooltip}>
-                {ACTION_LIST_DEFINE[type?.code || type].icon}
+            <Tooltip title={ACTION_LIST_DEFINE[type?.code || type]?.tooltip}>
+                {ACTION_LIST_DEFINE[type?.code || type]?.icon}
             </Tooltip>
         </Box>))} 
     </Box>

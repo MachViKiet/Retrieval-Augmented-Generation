@@ -11,8 +11,7 @@ export const checkPermissions = async ({ id = '', roles = [] }, next) => {
     if (!result) {
       throw buildErrObject(404, 'USER_NOT_FOUND')
     }
-
-    if (roles.indexOf(result.role) > -1) {
+    if (roles.indexOf(result.role.toLowerCase()) > -1) {
       return next()
     }
     throw buildErrObject(401, 'UNAUTHORIZED')

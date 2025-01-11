@@ -398,7 +398,6 @@ export function ChatGenerator() {
         noticeHandler.add({
           status: 'success',
           message: 'Xóa cuộc hội thoại thành công !',
-          auto: false
         })
         if (currentChatSession?._id == removed_session?._id) {
           setCurrentChatSession(null)

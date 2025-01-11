@@ -5,6 +5,8 @@ RUN mkdir -p /opt/node_modules
 COPY ./package.json /app
 COPY ./package-lock.json /app
 
+RUN npm cache clean --force
+
 RUN npm install --force
 
 COPY ./ /app

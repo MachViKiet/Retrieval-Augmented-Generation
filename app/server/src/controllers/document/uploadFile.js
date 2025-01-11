@@ -60,12 +60,12 @@ export const uploadFile = async (req, res) => {
           chunks: chunks,
           amount_chunking: chunks?.length,
           document_type: 'Upload',
-          url: `${process.env.STORAGE}/documents?name=${id_in_storage}-${filename}${extensionFile}`,
+          url: `${process.env.STORAGE}/api/documents?name=${id_in_storage}-${filename}${extensionFile}`,
           metadata: null
         })
 
         Collection.updateMany(
-            { _id: ObjectId(req.body?.collection)},
+            { _id: new ObjectId(req.body?.collection)},
             { $inc: { amount_document: 1 } }
         ).catch((err) => { reject(buildErrObject(422, err.message, 'Lỗi Ở Bước Save Document' + err?.message)) })
 

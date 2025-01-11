@@ -14,7 +14,8 @@ export const initMongo = async () => {
   // Options object
   console.log('\n')
   console.log('\x1b[33m%s\x1b[0m', 'Connecting to MongoDB ...')
-  return await mongoose.connect(mongoURI)
+  const connectToMongoDB = async () => {
+    await mongoose.connect(mongoURI)
     .then(() => {
       console.log('\x1b[32m%s\x1b[0m', '*    MongoDB database connection established successfully')
       console.log('\x1b[32m%s\x1b[0m', `*    NODE_ENV: ${process.env.NODE_ENV}`)
@@ -22,9 +23,18 @@ export const initMongo = async () => {
       loadModels()
     })
     .catch(( err) => {
-      console.log('\x1b[31m%s\x1b[0m', '[Error] Cannot connect to MongoDB')
+      console.error('\x1b[31m%s\x1b[0m', '[Error] Cannot connect to MongoDB:', err.message);
+      console.log('\x1b[33m%s\x1b[0m', 'Retrying connection in 5 seconds...');
+      setTimeout(connectToMongoDB, 5000); // Thử kết nối lại sau 5 giây
       throw new Error(err)
     })
+  }
+  mongoose.connection.on('disconnected', () => {
+    console.warn('\x1b[33m%s\x1b[0m', '[Warning] MongoDB connection lost. Attempting to reconnect...');
+    connectToMongoDB();
+  });
+  await connectToMongoDB()
+  return
 }
 
 export default initMongo

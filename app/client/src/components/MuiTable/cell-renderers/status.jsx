@@ -99,11 +99,11 @@ const Status = (props) => {
     icon = <DoneIcon className="icon" />;
   } else if (status === 'queued') {
     // icon = <SyncIcon className="icon" />;
-    icon =  <CircularProgress size="25px" className="icon" />
+    icon =  <CircularProgress size="12px" className="icon" />
 
   } else if (status === 'running') {
     // icon = <AutoFixNormalOutlinedIcon className="icon" />;
-    icon =  <CircularProgress size="25px" className="icon" />
+    icon =  <CircularProgress size="12px" className="icon" />
 
 
   } else if (status === 'Open') {

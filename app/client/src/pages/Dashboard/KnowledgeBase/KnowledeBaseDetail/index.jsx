@@ -15,14 +15,12 @@ import BugReportOutlinedIcon from "@mui/icons-material/BugReportOutlined";
 import AdjustOutlinedIcon from "@mui/icons-material/AdjustOutlined";
 import { formatTime } from '~/utils/GetTime';
 import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import InputFileUpload, { VisuallyHiddenInput } from '~/components/Mui/InputFileUpload';
+import { VisuallyHiddenInput } from '~/components/Mui/InputFileUpload';
 import { useDocument } from '~/apis/Document';
 import { Airflow } from '~/socket/Airflow';
 import { getSocket } from '~/socket';
-import { useKHTN_Chatbot } from '~/apis/KHTN_Chatbot';
 
-const useData = (documents, deleteDocument) => {
+const useData = (documents, deleteDocument = null) => {
   const { id } = useParams();
   function createData(id = Math.floor(Math.random() * 72658721) , name= null, chunkNumber= null, upload_date= null, updated_date= null, chunkMethod= null, enable= null, parsingStatus= null, action= null, url = null) {
     return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action , url};
@@ -41,7 +39,7 @@ const useData = (documents, deleteDocument) => {
     return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), 
     formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, 
     [{code: 'see', action: directUrl},
-      {code: 'detele', action: deleteDocument}], url )
+      {code: 'delete', action: deleteDocument}], url )
   })
 
   const condition = (params) => { return ['processed', 'pending', 'failed', 'success'].includes(params.row.parsingStatus) }
@@ -98,7 +96,6 @@ function Datasets() {
   const [loadTable, setLoadTable] = useState(false)
 
   const socket = getSocket();
-  const KHTN_Chatbot =  useKHTN_Chatbot()
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
@@ -199,9 +196,13 @@ function Datasets() {
   }
 
   const deleteDocument = async (data) => {
+    console.log(data)
     if(data?.id){
+      // const formData = new FormData();
+      // formData.append('id', data.id);
+      // console.log(formData)
       const deleteEvent = processHandler.add('#deleteDocument')
-      await KHTN_Chatbot.deleteDocument({id: data?._id})
+      await useDocument.deleteDocument({id: data.id} , token)
       .then(async () => { 
         noticeHandler.add({ status: 'success', message: 'Xóa Tài Liệu Thành Công' })
         await refreshData()
@@ -242,7 +243,7 @@ function Datasets() {
       </Box>
       
       <Box sx={{ maxHeight: 'calc(100vh - 130px)', height: '100%',  width: '100%', background: 'transparent' }}>
-        <MuiTable useData = {useData(collectionWithDocuments?.documents, deleteDocument)}/>
+        <MuiTable loading = {loadTable} useData = {useData(collectionWithDocuments?.documents, deleteDocument)}/>
       </Box>
     </>
   )

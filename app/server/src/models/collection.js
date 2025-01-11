@@ -16,8 +16,8 @@ const CollectionSchema = new mongoose.Schema(
       default: '0'
     },
     amount_document: {
-      type: String,
-      default: '0'
+      type: Number,
+      default: 0
     },
     type: {
       type: String,

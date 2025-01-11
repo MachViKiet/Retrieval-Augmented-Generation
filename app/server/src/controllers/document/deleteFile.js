@@ -3,7 +3,7 @@ import { deleteDocumentAndUpdateCollection } from './helper/deleteDocumentAndUpd
 
 export const deleteFile = async (req, res) => {
   try {
-    const id = await isIDGood(req.body.id)
+    const id = req.body?.id
     res.status(200).json(await deleteDocumentAndUpdateCollection(id))
   } catch (error) {
     handleError(res, error)

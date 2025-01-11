@@ -23,17 +23,17 @@ router.patch('/', requireAuth, trimRequest.all, updateDocument)
 
 router.post('/process', requireAuth, trimRequest.all, processDocument)
 
-router.delete(
-  '/',
+router.post(
+  '/delete',
   requireAuth,
-  roleAuthorization(['administrator', 'researcher']),
+  roleAuthorization(['administrator', 'academic_administrator']),
   trimRequest.all,
   deleteFile
 )
 
 router.get('/', async (req, res) => {
-  const filePath = path.join(process.cwd(), '/public/storage', `${req.query.name}`)
-
+const filePath = path.join(process.cwd(), '/public/storage', `${req.query.name}`)
+console.log('getfile: ', filePath)
   try {
     if (fs.existsSync(filePath)) {
       res.setHeader('Content-Type', 'application/pdf')

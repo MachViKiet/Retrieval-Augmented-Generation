@@ -5,6 +5,8 @@ import React, { useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { BarChart } from '@mui/x-charts/BarChart';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import { useSelector } from 'react-redux';
+import { formatTime } from '~/utils/GetTime'
 // import Hidden from '~/components/Page/Hidden';
 // import Skeleton from '@mui/material/Skeleton';
 const Container_Style = {
@@ -19,7 +21,7 @@ const Block = styled(Box) (({theme}) => ({
   // backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
   //   : 'linear-gradient(135deg, #e2e8ff 0%, #6994d9 100%)',
   backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%) !important' 
-            :'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)!important',
+            :'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
   position: 'relative', textAlign: 'start',
   color: theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
   boxShadow: '0px 2px 4px rgba(80, 80, 80, 0.25), 0px 2px 4px rgba(80, 80, 80, 0.1)',
@@ -28,13 +30,20 @@ const Block = styled(Box) (({theme}) => ({
 
 function Dashboard() {
   const {processHandler, dashboard } = useOutletContext();
+  const [data, setData] = useState(null)
   const navigate = useNavigate()
+  const token = useSelector(state => state.auth.token)
   useEffect(() => {
     document.title = 'Chatbot - Trang Chủ';
     dashboard.navigate.active(234)
 
     return () => ( dashboard.navigate.active('#') )
-  })
+  }, [])
+
+  useEffect(() => {
+    const dataAPI = useProfile.getDashboard(token)
+    setData(dataAPI)
+  }, [token])
 
   return (
     // <Hidden></Hidden>
@@ -60,10 +69,10 @@ function Dashboard() {
              }}>
                 <Block sx ={{  height: { xs: "140px", md: "160px" }, padding: '20px' }}>
                   <Typography>Người Sử Dụng</Typography>
-                  <Typography sx = {{ fontSize: '28px !important' }}> 14 Users</Typography>
+                  <Typography sx = {{ fontSize: '28px !important' }}> {data?.user || '#'} Users</Typography>
                 </Block>
-                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
-                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 27/12/2024</Typography>
+                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'linear-gradient(135deg, rgb(245 247 250 / 0%) 0%, rgb(40 40 40 / 0%) 100%) !important', boxShadow: 'none !important'  }}>
+                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lúc: {data?.date ? formatTime(data?.date) : '#'}</Typography>
                 </Block>
 
             </Box>
@@ -75,10 +84,10 @@ function Dashboard() {
              }}>
                 <Block sx ={{  height: { xs: "140px", md: "160px" }, padding: '20px' }}>
                   <Typography>Documents</Typography>
-                  <Typography sx = {{ fontSize: '28px !important' }}>643 Files</Typography>
+                  <Typography sx = {{ fontSize: '28px !important' }}>{data?.document || '#'} Files</Typography>
                 </Block>
-                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
-                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024</Typography>
+                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'linear-gradient(135deg, rgb(245 247 250 / 0%) 0%, rgb(40 40 40 / 0%) 100%) !important', boxShadow: 'none !important'  }}>
+                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lúc: {  data?.date ? formatTime(data?.date) : '#'}</Typography>
                 </Block>
 
             </Box>
@@ -90,10 +99,10 @@ function Dashboard() {
              }}>
                 <Block sx ={{  height: { xs: "140px", md: "160px" }, padding: '20px' }}>
                   <Typography>Lượt Sử dụng</Typography>
-                  <Typography sx = {{ fontSize: '28px !important' }}>763 lần</Typography>
+                  <Typography sx = {{ fontSize: '28px !important' }}>{data?.session || '#'} lần</Typography>
                 </Block>
-                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
-                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024</Typography>
+                <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: 0, backgroundImage: 'linear-gradient(135deg, rgb(245 247 250 / 0%) 0%, rgb(40 40 40 / 0%) 100%) !important', boxShadow: 'none !important'  }}>
+                  <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lúc: {data?.date ? formatTime(data?.date) : '#'}</Typography>
                 </Block>
 
             </Box>
@@ -102,14 +111,19 @@ function Dashboard() {
         <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative' }}>
           <Block sx = {{ width: '100%', height: 'fit-content', paddingY: '32px !important' , backgroundImage: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%) !important' 
             :'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important'}}>
-            <SimpleBarChart/>
+            <SimpleBarChart data = {data}/>
           </Block>
           
-          <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: '20px', backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
-            
-            <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024 </Typography>
+          <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: '20px', backgroundImage: 'linear-gradient(135deg, rgb(245 247 250 / 0%) 0%, rgb(40 40 40 / 0%) 100%) !important', boxShadow: 'none !important'  }}>
+            <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lúc: {data?.date ? formatTime(data?.date) : '#'} </Typography>
           </Block>
         </Box >
+
+        <Box sx = {{
+          width: '100%',
+        }}>
+          <Typography sx ={{ width: '100%', fontSize: '8px', textAlign: 'left', color: theme => theme.pallete.text.secondary }}>Tính năng đang được thử nghiệm, dữ liệu không được cập nhật theo thời gian thực</Typography>
+        </Box>
 
         {/* <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative', paddingBottom: '20px'}}>
           <Block sx = {{ width: '100%', height: 'fit-content', paddingY: '32px !important'}}>
@@ -118,7 +132,7 @@ function Dashboard() {
 
           <Block sx = {{  padding: 1, paddingX: 2, width: 'fit-content', position: 'absolute !important', bottom: '20px', backgroundImage: 'none !important', boxShadow: 'none !important'  }}>
             
-            <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lần cuối: 25/12/2024 </Typography>
+            <Typography sx = {{ width: '100%', textAlign: 'end', fontSize: '14px!important' }} ><RotateLeftIcon/> Cập nhật lúc: {data?.date ? formatTime(data?.date) : '#'} </Typography>
           </Block>
         </Box > */}
 
@@ -141,7 +155,7 @@ const xLabels = [
   'N.Quy',
 ];
 
-function SimpleBarChart() {
+function SimpleBarChart({data}) {
   const BarChartCustom = styled(BarChart) (({theme}) => ({
     '--mui-palette-text-primary': theme.palette.text.secondary,
     width: '100%'
@@ -160,6 +174,7 @@ function SimpleBarChart() {
   );
 }
 import { PieChart } from '@mui/x-charts/PieChart';
+import { useProfile } from '~/apis/Profile';
 export function BasicPie() {
   const PieChartCustom = styled(PieChart) (({theme}) => ({
     '--mui-palette-text-primary': '#000',

@@ -1,15 +1,14 @@
 const domain = import.meta.env.VITE_SERVER
 
-export const deleteDocument = async (formData, token = null) => {
-	const url = `${domain}/documents/delete`;
+export const getDashboard = async (token = null) => {
+	const url = `${domain}/dashboard`;
 	const structure = {
-		method: 'POST',
+		method: 'GET',
 		headers: {
 		  'Content-Type': 'application/json',
-      		'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`
 		},
-      body: JSON.stringify(formData)
-	}
+	  }
 
 	const res = await fetch(url, structure)
 		.then(async (response) => {

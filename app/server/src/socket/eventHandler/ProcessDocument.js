@@ -14,7 +14,13 @@ export const ProcessDocument = async (socket) => {
         res = await airflow.CheckStatus(req?.dag_id, req?.dag_run_id)
         if (res?.state != req?.state) {
           socket.emit('/airflow/checkstatus', { 'file_id': req?.file_id, state: res.state })
-          await saveNewDocumentToDB(req?.file_id, { state: res.state })
+          let new_document = {}
+          if( res.state == 'success' ) {
+            new_document = { state: res.state, isactive: true }
+          } else {
+            new_document = { state: res.state, isactive: false }
+          }
+          await saveNewDocumentToDB(req?.file_id, new_document)
         }
         await delay(3000)
       } while (res.state != 'success' && res.state != 'failed')

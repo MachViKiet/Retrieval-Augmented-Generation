@@ -12,8 +12,6 @@ services:
     networks:
       - luanvan-network
     restart: always  # Tùy chọn để container tự khởi động lại nếu dừng bất ngờ
-    
-
   server:
     build:
       dockerfile: Dockerfile.prod
@@ -52,19 +50,6 @@ services:
     networks:
       - luanvan-network
       - airflowv2_default
-
-  # service:
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: ./service # đường dẫn đến folder client
-  #   container_name: luanvan-service
-  #   ports:
-  #     - "5000:8080"
-  #   stdin_open: true  # Tương thích với '-it', cho phép tương tác với container
-  #   tty: true         # Tương thích với '-it', giữ terminal mở
-  #   restart: unless-stopped  # Tự động khởi động lại container nếu nó dừng bất ngờ
-  #   networks:
-  #     - luanvan-network
 
   nginx:
     image: nginx:1.18.0

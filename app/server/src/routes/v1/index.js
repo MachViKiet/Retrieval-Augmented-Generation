@@ -22,7 +22,7 @@ router.get('/api/admin', (req, res) => {
   res.render('index')
 })
 
-router.get('/proxy', async (req, res) => {
+router.get('/api/proxy', async (req, res) => {
   const targetUrl = req.query?.url
 
   if (!targetUrl) {
@@ -49,7 +49,7 @@ router.get('/proxy', async (req, res) => {
         const originalUrl = $(element).attr(attr)
         if (originalUrl) {
           const absoluteUrl = new URL(decodeURI(originalUrl), decodeURI(targetUrl)).href // Xử lý URL tương đối thành tuyệt đối
-          const proxiedUrl = `/proxy?url=${absoluteUrl}`
+          const proxiedUrl = `/api/proxy?url=${absoluteUrl}`
           $(element).attr(attr, proxiedUrl)
         }
       })

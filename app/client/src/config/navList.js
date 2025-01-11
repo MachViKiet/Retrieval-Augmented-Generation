@@ -27,12 +27,12 @@ const navList_1 = [
   },
 ];
 const navList_2 = [
-  {
-    id: 355,
-    text: "Cài Đặt",
-    icon: SettingsOutlinedIcon,
-    link: "/setting",
-  },
+  // {
+  //   id: 355,
+  //   text: "Cài Đặt",
+  //   icon: SettingsOutlinedIcon,
+  //   link: "/setting",
+  // },
   {
     id: 242,
     text: "Quản Lý Mô Hình",
