@@ -17,8 +17,6 @@ services:
       dockerfile: Dockerfile.prod
       context: ./server # đường dẫn đến folder server
     container_name: luanvan-server
-    ports:
-      - "8017:8017"
     # network_mode: host
     networks:
       - luanvan-network
@@ -40,8 +38,6 @@ services:
     container_name: luanvan-client
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    ports:
-      - "3000:3000"
     depends_on:
       - server  # Đảm bảo MongoDB đã sẵn sàng trước khi chạy Express
     stdin_open: true  # Tương thích với '-it', cho phép tương tác với container

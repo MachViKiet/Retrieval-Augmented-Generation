@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { BarChart } from '@mui/x-charts/BarChart';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
@@ -20,7 +20,7 @@ const Block = styled(Box) (({theme}) => ({
   width: '100%', borderRadius: '10px',
   // backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
   //   : 'linear-gradient(135deg, #e2e8ff 0%, #6994d9 100%)',
-  backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%) !important' 
+  backgroundImage: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #6e6e6e4a 0%, #02041a91 100%)' 
             :'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
   position: 'relative', textAlign: 'start',
   color: theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
@@ -41,8 +41,9 @@ function Dashboard() {
   }, [])
 
   useEffect(() => {
-    const dataAPI = useProfile.getDashboard(token)
-    setData(dataAPI)
+    useProfile.getDashboard(token).then((dataAPI) => {
+      setData(dataAPI)
+    })
   }, [token])
 
   return (
@@ -122,7 +123,7 @@ function Dashboard() {
         <Box sx = {{
           width: '100%',
         }}>
-          <Typography sx ={{ width: '100%', fontSize: '8px', textAlign: 'left', color: theme => theme.pallete.text.secondary }}>Tính năng đang được thử nghiệm, dữ liệu không được cập nhật theo thời gian thực</Typography>
+          <Typography sx ={{ width: '100%', fontSize: '8px', textAlign: 'left', color: theme => theme.palette.text.secondary }}>Tính năng đang được thử nghiệm, dữ liệu không được cập nhật theo thời gian thực</Typography>
         </Box>
 
         {/* <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 }, position: 'relative', paddingBottom: '20px'}}>

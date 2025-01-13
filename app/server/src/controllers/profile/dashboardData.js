@@ -17,4 +17,4 @@ export const dashboardData = async (req, res) => {
   }
 }
 
-export default updateProfile
+export default dashboardData

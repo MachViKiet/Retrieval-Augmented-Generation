@@ -27,4 +27,4 @@ export const getDataToDashboard = async (id = '') => {
   return result
 }
 
-export default getProfileFromDB
+export default getDataToDashboard

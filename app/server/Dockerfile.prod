@@ -20,26 +20,27 @@ RUN npm i ts-node -D
 
 COPY ./ /app
 
-ENV PROTOCOL="https"
 
 ENV APP_HOST="localhost"
-
 ENV APP_PORT="8017"
-
 ENV APP_PROTOCOL="https"
 
 ENV NODE_ENV="production"
 
-# ENV MONGODB_URI="mongodb+srv://machkiet252003:i1SsJiOcJ3aydIqB@userstorages.6akwp.mongodb.net/luan_van_2024"
 ENV MONGODB_URI="mongodb://mongo:27017/luan_van_2024"
+ENV DATABASE_NAME=""
 
 ENV JWT_SECRET="Machvikietdeptraihocgioianhvan"
-
 ENV JWT_EXPIRATION_IN_MINUTES="4320"
 
 ENV EMAIL_ADDRESS="mvkiet21@clc.fitus.edu.vn"
-
 ENV EMAIL_PASSWORD="uboy zuwd vpjf cyjl"
+
+ENV KHTNCHATBOT_HOST="host.docker.internal"
+ENV KHTNCHATBOT_PORT="5000"
+
+ENV AIRFLOW_HOST="host.docker.internal"
+ENV AIRFLOW_PORT="8080"
 
 ENV STORAGE="http://localhost:8017"
 
@@ -49,4 +50,4 @@ EXPOSE 8017
 
 COPY . .
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "deploy"]

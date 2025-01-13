@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
@@ -82,7 +82,7 @@ function AppLayout() {
         }).finally(() => processHandler.remove('#verifyToken', eventID))
         .catch(() => noticeHandler.add({
           status: 'error',
-          message: 'Server không hoạt động !'
+          message: 'Tự động đăng nhập thất bại !'
         }))
       }
     }

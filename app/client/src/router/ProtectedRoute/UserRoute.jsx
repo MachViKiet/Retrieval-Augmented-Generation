@@ -34,7 +34,7 @@ const UserRoute = ({ children }) => {
         }).catch((error) => {
           
           processHandler.remove('#verifyToken', eventID)
-          console.error("Server không hoạt động!\n", error)
+          console.error("Tự động đăng nhập thất bại!\n", error)
           navigate('/')
         })
       } else {
