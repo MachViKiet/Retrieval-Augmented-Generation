@@ -13,7 +13,7 @@ import { useCollection } from '~/apis/Collection'
 import { formatTime } from '~/utils/GetTime'
 
 const Header = styled(Box) (({theme}) => ({
-  background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041ad1 100%)' : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)', width: '100%', 
+  background: theme.palette.mode == 'dark' ? 'rgb(45, 50, 90)' : 'rgb(0, 81, 129)', width: '100%', 
   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', height: theme.spacing(6), 
   position: 'absolute', right: 0, top: '0', borderRadius: '14px 14px 0 0 ', zIndex: 1, paddingLeft: theme.spacing(4) }))
 

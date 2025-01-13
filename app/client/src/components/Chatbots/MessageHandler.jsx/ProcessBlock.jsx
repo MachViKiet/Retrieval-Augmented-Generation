@@ -4,7 +4,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { motion } from "framer-motion"
 import { ChatDisplay_Style, ChatMessage } from './ChatDisplay';
 import { BubbleLeft } from '../MessageEffect/BubbleLeft';
-
+import botAvatar from '~/assets/botAvatar.png'
 function ProcessBlock({messageHandler, sx = {}}) {
   return (
     messageHandler.isProcess && <>
@@ -54,7 +54,7 @@ function ProcessBlock({messageHandler, sx = {}}) {
             </>
           <BubbleLeft/>
         </ChatMessage>
-        <Avatar sx = {{ display: { xs: 'none', md: 'block' } }} alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
+        <Avatar sx = {{ display: { xs: 'none', md: 'block' } }} alt="ChatBot" src={botAvatar} />
       </Box>
     </>
   )

@@ -7,6 +7,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import { useSelector } from 'react-redux';
 import { formatTime } from '~/utils/GetTime'
+import { Block as CustomBlock } from '~/components/Mui/Block';
 // import Hidden from '~/components/Page/Hidden';
 // import Skeleton from '@mui/material/Skeleton';
 const Container_Style = {
@@ -48,7 +49,7 @@ function Dashboard() {
 
   return (
     // <Hidden></Hidden>
-    <Box sx ={{ width: '100%', height: '100%', padding: 3 }}>
+    <CustomBlock sx ={{ width: '100%', height: '100%', padding: 3, background: theme => theme.palette.mode == 'dark' ? 'rgb(255 255 255 / 17%)' : 'rgb(234, 245, 255)' }}>
         <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 0.5 }}>
           <Typography variant='h1' 
             onClick = {() => { 
@@ -139,7 +140,7 @@ function Dashboard() {
 
         {/* <Skeleton variant="rounded" width={'100%'} height={360} /> */}
         {/* <Skeleton variant="rounded" width={'100%'} height={360} /> */}
-    </Box>
+    </CustomBlock>
   )
 }
 

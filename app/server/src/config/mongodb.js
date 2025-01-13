@@ -15,7 +15,10 @@ export const initMongo = async () => {
   console.log('\n')
   console.log('\x1b[33m%s\x1b[0m', 'Connecting to MongoDB ...')
   const connectToMongoDB = async () => {
-    await mongoose.connect(mongoURI)
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
     .then(() => {
       console.log('\x1b[32m%s\x1b[0m', '*    MongoDB database connection established successfully')
       console.log('\x1b[32m%s\x1b[0m', `*    NODE_ENV: ${process.env.NODE_ENV}`)

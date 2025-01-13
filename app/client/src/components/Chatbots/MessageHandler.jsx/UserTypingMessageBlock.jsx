@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { BubbleLeft } from '../MessageEffect/BubbleLeft';
 import { ChatMessage, ChatDisplay_Style } from './ChatDisplay';
 import { Avatar, Box } from '@mui/material';
+import botAvatar from '~/assets/botAvatar.png'
 
 function UserTypingMessageBlock({messageHandler}) {
   return ( messageHandler?.stream_state && 
@@ -27,7 +28,7 @@ function UserTypingMessageBlock({messageHandler}) {
                 </ReactMarkdown> }
             <BubbleLeft xs = {{ display: { xs: 'none', md: 'block' } }}/>
           </ChatMessage>
-          <Avatar xs = {{ display: { xs: 'none', md: 'block' } }} alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
+          <Avatar xs = {{ display: { xs: 'none', md: 'block' } }} alt="ChatBot" src={botAvatar} />
         </Box>
     </motion.div>
   )

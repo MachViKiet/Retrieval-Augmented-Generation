@@ -136,7 +136,7 @@ export function Profile() {
             Chỉnh Sửa Thông Tin Cá Nhân</Typography>
         </Box>
 
-        <Box sx = {{ width: '100%', backgroundColor: theme => theme.palette.mode == 'dark' ? '#3c5784' : '#fff', justifyContent: 'space-evenly', padding: 4, paddingBottom: 2, borderRadius: '15px', minWidth: '788px' }} component='form'>
+        <Box sx = {{ width: '100%', backgroundColor: theme => theme.palette.mode == 'dark' ? 'rgb(73 96 135)' : '#fff', justifyContent: 'space-evenly', padding: 4, paddingBottom: 2, borderRadius: '15px', minWidth: '788px' }} component='form'>
 
           <Grid container spacing={2} sx = {{ width: '100%', height: 'fit-content' }}>
 

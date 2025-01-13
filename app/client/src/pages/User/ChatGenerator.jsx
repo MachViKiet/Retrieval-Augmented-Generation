@@ -105,7 +105,7 @@ function NewChatModal({ modalHandler = null }) {
 
 const ChatWindow = styled(Box)(({theme}) => ({ position: 'absolute', bottom: theme.spacing(0), padding: theme.spacing(2), paddingBottom: theme.spacing(1), paddingTop: theme.spacing(0), right: theme.spacing(0), width: '100%', borderRadius: '15px' }))
 
-const BlockStyle = { bgColor_dark: 'linear-gradient(30deg, #ffffff2e 0%, #0352c038 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #99c4ff 100%)' }
+const BlockStyle = { bgColor_dark: 'linear-gradient(30deg, #ffffff2e 0%, #0352c038 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #b3d3fd 100%)' }
 const Backdrop = styled(Box) (() => ({
   background: '#0000008c', height: '100%', width: '100%', right: 0, top: '-72px', borderRadius: '15px',
   position: 'absolute', transform: 'scale(1)', transition: '0.5s all ease',  zIndex: 5, display: 'none'
@@ -487,7 +487,7 @@ export function ChatGenerator() {
       <Grid container  spacing={2} sx = {{ height: '100%', '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
 
         <Grid  size={{ xs: 0, md: 2 }} sx = {{ height: '100%' }}>  
-          <Box sx = {{ display: 'flex', flexDirection: 'column',paddingTop: '55px', height: '100%'}}>
+          <Box sx = {{ display: 'flex', flexDirection: 'column',paddingTop: '55px'}}>
             <Block sx = {{ 
               padding: 1, paddingLeft: 0.5, maxHeight: '350px',
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
@@ -495,30 +495,19 @@ export function ChatGenerator() {
             }}>
               
               <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
-              <Typography component='p' sx = {{ fontWeight: '800' }}>Các câu hỏi phổ biến</Typography>
+              <Typography component='p' sx = {{ fontWeight: '800' }}>Giới Thiệu Chung</Typography>
             </Box>
 
-            <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 0.2 }}> {
-              [].map((session, index) => (
-                <Box key = {index*735921} 
-                  sx ={{ width: '100%', 
-                    background: '#00000024', 
-                    color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000',
-                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
-                    '&:hover': { background: theme => theme.palette.mode == 'dark' ? '#00000045' : '#818fb033', color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000' }
-                  }}
-                    onClick = {async (e) => await sessionButtonClick(session)}>
-                  <Box >
-                    <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '400 !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_name}</Typography>
-                  </Box>
-                </Box> ))}
-
-                {
-                  ['','','', ''].map((_session, index) => (
-                    <Skeleton key={ index * 82710 } variant="rounded" height={48} sx = {{ marginBottom: 2, width: '100%', borderRadius: '10px' }} />
-                  ))
-                } 
-
+            <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 0.2 }}> 
+              <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}> Dự án cung cấp một công cụ tiện ích và hiệu quả cho học sinh, sinh viên, giảng viên trong việc tìm kiếm các thông tin quan trọng liên quan đến : </Typography>
+              <Box sx = {{ padding: '5px' }} component='ul'>
+                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Tuyển Dụng</Typography>
+                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Sự Kiện</Typography>
+                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Học Bổng</Typography>
+                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Nội Quy Trường Học</Typography>
+                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Cập Nhật Thời Khóa Biểu</Typography>
+              </Box>
+              <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}>Bằng cách tích hợp công nghệ AI và học máy, chatbot không chỉ giúp tiết kiệm thời gian mà còn nâng cao trải nghiệm người dùng trong môi trường học đường.</Typography>
             </Box>
             </Block>
           </Box>
@@ -574,7 +563,6 @@ export function ChatGenerator() {
               <Box sx = {{ 
                 borderRadius: '15px', 
                 background: theme => theme.palette.primary.main,
-                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
               }}>
                 <Box sx = {{ 
                   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',

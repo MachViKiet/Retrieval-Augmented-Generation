@@ -80,7 +80,7 @@ export function RecommendChatPage({
                 padding: 2, position: 'relative', textAlign: 'start',
                 color: theme => theme.palette.mode == 'dark' ? '#ffff' : 'var(--mui-palette-primary-main)',
                 boxShadow: theme => theme.palette.mode == 'dark' ? 
-                '0px 2px 4px rgb(255,255,255,0.25), 0px 2px 4px rgb(255,255,255 ,0.1)' : '0px 2px 4px rgb(0 ,0 ,0 , 0.25), 0px 2px 4px rgb(0, 0, 0 ,0.1)',
+                '0px 1px 1px rgb(255,255,255,0.25), 0px 1px 1px rgb(255,255,255 ,0.1)' : '0px 2px 4px rgb(0 ,0 ,0 , 0.25), 0px 2px 4px rgb(0, 0, 0 ,0.1)',
                 cursor: 'pointer',
                 '&:hover': {
                     color: '#fff',
@@ -139,7 +139,7 @@ export function RecommendChatPage({
                     paddingX: 1,
                     borderRadius: '10px',
                     boxShadow: theme => theme.palette.mode == 'dark' ? 
-                    '0px 2px 4px rgb(255,255,255,0.1), 0px 2px 4px rgb(255,255,255 ,0.1)' : '0px 2px 4px rgb(0 ,0 ,0 , 0.25), 0px 2px 4px rgb(0, 0, 0 ,0.1)',
+                    '0px 1px 1px rgb(255,255,255,0.1), 0px 1px 1px rgb(255,255,255 ,0.1)' : '0px 2px 4px rgb(0 ,0 ,0 , 0.25), 0px 2px 4px rgb(0, 0, 0 ,0.1)',
                     "&:hover": {
                         background: theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #153a6b 0%, #02041a91 100%)' 
                             : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)',
