@@ -47,7 +47,7 @@ class ChatModel:
             import google.generativeai as genai
 
             genai.configure(api_key=os.getenv("GEMINI_APIKEY"))
-            self.model = genai.GenerativeModel("gemini-1.5-flash")
+            self.model = genai.GenerativeModel(model_id)
             # response = model.generate_content("Explain how AI works", )
             # print(response.text)
 
