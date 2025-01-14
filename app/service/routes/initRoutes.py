@@ -175,11 +175,14 @@ def search():
             collection=chosen_collection, 
             query_embeddings=[encoder.embedding_function("query: " + list(q.keys())[0]) for q in filter_expressions], 
             k=k,
-            limit_per_req=3,
+            limit_per_req=4,
             filters=[list(q.values())[0] for q in filter_expressions]
             )
         if search_results_final != -1:
             context = rag_utils.create_prompt_milvus(query, search_results_final)
+        elif search_results_final == -2: #Error in hybrid search, revert to vanilla search
+            search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
+            context = rag_utils.create_prompt_milvus(query, search_results_vanilla)
         else:
             context = "No related documents found"
             source_final = []

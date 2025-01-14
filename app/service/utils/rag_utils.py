@@ -231,7 +231,10 @@ class MilvusDB:
                     param=search_params,
                     limit=limit_per_req,
                 )) #Search without filters
-                search_results = Collection(c).hybrid_search(reqs, rerank=reranker, limit=k, output_fields=output_fields if type(output_fields) == list else output_fields[c])[0]
+                try:
+                    search_results = Collection(c).hybrid_search(reqs, rerank=reranker, limit=k, output_fields=output_fields if type(output_fields) == list else output_fields[c])[0]
+                except MilvusException as e:
+                    return -2, -2, -2 #Error in search
                 for r in search_results:
                     results[r.distance] = (r.entity, c)
         if len(results) == 0:
