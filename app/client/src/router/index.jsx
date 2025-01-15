@@ -24,6 +24,7 @@ import Register from '~/pages/Register'
 import AuthLayout from '~/layouts/AuthLayout'
 import AppLayout from '~/layouts/AppLayout'
 import VerifyEmail from '~/pages/VerifyEmail';
+import Loading from '~/components/Page/Loading'
 
 // import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
 // import AuthLayout from '~/layouts/AuthLayout'
@@ -64,11 +65,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/dashboard',
-            element: <Suspense fallback={<div>Loading...</div>}><Dashboard /></Suspense>,
+            element: <Suspense fallback={<Loading/>}><Dashboard /></Suspense>,
           },
           {
             path: '/chat_generator',
-            element: <Suspense fallback={<div>Loading...</div>}><AdminChat /></Suspense>,
+            element: <Suspense fallback={<Loading/>}><AdminChat /></Suspense>,
           },
           {
             path: '/knowledge_bases',
@@ -79,7 +80,7 @@ const router = createBrowserRouter([
             children: [
               {
                 path: '/knowledge_bases/:id/',
-                element: <Suspense fallback={<div>Loading...</div>}><Datasets/></Suspense>,
+                element: <Suspense fallback={<Loading/>}><Datasets/></Suspense>,
               },
               {
                 path: '/knowledge_bases/configuration/:id',
@@ -93,7 +94,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/knowledge_bases/:collection/:id',
-            element:  <Suspense fallback={<div>Loading...</div>}><DatasetDetail/></Suspense>,
+            element:  <Suspense fallback={<Loading/>}><DatasetDetail/></Suspense>,
           },
           {
             path: '/models_manager',
@@ -101,7 +102,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/user_accounts',
-            element: <Suspense fallback={<div>Loading...</div>}><AccountManager /></Suspense>,
+            element: <Suspense fallback={<Loading/>}><AccountManager /></Suspense>,
           },
           {
             path: '/setting',
@@ -118,7 +119,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/chat',
-            element: <Suspense fallback={<div>Loading...</div>}><UserChat /></Suspense>,
+            element: <Suspense fallback={<Loading/>}><UserChat /></Suspense>,
           },
           {
             path: '/user_profile',

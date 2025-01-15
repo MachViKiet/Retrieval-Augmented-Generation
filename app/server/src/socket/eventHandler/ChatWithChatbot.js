@@ -76,7 +76,7 @@ export const ChatWithChatBot = async (socket) => {
           notice: 'Xác định nội dung câu hỏi',
           state: true,
           data: chosen_collections,
-          time: end_point_1 - start_point_1
+          duration: end_point_1 - start_point_1
         }, {
           step_name: 'filter_expressions',
           notice: 'Rút trích dữ liệu trong câu hỏi',
@@ -288,6 +288,7 @@ export const ChatWithChatBot = async (socket) => {
 
     } catch (error) {
       console.log('Lỗi ở bước chat: ',error)
+      await updateChatSession(current_session, { in_progress: null })
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
         'anwser': '### Hệ Thống Hiện Không Hoạt Động !\n Tôi rất tiếc, hệ thống chúng tôi đang gặp sự cố và không thể cung cấp thông tin cho bạn.\n Nếu cần thiết bạn có thể liên hệ với giáo vụ để có thông tin một cách nhanh chóng và chính xác nhất.',

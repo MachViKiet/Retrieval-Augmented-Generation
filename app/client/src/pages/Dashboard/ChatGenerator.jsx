@@ -528,7 +528,7 @@ export function ChatGenerator() {
                 </Box>
                 <IconButton sx = {{ padding: 0.25,  color: theme => theme.palette.mode == 'dark' ? '#ff9b9b' : '#fc0000' }} onClick={async (e) => await removeChatSessionClick(e, session)} >
                   { removeSessionEvent.includes(session?._id) ? <CircularProgress size={20}/> : 
-                      <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/> }
+                      <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem', color: 'red' }}/> }
                   </IconButton>
               </Box> ))
 

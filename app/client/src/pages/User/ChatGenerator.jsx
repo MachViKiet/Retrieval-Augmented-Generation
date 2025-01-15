@@ -15,7 +15,6 @@ import styled from '@emotion/styled';
 import ChatDisplay from '~/components/Chatbots/MessageHandler.jsx/ChatDisplay';
 import { DeleteOutlineOutlined } from '@mui/icons-material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -245,7 +244,7 @@ export function ChatGenerator() {
               <Typography component='p' sx = {{ width: 'fit-content', maxWidth: '148px', fontWeight: '100', fontSize: '0.725rem !important', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{session?.session_description}</Typography>
             </Box>
             <IconButton color = 'error' sx = {{ padding: 0.25 }} onClick={async (e) => await removeChatSessionClick(e, session)} >
-              <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/>
+              <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem', color: 'red' }}/>
               </IconButton>
           </Box> ))
 
@@ -490,25 +489,27 @@ export function ChatGenerator() {
           <Box sx = {{ display: 'flex', flexDirection: 'column',paddingTop: '55px'}}>
             <Block sx = {{ 
               padding: 1, paddingLeft: 0.5, maxHeight: '350px',
+              paddingBottom: '32px !important',
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
               display: { xs: 'none', md: 'block' }
             }}>
               
               <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
-              <Typography component='p' sx = {{ fontWeight: '800' }}>Giới Thiệu Chung</Typography>
-            </Box>
-
-            <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 0.2 }}> 
-              <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}> Dự án cung cấp một công cụ tiện ích và hiệu quả cho học sinh, sinh viên, giảng viên trong việc tìm kiếm các thông tin quan trọng liên quan đến : </Typography>
-              <Box sx = {{ padding: '5px' }} component='ul'>
-                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Tuyển Dụng</Typography>
-                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Sự Kiện</Typography>
-                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Học Bổng</Typography>
-                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Nội Quy Trường Học</Typography>
-                <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Cập Nhật Thời Khóa Biểu</Typography>
+                
+                <Typography component='p' sx = {{ fontWeight: '800' }}>Giới Thiệu Chung</Typography>
               </Box>
-              <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}>Bằng cách tích hợp công nghệ AI và học máy, chatbot không chỉ giúp tiết kiệm thời gian mà còn nâng cao trải nghiệm người dùng trong môi trường học đường.</Typography>
-            </Box>
+
+              <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 0.2 }}> 
+                <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}> Dự án cung cấp một công cụ tiện ích và hiệu quả cho học sinh, sinh viên, giảng viên trong việc tìm kiếm các thông tin quan trọng liên quan đến : </Typography>
+                <Box sx = {{ padding: '5px' }} component='ul'>
+                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Tuyển Dụng</Typography>
+                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Sự Kiện</Typography>
+                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Học Bổng</Typography>
+                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Nội Quy Trường Học</Typography>
+                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Cập Nhật Thời Khóa Biểu</Typography>
+                </Box>
+                <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}>Bằng cách tích hợp công nghệ AI và học máy, chatbot không chỉ giúp tiết kiệm thời gian mà còn nâng cao trải nghiệm người dùng trong môi trường học đường.</Typography>
+              </Box>
             </Block>
           </Box>
         </Grid>
@@ -612,7 +613,7 @@ export function ChatGenerator() {
                   <IconButton color = 'error' sx = {{ padding: 0.25 }} disabled= {removeSessionEvent.includes(session?._id)}
                     onClick={async (e) => await removeChatSessionClick(e, session)} >
                     { removeSessionEvent.includes(session?._id) ? <CircularProgress size={20}/> : 
-                        <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem' }}/> }
+                        <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem', color: 'red' }}/> }
                   </IconButton>
                 </Box> ))
 

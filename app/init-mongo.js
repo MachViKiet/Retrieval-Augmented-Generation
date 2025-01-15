@@ -1,7 +1,13 @@
 db.createUser(
     {
-        user: "luan_van_2024",
-        pwd: "20242024",
+        user: "luan_van",
+        pwd: "2024",
+        privileges: [
+            {
+              resource: { db: "luan_van_2024", collection: "" },
+              actions: [ "update" ]
+            }
+          ],
         roles: [
             {
                 role: "readWrite",
