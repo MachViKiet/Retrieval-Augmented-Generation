@@ -99,7 +99,7 @@ def extract_metadata():
         conversation += h['question'] + ".\n"
     conversation += query
     #extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
-    is_old_extract = False
+    is_old_extract = True
     if is_old_extract: #OLD METADATA EXTRACTION
         extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
         if extracted_metadata != -1: #No metadata found
