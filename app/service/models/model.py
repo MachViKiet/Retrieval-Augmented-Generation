@@ -37,6 +37,7 @@ class ChatModel:
             import openai
             client = openai.OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
             self.model = client
+            self.model_id = model_id
             # response = client.chat.completions.create(
             #     model="gpt-4o-mini",
             #     messages=[{"role": "system", "content": prompt}],
@@ -62,11 +63,13 @@ class ChatModel:
                 return self.model.generate_text_stream(prompt, params=params)
         elif self.provider == "OpenAI":
             response = self.model.chat.completions.create(
-                model="gpt-4o-mini",
+                model=self.model_id,
                 messages=[{"role": "system", "content": prompt}],
                 stream=streaming,
                 max_completion_tokens=max_new_tokens,
             )
+            if not streaming:
+                return response.choices[0].message.content
             return response
         elif self.provider == "Google":
             import google.generativeai as genai
