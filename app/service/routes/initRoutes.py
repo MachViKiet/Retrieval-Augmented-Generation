@@ -38,7 +38,7 @@ def preload():
     chat_model_id = "meta-llama/llama-3-1-70b-instruct"
     global model
     #model = ChatModel(model_id=chat_model_id)
-    model = ChatModel(provider=os.getenv("PROVIDER"), model_id="gemini-1.5-flash")
+    model = ChatModel(provider=os.getenv("PROVIDER"), model_id=os.getenv("CHAT_MODEL_ID"))
     print("Chat model loaded.")
     # global encoder
     # encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
