@@ -69,7 +69,8 @@ class ChatModel:
                 max_completion_tokens=max_new_tokens,
             )
             if not streaming:
-                return response.choices[0].message.content
+                text = response.choices[0].message.content
+                return text
             else:
                 for chunk in response:
                     if chunk.choices[0].delta.content is not None:
