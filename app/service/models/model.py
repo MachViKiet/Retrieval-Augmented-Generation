@@ -51,7 +51,7 @@ class ChatModel:
             # response = model.generate_content("Explain how AI works", )
             # print(response.text)
 
-    def _generate(self, prompt, max_new_tokens=1000, streaming=False, response_schema=None):
+    def _generate(self, prompt, max_new_tokens=1000, history=None, streaming=False, response_schema=None):
         if self.provider == "IBM":
             params = {GenParams.MAX_NEW_TOKENS: max_new_tokens}
             if not streaming:
