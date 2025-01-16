@@ -73,7 +73,7 @@ class ChatModel:
             else:
                 for chunk in response:
                     if chunk.choices[0].delta.content is not None:
-                        yield chunk.choices[0].delta.content
+                        yield chunk.choices[0].delta
         elif self.provider == "Google":
             import google.generativeai as genai
             params = genai.GenerationConfig(max_output_tokens=max_new_tokens)
