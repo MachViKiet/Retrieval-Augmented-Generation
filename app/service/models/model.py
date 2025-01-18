@@ -71,10 +71,12 @@ class ChatModel:
             if not streaming:
                 text = response.choices[0].message.content
                 return text
-            # else:
-            #     for chunk in response:
-            #         if chunk.choices[0].delta.content is not None:
-            #             yield chunk.choices[0].delta.content
+            else:
+                def gen(response):
+                    for chunk in response:
+                        if chunk.choices[0].delta.content is not None:
+                            yield chunk.choices[0].delta.content
+                return stream_with_context(gen(response))
         elif self.provider == "Google":
             import google.generativeai as genai
             params = genai.GenerationConfig(max_output_tokens=max_new_tokens)
