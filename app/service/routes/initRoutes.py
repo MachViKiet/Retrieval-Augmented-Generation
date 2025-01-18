@@ -312,3 +312,19 @@ def create_collection():
     #-------------------------------------------
     database.create_collection(name, description, metadata)
     return jsonify({'collection_name': name})
+
+@main.route("/insert_file/enhance", methods=["POST"])
+@cross_origin()
+def enhance_document():
+    ##PARAMS
+    article = request.form['article']
+    collection_name = request.form['collection_name']
+    #-------------------------------------------
+    #TODO: Enhance document
+    pydantic_schema = database.pydantic_collections[collection_name]
+    result = rag_utils.enhance_document(article=article, model=model, collection_name=collection_name, pydantic_schema=pydantic_schema)
+    if result != -1:
+        splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=75)
+        chunks = splitter.split_text(result['article'])
+        result['chunks'] = chunks
+        return jsonify(result)
