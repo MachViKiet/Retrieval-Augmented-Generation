@@ -95,7 +95,7 @@ function NewChatModal({ modalHandler = null }) {
         </DialogContent>
         <DialogActions>
           <Button sx = {{ color: '#fff' }} onClick={newChat}>{modalHandler.submitTitle}</Button>
-          <Button sx = {{ color: '#ff4646', fontWeight: '900' }} onClick={modalHandler?.close}>Đóng</Button>
+          <Button sx = {{ color: 'red', fontWeight: '900' }} onClick={modalHandler?.close}>Đóng</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

@@ -62,20 +62,26 @@ class ChatModel:
             else:
                 return self.model.generate_text_stream(prompt, params=params)
         elif self.provider == "OpenAI":
-            response = self.model.chat.completions.create(
-                model=self.model_id,
-                messages=[{"role": "system", "content": prompt}],
-                stream=streaming,
-                max_completion_tokens=max_new_tokens,
-            )
             if not streaming:
+                response = self.model.chat.completions.create(
+                    model=self.model_id,
+                    messages=[{"role": "system", "content": prompt}],
+                    stream=streaming,
+                    max_completion_tokens=max_new_tokens,
+                )
                 text = response.choices[0].message.content
                 return text
             else:
+                response = self.model.chat.completions.create(
+                    model=self.model_id,
+                    messages=[{"role": "system", "content": prompt}],
+                    stream=streaming,
+                    max_completion_tokens=max_new_tokens,
+                )
                 def gen(response):
                     for chunk in response:
                         if chunk.choices[0].delta.content is not None:
-                            yield chunk.choices[0].delta.content
+                            yield f"{chunk.choices[0].delta.content}"
                 return stream_with_context(gen(response))
         elif self.provider == "Google":
             import google.generativeai as genai

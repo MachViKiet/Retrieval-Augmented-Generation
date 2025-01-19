@@ -257,7 +257,7 @@ const theme = extendTheme(
           root: ({theme}) => ({
             background: theme.palette.primary.background,
             color: '#fff',
-            borderRadius: '15px'
+            borderRadius: '8px'
           })
         },
       },

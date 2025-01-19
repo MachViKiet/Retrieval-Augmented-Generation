@@ -9,7 +9,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useProfile } from '~/apis/Profile';
 import { useOutletContext } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import MaleIcon from '@mui/icons-material/Male';
+import MaleIcon from '@mui/icons-material/Male';  
 import HomeWorkOutlinedIcon from '@mui/icons-material/HomeWorkOutlined';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
@@ -341,6 +341,7 @@ export function Profile() {
                       <Chip key = {data?.id} label= {data.text} onClick={() => chipClick(data.id)}
                         color= { (data?.id == 'student_handbook' || interest.includes(data.id)) ? 'info' : ''}
                         sx = {{ 
+                          '--mui-palette-action-selected': theme => theme.palette.mode == 'dark' ? 'rgb(255 255 255 / 0%)' : '#fff',
                           border: '1px solid #ccc' ,
                           color: theme => data?.id == 'student_handbook' || interest.includes(data.id) ? '#ffffff' : theme.palette.text.secondary,
                         }} />

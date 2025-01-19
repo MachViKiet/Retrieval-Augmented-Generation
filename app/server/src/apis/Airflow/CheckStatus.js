@@ -7,7 +7,8 @@ const pw_airflow = process.env?.PASSWORD_AIRFLOW
 // https://airflow.apache.org/api/v1/dags/{dag_id}/dagRuns/{dag_run_id}
 export const CheckStatus = async (dag_id = null, dag_run_id = null, api_key = null) => {
   const url = `${domain}/api/v1/dags/${dag_id}/dagRuns/${dag_run_id}`
-
+  console.log(domain)
+  console.log(usr_airflow, pw_airflow)
   // Thực hiện GET request
   return fetch(url, {
     method: 'GET', // Sử dụng phương thức POST
@@ -15,7 +16,7 @@ export const CheckStatus = async (dag_id = null, dag_run_id = null, api_key = nu
       'Content-Type': 'application/json', // Đặt header cho content type là JSON
       'username': usr_airflow,
       'password': pw_airflow,
-      'Authorization': 'Basic ' + btoa('airflow' + ':' + 'airflow')
+      'Authorization': 'Basic ' + btoa(usr_airflow + ':' + pw_airflow)
     }
   })
     .then(response => {

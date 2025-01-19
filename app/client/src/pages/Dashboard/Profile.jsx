@@ -218,6 +218,7 @@ export function Profile() {
                   value={user?.position}
                   sx = {{ width: '100%',
                     '& .MuiSelect-icon': { color: theme => theme.palette.text.secondary },
+                    borderRadius: '6px'
                   }}
                   onChange={(e) => setUser((prev) => ({...prev, position : e.target.value}))}
                 >

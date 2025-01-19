@@ -30,14 +30,14 @@ const useData = (documents, deleteDocument = null) => {
 
   if(!documents) return {rows: [], columns: [], loading : false}
   const rows = Array.isArray(documents) && documents.map((document) => {
-    let _id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state, url
+    let _id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods,state, url
     try {
-      ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state, url} = document )
+      ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods,state, url} = document )
     } catch (error) {
       console.error('Có lỗi Xảy ra khi đọc tài liệu')      
     }
     return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), 
-    formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, 
+    formatTime(updated_at ? updated_at : updatedAt), methods, document?.isactive ||  document?.is_active ,state, 
     [{code: 'see', action: directUrl},
       {code: 'delete', action: deleteDocument}], url )
   })
@@ -155,7 +155,7 @@ function Datasets() {
                 { ...prevs, documents: prevs.documents.map(document => {
                   if(document._id === data.file_id && document?.state 
                     && document.state != data.state) {
-                      return { ...document, state: data.state }
+                      return { ...document, state: data.state, enable: data?.isactive }
                   }
                   return document
                 }) }

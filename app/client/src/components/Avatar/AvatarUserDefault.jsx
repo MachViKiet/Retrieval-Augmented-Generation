@@ -1,6 +1,6 @@
 import { Avatar, Box } from '@mui/material'
 import React from 'react'
-
+import botAvatar from '~/assets/botAvatar.png'
 function AvatarUserDefault() {
   return (
     <Box sx = {{ 
@@ -10,7 +10,7 @@ function AvatarUserDefault() {
       marginRight: 2,
       boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
      }}>
-      <Avatar alt="Remy Sharp" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" />
+      <Avatar alt="Remy Sharp" src={botAvatar} />
     </Box>
   )
 }
