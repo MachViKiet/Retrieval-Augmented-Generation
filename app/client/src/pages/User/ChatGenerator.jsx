@@ -3,8 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import ChatBlock from '~/components/Chatbots/ChatBlock';
 import Block from '~/components/Mui/Block';
-import { useDispatch, useSelector } from 'react-redux';
-import { navigate as sidebarAction } from '~/store/actions/navigateActions';
+import { useSelector } from 'react-redux';
 import { RecommendChatPage } from '~/components/Chatbots/RecommendChatPage';
 import { getSocket } from '~/socket';
 import { ChatWithChatbot } from '~/socket/ChatWithChatbot';
@@ -22,6 +21,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useConservation } from '~/apis/Conservation';
 import { useOutletContext } from 'react-router-dom';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function NewChatModal({ modalHandler = null }) {
 
@@ -71,9 +74,9 @@ function NewChatModal({ modalHandler = null }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               sx = {{ 
-                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
-                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' },
-              }}
+                '--mui-palette-text-primary': '#000',
+                '--mui-palette-common-onBackgroundChannel': '0 0 0'
+               }}
               placeholder='Tên Cuộc Trò Chuyện'/>
             <TextField 
               inputProps={{ maxLength: 100 }}
@@ -81,9 +84,13 @@ function NewChatModal({ modalHandler = null }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               sx = {{ 
-                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
-                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' },
-              }}
+                '--mui-palette-text-primary': '#000',
+                '--mui-palette-common-onBackgroundChannel': '0 0 0'
+               }}
+              // sx = {{ 
+              //   '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
+              //   '& div::after' : { borderBottom: '1px solid #a0a0a0b3' },
+              // }}
               placeholder='Mô tả Cuộc Trò Chuyện'/>
           </DialogContentText>
 
@@ -93,7 +100,7 @@ function NewChatModal({ modalHandler = null }) {
             </DialogContentText>}
         </DialogContent>
         <DialogActions>
-          <Button sx = {{ color: '#fff' }} onClick={newChat}>{modalHandler.submitTitle}</Button>
+          <Button sx = {{ color: '#000' }} onClick={newChat}>{modalHandler.submitTitle}</Button>
           <Button sx = {{ color: 'red' }} onClick={modalHandler?.close}>Đóng</Button>
         </DialogActions>
       </Dialog>
@@ -104,13 +111,10 @@ function NewChatModal({ modalHandler = null }) {
 
 const ChatWindow = styled(Box)(({theme}) => ({ position: 'absolute', bottom: theme.spacing(0), padding: theme.spacing(2), paddingBottom: theme.spacing(1), paddingTop: theme.spacing(0), right: theme.spacing(0), width: '100%', borderRadius: '15px' }))
 
-const BlockStyle = { bgColor_dark: 'linear-gradient(30deg, #ffffff2e 0%, #0352c038 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #b3d3fd 100%)' }
-const Backdrop = styled(Box) (() => ({
-  background: '#0000008c', height: '100%', width: '100%', right: 0, top: '-72px', borderRadius: '15px',
-  position: 'absolute', transform: 'scale(1)', transition: '0.5s all ease',  zIndex: 5, display: 'none'
-}))
+const BlockStyle = { bgColor_dark: 'linear-gradient(180deg, #8d96b045 0%, #8d96b045 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #b3d3fd 100%)' }
 
 import VoicemailOutlinedIcon from '@mui/icons-material/VoicemailOutlined';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 export function ChatGenerator() {
 
@@ -485,31 +489,26 @@ export function ChatGenerator() {
         </Box>
       <Grid container  spacing={2} sx = {{ height: '100%', '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
 
-        <Grid  size={{ xs: 0, md: 2 }} sx = {{ height: '100%' }}>  
+        <Grid  size={{ xs: 0, md: 2.3 }} sx = {{ height: '100%' }}>  
           <Box sx = {{ display: 'flex', flexDirection: 'column',paddingTop: '55px'}}>
             <Block sx = {{ 
-              padding: 1, paddingLeft: 0.5, maxHeight: '350px',
+              padding: '0 !important', padding: 1,
               paddingBottom: '32px !important',
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
               display: { xs: 'none', md: 'block' }
             }}>
-              
-              <Box sx = {{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
-                
-                <Typography component='p' sx = {{ fontWeight: '800' }}>Giới Thiệu Chung</Typography>
-              </Box>
-
-              <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 0.2 }}> 
-                <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}> Dự án cung cấp một công cụ tiện ích và hiệu quả cho học sinh, sinh viên, giảng viên trong việc tìm kiếm các thông tin quan trọng liên quan đến : </Typography>
-                <Box sx = {{ padding: '5px' }} component='ul'>
-                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Tuyển Dụng</Typography>
-                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Sự Kiện</Typography>
-                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Thông Tin Học Bổng</Typography>
-                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Nội Quy Trường Học</Typography>
-                  <Typography sx = {{ fontSize: '10px !important', textAlign: 'start' }} component='li'>Cập Nhật Thời Khóa Biểu</Typography>
-                </Box>
-                <Typography sx = {{ fontSize: '10px !important', textAlign: 'justify' }}>Bằng cách tích hợp công nghệ AI và học máy, chatbot không chỉ giúp tiết kiệm thời gian mà còn nâng cao trải nghiệm người dùng trong môi trường học đường.</Typography>
-              </Box>
+              <Typography sx ={{ fontSize: '0.725rem', textAlign: 'start', padding: 1, fontWeight: '600' }}>Những câu hỏi phổ biến</Typography>
+              {[
+                'Bao nhiêu điểm thì sinh viên học lực Giỏi ?',
+                'Bao nhiêu điểm thì sinh viên học lực Khá ?',
+                'Bao nhiêu điểm thì sinh viên học lực Trung Bình ?',
+                'Điều kiện nhận học bổng ?',
+                'Để đạt loại tốt điểm rèn luyện cần bao nhiêu điểm?',
+                'Nếu sinh viên không đạt ở một học phần, phải làm gì?'].map((data) => (
+                <Button startIcon = {<ChatBubbleOutlineIcon/>} sx = {{ fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
+                  {data}
+                </Button>
+              ))}
             </Block>
           </Box>
         </Grid>
@@ -543,8 +542,7 @@ export function ChatGenerator() {
                 </div>
               })}
 
-              {
-                messageHandler.isProcess && messageHandler?.question && (
+              { messageHandler.isProcess && messageHandler?.question && (
                   <>
                     <div key={messageHandler?._id}>
                       <ChatDisplay conservation = {messageHandler} user={user}  
@@ -554,8 +552,7 @@ export function ChatGenerator() {
                     <ProcessBlock messageHandler={messageHandler}/>
                     <UserTypingMessageBlock messageHandler={messageHandler}/>
                   </>
-                )
-              }
+                )}
 
               <div ref={bottomRef} />
             </ChatBlock>
@@ -580,9 +577,9 @@ export function ChatGenerator() {
           </Block>
         </Grid>
 
-        <Grid  size={{ xs: 0, md: 3 }} sx = {{ height: '100%'}}>  
+        <Grid  size={{ xs: 0, md: 2.7 }} sx = {{ height: '100%'}}>  
           <Block sx = {{ 
-              padding: 1,
+              padding: '8px !important',
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
               display: {
                 xs: 'none',
@@ -595,14 +592,14 @@ export function ChatGenerator() {
 
             { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 1 }}> {
               sessions.map((session) => (
-                <Box key = {session._id} 
+                <Button key = {session._id} 
                   sx ={{ width: '100%', 
                     background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', 
                     color: theme => {
                       if(currentChatSession && session?._id == currentChatSession?._id) return '#000 !important'
                       return theme.palette.mode == 'dark' ? '#fff' : '#000'
                     },
-                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
+                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: theme => theme.palette.mode == 'dark' ? '0px 2px 4px rgb(178 178 178 / 25%), 0px 1px 2px rgb(255 255 255 / 10%)' : '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
                     '&:hover': { background: theme => theme.palette.mode == 'dark' ? '#00000045' : '#818fb033', color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000' }
                   }}
                     onClick = {async (e) => await sessionButtonClick(session)}>
@@ -615,7 +612,7 @@ export function ChatGenerator() {
                     { removeSessionEvent.includes(session?._id) ? <CircularProgress size={20}/> : 
                         <DeleteOutlineOutlined sx = {{ fontSize: '1.225rem', color: 'red' }}/> }
                   </IconButton>
-                </Box> ))
+                </Button> ))
 
               }
 

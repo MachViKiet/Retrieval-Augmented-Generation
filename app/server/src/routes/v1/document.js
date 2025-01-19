@@ -32,8 +32,7 @@ router.post(
 )
 
 router.get('/', async (req, res) => {
-const filePath = path.join(process.cwd(), '/public/storage', `${req.query.name}`)
-console.log('getfile: ', filePath)
+  const filePath = path.join(process.cwd(), '/public/storage', `${req.query.name}`)
   try {
     if (fs.existsSync(filePath)) {
       res.setHeader('Content-Type', 'application/pdf')

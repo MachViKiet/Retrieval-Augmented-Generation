@@ -44,6 +44,10 @@ const theme = extendTheme(
 
           warning: {
             main: '#9c9f05'
+          },
+
+          action: {
+            disabled: '#0000004d'
           }
         },
       },
@@ -79,6 +83,10 @@ const theme = extendTheme(
 
           warning: {
             main: '#9c9f05'
+          },
+
+          action: {
+            disabled: '#0000004d'
           }
         },
       }
@@ -93,7 +101,7 @@ const theme = extendTheme(
               backgroundColor: "transparent",
             },
             "*::-webkit-scrollbar-thumb": {
-              backgroundColor: "#666",
+              backgroundColor: "#999",
               borderRadius: "2px",
             },
             "*::-webkit-scrollbar-thumb:hover": {
@@ -255,9 +263,10 @@ const theme = extendTheme(
       MuiPaper: {
         styleOverrides: {
           root: ({theme}) => ({
-            background: theme.palette.primary.background,
-            color: '#fff',
-            borderRadius: '8px'
+            // background: theme.palette.primary.background,
+            '--mui-palette-background-paper': '#d3e5ef',
+            color: '#000',
+            borderRadius: '15px'
           })
         },
       },

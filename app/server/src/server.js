@@ -28,7 +28,7 @@ bootstrap().then(async (server) => {
   io.attach(server, {
     cors: {
       origin: '*', //process.env.CLIENT, //'http://localhost:5173',
-      methods: ['GET', 'POST'],
+      methods: ['GET', 'POST']
       // credentials: true
     },
     transports: ['websocket', 'polling']

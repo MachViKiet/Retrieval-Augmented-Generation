@@ -59,7 +59,7 @@ function NewChatModal({ modalHandler = null }) {
       <Dialog
         open={modalHandler?.state}
         onClose={modalHandler?.close}>
-        <DialogTitle sx = {{ color: '#fff', display: 'flex', gap: 1.5, alignItems: 'center' }}>
+        <DialogTitle sx = {{ color: '#000', display: 'flex', gap: 1.5, alignItems: 'center' }}>
           <Box sx = {{ width: '50vw', maxWidth: '450px'}}>
             <OpenInNewIcon/> Tạo Cuộc Trò Chuyện
           </Box>
@@ -72,8 +72,8 @@ function NewChatModal({ modalHandler = null }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               sx = {{ 
-                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
-                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' }
+                '--mui-palette-text-primary': '#000',
+                '--mui-palette-common-onBackgroundChannel': '0 0 0'
               }}
               placeholder='Tên Cuộc Trò Chuyện'/>
             <TextField 
@@ -82,19 +82,19 @@ function NewChatModal({ modalHandler = null }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               sx = {{ 
-                '& div::before' : { borderBottom: '1px solid #a0a0a0b3' },
-                '& div::after' : { borderBottom: '1px solid #a0a0a0b3' }
+                '--mui-palette-text-primary': '#000',
+                '--mui-palette-common-onBackgroundChannel': '0 0 0'
               }}
               placeholder='Mô tả Cuộc Trò Chuyện'/>
           </DialogContentText>
 
           {notice && 
             <DialogContentText sx = {{ paddingTop: 2, display: 'block' }}>
-              <Typography component={'span'} variant={'body2'} sx = {{ color: '#ff7900', textAlign: 'end', display: 'block', width: '100%' }}>{notice}</Typography>
+              <Typography component={'span'} variant={'body2'} sx = {{ color: 'red', textAlign: 'end', display: 'block', width: '100%' }}>{notice}</Typography>
             </DialogContentText>}
         </DialogContent>
         <DialogActions>
-          <Button sx = {{ color: '#fff' }} onClick={newChat}>{modalHandler.submitTitle}</Button>
+          <Button sx = {{ color: '#000' }} onClick={newChat}>{modalHandler.submitTitle}</Button>
           <Button sx = {{ color: 'red', fontWeight: '900' }} onClick={modalHandler?.close}>Đóng</Button>
         </DialogActions>
       </Dialog>

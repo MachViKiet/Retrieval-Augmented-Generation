@@ -1,0 +1,21 @@
+import { useKHTN_Chatbot } from '../../../apis/KHTN_Chatbot'
+import { buildErrObject } from '../../../middlewares/utils'
+
+export const enhanceDocumentAPI = async (id = '', req = null) => {
+  if (!req?.collection_name) throw buildErrObject(422, 'Collection name is require')
+  if (!req?.article) throw buildErrObject(422, 'Article name is require')
+  try {
+    const formData = new FormData
+    formData.append('collection_name', req?.collection_name )
+    formData.append('article', req?.article )
+    const res = await useKHTN_Chatbot().enhance_file(formData)
+      .catch(() => { throw buildErrObject(422, 'Không thể yêu cầu enhance từ chatbot', 'Không thể đọc từ api chatbot') })
+
+    console.log(res)
+    return res
+  } catch (error) {
+    throw buildErrObject(422, error.message)
+  }
+}
+
+export default enhanceDocumentAPI

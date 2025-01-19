@@ -21,19 +21,19 @@ export default function NotifycationModal({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" sx = {{ width: '300px' }}>
+        <DialogTitle id="alert-dialog-title" sx = {{ width: 'fit-content' }}>
           <Typography variant='p'
             >{title || 'Nguồn Trích Dẫn'}</Typography>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx = {{ color: '#000' }}>
           <DialogContentText id="alert-dialog-description">
-            <Typography variant='p'
+            <Typography variant='p' sx = {{ color: '#000' }}
             >{content || 'Xin lỗi bạn, tính năng này chưa được hỗ trợ ☹️'}</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={(e) => { modalHandler?.action(e), modalHandler?.close()}} sx = {{ color: '#1fff3a' }}>{modalHandler?.actionName}</Button>
-          <Button onClick={modalHandler?.close} sx = {{ color: '#ff6c57' }}> Đóng</Button>
+          { modalHandler?.actionName && <Button onClick={async (e) => { await modalHandler?.action(e), modalHandler?.close()}} sx = {{ color: '#115819' }}>{modalHandler?.actionName}</Button> }
+          <Button onClick={modalHandler?.close} sx = {{ color: 'red' }}> Đóng</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

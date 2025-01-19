@@ -6,6 +6,7 @@ import { extract_meta } from './Conservation/extract_meta'
 import { get_collection_schema } from './Document/get_collection_schema'
 import { get_chunk_file } from './Document/get_chunk_file'
 import { delete_file } from './Document/delete_file'
+import { enhance_file } from './Document/enhance_file'
 
 export const useKHTN_Chatbot = () => ({
   determine_collection,
@@ -15,5 +16,6 @@ export const useKHTN_Chatbot = () => ({
 
   get_collection_schema,
   get_chunk_file,
-  delete_file
+  delete_file,
+  enhance_file
 })

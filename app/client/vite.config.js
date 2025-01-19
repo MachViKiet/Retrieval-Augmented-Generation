@@ -30,7 +30,7 @@ export default ({ mode }) => {
       https: false,
       proxy: {
         '/api': {
-          target: 'http://localhost:3000', // Địa chỉ của API server
+          target: 'http://localhost:8017',
           // rewrite: (path) => path.replace(/^\/api/, ''), // Loại bỏ /api trước khi gửi yêu cầu đến API server
           secure: false,
           ws: true,
@@ -47,15 +47,13 @@ export default ({ mode }) => {
           },
         },
 
-        // '/socket.io': {
-        //   target: 'ws://172.0.0.1:8017', // Địa chỉ của API server
-        //   secure: false,
-        //   changeOrigin: true,
-        //   ws: true,
-        // }
+        '/socket.io': {
+          target: 'http://localhost:8017', // Địa chỉ của API server
+          secure: false,
+          changeOrigin: true,
+          ws: true,
+        }
       },
-      // port: 3000,
-      // strictPort: true,
       host: '0.0.0.0',
     },
     //change port for production

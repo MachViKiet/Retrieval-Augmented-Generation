@@ -15,7 +15,7 @@ export const ProcessDocument = async (socket) => {
         if (res?.state != req?.state) {
           socket.emit('/airflow/checkstatus', { 'file_id': req?.file_id, state: res.state })
           let new_document = {}
-          if( res.state == 'success' ) {
+          if ( res.state == 'success' ) {
             new_document = { state: res.state, isactive: true }
           } else {
             new_document = { state: res.state, isactive: false }

@@ -45,11 +45,12 @@ export const ChatMessage = styled(Box) (({theme}) => ({
 const ModelButton_Style = {
   padding: '3px 10px',
   width: 'fit-content',
-  background: '#0214238c',
+  background: 'var(--mui-palette-action-disabled)',
   color: '#fff',
   borderRadius: '8px',
   cursor: 'pointer',
-  '&:active': { transform: 'scale(0.95)' }
+  '&:active': { transform: 'scale(0.95)' },
+  '&:hover': { background: '#00000075' }
 }
 
 function ChatDisplay({ loading = null, action = null, user = null , conservation = null }) {
@@ -65,6 +66,14 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
     { title : 'Thông tin tuyển dụng', key: 'recruitment' },
     { title : 'Thông tin học bổng', key: 'scholarship' }
   ]
+
+  const [value, setValue] = React.useState(conservation?.rating);
+  const [hover, setHover] = React.useState(-1);
+
+  const feedback = async (value) => {
+    await action.addFeedback({rating: value, _id: conservation._id})
+    setValue(value)
+  }
 
   return loading ? (
     <Box sx = {ChatBlock_Style}>
@@ -108,17 +117,6 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
                     <RotateRightOutlinedIcon sx = {{ fontSize: '16px' }}/>
                   </IconButton> 
                 </Tooltip> : <CircularProgress size="14px" sx = {{ color: '#fff' }} /> }
-
-                { conservation.state == 'success' && conservation?.rating == -1 && <Tooltip title="Đánh giá cuộc hội thoại" placement="bottom">
-                  <IconButton 
-                    onClick={() => setOpenFeedback(true)}
-                    sx = {{ padding: '1px' }}>
-                    <QuestionAnswerOutlinedIcon sx = {{ fontSize: '16px' }}/>
-                  </IconButton> 
-                </Tooltip> }
-
-                { conservation?.rating != -1 && <Box sx = {{ display: 'flex' }}>{conservation?.rating}<StarIcon fontSize = 'small' sx = {{ color: 'yellow' }}/></Box> }
-
                 <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end', width: '100%' }}>{getTime((conservation?.create_at ? conservation.create_at : conservation?.createdAt))}</Typography>
             </Box>
           </ChatMessage>
@@ -151,7 +149,6 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
             </Box>
 
           </ChatMessage>
-          {/* <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" /> */}
           <Avatar alt="ChatBot" sx = {{ display: { xs: 'none', md: 'block' } }} src={botAvatar} />
         </Box> </FadeIn>
       }
@@ -170,16 +167,29 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
             <BubbleLeft xs = {{ display: { xs: 'none', md: 'block' } }}/>
 
             <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
-              <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
+              <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, rowGap: '4px', alignItems: 'center' }}>
+                <Typography sx = {{ fontSize: '18px', fontWeight: '500' }}>Nguồn Trích Dẫn: </Typography>
                 {conservation?.source && conservation?.source.map((data, zIndex) => {
                   return <Box key = {zIndex*12650} sx = {ModelButton_Style}
-                    onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#fff'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>
+                    onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#000', textWrap: 'auto'}}>{data?.url}</a>)  } } > { zIndex + 1 } </Box>
                 })}
               </Box>
+            </Box>
+
+            <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
+              <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, rowGap: '4px', alignItems: 'center' }}>
+                <Typography sx = {{ fontSize: '18px', fontWeight: '500' }}>Phản Hồi / Đánh Giá:  </Typography>
+                <HoverRating
+                  value = {{ value: value, action: feedback }}
+                  hover = {{ value: hover, action: setHover }}
+                  />
+              </Box>
+            </Box>
+
+            <Box sx = {{  width: '100%', borderTop: '1px solid #000', marginTop: 1, paddingTop: 1 }}>
               <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end' }}>{getTime(conservation?.create_at ? conservation.create_at : conservation?.createdAt)}</Typography>
             </Box>
           </ChatMessage>
-          {/* <Avatar alt="ChatBot" src="https://pics.craiyon.com/2023-06-08/8f12f7763653463289268bdca7185690.webp" /> */}
           <Avatar alt="ChatBot" sx = {{ display: { xs: 'none', md: 'block' } }} src={botAvatar} />
         </Box>  </FadeIn>
       }
@@ -252,14 +262,21 @@ function FeedbackModal({
             >Bạn Có Hài Lòng Với Câu Trả Lời Không ?</Typography>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <HoverRating value = {{ value: value, action: setValue }}
+          <DialogContentText id="alert-dialog-description" 
+          sx = {{ 
+            '--mui-palette-text-secondary': '#000'
+           }}>
+            <HoverRating 
+            sx = {{ 
+              '--mui-palette-action-disabled': '#0000004d'
+             }}
+            value = {{ value: value, action: setValue }}
             hover = {{ value: hover, action: setHover }}/>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => modalHandler?.action(value) && modalHandler?.close()} sx = {{ color: '#1fff3a' }}>Xác Nhận</Button>
-          <Button onClick={modalHandler?.close} sx = {{ color: '#ff6c57' }}> Đóng</Button>
+          <Button onClick={() => modalHandler?.action(value) && modalHandler?.close()} sx = {{ color: '#000' }}>Xác Nhận</Button>
+          <Button onClick={modalHandler?.close} sx = {{ color: 'red' }}> Đóng</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
