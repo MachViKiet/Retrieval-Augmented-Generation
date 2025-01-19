@@ -11,7 +11,8 @@ import ExternalWebsite from '~/components/ExternalWebsite ';
 import MemoryIcon from '@mui/icons-material/Memory';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 function createData(id, chunk) {
   return { id, chunk};
 }
@@ -49,7 +50,7 @@ function DatasetDetail() {
   const navigate = useNavigate()
 
   const { id, collection } = useParams()
-  const {processHandler, noticeHandler, dashboard } = useOutletContext()
+  const {processHandler, noticeHandler, dashboard, getModal } = useOutletContext()
 
   const [documentWithChunk, setDocumentWithChunk] = useState(null)
   const [openModalUpload, setOpenModalUpload] = useState(false)
@@ -119,7 +120,6 @@ function DatasetDetail() {
     if(documentWithChunk?.state=='processed' || documentWithChunk?.state=='success'){
       noticeHandler.add({
         status: 'warning',
-        auto: false,
         message: 'Tài Liệu Này Đã Được Xử Lý !'
       })
       return 
@@ -127,7 +127,6 @@ function DatasetDetail() {
     if( documentWithChunk?.metadata==null ){
       noticeHandler.add({
         status: 'warning',
-        auto: false,
         message: 'Bạn Phải Điền Đầy Đủ Thông Tin Cần Có !'
       })
       return 
@@ -137,7 +136,7 @@ function DatasetDetail() {
       chunks: documentWithChunk.chunks.map((data) => data.chunk)
     }
     const processDocumentEvent = processHandler.add('#processDocument')
-    useDocument.process(data, token).then(
+    await useDocument.process(data, token).then(
       (data) => {
         noticeHandler.add({
           status: 'success',
@@ -149,16 +148,65 @@ function DatasetDetail() {
     .catch(() => {
       noticeHandler.add({
         status: 'error',
-        auto: false,
         message: 'Lỗi hàng Đợi, Vui Lòng Thử Lại Sau !'
       })
     })
     .finally(()=> processHandler.remove('#processDocument', processDocumentEvent))
   }
 
+  const EnhanceButton = async () => {
+    if(documentWithChunk?.state=='processed' || documentWithChunk?.state=='success'){
+      noticeHandler.add({
+        status: 'warning',
+        message: 'Tài Liệu Này Đã Được Xử Lý !'
+      })
+      return 
+    }
+    console.log(documentWithChunk)
+    const data = {
+      id: id,
+      ...documentWithChunk,
+      article: documentWithChunk?.chunks.join(" ## ")
+    }
+
+    const processDocumentEvent = processHandler.add('#processDocument')
+    await useDocument.enhance(data, token).then(
+      (data) => {
+        noticeHandler.add({
+          status: 'success',
+          message: 'Tạo Dữ Liệu Tự Động Thành Công!'
+        })
+        console.log('Dữ liệu được tạo: ',data)
+      }
+    )
+    .catch(() => {
+      noticeHandler.add({
+        status: 'error',
+        message: 'Lỗi Khi Tạo Dữ Liệu'
+      })
+    })
+    .finally(()=> processHandler.remove('#processDocument', processDocumentEvent))
+  }
+
+  const actions = [
+    { icon: <RemoveRedEyeOutlinedIcon />, name: 'Phóng To Tài Liệu', action: () => {
+      if(documentWithChunk?.type && documentWithChunk?.type == "Upload") {
+        window.open(`${domain}/documents?name=${documentWithChunk?.name}`, '_blank');
+      } else {
+        window.open(documentWithChunk?.url, '_blank');
+      }
+    }},
+    { icon: <AutoAwesomeIcon />, name: 'Cải Tiến Dữ Liệu Tự Động', action: () => {
+      getModal( "Bạn Có Muốn Dữ Liệu Sẽ Được Làm Giàu Tự Động ? ", 
+        "Quá trình sẽ mất một chút thời gian. Các thông tin đoạn cắt, metadata sẽ được tự động viết lại cho phù hợp với ngữ cảnh. Tuy nhiên, hãy luôn nhớ kiểm tra lại dữ liệu bạn nhé !",
+        "Tiếp Tục", EnhanceButton )
+    } },
+    { icon: <PostAddIcon />, name: 'Cập Nhật Metadata Bằng Thủ Công', action: () => setOpenModalUpload(true) },
+  ];
+
   return (
-    <Block>
-      <Box sx ={{ width: '100%', height: 'auto', marginBottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Block sx = {{ position: 'relative' }}>
+      <Box sx ={{ width: '100%',paddingTop: 1, height: 'auto', marginBottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 
         <Breadcrumbs separator="›" aria-label="breadcrumb">
           <Link underline="hover" key={id} color="inherit"
@@ -166,11 +214,10 @@ function DatasetDetail() {
             sx = {{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <TopicOutlinedIcon/>
           </Link>,
-          <Typography key="62756213" sx = {{ display: 'block', maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}> {documentWithChunk?.document_name} </Typography>
+          <Typography key="62756213" sx = {{ display: 'block', width: '100%', maxWidth: '500px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}> {documentWithChunk?.document_name} </Typography>
         </Breadcrumbs>
 
         <Box sx = {{ display: 'flex',justifyContent: 'end',  width: 'fit-content', gap: 2 }}>
-
           <Button component="label" startIcon={<SaveAsIcon/>} onClick={(e) => {
             DocumentUpdate({
               id: id,
@@ -184,26 +231,57 @@ function DatasetDetail() {
               Lưu Thay Đổi
           </Button>
 
-          <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
-            sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
-              Chỉnh Sửa Thông Tin
-          </Button>
-
-          <Button component="label" startIcon={<MemoryIcon />} color={'error'} onClick={ProcessButton} variant='contained'
+          <Button component="label" startIcon={<MemoryIcon />} color={'error'} variant='contained'
+            onClick={() => getModal( "Bạn Có Muốn Xử Lý Tài Liệu ? ", 
+              "Quá trình sẽ mất một chút thời gian. Để tài liệu hoạt động một cách hiệu quả nhất, hãy chắc chắn rằng các nội dụng (metadata and text chunk) của bạn thật rõ ràng mạch lạc",
+              "Tiếp Tục", ProcessButton )} 
             sx = {{ paddingX: 2, paddingY: 1, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} 
             > Xử Lý Tài Liệu
           </Button>
+
         </Box>
       </Box>
 
-      <Box sx = {{  height: 'calc(100vh - 126px)', marginTop: 2, borderRadius: '15px', display: 'flex',justifyContent:'space-between', gap: 2 }}>
-        <Box sx = {{  width: '60%',  minWidth: '450px'}}>
-          <MuiTable onRowClick={(e) => { setOpenModalChunking(true); set_chunk_id(e.id) }}
-            rowHeight={101} useData = {useData(documentWithChunk?.chunks)} />
+      <Box sx = {{  height: 'calc(100vh - 126px)', marginTop: 1.5, borderRadius: '15px', display: 'flex',justifyContent:'space-between', gap: 2 }}>
+        <Box sx = {{  width: '60%',  minWidth: '450px' }}>
+          <Box sx = {{ width: '100%', height: 'calc(100% - 0px)' }}>
+            <MuiTable onRowClick={(e) => { setOpenModalChunking(true); set_chunk_id(e.id) }}
+              rowHeight={101} useData = {useData(documentWithChunk?.chunks)} />
+          </Box>
+
+          <Box sx = {{ display: 'flex', gap: 2, justifyContent: 'center', padding: 2 }}>
+            {/* <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
+              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
+                Chỉnh Sửa Metadata ( Thủ Công )
+            </Button> */}
+
+            {/* <Button component="label" startIcon={<SaveAsIcon/>} 
+              onClick={() => {
+                DocumentUpdate({
+                id: id,
+                update: {
+                  chunks: documentWithChunk?.chunks,
+                  metadata: documentWithChunk?.metadata
+                }
+              }) }}
+              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main, paddingX:2, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', borderRadius: '10px' }} >
+                Lưu Thay Đổi
+            </Button>
+
+            <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
+              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
+                Cập Nhật Metadata
+            </Button>
+
+            <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
+              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
+                Nâng cao ( Tự Động )
+            </Button> */}
+          </Box>
         </Box>
 
-        <Box sx = {{ width: '45%', height: '100%', borderRadius: '15px', padding: 2,
-            background: theme => theme.palette.mode == 'dark' ? '#323639' : '#323639',
+        <Box sx = {{ width: '38%', height: '100%', borderRadius: '15px', padding: 2,
+            background: theme => theme.palette.mode == 'dark' ? '#ffffff75' : '#32363952',
             boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
           }}>
           <ExternalWebsite name = {documentWithChunk?.document_name_in_storage} type = { documentWithChunk?.document_type} url = {documentWithChunk?.url}/>
@@ -229,7 +307,9 @@ function DatasetDetail() {
             return true
           }
         }}
+        
         dashboard = {dashboard}
+
         modalHandler = {{
           state: openModalUpload,
           close: () => setOpenModalUpload(false),
@@ -276,6 +356,9 @@ function DatasetDetail() {
           close: () => setOpenModalChunking(false),
           buffer: chunk_id,
         }} /> }
+
+      <SpeedDialTooltipOpen actions = {actions}/>
+
     </Block>
   )
 }
@@ -502,7 +585,7 @@ function SettingChunkModal({ document, modalHandler = null }) {
             dataList && dataList.map((id) => (
               <TextField maxRows={8} multiline fullWidth 
                 value={document.getChunk(id)}
-                sx = {{ '& textarea': {color: '#fff'} }}
+                sx = {{ '& textarea': {color: '#000'} }}
                 onChange={(e) => document.setChunks(id, e.target.value)}
               placeholder='Nhập thay đổi'
             />
@@ -518,14 +601,14 @@ function SettingChunkModal({ document, modalHandler = null }) {
               chunk: ''
             }),
             setDataList(prev => [...prev, id])
-          }} sx = {{ color: '#fff' }}>Thêm Đoạn Cắt</Button>
+          }} sx = {{ color: '#000' }}>Thêm Đoạn Cắt</Button>
 
           <Button onClick={() => {
             document.removeChunks(dataList) 
             modalHandler?.close() 
             setDataList([])
           }}
-            sx = {{ color: '#fff' }}>Xóa Tất Cả</Button>
+            sx = {{ color: 'red' }}>Xóa Tất Cả</Button>
 
         </DialogActions>
       </Dialog>
@@ -533,4 +616,75 @@ function SettingChunkModal({ document, modalHandler = null }) {
   );
 }
 
+import Backdrop from '@mui/material/Backdrop';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import PostAddIcon from '@mui/icons-material/PostAdd';
 
+const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
+  position: 'absolute',
+  '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+    bottom: theme.spacing(1.5),
+    right: theme.spacing(1.5),
+    '& > button': {
+      background: 'var(--mui-palette-background-paper)',
+      padding: 2,
+      boxShadow: '0px -10px 10px rgb(255 255 255 / 25%), 0px 3px 10px rgb(255 255 255 / 19%)'
+    }
+  },
+
+  '--mui-palette-background-paper': theme.palette.mode == 'dark' ? '#2d325a' : '#005181',
+  '--mui-palette-SpeedDialAction-fabHoverBg': '#012032',
+
+  '.MuiSpeedDialAction-staticTooltipLabel': {
+    width: 'max-content',
+    borderRadius: '10px',
+    padding: '8px',
+    paddingRight: '16px',
+    paddingLeft: '16px',
+    background: 'var(--mui-palette-background-paper)'
+  },
+
+  '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
+    top: theme.spacing(2),
+    left: theme.spacing(2),
+  },
+
+}));
+import { styled } from '@mui/material/styles';
+export function SpeedDialTooltipOpen({actions}) {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  // const handleClose = () => setOpen(true);
+
+  const [state, setState] = useState({})
+
+  return (
+    <Box sx={{ ...state , transform: 'translateZ(0px)', flexGrow: 1, position: 'absolute', bottom: '0', right: '0' }}>
+      <Backdrop open={open} sx ={{ background: '#cccccc66', borderRadius: '15px' }} />
+      <StyledSpeedDial
+        ariaLabel="SpeedDial tooltip example"
+        sx={{ position: 'absolute', bottom: 16, right: 16 }}
+        icon={<SpeedDialIcon />}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        onMouseOver={() => setState({width: '100%', height: '100%'})}
+        onMouseOut={() => setState({})}
+        open={open}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            tooltipOpen
+            onClick={action?.action}
+          />
+        ))}
+      </StyledSpeedDial>
+    </Box>
+  );
+}

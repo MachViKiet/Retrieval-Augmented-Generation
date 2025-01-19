@@ -5,6 +5,7 @@ function ChatBlock({children, sx = {}}) {
   return (
     <Box sx = {{ 
         height: '100%',
+        width: '100%',
         position: 'relative',
         maxHeight: 'calc(100vh - 225px)',
         overflow: 'auto',
@@ -13,6 +14,7 @@ function ChatBlock({children, sx = {}}) {
         <Box sx = {{ 
             position: 'relative',
             width: '100%',
+            height: '100%',
             paddingX: { md: '20px', xs: '10px' }
          }}>
             {children}

@@ -52,7 +52,7 @@ export const ChatWithChatBot = async (socket) => {
         }] })
 
       await updateChatSession(current_session, { in_progress: objectConservation })
-      .catch((err) => { throw 'Cập Nhật ChatSession Thất Bại' + JSON.stringify(err) })
+        .catch((err) => { throw 'Cập Nhật ChatSession Thất Bại' + JSON.stringify(err) })
 
       // Step 1
       const start_point_1 = (new Date()).getTime()
@@ -169,7 +169,7 @@ export const ChatWithChatBot = async (socket) => {
           duration: end_point_3 - start_point_3
         }, {
           step_name: 'generate',
-          notice: 'Tìm kiếm tài liệu trong kho',
+          notice: 'Tạo văn bản',
           state: false,
           data: null,
           time: null
@@ -287,7 +287,7 @@ export const ChatWithChatBot = async (socket) => {
       socket.emit('/ChatWithChatBot/EndProcess', history)
 
     } catch (error) {
-      console.log('Lỗi ở bước chat: ',error)
+      console.log('Lỗi ở bước chat: ', error)
       await updateChatSession(current_session, { in_progress: null })
       socket.emit('/ChatWithChatBot/EndProcess', {
         ...objectConservation,
@@ -309,7 +309,7 @@ export const ChatWithChatBot = async (socket) => {
           throw 'Cập Nhật ChatSession Thất Bại '
         })
     } catch (error) {
-      console.log('Lỗi ở bước cập nhật chat session',error)
+      console.log('Lỗi ở bước cập nhật chat session', error)
     }
   })
 

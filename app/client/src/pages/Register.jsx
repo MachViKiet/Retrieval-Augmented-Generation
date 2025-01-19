@@ -64,7 +64,7 @@ function Register() {
             id: '#542',
             status: 'success',
             message: 'Tạo tài khoản thành công, hãy kiểm tra email để xác thực tài khoản bạn nhé !',
-            auto: false
+            // auto: false
           })
           setTimeout(() => {
             navigate('/validateEmail')

@@ -11,7 +11,7 @@ export const deleteDocumentAndUpdateCollection = async (id = null) => {
   // session.startTransaction()
   try {
 
-    const deletedDocument = await Document.findOneAndDelete({ _id: new ObjectId(id), document_type: "Upload" }
+    const deletedDocument = await Document.findOneAndDelete({ _id: new ObjectId(id), document_type: 'Upload' }
       // , { session }
     )
     // Bước 2: Cập nhật số lượng sách của tác giả
@@ -22,16 +22,16 @@ export const deleteDocumentAndUpdateCollection = async (id = null) => {
     )
 
     if (!deletedDocument) {
-      throw { message: "No document found with the given ID and type 'Upload'." };
+      throw { message: 'No document found with the given ID and type \'Upload\'.' }
     }
 
     if ( deletedDocument?.state == 'success' ) {
       const formData = new FormData()
       formData.append('document_id', deletedDocument._id )
       formData.append('collection_name', updatedCollection.name )
-  
+
       await KHTN_Chatbot.delete_file(formData)
-      .catch((err) => ({ message: err }))
+        .catch((err) => ({ message: err }))
     }
 
     // await session.commitTransaction()

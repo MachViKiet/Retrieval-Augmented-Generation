@@ -13,6 +13,14 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
     }
 
     let chunks = null
+    let collection_name = null
+    try {
+      collection_name = await Collection.findById(_doc.collection_id)
+        .then((_collection) => _collection.name )
+        .catch(() => { throw buildErrObject(422, 'Không thể đọc collection') })
+    } catch (error) {
+      collection_name = null
+    }
 
     try {
       if ((_doc.state == 'processing' || _doc.state == 'running' || _doc.state == 'queued')) {
@@ -21,9 +29,6 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
       if (_doc?.document_type && _doc?.document_type == 'Upload') {
         chunks = _doc?.chunks
       } else {
-        const collection_name = await Collection.findById(_doc.collection_id)
-          .then((_collection) => _collection.name )
-          .catch(() => { throw buildErrObject(422, 'Không thể đọc collection') })
 
         const formData = new FormData
         formData.append('collection_name', collection_name )
@@ -37,7 +42,7 @@ export const getChunkFromdbByDocumentID = async (id = '') => {
       chunks = []
     }
 
-    return { ..._doc, chunks: chunks }
+    return { ..._doc, chunks: chunks, collection_name: collection_name }
   }).catch((err) => {
     throw buildErrObject(422, err.message)
   })
