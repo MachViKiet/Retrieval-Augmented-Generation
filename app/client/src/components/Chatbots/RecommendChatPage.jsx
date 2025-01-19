@@ -140,11 +140,13 @@ export function RecommendChatPage({
           <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
             { ['Địa điểm tổ chức chương trình Hướng dẫn viết và trình bày báo cáo đề tài án tốt nghiệp 2024',
             'Sự Kiện NTU PEAK ASEAN năm 2024 bắt đầu khi nào ?',
-            'Thông Tin Sự Kiện Hack A Day'].map((text) => (
-              <Button sx = {{...BLOCK_STYLE,   
+            'Thông Tin Sự Kiện Hack A Day'].map((question, zIndex) => (
+              <Button  key = {zIndex*8752152145}
+              onClick={async () => { ChatAction && await ChatAction(question)}}
+              sx = {{...BLOCK_STYLE,   
                 border: theme => theme.palette.mode == 'dark' ? '0.2px solid #ffffff5c' : '0.2px solid #00000026',
                 fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{text}</Button>
+                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
             )) }
           </Box>
         </Grid>
@@ -155,9 +157,11 @@ export function RecommendChatPage({
           <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
             { ['Chương trình New Southbound Policy Elite Study Program - Đại Học Quốc lập Chung Hsing',
               'Chương trình học bổng của Ninety Eight 2024',
-            'Thông tin học bổng MEXT 2023'].map((text) => (
-              <Button sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{text}</Button>
+            'Thông tin học bổng MEXT 2023'].map((question, zIndex) => (
+              <Button  key = {zIndex*875215215}
+              onClick={async () => { ChatAction && await ChatAction(question)}}
+              sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
             )) }
           </Box>
         </Grid>
@@ -168,9 +172,11 @@ export function RecommendChatPage({
           <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
             { ['Tuyển Dụng ZaloPay Tech Fresher 2023',
             '[HCM] FPT SOFTWARE TUYỂN DỤNG 30 FRESHER JAVA/AEM',
-            'GOLDEN OWL SOLUTION tuyển dụng IT INTERN 2023'].map((text) => (
-              <Button sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{text}</Button>
+            'GOLDEN OWL SOLUTION tuyển dụng IT INTERN 2023'].map((question, zIndex) => (
+              <Button  key = {zIndex*8752145}
+              onClick={async () => { ChatAction && await ChatAction(question)}}
+              sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
             )) }
           </Box>
         </Grid>
@@ -201,9 +207,11 @@ export function RecommendChatPage({
               'DSHV đăng ký đề tài luận văn Thạc sĩ khóa 31/2021',
               '[CNTN] Điểm bảo vệ Khóa luận tốt nghiệp lớp CNTN2019',
               'Thông báo về việc cập nhật thông tin chuyên ngành sinh viên bậc Đại học hệ chính quy – Khóa 2020',
-          ].map((text) => (
-              <Button sx = {{...BLOCK_STYLE, border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{text}</Button>
+          ].map((question, zIndex) => (
+            <Button  key = {zIndex*875222152145}
+              onClick={async () => { ChatAction && await ChatAction(question)}}
+              sx = {{...BLOCK_STYLE, border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
             )) }
           </Box>
         </Grid>
@@ -215,9 +223,11 @@ export function RecommendChatPage({
             { ['Các Tuyến Xe Buýt Lưu Thông Trong Đại Học Quốc Gia  ',
             'Các quy định về tổ chức đào tạo, quản lý sinh viên 2024',
             'Quy chế đào tạo cho trình độ đại học Trường Đại Học Khoa Học Tự Nhiên, Đại Học Quốc Gia TPHCM'
-          ].map((text) => (
-              <Button sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{text}</Button>
+          ].map((question, zIndex) => (
+            <Button  key = {zIndex*42152145}
+              onClick={async () => { ChatAction && await ChatAction(question)}}
+                sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
             )) }
           </Box>
         </Grid>
@@ -228,9 +238,11 @@ export function RecommendChatPage({
           <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
             { ['Lịch thi kết thúc học phần 2 các lớp cao học khóa 32/2022',
             'Thông báo cập nhật lịch học lớp Kỹ năng mềm HK3/2022-2023',
-            'Đổi phòng lớp Xử lý phân tích dữ liệu trực tuyến 20_1 HK1/23-24'].map((text) => (
-              <Button sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{text}</Button>
+            'Đổi phòng lớp Xử lý phân tích dữ liệu trực tuyến 20_1 HK1/23-24'].map((question, zIndex) => (
+              <Button  key = {zIndex*87145}
+                onClick={async () => { ChatAction && await ChatAction(question)}}
+                sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
             )) }
           </Box>
         </Grid>

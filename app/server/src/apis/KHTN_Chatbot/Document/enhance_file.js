@@ -5,7 +5,7 @@ import { buildErrObject } from '../../../middlewares/utils'
 const domain = `http://${process.env.KHTNCHATBOT_HOST}:${process.env.KHTNCHATBOT_PORT}`
 
 export const enhance_file = async (formData = null) => {
-  const url = `${domain}/delete_file`
+  const url = `${domain}/insert_file/enhance`
   const structure = {
     method: 'POST',
     body: formData

@@ -162,7 +162,6 @@ function DatasetDetail() {
       })
       return 
     }
-    console.log(documentWithChunk)
     const data = {
       id: id,
       ...documentWithChunk,
@@ -250,33 +249,7 @@ function DatasetDetail() {
           </Box>
 
           <Box sx = {{ display: 'flex', gap: 2, justifyContent: 'center', padding: 2 }}>
-            {/* <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
-              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
-                Chỉnh Sửa Metadata ( Thủ Công )
-            </Button> */}
 
-            {/* <Button component="label" startIcon={<SaveAsIcon/>} 
-              onClick={() => {
-                DocumentUpdate({
-                id: id,
-                update: {
-                  chunks: documentWithChunk?.chunks,
-                  metadata: documentWithChunk?.metadata
-                }
-              }) }}
-              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main, paddingX:2, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', borderRadius: '10px' }} >
-                Lưu Thay Đổi
-            </Button>
-
-            <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
-              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
-                Cập Nhật Metadata
-            </Button>
-
-            <Button component="label" startIcon={<AccountTreeIcon/>} onClick={() => setOpenModalUpload(true)}
-              sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
-                Nâng cao ( Tự Động )
-            </Button> */}
           </Box>
         </Box>
 
@@ -553,7 +526,7 @@ function SettingDocumentModal({ document, modalHandler = null }) {
         </DialogContent>
         <DialogActions>
           { modalHandler.buffer ? 
-            <Button loading onClick={handleSubmit} sx = {{ color: '#fff' }}>Lưu Thay Đổi</Button>
+            <Button loading onClick={handleSubmit} sx = {{ color: 'green' }}>Lưu Thay Đổi</Button>
             : <Skeleton variant="rounded" width={90} height={30} /> }
         </DialogActions>
       </Dialog>
@@ -681,7 +654,7 @@ export function SpeedDialTooltipOpen({actions}) {
             icon={action.icon}
             tooltipTitle={action.name}
             tooltipOpen
-            onClick={action?.action}
+            onClick={() => { action?.action() ; handleClose() }}
           />
         ))}
       </StyledSpeedDial>

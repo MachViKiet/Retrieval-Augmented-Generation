@@ -28,7 +28,7 @@ export const formatTime = (isoString) => {
     
         return `${time} - ${datePart}`
     } catch (err) {
-        console.error('Tranform Date Format Errors')
+        // console.error('Tranform Date Format Errors')
         return '###'
     }
 }

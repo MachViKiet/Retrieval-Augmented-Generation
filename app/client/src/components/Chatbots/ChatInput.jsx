@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from '@emotion/styled';
 import { Box, Button, TextField, CircularProgress, Tooltip, useColorScheme } from '@mui/material';
 import NearMeIcon from '@mui/icons-material/NearMe';
@@ -37,13 +37,19 @@ const Button_Custom = styled(Button)(({theme}) => ({
    }
 }))
 
-export function ChatInput({ id, handleSubmit = null, messageHandler = null, disabled = false}) {
+export function ChatInput({ id, text = null ,handleSubmit = null, messageHandler = null, disabled = false}) {
   const [input, setInput] = useState('')
 
   const Submit = async (event) => {
     event.preventDefault();
     if(input != '') handleSubmit(input) && setInput(null)
   }
+
+  useEffect(() => {
+    if(text != null) {
+      setInput(text)
+    }
+  }, [text])
 
   return (
     <InputGroup id = {id} component="form" onSubmit={Submit} noValidate>

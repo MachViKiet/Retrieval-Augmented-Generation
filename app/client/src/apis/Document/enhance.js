@@ -1,7 +1,7 @@
 const domain = import.meta.env.VITE_SERVER
 
 export const enhance = async (formData, token = null) => {
-	const url = `${domain}/documents/delete`;
+	const url = `${domain}/documents/enhance`;
 	const structure = {
 		method: 'POST',
 		headers: {

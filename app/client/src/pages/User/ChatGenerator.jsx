@@ -481,6 +481,8 @@ export function ChatGenerator() {
     return true
   }
 
+  const [recommendQuestion, setRecommendQuestion] = useState(null)
+
   return (
     
     <Box sx = {{ position: 'relative', width: '100%', height: '100%', paddingTop: { xs : 6, md: 3 }, paddingBottom: { xs : 1.5, md: 2 } , paddingX: { xs : 1.5, md: 3 } }}>
@@ -505,7 +507,8 @@ export function ChatGenerator() {
                 'Điều kiện nhận học bổng ?',
                 'Để đạt loại tốt điểm rèn luyện cần bao nhiêu điểm?',
                 'Nếu sinh viên không đạt ở một học phần, phải làm gì?'].map((data) => (
-                <Button startIcon = {<ChatBubbleOutlineIcon/>} sx = {{ fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
+                <Button onClick = {() => setRecommendQuestion(data) } startIcon = {<ChatBubbleOutlineIcon/>} 
+                sx = {{ fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
                   {data}
                 </Button>
               ))}
@@ -568,7 +571,7 @@ export function ChatGenerator() {
                     theme.palette.primary.third,
                   borderRadius: '15px'
                 }}>
-                  <ChatInput id = 'FormChat_For_Admin' disabled = {sessions == null || !isRcmt} handleSubmit = {ChatAction} messageHandler = { messageHandler } />
+                  <ChatInput text = {recommendQuestion} id = 'FormChat_For_User' disabled = {sessions == null || !isRcmt} handleSubmit = {ChatAction} messageHandler = { messageHandler } />
                 </Box>
               </Box>
 

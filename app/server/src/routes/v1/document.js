@@ -12,6 +12,7 @@ const path = require('path')
 import roleAuthorization from '../../controllers/auth/roleAuthorization'
 
 import { getChunkInDocument, uploadFile, updateDocument, processDocument, deleteFile } from '../../controllers/document'
+import enhance from '~/controllers/document/enhance'
 
 // const directory = './src/storage'
 
@@ -22,6 +23,7 @@ router.post('/upload', requireAuth, trimRequest.all, upload.single('file'), uplo
 router.patch('/', requireAuth, trimRequest.all, updateDocument)
 
 router.post('/process', requireAuth, trimRequest.all, processDocument)
+router.post('/enhance', requireAuth, trimRequest.all, enhance)
 
 router.post(
   '/delete',
