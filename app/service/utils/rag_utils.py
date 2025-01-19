@@ -115,6 +115,26 @@ class MilvusDB:
             )
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
+        # Create pydantic representation of collections schemas
+        from pydantic import create_model
+        self.pydantic_collections = {}
+        collections = self._handler.list_collections()
+        for col in collections:
+            schema = self.get_collection_schema(col, readable=True, exclude_metadata=['created_at', 'updated_at', 'document_id', 'title', 'updated_at', 'url'])
+            fields = {"article": (str, ...)}
+            for field, attrs in schema.items():
+                if attrs['type'] == 'int':
+                    fields[field] = (int, ...)
+                elif attrs['type'] == 'float':
+                    fields[field] = (float, ...)
+                elif attrs['type'] == 'string':
+                    fields[field] = (str, ...)
+                elif attrs['type'] == 'list':
+                    fields[field] = (list[str], ...)
+                elif attrs['type'] == 'bool':
+                    fields[field] = (bool, ...)
+            model = create_model(col, **fields)
+            self.pydantic_collections[col] = model
 
     def _insert_document(self, collection_name, document, metadata):
         pass #DEPRECATED
@@ -122,8 +142,11 @@ class MilvusDB:
     def describe_collection(self, collection_name):
         return Collection(collection_name).describe()
 
-    def get_collection_schema(self, collection_name, readable=False):
+    def get_collection_schema(self, collection_name, readable=False, exclude_metadata=[]):
         schema = Collection(collection_name).describe()['fields']
+        if not readable:
+            return schema
+        
         schema_readable = {}
         def convert_type(type):
             if type == DataType.INT8 or type == DataType.INT16 or type == DataType.INT32 or type == DataType.INT64:
@@ -137,7 +160,7 @@ class MilvusDB:
             else:
                 return 'unknown'
         for meta in schema:
-            if meta['name'] in ['id', 'embedding', 'chunk_id', 'article', 'is_active', 'page_number', 'file_links']: #Skip these fields
+            if meta['name'] in ['id', 'embedding', 'chunk_id', 'article', 'is_active', 'page_number', 'file_links',] + exclude_metadata: #Skip these fields
                 continue #TODO: Fix this to achieve better flexibility in the system
             schema_readable[meta['name']] = {}
 
@@ -150,7 +173,8 @@ class MilvusDB:
 
             schema_readable[meta['name']]['description'] = meta['description']
             schema_readable[meta['name']]['required'] = False
-        schema_readable['title']['required'] = True
+        if 'title' in schema_readable:
+            schema_readable['title']['required'] = True
         return schema_readable
     
     def load_collection(self, name, persist=False):
@@ -471,3 +495,28 @@ def get_document(filename, collection_name):
     myKeys.sort()
     sorted_list = [results[i] for i in myKeys]
     return sorted_list
+
+def enhance_document(article, collection_name, pydantic_schema, model):
+    '''Enhance the user's document by rewriting and extracting metadata'''
+    prompt = """From the provided article, rewrite it to clean any spelling mistakes, grammatical errors, and missing spaces.\
+Keep the original language of the article (Vietnamese).\
+    Additionally, extract metadata from the article using the provided schema. Metadata fields that are lists can have a maximum of 5 elements.\
+    If the metadata field does not exist in the article, do not include it in the response.
+    Schema descriptions:
+    {schema}
+    Article (encased in backticks): 
+    ```
+    {article}
+    ```"""
+    fields = Collection(collection_name).describe()['fields']
+    schema = {}
+    for field in fields:
+        schema[field['name']] = field['description']
+    schema = "\n".join(k + ": " + v for k,v in schema.items())
+    response = model._generate(prompt.format(article=article, schema=schema), response_schema=pydantic_schema)
+    try:
+        obj = json.loads(response.model_dump_json())
+    except json.JSONDecodeError:
+            print("Couldn't decode JSON - " + response.model_dump_json())
+            obj = -1
+    return obj
