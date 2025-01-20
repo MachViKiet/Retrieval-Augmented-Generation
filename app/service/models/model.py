@@ -65,7 +65,7 @@ class ChatModel:
             if response_schema is not None:
                 response = self.model.beta.chat.completions.parse(
                     model=self.model_id,
-                    response_schema=response_schema,
+                    response_format=response_schema,
                     messages=[{"role": "system", "content": prompt}],
                 )
                 return response.choices[0].message.parsed
