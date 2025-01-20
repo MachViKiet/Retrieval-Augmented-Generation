@@ -515,6 +515,7 @@ Keep the original language of the article (Vietnamese).\
     schema = "\n".join(k + ": " + v for k,v in schema.items())
     response = model._generate(prompt.format(article=article, schema=schema), response_schema=pydantic_schema)
     try:
+        print(obj)
         obj = json.loads(response.model_dump_json())
     except json.JSONDecodeError:
             print("Couldn't decode JSON - " + response.model_dump_json())
