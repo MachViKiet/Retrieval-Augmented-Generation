@@ -62,6 +62,13 @@ class ChatModel:
             else:
                 return self.model.generate_text_stream(prompt, params=params)
         elif self.provider == "OpenAI":
+            if response_schema is not None:
+                response = self.model.beta.chat.completions.parse(
+                    model=self.model_id,
+                    response_schema=response_schema,
+                    messages=[{"role": "system", "content": prompt}],
+                )
+                return response.choices[0].message.parsed
             if not streaming:
                 response = self.model.chat.completions.create(
                     model=self.model_id,
