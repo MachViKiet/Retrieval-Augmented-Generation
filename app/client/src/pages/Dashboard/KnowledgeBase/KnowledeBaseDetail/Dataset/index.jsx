@@ -165,7 +165,7 @@ function DatasetDetail() {
     const data = {
       id: id,
       ...documentWithChunk,
-      article: documentWithChunk?.chunks.join(" ## ")
+      article: documentWithChunk.chunks.map((data) => data.chunk).join(" ## ")
     }
 
     const processDocumentEvent = processHandler.add('#processDocument')
