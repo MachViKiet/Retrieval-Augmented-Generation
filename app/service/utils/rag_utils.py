@@ -120,7 +120,7 @@ class MilvusDB:
         self.pydantic_collections = {}
         collections = self._handler.list_collections()
         for col in collections:
-            schema = self.get_collection_schema(col, readable=True, exclude_metadata=['created_at', 'updated_at', 'document_id', 'title', 'updated_at', 'url'])
+            schema = self.get_collection_schema(col, readable=True, exclude_metadata=['created_at', 'updated_at', 'document_id', 'title', 'updated_at', 'url', 'in_effect'])
             fields = {"article": (str, ...)}
             for field, attrs in schema.items():
                 if attrs['type'] == 'int':
