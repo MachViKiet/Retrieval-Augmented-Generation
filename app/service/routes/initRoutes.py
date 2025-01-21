@@ -231,7 +231,7 @@ def get_collection_schema():
     ##PARAMS
     collection_name = request.args.get('collection_name')
     #-------------------------------------------
-    schema = database.get_collection_schema(collection_name)
+    schema = database.get_collection_schema(collection_name, readable=True)
     return jsonify(schema)
 
 @main.route("/insert_file", methods=["POST"])
@@ -321,6 +321,7 @@ def enhance_document():
     collection_name = request.form['collection_name']
     #-------------------------------------------
     #TODO: Enhance document
+    print(article)
     pydantic_schema = database.pydantic_collections[collection_name]
     result = rag_utils.enhance_document(article=article, model=model, collection_name=collection_name, pydantic_schema=pydantic_schema)
     if result != -1:
