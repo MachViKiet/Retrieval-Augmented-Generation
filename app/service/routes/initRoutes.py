@@ -328,4 +328,11 @@ def enhance_document():
         splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=75)
         chunks = splitter.split_text(result['article'])
         result['chunks'] = chunks
+        metadata = {}
+        for k,v in result.items():
+            if k == 'article' or k == 'chunks':
+                continue
+            metadata[k] = v
+            result.pop(k)
+        result['metadata'] = metadata
         return jsonify(result)
