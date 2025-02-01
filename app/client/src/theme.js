@@ -215,6 +215,8 @@ const theme = extendTheme(
       MuiTypography: {
         styleOverrides: {
           root: {
+            userSelect: 'none',
+            transition: 'none',
             "&.MuiTypography-body1": {
               fontSize: "0.875rem",
             },

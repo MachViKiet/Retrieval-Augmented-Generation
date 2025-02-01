@@ -115,6 +115,8 @@ const BlockStyle = { bgColor_dark: 'linear-gradient(180deg, #8d96b045 0%, #8d96b
 
 import VoicemailOutlinedIcon from '@mui/icons-material/VoicemailOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import StarIcon from '@mui/icons-material/Star';
+import AdjustOutlinedIcon from '@mui/icons-material/AdjustOutlined';
 
 export function ChatGenerator() {
 
@@ -482,13 +484,14 @@ export function ChatGenerator() {
   }
 
   const [recommendQuestion, setRecommendQuestion] = useState(null)
+  const [recommendQuestionPage, setRecommendQuestionPage] = useState(0)
 
   return (
     
-    <Box sx = {{ position: 'relative', width: '100%', height: '100%', paddingTop: { xs : 6, md: 3 }, paddingBottom: { xs : 1.5, md: 2 } , paddingX: { xs : 1.5, md: 3 } }}>
-        <Box sx = {{ display: { xs: 'flex', md: 'none' }, width: 'fit-content', position: 'absolute', right: '16px', top: '6px' }}>
-          <Button onClick={() => menu.handle(true)} sx= {{ zIndex: 3, color: theme => theme.palette.text.secondary }} startIcon = {<VoicemailOutlinedIcon/>}>Cuộc Hội Thoại</Button>
-        </Box>
+    <Box sx = {{ position: 'relative', width: '100%', height: '100%', paddingTop: { xs : 6, md: 3 }, paddingBottom: { xs : 1.5, md: 2 } , paddingX: { xs : 1.5, md: 2 } }}>
+      <Box sx = {{ display: { xs: 'flex', md: 'none' }, width: 'fit-content', position: 'absolute', right: '16px', top: '6px' }}>
+        <Button onClick={() => menu.handle(true)} sx= {{ zIndex: 3, color: theme => theme.palette.text.secondary }} startIcon = {<VoicemailOutlinedIcon/>}>Cuộc Hội Thoại</Button>
+      </Box>
       <Grid container  spacing={2} sx = {{ height: '100%', '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
 
         <Grid  size={{ xs: 0, md: 2.3 }} sx = {{ height: '100%' }}>  
@@ -499,18 +502,42 @@ export function ChatGenerator() {
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
               display: { xs: 'none', md: 'block' }
             }}>
-              <Typography sx ={{ fontSize: '0.725rem', textAlign: 'start', padding: 1, fontWeight: '600' }}>Những câu hỏi phổ biến</Typography>
+              <Box sx = {{ display: 'flex', alignItems: 'center', gap: 0.2, paddingBottom: 0.3 }}>
+                <StarIcon sx = {{ fontSize: '28px !important', color:'#e7e74e' }}/>
+                <Typography sx ={{ fontSize: '0.725rem', textAlign: 'start', padding: 1, paddingX: 0.5, fontWeight: '600' }}>Chủ Đề Bạn Quan Tâm</Typography>
+              </Box>
               {[
-                'Bao nhiêu điểm thì sinh viên học lực Giỏi ?',
-                'Bao nhiêu điểm thì sinh viên học lực Khá ?',
-                'Bao nhiêu điểm thì sinh viên học lực Trung Bình ?',
-                'Điều kiện nhận học bổng ?',
-                'Để đạt loại tốt điểm rèn luyện cần bao nhiêu điểm?',
-                'Nếu sinh viên không đạt ở một học phần, phải làm gì?'].map((data) => (
-                <Button onClick = {() => setRecommendQuestion(data) } startIcon = {<ChatBubbleOutlineIcon/>} 
-                sx = {{ fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
+                'Thông tin trường học',
+                'Thông tin học bổng',
+                'Thông Tin Sự Kiện',
+                'Thông Tin Tuyển Dụng',
+                'Tra cứu thời khóa biểu',
+                'Thông báo giáo vụ',
+              ].map((data, zIndex) => ( 
+              <>
+                <Button 
+                disabled= {zIndex === recommendQuestionPage}
+                onClick = {() => setRecommendQuestionPage(zIndex) } 
+                startIcon = {ICON_LIST[zIndex]} 
+                endIcon = {<ExpandMoreOutlinedIcon/>}
+                sx = {{ transition: 'none !important', '--mui-palette-action-disabled': '#', width: '100%', justifyContent: 'space-between', fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
                   {data}
                 </Button>
+
+                {zIndex === recommendQuestionPage && <Box sx = {{ maxHeight: zIndex === recommendQuestionPage ? 'auto' : '0px', overflow: 'hidden', background: '#f0f8ff17', borderRadius: '10px', padding: '5px' }}>
+                {
+                RECOMMENDATION_QUESTION[zIndex].map((data, zIndex) => (
+                    <Button onClick = {() => setRecommendQuestion(data) }
+                      sx = {{ 
+                        transition: 'none', width: '100%', justifyContent: 'start', textAlign: 'start', color: 'inherit' }}>
+                    <Typography component={'span'}
+                      sx = {{ textAlign: 'start', fontSize: '0.725rem !important', whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: '100%', maxWidth: '186px' }}> 
+                      {zIndex + 1}. {data} </Typography>
+                    </Button>
+                  ))
+                }
+                </Box>}
+              </>
               ))}
             </Block>
           </Box>
@@ -596,14 +623,32 @@ export function ChatGenerator() {
             { !apiHandler.session && sessions && <Box sx = {{ height: '100%', maxHeight: 'calc(100vh - 280px)', overflow: 'auto', padding: 1 }}> {
               sessions.map((session) => (
                 <Button key = {session._id} 
-                  sx ={{ width: '100%', 
-                    background: currentChatSession && session?._id == currentChatSession?._id ? '#c7d3ff !important' :'#00000024', 
+                  sx ={{ 
+                    width: '100%', 
+                    background: theme => {
+                      if (theme.palette.mode == 'dark') {
+                        if(currentChatSession && session?._id == currentChatSession?._id) 
+                          return 'linear-gradient(164deg, #0e1c2f 0%, #02041a91 100%)'
+                        else 
+                          return 'linear-gradient(171deg, #45485b 0%, #02041a91 100%)'
+                      }
+
+                      if(currentChatSession && session?._id == currentChatSession?._id) 
+                        return 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)'
+                      
+                      return 'linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%)'
+                    },
+                    transition: 'none',
                     color: theme => {
-                      if(currentChatSession && session?._id == currentChatSession?._id) return '#000 !important'
+                      if ( currentChatSession && session?._id == currentChatSession?._id ) return '#fff'
                       return theme.palette.mode == 'dark' ? '#fff' : '#000'
                     },
-                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', boxShadow: theme => theme.palette.mode == 'dark' ? '0px 2px 4px rgb(178 178 178 / 25%), 0px 1px 2px rgb(255 255 255 / 10%)' : '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', 
-                    '&:hover': { background: theme => theme.palette.mode == 'dark' ? '#00000045' : '#818fb033', color: theme => theme.palette.mode == 'dark' ? '#fff' : '#000' }
+                    borderRadius: '10px', marginBottom: 1, padding: 1.5, display: 'flex', justifyContent: 'space-between', cursor: 'pointer', 
+                    boxShadow: theme => theme.palette.mode == 'dark' ? '0px 2px 4px rgb(178 178 178 / 25%), 0px 1px 2px rgb(255 255 255 / 10%)' : '0px 2px 4px 0px rgb(0 0 0 / 30%)', 
+                    '&:hover': {
+                      color: theme => '#fff !important' ,
+                      background: theme => theme.palette.mode == 'dark' ? 'linear-gradient(164deg, #0e1c2f 0%, #02041a91 100%)' : 'linear-gradient(120deg, #005181 0%, #1596e5fa 100%)', 
+                    }
                   }}
                     onClick = {async (e) => await sessionButtonClick(session)}>
                   <Box >
@@ -654,3 +699,39 @@ export function ChatGenerator() {
 }
 
 export default ChatGenerator
+
+import Filter1OutlinedIcon from '@mui/icons-material/Filter1Outlined';
+import Filter2OutlinedIcon from '@mui/icons-material/Filter2Outlined';
+import Filter3OutlinedIcon from '@mui/icons-material/Filter3Outlined';
+import Filter4OutlinedIcon from '@mui/icons-material/Filter4Outlined';
+import Filter5OutlinedIcon from '@mui/icons-material/Filter5Outlined';
+import Filter6OutlinedIcon from '@mui/icons-material/Filter6Outlined';
+import Filter7OutlinedIcon from '@mui/icons-material/Filter7Outlined';
+
+import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
+
+const ICON_LIST = [<Filter1OutlinedIcon/>, <Filter2OutlinedIcon/>, <Filter3OutlinedIcon/>, <Filter4OutlinedIcon/>,<Filter5OutlinedIcon/>, <Filter6OutlinedIcon/>, <Filter7OutlinedIcon/>]
+
+const RECOMMENDATION_QUESTION = [
+  ['Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 
+    'Bao nhiêu điểm học lực Giỏi, Khá, Trung Bình ?',
+    'Quy chế đào tạo cho trình độ đại học Trường Đại Học Khoa Học Tự Nhiên, Đại Học Quốc Gia TPHCM',
+    'Các Tuyến Xe Buýt Lưu Thông Trong Đại Học Quốc Gia'],
+
+  ['Danh sách học bổng mới nhất năm 2024',
+    'Điều kiện nhận học bổng 2024 là gì?',
+    'Chương trình học bổng của Ninety Eight 2024'],
+
+  ['Địa điểm tổ chức chương trình Hướng dẫn viết và trình bày báo cáo đề tài án tốt nghiệp 2024',
+    'Sự Kiện NTU PEAK ASEAN năm 2024 bắt đầu khi nào ?',
+    'Thông Tin Sự Kiện Hack A Day'],
+
+  ['Tuyển dụng thực tập FPT Software [HCM-2023]'],
+
+  ['Lịch thi kết thúc học phần 2 các lớp cao học khóa 32/2022',
+    'Thông báo cập nhật lịch học lớp Kỹ năng mềm HK3/2022-2023',
+    'Đổi phòng lớp Xử lý phân tích dữ liệu trực tuyến 20_1 HK1/23-24'],
+
+  ['DSHV đăng ký đề tài luận văn Thạc sĩ khóa 31/2021',
+    'Thông báo về việc cập nhật thông tin chuyên ngành sinh viên bậc Đại học hệ chính quy – Khóa 2020']
+]

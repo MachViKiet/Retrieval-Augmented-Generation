@@ -26,11 +26,18 @@ const useData = (documents, deleteDocument = null) => {
     return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action , url};
   }
 
-  const directUrl = async (data) => window.open(data?.url, '_blank', 'noopener,noreferrer')
+  const directUrl = async (documentWithChunk) => {
+    if(documentWithChunk?.type && documentWithChunk?.type == "Upload") {
+      window.open(`${domain}/documents?name=${documentWithChunk?.name}`, '_blank');
+    } else {
+      window.open(documentWithChunk?.url, '_blank');
+    }
+  }
 
   if(!documents) return {rows: [], columns: [], loading : false}
   const rows = Array.isArray(documents) && documents.map((document) => {
     let _id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods,state, url
+    console.log(document)
     try {
       ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods,state, url} = document )
     } catch (error) {
@@ -43,7 +50,7 @@ const useData = (documents, deleteDocument = null) => {
   })
 
   const condition = (params) => { return ['processed', 'pending', 'failed', 'success'].includes(params.row.parsingStatus) }
-  // const condition = () => true
+
   const getLinkToDocument = (params) => { return `/knowledge_bases/${id}/${params.row.id}`}
 
   const columns = [
@@ -65,7 +72,7 @@ const useData = (documents, deleteDocument = null) => {
       renderCell: renderStatus
     },
     { 
-      field: 'upload_date', headerName: 'Ngày Tạo', width: 150 
+      field: 'upload_date', headerName: 'Ngày Tạo', width: 150
     },
     { 
       field: 'updated_date', headerName: 'Chỉnh Sửa Lần Cuối', width: 150 
@@ -92,14 +99,13 @@ function Datasets() {
   const token = useSelector(state => state.auth.token)
   const [collectionWithDocuments, setCollectionWithDocuments] = useState(null)
 
-  const { processHandler, noticeHandler, dashboard, subDashboard } = useOutletContext();
+  const { processHandler, noticeHandler, subDashboard, setUrlBack } = useOutletContext();
   const [loadTable, setLoadTable] = useState(false)
 
   const socket = getSocket();
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
-    dashboard.navigate.active(346)
 
     subDashboard.navigate.active(452)
     subDashboard.addActions( [
@@ -109,10 +115,8 @@ function Datasets() {
       ]
     )
 
-    return () => ( 
-      dashboard.navigate.active('#'),
-      subDashboard.navigate.active('#')
-    )
+    setUrlBack(('/knowledge_bases'))
+
   }, [])
 
   const { id } = useParams();
@@ -199,9 +203,6 @@ function Datasets() {
   const deleteDocument = async (data) => {
     console.log(data)
     if(data?.id){
-      // const formData = new FormData();
-      // formData.append('id', data.id);
-      // console.log(formData)
       const deleteEvent = processHandler.add('#deleteDocument')
       await useDocument.deleteDocument({id: data.id} , token)
       .then(async () => { 

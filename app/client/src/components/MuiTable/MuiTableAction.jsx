@@ -13,7 +13,7 @@ const ACTION_LIST_DEFINE = {
     },
     'see': {
         icon: <RemoveRedEyeOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? '#fff' : '#2196f3', alignSelf: 'center', fontSize: '1rem' }} />,
-        tooltip: 'Trang Chính'
+        tooltip: 'Trang Nguồn'
     },
     'delete': {
         icon: <DeleteOutlineOutlinedIcon sx={{ color: theme => theme.palette.mode =='dark' ? 'red' : 'red', alignSelf: 'center', fontSize: '1rem' }} />,
