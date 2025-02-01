@@ -520,23 +520,23 @@ export function ChatGenerator() {
                 onClick = {() => setRecommendQuestionPage(zIndex) } 
                 startIcon = {ICON_LIST[zIndex]} 
                 endIcon = {<ExpandMoreOutlinedIcon/>}
-                sx = {{ transition: 'none !important', '--mui-palette-action-disabled': '#', paddingRight: 1, width: '100%', justifyContent: 'space-between', fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
+                sx = {{ transition: 'none !important', '--mui-palette-action-disabled': '#', width: '100%', justifyContent: 'space-between', fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
                   {data}
                 </Button>
 
-                <Box sx = {{ maxHeight: zIndex === recommendQuestionPage ? 'auto' : '0px', overflow: 'hidden',  }}>
+                {zIndex === recommendQuestionPage && <Box sx = {{ maxHeight: zIndex === recommendQuestionPage ? 'auto' : '0px', overflow: 'hidden', background: '#f0f8ff17', borderRadius: '10px', padding: '5px' }}>
                 {
                 RECOMMENDATION_QUESTION[zIndex].map((data, zIndex) => (
                     <Button onClick = {() => setRecommendQuestion(data) }
                       sx = {{ 
-                        transition: 'none', paddingRight: 0, width: '100%', justifyContent: 'start', textAlign: 'start', color: 'inherit' }}>
+                        transition: 'none', width: '100%', justifyContent: 'start', textAlign: 'start', color: 'inherit' }}>
                     <Typography component={'span'}
                       sx = {{ textAlign: 'start', fontSize: '0.725rem !important', whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: '100%', maxWidth: '186px' }}> 
                       {zIndex + 1}. {data} </Typography>
                     </Button>
                   ))
                 }
-                </Box>
+                </Box>}
               </>
               ))}
             </Block>

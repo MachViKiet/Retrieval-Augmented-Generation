@@ -1,58 +1,105 @@
 import { Box, Button, styled, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Block as CustomBlock } from '~/components/Mui/Block';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import Grid from '@mui/material/Grid2';
 import { useProfile } from '~/apis/Profile';
+import { GPTdata } from '~/apis/mockData_chatGPT';
+import StarIcon from '@mui/icons-material/Star';
 
 export function Dashboard() {
   const {processHandler, dashboard } = useOutletContext();
   const token = useSelector(state => state.auth.token)
+
+  const [dataChatGPT, setDataChatGPT] = useState([])
+
   useEffect(() => {
     document.title = 'Chatbot - Trang Chủ';
-    dashboard.navigate.active(234)
-
-    return () => ( dashboard.navigate.active('#') )
   }, [])
 
   useEffect(() => {
     useProfile.getDashboard(token).then((dataAPI) => {
       // setData(dataAPI)
     })
+
+    const ChatGPT_Event = processHandler.add('#chatgpt')
+    usageCompletion().then((data) => {
+      setDataChatGPT(() => {
+        let totalInputTokens = 0
+        let totalOutputTokens = 0
+        let totalInputCachedTokens = 0
+        let totalNumModelRequests = 0
+        let totalTokenInDate = []
+        let dateLabel = []
+        let inputTokens = []
+        let outputTokens = []
+        let inputCachedTokens = []
+        let numModelRequests = []
+  
+        data['data'].reverse().forEach(bucket => {
+            dateLabel.push(formatTime_Date_Month(bucket.start_time))
+            console.log(bucket)
+            if(bucket['results'].length == 0) {
+              inputTokens.push(0)
+              outputTokens.push(0)
+              inputCachedTokens.push(0)
+              numModelRequests.push(0)
+              totalTokenInDate.push(0)
+              return
+            }
+            bucket.results.forEach(result => {
+                totalInputTokens += result.input_tokens
+                totalOutputTokens += result.output_tokens
+                totalInputCachedTokens += result.input_cached_tokens
+                totalNumModelRequests += result.num_model_requests
+  
+                inputTokens.push(result.input_tokens)
+                outputTokens.push(result.output_tokens)
+                inputCachedTokens.push(result.input_cached_tokens)
+                numModelRequests.push(result.num_model_requests)
+                totalTokenInDate.push(totalInputTokens + totalOutputTokens + totalInputCachedTokens + totalNumModelRequests)
+            })
+        })
+  
+        return {
+          data: GPTdata['data'].map((data) => ({...data, ...data['results'][0]})),
+          total_input_request_tokens: totalInputTokens,
+          total_output_request_tokens: totalOutputTokens,
+          total_cached_request_tokens: totalInputCachedTokens,
+          total_requests: totalNumModelRequests,
+          dateLabel, inputTokens, outputTokens, inputCachedTokens, numModelRequests, totalTokenInDate
+        }
+      })
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+    .finally(() => {
+      processHandler.remove('#chatgpt', ChatGPT_Event)
+    })
+
   }, [token])
 
 
   const ChatGPTStatic = {
     series: [{
-      data: [0, 2713 + 888, 0, 13919+4950+1152, 3681+487, 9805+4185, 27134+7508+2048, 16832+3709, 7918+1272, 17833+2499, 19197+1950],
-      label: 'Số lượt truy cập theo tháng',
+      data: dataChatGPT?.totalTokenInDate || [],//[0, 2713 + 888, 0, 13919+4950+1152, 3681+487, 9805+4185, 27134+7508+2048, 16832+3709, 7918+1272, 17833+2499, 19197+1950],
+      label: 'Số token được sử dụng trong ngày',
       yAxisId: 'leftAxisId'
     },
     {
-      data: [0, 8, 0, 30, 4, 19, 48, 15, 11, 17, 26],
-      label: 'Số lượt hỏi đáp theo tháng',
+      data: dataChatGPT?.numModelRequests || [], //[0, 8, 0, 30, 4, 19, 48, 15, 11, 17, 26],
+      label: 'Số lượt sử dụng model trong ngày',
       yAxisId: 'rightAxisId'
     }],
     yAxis: [{ id: 'leftAxisId' }, { id: 'rightAxisId' }],
     rightAxis: "rightAxisId",
-    xAxis: [{ scaleType: 'point', data: [
-      '15/1',
-      '16/1',
-      '17/1',
-      '18/1',
-      '19/1',
-      '20/1',
-      '21/1',
-      '22/1',
-      '23/1',
-      '24/1',
-      '25/1'
-    ] }]
+    xAxis: [{ scaleType: 'point', data : dataChatGPT?.dateLabel || ['không có dữ liệu']
+  }]
   }
-
 
   const CTDT_PieChart = {
     series: [
@@ -212,14 +259,15 @@ export function Dashboard() {
 
       <Grid size={8}>
         <Box sx={{ height: '280px',  width: '100%', background: theme => theme.palette.mode == 'dark' ? '#041d34' : '#eaf5ff', borderRadius: '10px' }}>
-          <MuiTable useData = {useData([])}/>
+          <MuiTable useData = {useData(dataChatGPT.data)}/>
         </Box>
       </Grid>
 
       <Grid size={4}>
         <Box sx = {{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', height: '280px', width: 'fit-content', maxWidth: '100%' }}>
-          <Box sx = {{ paddingTop: 2, paddingBottom: 1 }}>
-            <Typography variant = 'h6' color= '#000'>Đánh Giá Trò Chuyện</Typography>
+          <Box sx = {{ paddingTop: 2, paddingBottom: 1, display: 'flex', justifyContent: 'center', gap: 0.5}}>
+            <StarIcon sx ={{ color: '#b0841e', fontSize: '30px' }}/>
+            <Typography variant = 'h6' color= '#000'>Đánh Giá Trò Chuyện </Typography>
           </Box>
           <PieChartWithCustomizedLabel/>
         </Box>
@@ -235,7 +283,7 @@ export function Dashboard() {
               <Typography variant = 'h6' color= '#000'>Tokens Yêu Cầu</Typography>
             </Box>
             <Box>
-              <Typography variant='h5' sx = {{ color: '#000' }}>102.190</Typography>
+              <Typography variant='h5' sx = {{ color: '#000' }}>{dataChatGPT.total_input_request_tokens}</Typography>
               <Typography variant='body1' sx = {{ color: '#000' }}>Tokens ( Input )</Typography>
             </Box>
           </Box>
@@ -250,7 +298,7 @@ export function Dashboard() {
               <Typography variant = 'h6' color= '#000'>Tokens Phản Hồi</Typography>
             </Box>
             <Box>
-              <Typography variant='h5' sx = {{ color: '#000' }}>27.449</Typography>
+              <Typography variant='h5' sx = {{ color: '#000' }}>{dataChatGPT.total_output_request_tokens}</Typography>
               <Typography variant='body1' sx = {{ color: '#000' }}>Tokens ( Output )</Typography>
             </Box>
           </Box>
@@ -265,7 +313,7 @@ export function Dashboard() {
               <Typography variant = 'h6' color= '#000'>Tokens Lưu Trữ</Typography>
             </Box>
             <Box>
-              <Typography variant='h5' sx = {{ color: '#000' }}>3.200</Typography>
+              <Typography variant='h5' sx = {{ color: '#000' }}>{dataChatGPT.total_cached_request_tokens}</Typography>
               <Typography variant='body1' sx = {{ color: '#000' }}>Tokens ( Cached )</Typography>
             </Box>
           </Box>
@@ -280,7 +328,7 @@ export function Dashboard() {
               <Typography variant = 'h6' color= '#000'>Tổng Số Requests</Typography>
             </Box>
             <Box>
-              <Typography variant='h5' sx = {{ color: '#000' }}>178</Typography>
+              <Typography variant='h5' sx = {{ color: '#000' }}>{dataChatGPT.total_requests}</Typography>
               <Typography variant='body1' sx = {{ color: '#000' }}>Lượt Truy Cập</Typography>
             </Box>
           </Box>
@@ -299,7 +347,7 @@ export function Dashboard() {
       <Grid size={4}>
         <Box sx = {{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', height: '280px', width: 'fit-content', maxWidth: '100%' }}>
           <Box sx = {{ paddingTop: 2, paddingBottom: 1 }}>
-            <Typography variant = 'h6' color= '#000'>Thống kê theo c.t đào tạo</Typography>
+            <Typography variant = 'h6' color= '#000'>Trò chuyện theo c.t đào tạo</Typography>
           </Box>
           <PieChartWithCustomizedLabel data = {CTDT_PieChart}/>
         </Box>
@@ -307,7 +355,7 @@ export function Dashboard() {
       <Grid size={4}>
         <Box sx = {{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', height: '280px', width: 'fit-content', maxWidth: '100%' }}>
           <Box sx = {{ paddingTop: 2, paddingBottom: 1 }}>
-            <Typography variant = 'h6' color= '#000'>Thống kê theo khóa đào tạo</Typography>
+            <Typography variant = 'h6' color= '#000'>Trò chuyện theo khóa đào tạo</Typography>
           </Box>
           <PieChartWithCustomizedLabel data = {KDT_PieChart}/>
         </Box>
@@ -315,7 +363,7 @@ export function Dashboard() {
       <Grid size={4}>
         <Box sx = {{ boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', height: '280px', width: 'fit-content', maxWidth: '100%' }}>
           <Box sx = {{ paddingTop: 2, paddingBottom: 1 }}>
-            <Typography variant = 'h6' color= '#000'>Thống kê theo giới tính</Typography>
+            <Typography variant = 'h6' color= '#000'>Trò chuyện theo giới tính</Typography>
           </Box>
           <PieChartWithCustomizedLabel data = {GT_PieChart}/>
         </Box>
@@ -353,18 +401,18 @@ export function Dashboard() {
       <Grid size={3.75} offset={0} sx= {{ alignItems: 'start' }}>
         <Box sx = {{ padding: 2, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', width: '100%', maxWidth: '100%' }}>
           <Box sx = {{ paddingBottom: 1, width: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant = 'h6' color= '#000' sx ={{ textAlign: 'start', fontSize: '1rem', paddingLeft: 2 }}>Câu hỏi phổ biến trong tháng</Typography>
+            <Typography variant = 'h6' color= '#000' sx ={{ textAlign: 'start', fontSize: '1rem', paddingLeft: 2, color: '#000' }}>Câu hỏi phổ biến trong tháng</Typography>
             <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
-              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400' }}>1. Tôi có thể tra cứu điểm và bảng điểm ở đâu?</Button>
+              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000'}}>1. Tôi có thể tra cứu điểm và bảng điểm ở đâu?</Button>
             </Box>
             <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
-              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400' }}>2. Sinh viên bao nhiêu điểm đủ điều kiện đạt học lực Giỏi, Khá ?</Button>
+              <Button variant = 'body1' color= '#000 !important' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>2. Sinh viên bao nhiêu điểm đủ điều kiện đạt học lực Giỏi, Khá ?</Button>
             </Box>
             <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
-              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400' }}>3. Điều kiện nhận học bổng khuyến học năm 2024 là gì?</Button>
+              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>3. Điều kiện nhận học bổng khuyến học năm 2024 là gì?</Button>
             </Box>
           </Box>
         </Box>
@@ -372,18 +420,18 @@ export function Dashboard() {
       <Grid size={3.75} offset={0} sx= {{ alignItems: 'start' }}>
         <Box sx = {{ padding: 2, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', width: '100%', maxWidth: '100%' }}>
           <Box sx = {{ paddingBottom: 1, width: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant = 'h6' color= '#000' sx ={{ textAlign: 'start', fontSize: '1rem', paddingLeft: 2 }}>Câu hỏi phổ biến trong năm</Typography>
+            <Typography variant = 'h6' color= '#000' sx ={{ textAlign: 'start', fontSize: '1rem', paddingLeft: 2, color: '#000' }}>Câu hỏi phổ biến trong năm</Typography>
             <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
-              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400' }}>1. Tôi có thể tra cứu điểm và bảng điểm ở đâu?</Button>
+              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>1. Tôi có thể tra cứu điểm và bảng điểm ở đâu?</Button>
             </Box>
             <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
-              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400' }}>2. Sinh viên bao nhiêu điểm đủ điều kiện đạt học lực Giỏi, Khá ?</Button>
+              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>2. Sinh viên bao nhiêu điểm đủ điều kiện đạt học lực Giỏi, Khá ?</Button>
             </Box>
             <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
-              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400' }}>3. Điều kiện nhận học bổng khuyến học năm 2024 là gì?</Button>
+              <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>3. Điều kiện nhận học bổng khuyến học năm 2024 là gì?</Button>
             </Box>
           </Box>
         </Box>
@@ -401,21 +449,20 @@ export function Dashboard() {
 export default Dashboard
 
 const useData = (documents) => {
-  const { id } = '421524';
 
-  function createData(id = Math.floor(Math.random() * 72658721) , name= null, chunkNumber= null, upload_date= null, updated_date= null, chunkMethod= null, enable= null, parsingStatus= null, action= null) {
-    return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action };
+  function createData(id = Math.floor(Math.random() * 72658721) ,  start_time = null, end_time = null, input_tokens = 0, output_tokens = 0, input_cached_tokens = 0, num_model_requests = 0) {
+    return { id, start_time, end_time, input_tokens, output_tokens, input_cached_tokens, num_model_requests };
   }
 
   if(!documents) return {rows: [], columns: [], loading : false}
-  const rows = Array.isArray(documents) && documents.map((document) => {
-    let _id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state
+  const rows = Array.isArray(documents) && documents.map((document, zIndex) => {
+    let start_time, end_time, input_tokens, output_tokens, input_cached_tokens, num_model_requests
     try {
-      ( {_id, document_name, amount_chunking, created_at, createdAt, updated_at, updatedAt, methods, isactive,state} = document )
+      ( {start_time, end_time, input_tokens, output_tokens, input_cached_tokens, num_model_requests} = document )
     } catch (error) {
       console.error('Có lỗi Xảy Ra Khi Đọc Tài Liệu')      
     }
-    return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['delete'] )
+    return createData(zIndex, formatTime_Time_Date_Month_Year(start_time) , formatTime_Time_Date_Month_Year(end_time) , input_tokens, output_tokens, input_cached_tokens, num_model_requests )
   })
 
   const columns = [
@@ -424,24 +471,34 @@ const useData = (documents) => {
       renderCell: (params) => params.row.id + 1
     },
     { 
-      field: 'name', headerName: 'Thời Gian Bắt Đầu', width: 120,         
+      field: 'start_time', headerName: 'Thời Gian Bắt Đầu', width: 120,       
+    },
+    { 
+      field: 'end_time', headerName: 'Thời Gian Kết Thúc', width: 150,
+    },
+    { 
+      field: 'input_tokens', headerName: 'Input Tokens', width: 150,
       renderCell: (params) => (
-        <Typography sx = {{ width: '50%', textAlign: 'center', lineHeight: '34px' }}>{params.value}</Typography>) 
+        <Typography sx = {{ padding: '0 10px', background: params.value == 0 &&  'yellow', fontSize: '0.725rem !important', fontWeight: params.value == 0 ? '800' : '#', textDecoration: params.value == 0 && 'underline', color: theme => params.value == 0 ? 'red' : theme.palette.mode == 'dark' ? '#fff' : '#000'}}>{params.value}</Typography>
+      )
     },
     { 
-      field: 'email', headerName: 'Thời Gian Kết Thúc', width: 150 
+      field: 'output_tokens', headerName: 'Output Tokens', width: 150,
+      renderCell: (params) => (
+        <Typography sx = {{  padding: '0 10px', background: params.value == 0 && 'yellow', fontSize: '0.725rem !important', fontWeight: params.value == 0 ? '800' : '#', textDecoration: params.value == 0 && 'underline', color: theme => params.value == 0 ? 'red' : theme.palette.mode == 'dark' ? '#fff' : '#000'}}>{params.value}</Typography>
+      )
     },
     { 
-      field: 'phone', headerName: 'Input Tokens', width: 150 
+      field: 'input_cached_tokens', headerName: 'Input Cached Tokens', width: 150,
+      renderCell: (params) => (
+        <Typography sx = {{  padding: '0 10px', background: params.value == 0 &&  'yellow', fontSize: '0.725rem !important', fontWeight: params.value == 0 ? '800' : '#', textDecoration: params.value == 0 && 'underline', color: theme => params.value == 0 ? 'red' : theme.palette.mode == 'dark' ? '#fff' : '#000'}}>{params.value}</Typography>
+      )
     },
     { 
-      field: 'major', headerName: 'Output Tokens', width: 150 
-    },
-    { 
-      field: 'session_number', headerName: 'Input Cached Tokens', width: 150 
-    },
-    { 
-      field: 'createdAt', headerName: 'Số Lượt Requests', width: 150 
+      field: 'num_model_requests', headerName: 'Số Lượt Requests', width: 150,
+      renderCell: (params) => (
+        <Typography sx = {{  padding: '0 10px', background: params.value == 0 &&  'yellow', fontSize: '0.725rem !important', fontWeight: params.value == 0 ? '800' : '#', textDecoration: params.value == 0 && 'underline', color: theme => params.value == 0 ? 'red' : theme.palette.mode == 'dark' ? '#fff' : '#000' }}>{params.value}</Typography>
+      ) 
     }
   ];
 
@@ -460,7 +517,7 @@ const MockData_LineChart = {
     },
     {
       data: [0, 10, 10, 90, 130, 190],
-      label: 'Số lượt hỏi đáp theo tháng'
+      label: 'Người sử dụng theo tháng'
     }
   ],
   yAxis: [{ id: 'leftAxisId' }, { id: 'rightAxisId' }],
@@ -555,6 +612,8 @@ export function PieChartWithCustomizedLabel({data = MockData_PieChart}) {
 
 import { BarChart } from '@mui/x-charts/BarChart';
 import MuiTable from '~/components/MuiTable/MuiTable';
+import { formatTime_Date_Month, formatTime_Time_Date_Month_Year } from '~/utils/GetTime';
+import usageCompletion from '~/apis/ChatGPT/usageCompletion';
 
 const uData = [3681, 459285, 2000, 2780, 1890, 2390, 3490];
 const xData = [487, 13492, 9800, 3908, 4800, 3800, 4300];
