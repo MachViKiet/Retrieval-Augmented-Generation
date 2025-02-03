@@ -118,136 +118,145 @@ export function RecommendChatPage({
       </Box> }
 
 
-      { page == 1 &&<Grid container spacing={2.5} sx = {{ height: '100%', paddingTop: 1 , '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
-      
-        <Typography variant='h3' sx = {{ 
-              fontSize: { xs: '1.3rem', md: '2rem' },
-              width: '100%',
-              textAlign:'center',
-              fontWeight: '900',
-              background: theme => theme.palette.mode != 'dark' ? 
-              'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #4654b1 20%, #423397 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #5089ad 56%, #131314 75%, #131314 100%)'
-              : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
-              color: 'transparent',
-              backgroundSize: '155% 100%',
-              WebkitBackgroundClip : 'text',
-          }}>Câu Hỏi Thường Gặp Theo Chủ Đề </Typography>
-
-        <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
-          <EmojiEventsIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
-          <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Tin Sự Kiện</Typography>
-
-          <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
-            { ['Địa điểm tổ chức chương trình Hướng dẫn viết và trình bày báo cáo đề tài án tốt nghiệp 2024',
-            'Sự Kiện NTU PEAK ASEAN năm 2024 bắt đầu khi nào ?',
-            'Thông Tin Sự Kiện Hack A Day'].map((question, zIndex) => (
-              <Button  key = {zIndex*8752152145}
-              onClick={async () => { ChatAction && await ChatAction(question)}}
-              sx = {{...BLOCK_STYLE,   
-                border: theme => theme.palette.mode == 'dark' ? '0.2px solid #ffffff5c' : '0.2px solid #00000026',
-                fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
-            )) }
-          </Box>
-        </Grid>
-
-        <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
-          <SchoolIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
-          <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Tin Học Bổng</Typography>
-          <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
-            { ['Chương trình New Southbound Policy Elite Study Program - Đại Học Quốc lập Chung Hsing',
-              'Chương trình học bổng của Ninety Eight 2024',
-            'Thông tin học bổng MEXT 2023'].map((question, zIndex) => (
-              <Button  key = {zIndex*875215215}
-              onClick={async () => { ChatAction && await ChatAction(question)}}
-              sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
-            )) }
-          </Box>
-        </Grid>
-
-        <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
-          <AssuredWorkloadOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
-          <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Tin Tuyển Dụng</Typography>
-          <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
-            { ['Tuyển Dụng ZaloPay Tech Fresher 2023',
-            '[HCM] FPT SOFTWARE TUYỂN DỤNG 30 FRESHER JAVA/AEM',
-            'GOLDEN OWL SOLUTION tuyển dụng IT INTERN 2023'].map((question, zIndex) => (
-              <Button  key = {zIndex*8752145}
-              onClick={async () => { ChatAction && await ChatAction(question)}}
-              sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
-            )) }
-          </Box>
-        </Grid>
-
-      </Grid>}
-
-
-      { page == 2 &&<Grid container  spacing={2.5} sx = {{ height: '100%', paddingTop: 1 , '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
+      { page == 1 &&
+      <Box sx = {{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Grid container spacing={2.5} sx = {{ height: '100%', maxWidth: '650px', width: '100%', paddingTop: 1 , '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
         
-        <Typography variant='h3' sx = {{ 
-              fontSize: { xs: '1.3rem', md: '2rem' },
-              width: '100%',
-              textAlign:'center',
-              background: theme => theme.palette.mode != 'dark' ? 
-              'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #4654b1 20%, #423397 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #5089ad 56%, #131314 75%, #131314 100%)'
-              : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
-              color: 'transparent',
-              backgroundSize: '155% 100%',
-              WebkitBackgroundClip : 'text',
-              fontWeight: '900',
-          }}>Câu Hỏi Thường Gặp Theo Chủ Đề </Typography>
+          <Typography variant='h3' sx = {{ 
+                fontSize: { xs: '1.3rem', md: '2rem' },
+                width: '100%',
+                textAlign:'center',
+                fontWeight: '900',
+                background: theme => theme.palette.mode != 'dark' ? 
+                'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #4654b1 20%, #423397 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #5089ad 56%, #131314 75%, #131314 100%)'
+                : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
+                color: 'transparent',
+                backgroundSize: '155% 100%',
+                WebkitBackgroundClip : 'text',
+            }}>Câu Hỏi Thường Gặp Theo Chủ Đề </Typography>
 
-        <Grid size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
-          <BookmarksOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
-          <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Báo Giáo Vụ</Typography>
-          <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
-            { [
-              'DSHV đăng ký đề tài luận văn Thạc sĩ khóa 31/2021',
-              '[CNTN] Điểm bảo vệ Khóa luận tốt nghiệp lớp CNTN2019',
-              'Thông báo về việc cập nhật thông tin chuyên ngành sinh viên bậc Đại học hệ chính quy – Khóa 2020',
-          ].map((question, zIndex) => (
-            <Button  key = {zIndex*875222152145}
-              onClick={async () => { ChatAction && await ChatAction(question)}}
-              sx = {{...BLOCK_STYLE, border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
-            )) }
-          </Box>
-        </Grid>
+          <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
+            <EmojiEventsIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
+            <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Tin Sự Kiện</Typography>
 
-        <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
-          <ViewTimelineOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
-          <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Sổ Tay Sinh Viên</Typography>
-          <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
-            { ['Các Tuyến Xe Buýt Lưu Thông Trong Đại Học Quốc Gia  ',
-            'Các quy định về tổ chức đào tạo, quản lý sinh viên 2024',
-            'Quy chế đào tạo cho trình độ đại học Trường Đại Học Khoa Học Tự Nhiên, Đại Học Quốc Gia TPHCM'
-          ].map((question, zIndex) => (
-            <Button  key = {zIndex*42152145}
-              onClick={async () => { ChatAction && await ChatAction(question)}}
+            <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
+              { ['Địa điểm tổ chức chương trình Hướng dẫn viết và trình bày báo cáo đề tài án tốt nghiệp 2024',
+              'Sự Kiện NTU PEAK ASEAN năm 2024 bắt đầu khi nào ?',
+              'Thông Tin Sự Kiện Hack A Day'].map((question, zIndex) => (
+                <Button  key = {zIndex*8752152145}
+                onClick={async () => { ChatAction && await ChatAction(question, 'events')}}
+                sx = {{...BLOCK_STYLE,   
+                  border: theme => theme.palette.mode == 'dark' ? '0.2px solid #ffffff5c' : '0.2px solid #00000026',
+                  fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                  borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
+              )) }
+            </Box>
+          </Grid>
+
+          <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
+            <SchoolIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
+            <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Tin Học Bổng</Typography>
+            <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
+              { ['Chương trình New Southbound Policy Elite Study Program - Đại Học Quốc lập Chung Hsing',
+                'Chương trình học bổng của Ninety Eight 2024',
+              'Thông tin học bổng MEXT 2023'].map((question, zIndex) => (
+                <Button  key = {zIndex*875215215}
+                onClick={async () => { ChatAction && await ChatAction(question, ['scholarship'])}}
                 sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
-            )) }
-          </Box>
-        </Grid>
+                  borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
+              )) }
+            </Box>
+          </Grid>
 
-        <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
-          <AccessTimeOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
-          <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Cập Nhật Thời Khóa Biểu</Typography>
-          <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
-            { ['Lịch thi kết thúc học phần 2 các lớp cao học khóa 32/2022',
-            'Thông báo cập nhật lịch học lớp Kỹ năng mềm HK3/2022-2023',
-            'Đổi phòng lớp Xử lý phân tích dữ liệu trực tuyến 20_1 HK1/23-24'].map((question, zIndex) => (
-              <Button  key = {zIndex*87145}
-                onClick={async () => { ChatAction && await ChatAction(question)}}
+          <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
+            <AssuredWorkloadOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
+            <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Tin Tuyển Dụng</Typography>
+            <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
+              { ['Tuyển Dụng ZaloPay Tech Fresher 2023',
+              '[HCM] FPT SOFTWARE TUYỂN DỤNG 30 FRESHER JAVA/AEM',
+              'GOLDEN OWL SOLUTION tuyển dụng IT INTERN 2023'].map((question, zIndex) => (
+                <Button  key = {zIndex*8752145}
+                onClick={async () => { ChatAction && await ChatAction(question, ['recruitment'])}}
                 sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
-                borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
-            )) }
-          </Box>
-        </Grid>
+                  borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
+              )) }
+            </Box>
+          </Grid>
 
-      </Grid>}
+        </Grid>
+      </Box>
+      }
+
+
+      { page == 2 &&
+      <Box sx = {{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Grid container  spacing={2.5} sx = {{ height: '100%', maxWidth: '650px', width: '100%', paddingTop: 1 , '--Grid-rowSpacing': { md: 'calc(2 * var(--mui-spacing))', xs: 1 } }}>
+          
+          <Typography variant='h3' sx = {{ 
+                fontSize: { xs: '1.3rem', md: '2rem' },
+                width: '100%',
+                textAlign:'center',
+                background: theme => theme.palette.mode != 'dark' ? 
+                'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #4654b1 20%, #423397 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #5089ad 56%, #131314 75%, #131314 100%)'
+                : 'linear-gradient(78deg, #7cff60 4%, color-mix(in oklch, #8bffcc, #00f50f) 22%, #f3ff00 45%, color-mix(in oklch, #efff34, #daf24f) 67%, #f4ff12 100.2%)',
+                color: 'transparent',
+                backgroundSize: '155% 100%',
+                WebkitBackgroundClip : 'text',
+                fontWeight: '900',
+            }}>Câu Hỏi Thường Gặp Theo Chủ Đề </Typography>
+
+          <Grid size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
+            <BookmarksOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
+            <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Thông Báo Giáo Vụ</Typography>
+            <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
+              { [
+                'DSHV đăng ký đề tài luận văn Thạc sĩ khóa 31/2021',
+                '[CNTN] Điểm bảo vệ Khóa luận tốt nghiệp lớp CNTN2019',
+                'Thông báo về việc cập nhật thông tin chuyên ngành sinh viên bậc Đại học hệ chính quy – Khóa 2020',
+            ].map((question, zIndex) => (
+              <Button  key = {zIndex*875222152145}
+                onClick={async () => { ChatAction && await ChatAction(question, ['academic_affairs'])}}
+                sx = {{...BLOCK_STYLE, border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                  borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
+              )) }
+            </Box>
+          </Grid>
+
+          <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
+            <ViewTimelineOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
+            <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Sổ Tay Sinh Viên</Typography>
+            <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
+              { ['Các Tuyến Xe Buýt Lưu Thông Trong Đại Học Quốc Gia  ',
+              'Các quy định về tổ chức đào tạo, quản lý sinh viên 2024',
+              'Quy chế đào tạo cho trình độ đại học Trường Đại Học Khoa Học Tự Nhiên, Đại Học Quốc Gia TPHCM'
+            ].map((question, zIndex) => (
+              <Button  key = {zIndex*42152145}
+                onClick={async () => { ChatAction && await ChatAction(question, ['academic_affairs'])}}
+                sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                  borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
+              )) }
+            </Box>
+          </Grid>
+
+          <Grid  size={{ xs: 4, md: 4 }} sx = {{ height: '100%'}}>  
+            <AccessTimeOutlinedIcon sx = {{ color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93', marginBottom: '6px', fontSize: '1.5rem' }}/>
+            <Typography sx = {{ fontWeight: '600', textAlign: 'center', color: theme => theme.palette.mode == 'dark' ? '#c0c0c0' : '#7b7c93' }}>Cập Nhật Thời Khóa Biểu</Typography>
+            <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
+              { ['Lịch thi kết thúc học phần 2 các lớp cao học khóa 32/2022',
+              'Thông báo cập nhật lịch học lớp Kỹ năng mềm HK3/2022-2023',
+              'Đổi phòng lớp Xử lý phân tích dữ liệu trực tuyến 20_1 HK1/23-24'].map((question, zIndex) => (
+                <Button  key = {zIndex*87145}
+                  onClick={async () => { ChatAction && await ChatAction(question, ['timetable'])}}
+                  sx = {{...BLOCK_STYLE,   border: theme => theme.palette.mode == 'dark' ? '1px solid #ffffff5c' : '1px solid #00000026',fontSize: '0.725rem',textAlign: 'center', width: 'fit-content',
+                  borderRadius: '8px', paddingY: 1, paddingX: 0.5, width: '100%'}}>{question}</Button>
+              )) }
+            </Box>
+          </Grid>
+
+        </Grid>      
+      </Box>
+      }
+
 
       <Box sx = {{ display: 'flex', position: 'absolute', bottom: 0, right: 0, width: '100%', justifyContent: 'space-between', padding: 1.5 }}>
         <Button onClick={() => setPage(prev => prev - 1)} sx = {{ '--mui-palette-action-disabled': theme => theme.palette.mode == "dark" && '#ffffff4d', color: theme => theme.palette.text.secondary }} startIcon= {<KeyboardDoubleArrowLeftOutlinedIcon/>} disabled = {page === 0}>Trở Về</Button>

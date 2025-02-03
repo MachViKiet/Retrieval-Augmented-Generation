@@ -333,6 +333,6 @@ def enhance_document():
             if k == 'article' or k == 'chunks':
                 continue
             metadata[k] = v
-            result.pop(k)
+            #result.pop(k)
         result['metadata'] = metadata
         return jsonify(result)

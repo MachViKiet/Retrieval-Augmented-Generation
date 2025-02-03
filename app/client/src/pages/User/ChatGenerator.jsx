@@ -111,7 +111,7 @@ function NewChatModal({ modalHandler = null }) {
 
 const ChatWindow = styled(Box)(({theme}) => ({ position: 'absolute', bottom: theme.spacing(0), padding: theme.spacing(2), paddingBottom: theme.spacing(1), paddingTop: theme.spacing(0), right: theme.spacing(0), width: '100%', borderRadius: '15px' }))
 
-const BlockStyle = { bgColor_dark: 'linear-gradient(180deg, #8d96b045 0%, #8d96b045 100%)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #b3d3fd 100%)' }
+const BlockStyle = { bgColor_dark: 'rgb(70 77 99)', bgColor_light: 'linear-gradient(180deg, #ffffff 0%, #b3d3fd 100%)' }
 
 import VoicemailOutlinedIcon from '@mui/icons-material/VoicemailOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -497,18 +497,21 @@ export function ChatGenerator() {
               padding: '0 !important', padding: 1,
               paddingBottom: '32px !important',
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
-              display: { xs: 'none', md: 'block' }
+              display: { xs: 'none', md: 'block' },
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "start",
             }}>
               <Typography sx ={{ fontSize: '0.725rem', textAlign: 'start', padding: 1, fontWeight: '600' }}>Những câu hỏi phổ biến</Typography>
               {[
                 'Bao nhiêu điểm thì sinh viên học lực Giỏi ?',
                 'Bao nhiêu điểm thì sinh viên học lực Khá ?',
                 'Bao nhiêu điểm thì sinh viên học lực Trung Bình ?',
-                'Điều kiện nhận học bổng ?',
+                'Điều kiện nhận học bổng khuyến học năm 2024 ?',
                 'Để đạt loại tốt điểm rèn luyện cần bao nhiêu điểm?',
-                'Nếu sinh viên không đạt ở một học phần, phải làm gì?'].map((data) => (
+                'Nếu sinh viên không đạt ở học phần, phải làm gì?'].map((data) => (
                 <Button onClick = {() => setRecommendQuestion(data) } startIcon = {<ChatBubbleOutlineIcon/>} 
-                sx = {{ fontSize: '0.725rem', textAlign: 'start', color: 'inherit' }}>
+                sx = {{ width: 'fit-content', fontSize: '0.725rem', textAlign: 'start', color: theme => theme.palette.text.secondary, }}>
                   {data}
                 </Button>
               ))}
@@ -532,7 +535,7 @@ export function ChatGenerator() {
               { (apiHandler.history || Conservations == null ) && <ChatDisplay loading = {true} /> }
 
               { !apiHandler.history && Conservations && Conservations.length === 0 && !messageHandler.isProcess && 
-                <RecommendChatPage loading={!isRcmt || sessions == null} username = {user?.name} ChatAction = {ChatAction}/> }
+                <RecommendChatPage loading={!isRcmt || sessions == null} username = {user?.name} ChatAction = {ChatAction} ChatAction_with_collection={ChatAction_with_collection}/> }
 
               { !apiHandler.history && Conservations && Conservations.map((conservation) => {
                 return <div key={conservation?._id}>

@@ -184,6 +184,11 @@ export default function MuiTable({ useData, getRowHeight, rowHeight, onRowClick,
         }}
         // pagination // Kích hoạt phân trang
         // autoPageSize
+
+        
+        sx = {{ 
+          '--mui-palette-action-active' : '#000'
+         }}
       />
   );
 }

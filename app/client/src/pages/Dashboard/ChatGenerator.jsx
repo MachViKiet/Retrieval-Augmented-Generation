@@ -461,7 +461,7 @@ export function ChatGenerator() {
             { (apiHandler.history || !Conservations == null ) && <ChatDisplay loading /> }
 
             { !apiHandler.history && Conservations && Conservations.length === 0 && !messageHandler.isProcess &&
-              <RecommendChatPage loading={!isRcmt || sessions == null}  username = {user?.name} ChatAction = {ChatAction}/> }
+              <RecommendChatPage loading={!isRcmt || sessions == null}  username = {user?.name} ChatAction = {ChatAction} ChatAction_with_collection={ChatAction_with_collection}/> }
 
             { !apiHandler.history && Conservations && Conservations.map((conservation) => {
               return <div key={conservation?._id}>

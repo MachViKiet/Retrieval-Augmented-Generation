@@ -27,20 +27,21 @@ function AccountManager() {
   }, [])
 
   return (
-    <Box sx ={{ width: '100%', height: '100%', padding: 2 }}>
-      <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 1.2 }}>
-        <Typography variant='h1' 
-          sx = {{ fontSize: '1.8rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
-            <PersonPinOutlinedIcon fontSize='large'/> Danh Sách Người Dùng </Typography>
-      </Box>
-      <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 400px)', height: '100%',  width: '100%', background: 'transparent' }}>
-        <MuiTable useData = {useData([])}/>
-      </Box>
+    <UnknowPage/>
+    // <Box sx ={{ width: '100%', height: '100%', padding: 2 }}>
+    //   <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 1.2 }}>
+    //     <Typography variant='h1' 
+    //       sx = {{ fontSize: '1.8rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
+    //         <PersonPinOutlinedIcon fontSize='large'/> Danh Sách Người Dùng </Typography>
+    //   </Box>
+    //   <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 400px)', height: '100%',  width: '100%', background: 'transparent' }}>
+    //     <MuiTable useData = {useData([])}/>
+    //   </Box>
 
-      <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 180px)', height: '100%',  width: '100%', background: 'transparent' }}>
-        <MuiTable useData = {useData([])}/>
-      </Box>
-    </Box>
+    //   <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 180px)', height: '100%',  width: '100%', background: 'transparent' }}>
+    //     <MuiTable useData = {useData([])}/>
+    //   </Box>
+    // </Box>
   )
 }
 

@@ -19,7 +19,7 @@ const TextField_Custom = styled(TextField)(({theme}) => ({
       border: 'none'
     },
     '.MuiOutlinedInput-input': {
-        color: theme.palette.text.secondary,
+        color: '#000',
         fontSize: '0.825rem'
     },
   }

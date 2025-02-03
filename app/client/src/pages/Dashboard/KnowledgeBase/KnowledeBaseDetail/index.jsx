@@ -36,8 +36,8 @@ const useData = (documents, deleteDocument = null) => {
     } catch (error) {
       console.error('Có lỗi Xảy ra khi đọc tài liệu')      
     }
-    return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), 
-    formatTime(updated_at ? updated_at : updatedAt), methods, document?.isactive ||  document?.is_active ,state, 
+    return createData(_id, document_name, amount_chunking, formatTime(document?.created_at || document?.createdAt), 
+    formatTime(document?.updated_at || document?.updatedAt), methods, document?.isactive ||  document?.is_active ,state, 
     [{code: 'see', action: directUrl},
       {code: 'delete', action: deleteDocument}], url )
   })

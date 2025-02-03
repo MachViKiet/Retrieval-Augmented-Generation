@@ -5,14 +5,14 @@ import TopicOutlinedIcon from '@mui/icons-material/TopicOutlined';
 import MuiTable from '~/components/MuiTable/MuiTable';
 import { useSelector } from 'react-redux';
 import Block from '~/components/Mui/Block';
-import { renderTableAction } from '~/components/MuiTable/MuiTableAction';
 import { useDocument } from '~/apis/Document';
 import ExternalWebsite from '~/components/ExternalWebsite ';
 import MemoryIcon from '@mui/icons-material/Memory';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+
+const domain = import.meta.env.VITE_SERVER
+
 function createData(id, chunk) {
   return { id, chunk};
 }
@@ -84,7 +84,7 @@ function DatasetDetail() {
   },[token])
 
   const loadCollectionSchema = async (collection_id, token) => {
-    return useCollection.getCollectionSchema(collection_id, token).then((document) => document )
+    return useCollection.getCollectionSchema(collection_id, token).then((document) => { console.log('collection schema: ', document); return document } )
   }
 
   const loadDocumentWithChunk = async (document_id, token) => {
@@ -176,6 +176,23 @@ function DatasetDetail() {
           message: 'Tạo Dữ Liệu Tự Động Thành Công!'
         })
         console.log('Dữ liệu được tạo: ',data)
+        console.log('Tài Liệu trước đó: ', documentWithChunk)
+
+        setDocumentWithChunk({...documentWithChunk, metadata: data.metadata, chunks: data.chunks.map((chunk) => {
+          return {
+            id: CreateID(),
+            chunk: chunk
+          }
+        })})
+
+        DocumentUpdate({
+          id: id,
+          update: {
+            chunks: documentWithChunk?.chunks,
+            metadata: documentWithChunk?.metadata
+          }
+        })
+
       }
     )
     .catch(() => {
@@ -189,13 +206,13 @@ function DatasetDetail() {
 
   const actions = [
     { icon: <RemoveRedEyeOutlinedIcon />, name: 'Phóng To Tài Liệu', action: () => {
-      if(documentWithChunk?.type && documentWithChunk?.type == "Upload") {
-        window.open(`${domain}/documents?name=${documentWithChunk?.name}`, '_blank');
+      if(documentWithChunk?.document_type && documentWithChunk?.document_type == "Upload") {
+        window.open(`${domain}/documents?name=${documentWithChunk?.document_name_in_storage}`, '_blank');
       } else {
         window.open(documentWithChunk?.url, '_blank');
       }
     }},
-    { icon: <AutoAwesomeIcon />, name: 'Cải Tiến Dữ Liệu Tự Động', action: () => {
+    { icon: <AutoAwesomeIcon />, name: 'Cải Tiến Dữ Liệu Bằng AI', action: () => {
       getModal( "Bạn Có Muốn Dữ Liệu Sẽ Được Làm Giàu Tự Động ? ", 
         "Quá trình sẽ mất một chút thời gian. Các thông tin đoạn cắt, metadata sẽ được tự động viết lại cho phù hợp với ngữ cảnh. Tuy nhiên, hãy luôn nhớ kiểm tra lại dữ liệu bạn nhé !",
         "Tiếp Tục", EnhanceButton )
@@ -424,7 +441,7 @@ function SettingDocumentModal({ document, modalHandler = null }) {
                     }
                     document.setName(e.target.value) 
                   }}
-                    sx = {{  color: 'inherit', '&:before, &:after':{ borderBottom: `1px solid #fff` } }}/>
+                    sx = {{  color: 'inherit', '--mui-palette-common-onBackgroundChannel': '0 0 0' }}/>
                 </FormControl>
 
                 <Grid container spacing={3} sx = {{ width: '100%' }}>
@@ -454,12 +471,10 @@ function SettingDocumentModal({ document, modalHandler = null }) {
                         })}
                       </Box>
 
-                      // document.getMetadata()?.[data.key] && setDataList(prev => ({ ...prev, [data.key]: document.getMetadata()?.[data.key] }))
-
                       return <>
                         <Grid size={12}>
                           <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
-                            <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
+                            <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data?.key)}</InputLabel>
                             <Input endAdornment = {data.value.description && icon} startAdornment = {dataList?.[name] && dataList?.[name] != [] && ChipList}
                               id="Description" 
                               // value={document.getMetadata()?.[data.key]} 
@@ -477,7 +492,7 @@ function SettingDocumentModal({ document, modalHandler = null }) {
                                   e.target.value = ''
                                 }
                               }}
-                              sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
+                              sx = {{ color: 'inherit', '--mui-palette-common-onBackgroundChannel': '0 0 0' }}/>
                           </FormControl>
                         </Grid>   
                       </>
@@ -486,7 +501,7 @@ function SettingDocumentModal({ document, modalHandler = null }) {
                     if(type == 'int') {
                       return  <Grid size={6}>
                       <FormControl variant="standard" sx = {{ width: '100%', color: 'inherit' }}>
-                        <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
+                        <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data?.key)}</InputLabel>
                         <Input endAdornment = {data.value.description && icon}
                           id="Description" value={document.getMetadata()?.[data.key]} 
                           onChange={(e) => {
@@ -497,7 +512,7 @@ function SettingDocumentModal({ document, modalHandler = null }) {
                             setError_message(`Trường dữ liệu ${name} phải có giá trị là số nguyên`)
                             e.target.value = document.getMetadata()?.[data.key] || ''
                           }}
-                          sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
+                          sx = {{ color: 'inherit', '--mui-palette-common-onBackgroundChannel': '0 0 0'}}/>
                       </FormControl>
                     </Grid> 
                     }
@@ -508,7 +523,7 @@ function SettingDocumentModal({ document, modalHandler = null }) {
                         <InputLabel sx = {{  color: 'inherit !important' }}>{useCode(data.key)}</InputLabel>
                         <Input endAdornment = {data.value.description && icon}
                           id="Description" value={document.getMetadata()?.[data.key]} onChange={(e) => document.setMetadata({[data.key]: e.target.value}) }
-                          sx = {{ color: 'inherit', '&:before, &:after':{ borderBottom:`1px solid #fff` } }}/>
+                          sx = {{ color: 'inherit', '--mui-palette-common-onBackgroundChannel': '0 0 0'}}/>
                       </FormControl>
                     </Grid>   
                   })
@@ -522,7 +537,7 @@ function SettingDocumentModal({ document, modalHandler = null }) {
               </>
             }
           </Box>
-        <Typography sx = {{ color: '#ff6262', fontWeight: '900' }}>{error_message}</Typography>
+        <Typography sx = {{ color: 'red', fontWeight: '900' }}>{error_message}</Typography>
         </DialogContent>
         <DialogActions>
           { modalHandler.buffer ? 

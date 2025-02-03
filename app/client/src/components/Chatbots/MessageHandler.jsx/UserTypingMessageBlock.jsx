@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { motion } from "framer-motion"
 import ReactMarkdown from 'react-markdown';
 import { BubbleLeft } from '../MessageEffect/BubbleLeft';
@@ -7,6 +7,9 @@ import { Avatar, Box } from '@mui/material';
 import botAvatar from '~/assets/botAvatar.png'
 
 function UserTypingMessageBlock({messageHandler}) {
+  useEffect(() => {
+    console.log(messageHandler?.stream_message)
+  }, [messageHandler?.stream_message])
   return ( messageHandler?.stream_state && 
     <motion.div
       initial={{ transform: "scale(0)" }}

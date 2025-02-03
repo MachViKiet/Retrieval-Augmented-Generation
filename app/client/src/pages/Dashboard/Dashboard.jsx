@@ -60,7 +60,7 @@ function Dashboard() {
               }, 500)
             }}
             sx = {{ '&:hover': { cursor: 'pointer' }, fontSize: '2.4rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
-              <HomeOutlinedIcon fontSize='large'/> Trang Chủ </Typography>
+              <HomeOutlinedIcon fontSize='large'/> Dashboard </Typography>
         </Box>
         <Box sx = {{...Container_Style, gap: { md: 3, xs: 1 } }}>
 

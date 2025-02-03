@@ -97,7 +97,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
           <Avatar alt="User" sx = {{ display: { xs: 'none', md: 'block' } }} src=
             {user?.avatar ? user.avatar : 
             ( userAvatar ? userAvatar : (userAvatar ? userAvatar : "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png" ))} />
-            <ChatMessage sx = {{   
+          <ChatMessage sx = {{   
               background: 'linear-gradient(45deg, rgba(73,124,246,1) 47%, rgba(144,95,247,1) 100%)',
               marginRight: {md: '20px', xs: 0},
               color: '#fff',
@@ -211,7 +211,7 @@ function ChatDisplay({ loading = null, action = null, user = null , conservation
               <Box sx = {{  display: 'flex', flexWrap: 'wrap', gap: 1, paddingBottom: 1, rowGap: '4px' }}>
                 {conservation?.source && conservation?.source.map((data, zIndex) => {
                   return <Box key = {zIndex*12650} sx = {ModelButton_Style}
-                    onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#fff'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>
+                    onClick = {() => { setOpenDetail(true); setContent(<a href={data?.url} target="_blank" rel="noopener noreferrer" style={{color: '#000'}}>{data?.url}</a>)  } } > {useCode(data?.collection_name)} </Box>
                 })}
               </Box>
               <Typography component='p' sx = {{ fontSize: '0.725rem !important', textAlign: 'end' }}>{getTime(conservation?.create_at ? conservation.create_at : conservation?.createdAt)}</Typography>
