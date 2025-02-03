@@ -9,7 +9,8 @@ export const enhanceDocumentAPI = async (id = '', req = null) => {
     formData.append('collection_name', req?.body.collection_name )
     formData.append('article', req?.body.article )
     const res = await useKHTN_Chatbot().enhance_file(formData)
-      .catch((err) => { console.log(err) ; throw buildErrObject(422, err.message) })
+      .catch((err) => { throw buildErrObject(422, 'Không thể yêu cầu enhance từ chatbot', err) })
+
     return res
   } catch (error) {
     throw buildErrObject(422, error.message)

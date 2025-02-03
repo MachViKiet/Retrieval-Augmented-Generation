@@ -359,11 +359,11 @@ function MainLayout() {
           display: 'flex',
           justifyContent: 'center'
         }}> 
-        <marquee behavior="scroll" style= {{ width: 'fit-content' }} direction="left" id="mymarquee" scrollamount="10">
+        <marquee behavior="scroll" style= {{ width: '100vw' }} direction="left" id="mymarquee" scrollamount="10">
         {/* <p>This the the sample</p>
         <p>of my text</p> */}
         <Typography sx = {{ overflow: '', textOverflow: 'ellipsis', textWrap: 'nowrap', paddingX: '9px', color: theme => theme.palette.mode == 'dark' ? '#ffffff85': '#33333385', width: '100%', textAlign: 'center', lineHeight: '30px' }}>
-          ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa</Typography>
+          ĐH Khoa Học Tự Nhiên, Luận văn 2024 @ Mạch Vĩ Kiệt, Nguyễn Duy Đăng Khoa - Xây Dựng Hệ Thống Tra Cứu Dữ Liệu Nội Bộ</Typography>
         </marquee>
         </Box> }
 
