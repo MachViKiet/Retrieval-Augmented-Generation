@@ -9,7 +9,7 @@ import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
 const navList_1 = [
   {
     id: 234,
-    text: "Trang chủ",
+    text: "Dashboard",
     icon: HomeOutlinedIcon,
     link: "/dashboard",
   },
