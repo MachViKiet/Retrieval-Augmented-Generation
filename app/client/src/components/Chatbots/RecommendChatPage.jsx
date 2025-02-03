@@ -152,8 +152,6 @@ export function RecommendChatPage({
         })}
         </Box>
       </Box> }
->>>>>>> 9919f9dbbf0c4cc6dc11898802c638d922518f29
-
     </Box>
   )
 }

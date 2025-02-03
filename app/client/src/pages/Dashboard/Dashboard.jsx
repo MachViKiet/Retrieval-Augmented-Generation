@@ -18,6 +18,11 @@ export function Dashboard() {
 
   useEffect(() => {
     document.title = 'Chatbot - Trang Chủ';
+    dashboard.navigate.active(234)
+    
+    return () => (
+      dashboard.navigate.active('#')
+    )
   }, [])
 
   useEffect(() => {
@@ -39,9 +44,8 @@ export function Dashboard() {
         let inputCachedTokens = []
         let numModelRequests = []
   
-        data['data'].reverse().forEach(bucket => {
+        data['data'].forEach(bucket => {
             dateLabel.push(formatTime_Date_Month(bucket.start_time))
-            console.log(bucket)
             if(bucket['results'].length == 0) {
               inputTokens.push(0)
               outputTokens.push(0)
