@@ -209,6 +209,7 @@ def generate():
     user_profile = request.form['user_profile'] # User profile
     max_tokens = 1500 
     model = current_app.config['CHAT_MODEL']
+    database = current_app.config['DATABASE']
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
     answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context)
