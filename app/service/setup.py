@@ -5,6 +5,9 @@ from routes import initRoutes
 from errorHandler import InvalidDataError
 from flask_cors import CORS
 
+from models.model import ChatModel, PhoQueryRouter
+from utils import rag_utils, query_routing
+
 # Load environment variables from .env file
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 load_dotenv()
@@ -56,5 +59,24 @@ def createApp():
     # app.config["RERANKING_MODEL"] = FlagReranker(
     # "BAAI/bge-reranker-v2-m3", use_fp16=True
     # )
-
+    print("---LOADING ASSETS---")
+    model = ChatModel(provider=os.getenv("PROVIDER"), model_id=os.getenv("CHAT_MODEL_ID"))
+    app.config["CHAT_MODEL"] = model
+    print("Chat model loaded.")
+    encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
+    app.config["ENCODER"] = encoder
+    print("Encoder loaded.")
+    pho_queryrouter = PhoQueryRouter()
+    app.config["PHO_QUERYROUTER"] = pho_queryrouter
+    print("Query Router loaded.")
+    database = rag_utils.MilvusDB(
+        host=os.getenv('MILVUS_HOST', ""), port=os.getenv('MILVUS_PORT', ""),
+        user=os.getenv('MILVUS_USERNAME', ""), password=os.getenv('MILVUS_PASSWORD', ""),
+        uri=os.getenv('MILVUS_URI', ""), token=os.getenv('MILVUS_TOKEN', "")
+    )
+    database.load_collection('student_handbook', persist=True)
+    app.config["DATABASE"] = database
+    print("Database loaded.")
+    # return jsonify({})
+    print("All assets loaded.")
     return app
