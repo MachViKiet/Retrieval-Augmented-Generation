@@ -186,9 +186,9 @@ class MilvusDB:
             collection = Collection(name)
             collection.load()
 
-        for c in connections._fetch_handler('default').list_collections():
-            if c not in self.persistent_collections and c != name:
-                Collection(c).release()
+        # for c in connections._fetch_handler('default').list_collections():
+        #     if c not in self.persistent_collections and c != name:
+        #         Collection(c).release()
         return Status()
     
     def similarity_search(self, collection:str, query_embeddings, k: int = 4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None):

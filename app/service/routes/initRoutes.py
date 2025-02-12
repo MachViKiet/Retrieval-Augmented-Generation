@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, Response, stream_with_context
+from flask import Blueprint, request, jsonify, Response, stream_with_context, current_app
 from flask_cors import cross_origin
 from controllers.exampleController import authController
 from werkzeug.utils import secure_filename
@@ -65,7 +65,8 @@ def determine_collection():
     query = request.form['query']
     history = json.loads(request.form['history']) # Conversation history
     threshold = 0.5
-    pho_queryrouter = PhoQueryRouter()
+    #pho_queryrouter = PhoQueryRouter()
+    pho_queryrouter = current_app.config['PHO_QUERYROUTER']
     #----------------------------------
     conversation = ""
     for h in history:
@@ -93,6 +94,8 @@ def extract_metadata():
     schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
     history = json.loads(request.form['history']) # Conversation history
     n_new_queries = 2
+    model = current_app.config['CHAT_MODEL']
+    database = current_app.config['DATABASE']
     #----------------------------------
     conversation = ""
     for h in history:
@@ -139,7 +142,9 @@ def search():
     except json.JSONDecodeError:
         filter_expressions = None
     k = 4
-    encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
+    #encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
+    encoder = current_app.config['ENCODER']
+    database = current_app.config['DATABASE']
     #----------------------------------
     database.load_collection(chosen_collection)
     # output_fields = {
@@ -203,6 +208,7 @@ def generate():
     theme = request.form['collection_name'] # Collection name
     user_profile = request.form['user_profile'] # User profile
     max_tokens = 1500 
+    model = current_app.config['CHAT_MODEL']
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
     answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context)
@@ -230,6 +236,7 @@ def get_file():
 def get_collection_schema():
     ##PARAMS
     collection_name = request.args.get('collection_name')
+    database = current_app.config['DATABASE']
     #-------------------------------------------
     schema = database.get_collection_schema(collection_name, readable=True)
     return jsonify(schema)
@@ -274,6 +281,7 @@ def delete_file():
     ##PARAMS
     document_id = request.form['document_id']
     collection_name = request.form['collection_name']
+    database = current_app.config['DATABASE']
     #-------------------------------------------
     status, msg = database.delete_document(document_id=document_id, collection_name=collection_name)
     if status:
@@ -319,9 +327,9 @@ def enhance_document():
     ##PARAMS
     article = request.form['article']
     collection_name = request.form['collection_name']
+    model = current_app.config['CHAT_MODEL']
     #-------------------------------------------
     #TODO: Enhance document
-    print(article)
     pydantic_schema = database.pydantic_collections[collection_name]
     result = rag_utils.enhance_document(article=article, model=model, collection_name=collection_name, pydantic_schema=pydantic_schema)
     if result != -1:
