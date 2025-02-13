@@ -318,6 +318,7 @@ def create_collection():
     }
     custom_meta = json.loads(request.form['metadata'])
     metadata.update(custom_meta)
+    database = current_app.config['DATABASE']
     #-------------------------------------------
     database.create_collection(name, description, metadata)
     return jsonify({'collection_name': name})
@@ -329,6 +330,7 @@ def enhance_document():
     article = request.form['article']
     collection_name = request.form['collection_name']
     model = current_app.config['CHAT_MODEL']
+    database = current_app.config['DATABASE']
     #-------------------------------------------
     #TODO: Enhance document
     pydantic_schema = database.pydantic_collections[collection_name]
