@@ -120,7 +120,7 @@ class ChatModel:
             if history is None or len(history) == 0:
                 prompt = prompts['CONTEXT_NO_HISTORY']
                 print("Chosen prompt style: CONTEXT_NO_HISTORY")
-                formatted_prompt = prompt.format(context=context, question=question)
+                formatted_prompt = prompt.format(context=context, question=question, theme=theme, theme_context=theme_context, user_profile=user_profile)
             else:
                 prompt = prompts['CONTEXT_HISTORY_FULL']
                 print("Chosen prompt style: CONTEXT_HISTORY_FULL")
