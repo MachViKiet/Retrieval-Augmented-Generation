@@ -70,7 +70,7 @@ export function RecommendChatPage({
               backgroundSize: '155% 100%',
               WebkitBackgroundClip : 'text',
               textAlign: 'start',
-          }}>Xin Chào Bạn, {username} !</Typography> }
+          }}>Xin Chào Bạn, {username}!</Typography> }
 
         <Typography variant='h3' sx = {{ 
             fontSize: { xs: '1.3rem', md: '1.5rem' },
