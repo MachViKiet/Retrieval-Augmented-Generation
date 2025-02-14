@@ -72,12 +72,18 @@ def determine_collection():
     for h in history:
         conversation += h['question'] + ". "
     conversation += query
-    prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(conversation + query))[0]
+    segmented_query = query_routing.segment_vietnamese(conversation + query)
+    if type(segmented_query) is list:
+        segmented_conversation = " ".join(segmented_query)
+    prediction = pho_queryrouter.classify(segmented_conversation)[0]
     chosen_collection = prediction['label']
     print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
 
     if prediction['score'] < threshold: #Unsure
-        prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(query))[0] #Only guessing from the current message
+        segmented_query = query_routing.segment_vietnamese(query)
+        if type(segmented_query) is list:
+            segmented_conversation = " ".join(segmented_query)
+        prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
         chosen_collection = prediction['label']
         if prediction['score'] < threshold: #Still unsure, return empty collection
             chosen_collection = ""
