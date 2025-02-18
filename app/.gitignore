@@ -14,6 +14,10 @@ dist-ssr
 
 temp
 
+**/certboot
+
+nohup.out
+
 client/.env
 client/.env
 client/.env

@@ -12,7 +12,8 @@ export const saveConservationToDB = async (conservation = {}) => {
     duration: conservation.duration,
     source: conservation.source,
     rating: conservation.rating,
-    state: conservation.state
+    state: conservation.state,
+    resource: conservation?.resource
   })
 
   const result = await history.save().then(async (data) => {
