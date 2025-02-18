@@ -357,3 +357,144 @@ def enhance_document():
             #result.pop(k)
         result['metadata'] = metadata
         return jsonify(result)
+
+@main.route("/dry_search", methods=["POST"])
+@cross_origin()
+def dry_search():
+    #------------------DETERMINE COLLECTION------------------
+    ##PARAMS
+    query = request.form['query']
+    history = json.loads(request.form['history']) # Conversation history
+    threshold = 0.5
+    #pho_queryrouter = PhoQueryRouter()
+    pho_queryrouter = current_app.config['PHO_QUERYROUTER']
+    #----------------------------------
+    conversation = ""
+    for h in history:
+        conversation += h['question'] + ". "
+    conversation += query
+    segmented_query = query_routing.segment_vietnamese(conversation + query)
+    if type(segmented_query) is list:
+        segmented_conversation = " ".join(segmented_query)
+    else:
+        segmented_conversation = segmented_query
+    prediction = pho_queryrouter.classify(segmented_conversation)[0]
+    chosen_collection = prediction['label']
+    print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
+
+    if prediction['score'] < threshold: #Unsure
+        segmented_query = query_routing.segment_vietnamese(query)
+        if type(segmented_query) is list:
+            segmented_conversation = " ".join(segmented_query)
+        else:
+            segmented_conversation = segmented_query
+        prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
+        chosen_collection = prediction['label']
+        if prediction['score'] < threshold: #Still unsure, return empty collection
+            chosen_collection = ""
+    # database.load_collection(chosen_collection, persist=True)
+    #-------------------EXTRACT METADATA-------------------
+    ##PARAMS
+    query = request.form['query']
+    chosen_collection = request.form['chosen_collection']
+    schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
+    history = json.loads(request.form['history']) # Conversation history
+    n_new_queries = 2
+    model = current_app.config['CHAT_MODEL']
+    database = current_app.config['DATABASE']
+    #----------------------------------
+    conversation = ""
+    for h in history:
+        conversation += h['question'] + ".\n"
+    conversation += query
+    #extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
+    is_old_extract = True
+    if is_old_extract: #OLD METADATA EXTRACTION
+        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
+        if extracted_metadata != -1: #No metadata found
+            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+        else:
+            filter_expressions = {}
+        return jsonify(filter_expressions)
+    
+    rewritten_queries = rag_utils.rewrite_query(conversation=conversation, model=model, k=n_new_queries)
+    if rewritten_queries == -1:
+        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
+        if extracted_metadata != -1: #No metadata found
+            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+        else:
+            filter_expressions = {}
+        return jsonify(filter_expressions)
+    else:
+        filter_expressions = []
+        for q in rewritten_queries:
+            extracted_metadata = rag_utils.metadata_extraction_v2(q, model, chosen_collection)
+            if extracted_metadata != -1: #No metadata found
+                expr = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+            else:
+                expr = {}
+            filter_expressions.append({q: expr})
+    #-------------------SEARCHING-------------------
+    ##PARAMS
+    query = request.args.get('query') # Tin nhắn người dùng
+    chosen_collection = request.args.get('chosen_collection') #Context từ api search
+    try:
+        filter_expressions = json.loads(request.args.get('filter_expressions')) #
+    except json.JSONDecodeError:
+        filter_expressions = None
+    k = 4
+    #encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
+    encoder = current_app.config['ENCODER']
+    database = current_app.config['DATABASE']
+    #----------------------------------
+    database.load_collection(chosen_collection)
+    # output_fields = {
+    #     'student_handbook': ['title', 'article'],
+    #     chosen_collection: ['title', 'article']
+    # }
+    output_fields = {
+        'student_handbook' : ['document_id'],
+        chosen_collection: ['document_id']
+    }
+    
+    if type(filter_expressions) == dict:
+        query_embeddings = encoder.embedding_function("query: " + query)
+        try:
+            search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k, output_fields=output_fields)
+            search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
+
+            search_results = search_results + search_results_vanilla
+            source = source + source_vanilla
+            distances = distances + distances_vanilla
+            results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
+
+            distances.sort()
+            distances = distances[:k]
+            search_results_final = [results[k][0] for k in distances]
+            source_final = [results[k][1] for k in distances]
+        except Exception as e:
+            print("Error with filter search")
+            print(e)
+            search_results_final, source_final, _ = database.similarity_search(chosen_collection, query_embeddings, output_fields=output_fields)
+    elif type(filter_expressions) == list: #Filter expressions contain rewritten queries - perform hybrid search
+        search_results_final, source_final, _ = database.hybrid_search(
+            collection=chosen_collection, 
+            query_embeddings=[encoder.embedding_function("query: " + list(q.keys())[0]) for q in filter_expressions], 
+            k=k,
+            limit_per_req=4,
+            filters=[list(q.values())[0] for q in filter_expressions],
+            output_fields=output_fields
+            )
+        if search_results_final != -1:
+            document_ids = [d.get('document_id') for d in search_results_final]
+        elif search_results_final == -2: #Error in hybrid search, revert to vanilla search
+            search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
+            document_ids = [d.get('document_id') for d in search_results_final]
+        else:
+            context = "No related documents found"
+            source_final = []
+    del encoder
+    return jsonify({
+        'document_ids': document_ids,
+        'source': source_final
+        })

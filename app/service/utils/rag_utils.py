@@ -191,7 +191,7 @@ class MilvusDB:
         #         Collection(c).release()
         return Status()
     
-    def similarity_search(self, collection:str, query_embeddings, k: int = 4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None):
+    def similarity_search(self, collection:str, query_embeddings, k: int = 4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None, source_fields=['title', 'url']):
         results = {}
         source = []
         if search_params is None:
@@ -223,10 +223,12 @@ class MilvusDB:
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
+        #source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
+        source = [{'collection_name': results[i][1] for i in distances}]
+        source = [s | {k: results[i][0].get(k) for k in source_fields} for i, s in zip(distances, source)]
         return sorted_list, source, distances
     
-    def hybrid_search(self, collection, query_embeddings, limit_per_req=3, k=4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None):
+    def hybrid_search(self, collection, query_embeddings, limit_per_req=3, k=4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None, source_fields=['title', 'url']):
         '''Perform hybrid search among the currently loaded collections. Using filter expressions to for metadata filtering'''
         results = {}
         source = []
@@ -271,7 +273,9 @@ class MilvusDB:
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
+        #source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
+        source = [{'collection_name': results[i][1] for i in distances}]
+        source = [s | {k: results[i][0].get(k) for k in source_fields} for i, s in zip(distances, source)]
         return sorted_list, source, distances
     
     def create_collection(name, description, metadata):
