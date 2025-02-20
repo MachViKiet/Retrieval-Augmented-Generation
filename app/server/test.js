@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
 const subject = 'Dự án Chatbot tư vấn FIT-HCMUS'
 var mailOptions = {
   from: 'UniBot-KHTN (2024) <machkiet2003@gmail.com>',
-  to: 'machkiet252003@gmail.com',
+  to: '2112734@student.hcmus.edu.vn',
   subject,
   html: `
   <!DOCTYPE html>

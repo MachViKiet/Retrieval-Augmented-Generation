@@ -92,8 +92,8 @@ function Register() {
           </FormControl>
 
           <FormControl sx={{gap: 1}}>
-            <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Tên đăng nhập (Email sinh viên)</FormLabel>
-            <TextInput id="email" type="username" name="email" placeholder="mssv@email.com" inputProps={{ maxLength: 40 }}
+            <FormLabel htmlFor="email" sx = {{ color: 'inherit' }}>Tên đăng nhập (Gmail cá nhân)</FormLabel>
+            <TextInput id="email" type="username" name="email" placeholder="name@gmail.com" inputProps={{ maxLength: 40 }}
               autoComplete="email" required fullWidth variant="outlined" />
           </FormControl>
 

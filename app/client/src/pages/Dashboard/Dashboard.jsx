@@ -11,7 +11,7 @@ import { GPTdata } from '~/apis/mockData_chatGPT';
 import StarIcon from '@mui/icons-material/Star';
 
 export function Dashboard() {
-  const {processHandler, dashboard } = useOutletContext();
+  const {processHandler, dashboard, noticeHandler } = useOutletContext();
   const token = useSelector(state => state.auth.token)
 
   const [dataChatGPT, setDataChatGPT] = useState([])
@@ -26,63 +26,94 @@ export function Dashboard() {
   }, [])
 
   useEffect(() => {
-    useProfile.getDashboard(token).then((dataAPI) => {
-      // setData(dataAPI)
+    const getGPTData = async () => {
+      // const ChatGPT_Event = processHandler.add('#chatgpt')
+      let chatGPTDataResponse = {
+        data: [],
+        has_more: true,
+        next_page: null
+      }
+
+      try {
+        while(chatGPTDataResponse.has_more) {
+          await usageCompletion(chatGPTDataResponse.next_page)
+          .then((data) => {
+            chatGPTDataResponse = { data : [...chatGPTDataResponse.data, ...data['data'] ], has_more: data['has_more'], next_page: data['next_page']}
+          })
+          .catch((e) => {
+            console.log(e)
+            chatGPTDataResponse = {...chatGPTDataResponse, has_more: false}
+            throw e
+          })
+        }
+      } catch (error) {
+        console.log('catch lỗi : ',error)
+        noticeHandler.add({
+          status: 'error',
+          message: 'Lấy Dữ Liệu ChatGPT không thành công'
+        })
+        return null
+      }
+      // processHandler.remove('#chatgpt', ChatGPT_Event)
+      return chatGPTDataResponse
+
+    }
+
+    getGPTData().then((data) => {
+      if(data) {
+        setDataChatGPT(() => {
+          let totalInputTokens = 0
+          let totalOutputTokens = 0
+          let totalInputCachedTokens = 0
+          let totalNumModelRequests = 0
+          let totalTokenInDate = []
+          let dateLabel = []
+          let inputTokens = []
+          let outputTokens = []
+          let inputCachedTokens = []
+          let numModelRequests = []
+    
+          data['data'].forEach(bucket => {
+              dateLabel.push(formatTime_Date_Month(bucket.start_time))
+              if(bucket['results'].length == 0) {
+                inputTokens.push(0)
+                outputTokens.push(0)
+                inputCachedTokens.push(0)
+                numModelRequests.push(0)
+                totalTokenInDate.push(0)
+                return
+              }
+              bucket.results.forEach(result => {
+                  totalInputTokens += result.input_tokens
+                  totalOutputTokens += result.output_tokens
+                  totalInputCachedTokens += result.input_cached_tokens
+                  totalNumModelRequests += result.num_model_requests
+    
+                  inputTokens.push(result.input_tokens)
+                  outputTokens.push(result.output_tokens)
+                  inputCachedTokens.push(result.input_cached_tokens)
+                  numModelRequests.push(result.num_model_requests)
+                  totalTokenInDate.push(totalInputTokens + totalOutputTokens + totalInputCachedTokens + totalNumModelRequests)
+              })
+          })
+
+          return {
+            data: data['data'].map((data) => ({...data, ...data['results'][0]})),
+            total_input_request_tokens: totalInputTokens,
+            total_output_request_tokens: totalOutputTokens,
+            total_cached_request_tokens: totalInputCachedTokens,
+            total_requests: totalNumModelRequests,
+            dateLabel, inputTokens, outputTokens, inputCachedTokens, numModelRequests, totalTokenInDate
+          }
+        })
+        setInterval(async () => {
+          await getGPTData()
+        }, 4000)
+      }
     })
 
-    const ChatGPT_Event = processHandler.add('#chatgpt')
-    usageCompletion().then((data) => {
-      setDataChatGPT(() => {
-        let totalInputTokens = 0
-        let totalOutputTokens = 0
-        let totalInputCachedTokens = 0
-        let totalNumModelRequests = 0
-        let totalTokenInDate = []
-        let dateLabel = []
-        let inputTokens = []
-        let outputTokens = []
-        let inputCachedTokens = []
-        let numModelRequests = []
-  
-        data['data'].forEach(bucket => {
-            dateLabel.push(formatTime_Date_Month(bucket.start_time))
-            if(bucket['results'].length == 0) {
-              inputTokens.push(0)
-              outputTokens.push(0)
-              inputCachedTokens.push(0)
-              numModelRequests.push(0)
-              totalTokenInDate.push(0)
-              return
-            }
-            bucket.results.forEach(result => {
-                totalInputTokens += result.input_tokens
-                totalOutputTokens += result.output_tokens
-                totalInputCachedTokens += result.input_cached_tokens
-                totalNumModelRequests += result.num_model_requests
-  
-                inputTokens.push(result.input_tokens)
-                outputTokens.push(result.output_tokens)
-                inputCachedTokens.push(result.input_cached_tokens)
-                numModelRequests.push(result.num_model_requests)
-                totalTokenInDate.push(totalInputTokens + totalOutputTokens + totalInputCachedTokens + totalNumModelRequests)
-            })
-        })
-  
-        return {
-          data: GPTdata['data'].map((data) => ({...data, ...data['results'][0]})),
-          total_input_request_tokens: totalInputTokens,
-          total_output_request_tokens: totalOutputTokens,
-          total_cached_request_tokens: totalInputCachedTokens,
-          total_requests: totalNumModelRequests,
-          dateLabel, inputTokens, outputTokens, inputCachedTokens, numModelRequests, totalTokenInDate
-        }
-      })
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-    .finally(() => {
-      processHandler.remove('#chatgpt', ChatGPT_Event)
+    useProfile.getDashboard(token).then((dataAPI) => {
+      // setData(dataAPI)
     })
 
   }, [token])
@@ -406,15 +437,15 @@ export function Dashboard() {
         <Box sx = {{ padding: 2, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', width: '100%', maxWidth: '100%' }}>
           <Box sx = {{ paddingBottom: 1, width: '100%', display: 'flex', flexDirection: 'column' }}>
             <Typography variant = 'h6' color= '#000' sx ={{ textAlign: 'start', fontSize: '1rem', paddingLeft: 2, color: '#000' }}>Câu hỏi phổ biến trong tháng</Typography>
-            <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
+            <Box sx = {{ display: 'flex', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
               <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000'}}>1. Tôi có thể tra cứu điểm và bảng điểm ở đâu?</Button>
             </Box>
-            <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
+            <Box sx = {{ display: 'flex', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
               <Button variant = 'body1' color= '#000 !important' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>2. Sinh viên bao nhiêu điểm đủ điều kiện đạt học lực Giỏi, Khá ?</Button>
             </Box>
-            <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
+            <Box sx = {{ display: 'flex', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
               <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>3. Điều kiện nhận học bổng khuyến học năm 2024 là gì?</Button>
             </Box>
@@ -425,15 +456,15 @@ export function Dashboard() {
         <Box sx = {{ padding: 2, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 4px -2px 2px rgba(0, 0, 0, 0.1)', background: '#eaf5ff', borderRadius: '10px', width: '100%', maxWidth: '100%' }}>
           <Box sx = {{ paddingBottom: 1, width: '100%', display: 'flex', flexDirection: 'column' }}>
             <Typography variant = 'h6' color= '#000' sx ={{ textAlign: 'start', fontSize: '1rem', paddingLeft: 2, color: '#000' }}>Câu hỏi phổ biến trong năm</Typography>
-            <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
+            <Box sx = {{ display: 'flex', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
               <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>1. Tôi có thể tra cứu điểm và bảng điểm ở đâu?</Button>
             </Box>
-            <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
+            <Box sx = {{ display: 'flex', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
               <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>2. Sinh viên bao nhiêu điểm đủ điều kiện đạt học lực Giỏi, Khá ?</Button>
             </Box>
-            <Box sx = {{ display: 'flex', alignItems: 'center', alignItems: 'center', width: '100%' }}>
+            <Box sx = {{ display: 'flex', alignItems: 'center', width: '100%' }}>
               {/* <LooksOneOutlinedIcon sx = {{ fontSize: '1.725rem', marginRight: '0.325rem' }}/> */}
               <Button variant = 'body1' color= '#000' sx = {{ textAlign: 'start', fontWeight: '400', color: '#000' }}>3. Điều kiện nhận học bổng khuyến học năm 2024 là gì?</Button>
             </Box>

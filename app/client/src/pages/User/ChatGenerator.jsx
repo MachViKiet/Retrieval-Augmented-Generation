@@ -497,11 +497,10 @@ export function ChatGenerator() {
         <Grid  size={{ xs: 0, md: 2.3 }} sx = {{ height: '100%' }}>  
           <Box sx = {{ display: 'flex', flexDirection: 'column',paddingTop: '55px'}}>
             <Block sx = {{ 
-              padding: '0 !important', padding: 1,
+              padding: '0 !important',
               paddingBottom: '32px !important',
               backgroundImage: theme => theme.palette.mode == 'dark'? BlockStyle.bgColor_dark : BlockStyle.bgColor_light,
-              display: { xs: 'none', md: 'block' },
-              display: "flex",
+              display: { xs: 'none', md: 'flex' },
               flexDirection: "column",
               justifyContent: "start",
             }}>

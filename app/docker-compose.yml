@@ -60,12 +60,13 @@ services:
     #   context: ./nginx # đường dẫn đến folder client
     ports:
       - "80:8000"  # Chạy nginx trên cổng 80
+      - "443:8080"  # Chạy nginx trên cổng 80
     restart: always  # Tùy chọn để container tự khởi động lại nếu dừng bất ngờ
     volumes:
       - ./client:/usr/share/nginx/html  # Mount mã nguồn client
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Cấu hình Nginx
       - ./nginx/ssl/:/etc/nginx/ssl/
-#      - ./certbot/www/:/var/www/certbot/
+      # - ./certbot/www/:/var/www/certbot/
     depends_on:
       - client
       - server
@@ -74,11 +75,11 @@ services:
     extra_hosts:
     - "host.docker.internal:host-gateway"
 
-#  certbot:
-#    image: certbot/certbot:latest
-#    volumes:
-#      - ./certbot/www/:/var/www/certbot/:rw
-#      - ./certbot/conf/:/etc/letsencrypt/:rw
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   volumes:
+  #     - ./certbot/www/:/var/www/certbot/:rw
+  #     - ./certbot/conf/:/etc/letsencrypt/:rw
 
 networks:
   luanvan-network:
