@@ -114,7 +114,7 @@ def extract_metadata():
     #extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
     is_old_extract = True
     if is_old_extract: #OLD METADATA EXTRACTION
-        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
+        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection, pydantic_schema=database.pydantic_collections[chosen_collection])
         if extracted_metadata != -1: #No metadata found
             filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
         else:
@@ -123,7 +123,7 @@ def extract_metadata():
     
     rewritten_queries = rag_utils.rewrite_query(conversation=conversation, model=model, k=n_new_queries)
     if rewritten_queries == -1:
-        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
+        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection, pydantic_schema=database.pydantic_collections[chosen_collection])
         if extracted_metadata != -1: #No metadata found
             filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
         else:
@@ -132,7 +132,7 @@ def extract_metadata():
     else:
         filter_expressions = []
         for q in rewritten_queries:
-            extracted_metadata = rag_utils.metadata_extraction_v2(q, model, chosen_collection)
+            extracted_metadata = rag_utils.metadata_extraction_v2(q, model, chosen_collection, pydantic_schema=database.pydantic_collections[chosen_collection])
             if extracted_metadata != -1: #No metadata found
                 expr = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
             else:
@@ -364,7 +364,7 @@ def dry_search():
     #------------------DETERMINE COLLECTION------------------
     ##PARAMS
     query = request.form['query']
-    history = json.loads(request.form['history']) # Conversation history
+    history = [] # Conversation history
     threshold = 0.5
     #pho_queryrouter = PhoQueryRouter()
     pho_queryrouter = current_app.config['PHO_QUERYROUTER']
@@ -390,15 +390,14 @@ def dry_search():
             segmented_conversation = segmented_query
         prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
         chosen_collection = prediction['label']
-        if prediction['score'] < threshold: #Still unsure, return empty collection
-            chosen_collection = ""
+        # if prediction['score'] < threshold: #Still unsure, return empty collection
+        #     chosen_collection = ""
     # database.load_collection(chosen_collection, persist=True)
     #-------------------EXTRACT METADATA-------------------
     ##PARAMS
     query = request.form['query']
-    chosen_collection = request.form['chosen_collection']
-    schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
-    history = json.loads(request.form['history']) # Conversation history
+    
+    history = [] # Conversation history
     n_new_queries = 2
     model = current_app.config['CHAT_MODEL']
     database = current_app.config['DATABASE']
@@ -410,38 +409,30 @@ def dry_search():
     #extracted_metadata = rag_utils.metadata_extraction(query, model, schema)
     is_old_extract = True
     if is_old_extract: #OLD METADATA EXTRACTION
-        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
+        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection, pydantic_schema=database.pydantic_collections[chosen_collection])
         if extracted_metadata != -1: #No metadata found
             filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
         else:
             filter_expressions = {}
-        return jsonify(filter_expressions)
-    
-    rewritten_queries = rag_utils.rewrite_query(conversation=conversation, model=model, k=n_new_queries)
-    if rewritten_queries == -1:
-        extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
-        if extracted_metadata != -1: #No metadata found
-            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
-        else:
-            filter_expressions = {}
-        return jsonify(filter_expressions)
     else:
-        filter_expressions = []
-        for q in rewritten_queries:
-            extracted_metadata = rag_utils.metadata_extraction_v2(q, model, chosen_collection)
+        rewritten_queries = rag_utils.rewrite_query(conversation=conversation, model=model, k=n_new_queries)
+        if rewritten_queries == -1:
+            extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection, pydantic_schema=database.pydantic_collections[chosen_collection])
             if extracted_metadata != -1: #No metadata found
-                expr = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+                filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
             else:
-                expr = {}
-            filter_expressions.append({q: expr})
+                filter_expressions = {}
+        else:
+            filter_expressions = []
+            for q in rewritten_queries:
+                extracted_metadata = rag_utils.metadata_extraction_v2(q, model, chosen_collection, pydantic_schema=database.pydantic_collections[chosen_collection])
+                if extracted_metadata != -1: #No metadata found
+                    expr = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+                else:
+                    expr = {}
+                filter_expressions.append({q: expr})
     #-------------------SEARCHING-------------------
     ##PARAMS
-    query = request.args.get('query') # Tin nhắn người dùng
-    chosen_collection = request.args.get('chosen_collection') #Context từ api search
-    try:
-        filter_expressions = json.loads(request.args.get('filter_expressions')) #
-    except json.JSONDecodeError:
-        filter_expressions = None
     k = 4
     #encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
     encoder = current_app.config['ENCODER']
@@ -485,14 +476,14 @@ def dry_search():
             filters=[list(q.values())[0] for q in filter_expressions],
             output_fields=output_fields
             )
-        if search_results_final != -1:
-            document_ids = [d.get('document_id') for d in search_results_final]
-        elif search_results_final == -2: #Error in hybrid search, revert to vanilla search
-            search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
-            document_ids = [d.get('document_id') for d in search_results_final]
-        else:
-            context = "No related documents found"
-            source_final = []
+    if search_results_final != -1:
+        document_ids = [d.get('document_id') for d in search_results_final]
+    elif search_results_final == -2: #Error in hybrid search, revert to vanilla search
+        search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
+        document_ids = [d.get('document_id') for d in search_results_final]
+    else:
+        context = "No related documents found"
+        source_final = []
     del encoder
     return jsonify({
         'document_ids': document_ids,
