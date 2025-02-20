@@ -87,6 +87,16 @@ class Encoder:
                 return response.json()
                 
             self.embedding_function = query
+        elif provider == "OpenAI":
+            import openai
+            openai.api_key = os.environ['OPENAI_APIKEY']
+            def embed(text):
+                response = openai.embeddings.create(
+                    model="text-embedding-3-large",
+                    input=text
+                )
+                return response.data[0].embedding
+            self.embedding_function = embed
             
 
 ##DATABASES
