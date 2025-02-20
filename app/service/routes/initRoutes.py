@@ -167,9 +167,17 @@ def search():
             search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k)
             search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
 
-            search_results = search_results + search_results_vanilla
-            source = source + source_vanilla
-            distances = distances + distances_vanilla
+            if search_results == -1:
+                search_results = search_results_vanilla
+                source = source_vanilla
+                distances = distances_vanilla
+            else:
+                filter_bias = 0.7
+                distances = [d * filter_bias for d in distances] #Apply bias for filtered search by lowering the distance
+
+                search_results = search_results + search_results_vanilla
+                source = source + source_vanilla
+                distances = distances + distances_vanilla
             results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
 
             distances.sort()
