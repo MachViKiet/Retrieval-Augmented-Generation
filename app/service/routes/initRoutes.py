@@ -456,6 +456,10 @@ def dry_search():
 
             if search_results == -1:
                 search_results, source, distances = [], [], []
+            else:
+                filter_bias = 0.7
+                distances = [d*filter_bias for d in distances]
+
             search_results = search_results + search_results_vanilla
             source = source + source_vanilla
             distances = distances + distances_vanilla
