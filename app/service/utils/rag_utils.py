@@ -439,7 +439,7 @@ Answer:
     schema = "\n".join(k + ": " + v for k,v in schema.items())
 
     full_prompt = prompt.format(query=query, schema=schema)
-    result = model.generate(prompt=full_prompt, response_schema=pydantic_schema)
+    result = model._generate(prompt=full_prompt, response_schema=pydantic_schema).model_dump_json()
     # result = model._generate(full_prompt)
     result = result.replace('"', '\"') #Escape quotes
     try:

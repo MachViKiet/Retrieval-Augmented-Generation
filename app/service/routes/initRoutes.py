@@ -454,6 +454,8 @@ def dry_search():
             search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k, output_fields=output_fields)
             search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
 
+            if search_results == -1:
+                search_results, source, distances = [], [], []
             search_results = search_results + search_results_vanilla
             source = source + source_vanilla
             distances = distances + distances_vanilla
