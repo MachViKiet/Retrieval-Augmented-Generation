@@ -87,6 +87,16 @@ class Encoder:
                 return response.json()
                 
             self.embedding_function = query
+        elif provider == "OpenAI":
+            import openai
+            openai.api_key = os.environ['OPENAI_APIKEY']
+            def embed(text):
+                response = openai.embeddings.create(
+                    model="text-embedding-3-large",
+                    input=text
+                )
+                return response.data[0].embedding
+            self.embedding_function = embed
             
 
 ##DATABASES
@@ -191,7 +201,7 @@ class MilvusDB:
         #         Collection(c).release()
         return Status()
     
-    def similarity_search(self, collection:str, query_embeddings, k: int = 4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None, source_fields=['title', 'url']):
+    def similarity_search(self, collection:str, query_embeddings, k: int = 4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None):
         results = {}
         source = []
         if search_params is None:
@@ -223,12 +233,10 @@ class MilvusDB:
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        #source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
-        source = [{'collection_name': results[i][1] for i in distances}]
-        source = [s | {k: results[i][0].get(k) for k in source_fields} for i, s in zip(distances, source)]
+        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
         return sorted_list, source, distances
     
-    def hybrid_search(self, collection, query_embeddings, limit_per_req=3, k=4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None, source_fields=['title', 'url']):
+    def hybrid_search(self, collection, query_embeddings, limit_per_req=3, k=4, search_params=None, output_fields=['title','article', 'url'], filters: dict = None):
         '''Perform hybrid search among the currently loaded collections. Using filter expressions to for metadata filtering'''
         results = {}
         source = []
@@ -273,9 +281,7 @@ class MilvusDB:
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        #source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
-        source = [{'collection_name': results[i][1] for i in distances}]
-        source = [s | {k: results[i][0].get(k) for k in source_fields} for i, s in zip(distances, source)]
+        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
         return sorted_list, source, distances
     
     def create_collection(name, description, metadata):
@@ -408,12 +414,12 @@ def compile_filter_expression(metadata, loaded_collections: list):
     return expressions
 
 #------------------------------------#
-def metadata_extraction_v2(query, model, collection_name, pydantic_schema=None):
+def metadata_extraction_v2(query, model, collection_name):
     '''Extract metadata from user query given a schema using a LLM call
     schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
 
     prompt = prompt = """Extract metadata from the user's query using the provided schema.
-If not found, write empty string or empty list.
+Do not include the metadata if not found.
 User's query: {query}
 Schema:
 {schema}
@@ -433,8 +439,7 @@ Answer:
     schema = "\n".join(k + ": " + v for k,v in schema.items())
 
     full_prompt = prompt.format(query=query, schema=schema)
-    result = model.generate(prompt=full_prompt, response_schema=pydantic_schema)
-    # result = model._generate(full_prompt)
+    result = model._generate(full_prompt)
     result = result.replace('"', '\"') #Escape quotes
     try:
         result = json.loads(result)
