@@ -87,6 +87,16 @@ class Encoder:
                 return response.json()
                 
             self.embedding_function = query
+        elif provider == "OpenAI":
+            import openai
+            openai.api_key = os.environ['OPENAI_APIKEY']
+            def embed(text):
+                response = openai.embeddings.create(
+                    model="text-embedding-3-large",
+                    input=text
+                )
+                return response.data[0].embedding
+            self.embedding_function = embed
             
 
 ##DATABASES
@@ -383,6 +393,8 @@ def compile_filter_expression(metadata, loaded_collections: list):
         for attr, val in metadata.items():
             if val is None or val == "" or val == []: #Skip empty values
                 continue
+            if attr == 'article': #Skip article TODO: FIX THIS FOR BETTER FLEXIBILITY
+                continue
             meta_type = short_schema.get(attr, -1)
             if meta_type == -1:
                 continue
@@ -404,12 +416,13 @@ def compile_filter_expression(metadata, loaded_collections: list):
     return expressions
 
 #------------------------------------#
-def metadata_extraction_v2(query, model, collection_name):
+def metadata_extraction_v2(query, model, collection_name, pydantic_schema=None):
     '''Extract metadata from user query given a schema using a LLM call
     schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
 
     prompt = prompt = """Extract metadata from the user's query using the provided schema.
-Do not include the metadata if not found.
+Do not include the metadata if not found.\
+Ignore the article attribute.
 User's query: {query}
 Schema:
 {schema}
@@ -429,7 +442,10 @@ Answer:
     schema = "\n".join(k + ": " + v for k,v in schema.items())
 
     full_prompt = prompt.format(query=query, schema=schema)
-    result = model._generate(full_prompt)
+    if pydantic_schema is not None:
+        result = model._generate(prompt=full_prompt, response_schema=pydantic_schema).model_dump_json()
+    else:
+        result = model._generate(full_prompt)
     result = result.replace('"', '\"') #Escape quotes
     try:
         result = json.loads(result)
