@@ -125,6 +125,7 @@ class MilvusDB:
             )
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
+        self.search_threshold = os.getenv('SEARCH_THRESHOLD', 1.1)
         # Create pydantic representation of collections schemas
         from pydantic import create_model
         self.pydantic_collections = {}
@@ -222,6 +223,8 @@ class MilvusDB:
                                                                                                     # for different collections
             )[0]
             for r in search_results:
+                if r.distance > self.search_threshold: #Skip if distance is too high
+                    continue
                 results[r.distance] = (r.entity, c)
         if len(results) == 0:
              #No matching documents
