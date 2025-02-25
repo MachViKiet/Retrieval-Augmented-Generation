@@ -393,6 +393,8 @@ def compile_filter_expression(metadata, loaded_collections: list):
         for attr, val in metadata.items():
             if val is None or val == "" or val == []: #Skip empty values
                 continue
+            if attr == 'article': #Skip article field
+                continue
             meta_type = short_schema.get(attr, -1)
             if meta_type == -1:
                 continue
@@ -419,7 +421,8 @@ def metadata_extraction_v2(query, model, collection_name, pydantic_schema=None):
     schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
 
     prompt = prompt = """Extract metadata from the user's query using the provided schema.
-If not found, write empty string or empty list.
+If not found, write empty string or empty list.\
+Always leave the article field empty.
 User's query: {query}
 Schema:
 {schema}

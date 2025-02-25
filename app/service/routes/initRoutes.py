@@ -89,8 +89,8 @@ def determine_collection():
             segmented_conversation = segmented_query
         prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
         chosen_collection = prediction['label']
-        if prediction['score'] < threshold: #Still unsure, return empty collection
-            chosen_collection = ""
+        # if prediction['score'] < threshold: #Still unsure, return empty collection
+        #     chosen_collection = ""
     # database.load_collection(chosen_collection, persist=True)
     del pho_queryrouter
     return jsonify({'collection': chosen_collection})
