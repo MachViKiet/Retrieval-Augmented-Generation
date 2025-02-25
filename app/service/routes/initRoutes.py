@@ -191,7 +191,7 @@ def search():
         if search_results_final != -1:
             context = rag_utils.create_prompt_milvus(query, search_results_final)
         else:
-            context = "No related documents found"
+            context = ""
             source_final = []
     elif type(filter_expressions) == list: #Filter expressions contain rewritten queries - perform hybrid search
         search_results_final, source_final, _ = database.hybrid_search(
