@@ -115,7 +115,7 @@ class ChatModel:
                 conversation = ""
                 for pair in history:
                     conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['anwser'] #answer
-                formatted_prompt = prompt.format(history=conversation, question=question)
+                formatted_prompt = prompt.format(history=conversation, question=question, user_profile=user_profile)
         else:
             if history is None or len(history) == 0:
                 prompt = prompts['CONTEXT_NO_HISTORY']
