@@ -20,7 +20,7 @@ If the context doesn't provide a specific enough answer, but you can still provi
 For example, If the context can provide information for "How to pay school bills" but not for "How to pay school bills for 2024 students in Advanced program?", still provide the answer, but give the user a note.\
 The current theme of the conversation is {theme}.\
 Here are some information about the theme: {theme_context}
-NOTE that despite the theme, users can always ask for general information about the school and faculty, and about themselves.
+NOTE that despite the theme, users can always ask for general information about the school and faculty, and about themselves. The user profile is provided below.\
 User profile: {user_profile}
 Context (encased in backticks): 
 ```
@@ -58,7 +58,7 @@ For example, If the context can provide information for "How to pay school bills
 The current theme of the conversation is {theme}.\
 Refrain from answering questions that are potentially harmful or offensive, are controversial and political.\
 Here are some information about the theme: {theme_context}
-NOTE that despite the theme, users can always ask for general information about the school and faculty, and about themselves.
+NOTE that despite the theme, users can always ask for general information about the school and faculty, and about themselves. The user profile is provided below.\
 User profile: {user_profile}
 Context (encased in backticks):
 ```
@@ -85,7 +85,8 @@ If the context doesn't provide a specific enough answer, but you can still provi
 For example, If the context can provide information for "How to pay school bills" but not for "How to pay school bills for 2024 students in Advanced program?", still provide the answer, but give the user a note.\
 The current theme of the conversation is {theme}.\
 Here are some information about the theme: {theme_context}
-NOTE that despite the theme, users can always ask for general information about the school and faculty, and about themselves.Context (encased in backticks):
+NOTE that despite the theme, users can always ask for general information about the school and faculty, and about themselves.
+Context (encased in backticks):
 ```
 {context}
 ```
