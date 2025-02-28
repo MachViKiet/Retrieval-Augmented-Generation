@@ -112,7 +112,7 @@ class MongoDB:
         pass
 
 class MilvusDB:
-    def __init__(self, host,port,password,user,uri,token,server_pem_path=None,server_name='localhost') -> None:
+    def __init__(self, host,port,password,user,uri,token,server_pem_path=None,server_name='localhost', k=4, filter_bias=0.7) -> None:
         
         if host != "":
             connections.connect(alias = 'default',
@@ -126,6 +126,8 @@ class MilvusDB:
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
         self.search_threshold = os.getenv('SEARCH_THRESHOLD', 1.1)
+        self.k = k
+        self.filter_bias = filter_bias
         # Create pydantic representation of collections schemas
         from pydantic import create_model
         self.pydantic_collections = {}

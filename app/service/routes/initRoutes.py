@@ -64,7 +64,7 @@ def determine_collection():
     ##PARAMS
     query = request.form['query']
     history = json.loads(request.form['history']) # Conversation history
-    threshold = 0.5
+    # threshold = 0.5
     #pho_queryrouter = PhoQueryRouter()
     pho_queryrouter = current_app.config['PHO_QUERYROUTER']
     #----------------------------------
@@ -72,27 +72,30 @@ def determine_collection():
     for h in history:
         conversation += h['question'] + ". "
     conversation += query
-    segmented_query = query_routing.segment_vietnamese(conversation + query)
-    if type(segmented_query) is list:
-        segmented_conversation = " ".join(segmented_query)
-    else:
-        segmented_conversation = segmented_query
-    prediction = pho_queryrouter.classify(segmented_conversation)[0]
-    chosen_collection = prediction['label']
-    print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
-
-    if prediction['score'] < threshold: #Unsure
-        segmented_query = query_routing.segment_vietnamese(query)
+    if pho_queryrouter.use_history: #Determine using conversation history
+        segmented_query = query_routing.segment_vietnamese(conversation + query)
         if type(segmented_query) is list:
             segmented_conversation = " ".join(segmented_query)
         else:
             segmented_conversation = segmented_query
-        prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
+        prediction = pho_queryrouter.classify(segmented_conversation)[0]
         chosen_collection = prediction['label']
-        if prediction['score'] < threshold: #Still unsure, return empty collection
-            chosen_collection = ""
-    # database.load_collection(chosen_collection, persist=True)
-    del pho_queryrouter
+        print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
+
+        if prediction['score'] >= pho_queryrouter.threshold: 
+            return jsonify({'collection': chosen_collection})
+        
+    #Determine using only the current message
+    segmented_query = query_routing.segment_vietnamese(query)
+    if type(segmented_query) is list:
+        segmented_conversation = " ".join(segmented_query)
+    else:
+        segmented_conversation = segmented_query
+    prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
+    chosen_collection = prediction['label']
+    print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
+    if prediction['score'] < pho_queryrouter.threshold: #Still unsure, return empty collection
+        chosen_collection = ""
     return jsonify({'collection': chosen_collection})
 
 @main.route("/generate/extract_meta", methods=['POST'])
@@ -151,10 +154,11 @@ def search():
         filter_expressions = json.loads(request.args.get('filter_expressions')) #
     except json.JSONDecodeError:
         filter_expressions = None
-    k = 4
+    # k = 4
     #encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
     encoder = current_app.config['ENCODER']
     database = current_app.config['DATABASE']
+    k = database.k
     #----------------------------------
     database.load_collection(chosen_collection)
     # output_fields = {
@@ -172,7 +176,7 @@ def search():
                 source = source_vanilla
                 distances = distances_vanilla
             else:
-                filter_bias = 0.7
+                filter_bias = database.filter_bias
                 distances = [d * filter_bias for d in distances] #Apply bias for filtered search by lowering the distance
 
                 search_results = search_results + search_results_vanilla
@@ -187,7 +191,7 @@ def search():
         except Exception as e:
             print("Error with filter search")
             print(e)
-            search_results_final, source_final, _ = database.similarity_search(chosen_collection, query_embeddings)
+            search_results_final, source_final, _ = database.similarity_search(chosen_collection, query_embeddings, k=k)
         if search_results_final != -1:
             context = rag_utils.create_prompt_milvus(query, search_results_final)
         else:
@@ -225,12 +229,13 @@ def generate():
     history = json.loads(request.form['history']) # Conversation history
     theme = request.form['collection_name'] # Collection name
     user_profile = request.form['user_profile'] # User profile
-    max_tokens = 1500 
+    # max_tokens = 1500 
     model = current_app.config['CHAT_MODEL']
     database = current_app.config['DATABASE']
+    max_tokens = model.max_new_tokens
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
-    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context)
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context, max_new_tokens=max_tokens)
     if streaming:
         return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
     else:
@@ -318,29 +323,6 @@ def chunk_file():
     chunks = splitter.split_text(data)
     return jsonify(chunks)
 
-@main.route("/collection", methods=["POST"])
-@cross_origin()
-def create_collection():
-    ##PARAMS
-    name = request.form['name']
-    description = request.form['description']
-    metadata = {
-        "title": {"description": "", "datatype": "string", "params": {"max_length": 700}},
-        "article": {"description": "", "datatype": "string", "params": {"max_length": 5000}},
-        "embedding": {"description": "", "datatype": "vector", "params": {"dim": 1024}},
-        "url": {"description": "", "datatype": "string", "params": {"max_length": 300}},
-        "chunk_id": {"description": "", "datatype": "int", "params": {}},
-        "created_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
-        "updated_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
-        "is_active": {"description": "", "datatype": "bool", "params": {}}, #Float,int,string,list,bool
-    }
-    custom_meta = json.loads(request.form['metadata'])
-    metadata.update(custom_meta)
-    database = current_app.config['DATABASE']
-    #-------------------------------------------
-    database.create_collection(name, description, metadata)
-    return jsonify({'collection_name': name})
-
 @main.route("/insert_file/enhance", methods=["POST"])
 @cross_origin()
 def enhance_document():
@@ -365,3 +347,51 @@ def enhance_document():
             #result.pop(k)
         result['metadata'] = metadata
         return jsonify(result)
+
+@main.route("/collection", methods=["POST"])
+@cross_origin()
+def create_collection():
+    ##PARAMS
+    name = request.form['name']
+    description = request.form['description']
+    metadata = {
+        "title": {"description": "", "datatype": "string", "params": {"max_length": 700}},
+        "article": {"description": "", "datatype": "string", "params": {"max_length": 5000}},
+        "embedding": {"description": "", "datatype": "vector", "params": {"dim": 1024}},
+        "url": {"description": "", "datatype": "string", "params": {"max_length": 300}},
+        "chunk_id": {"description": "", "datatype": "int", "params": {}},
+        "created_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
+        "updated_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
+        "is_active": {"description": "", "datatype": "bool", "params": {}}, #Float,int,string,list,bool
+    }
+    custom_meta = json.loads(request.form['metadata'])
+    metadata.update(custom_meta)
+    database = current_app.config['DATABASE']
+    #-------------------------------------------
+    database.create_collection(name, description, metadata)
+    return jsonify({'collection_name': name})
+
+@main.route("/update_params", methods=["POST"])
+@cross_origin()
+def update_params():
+    ##PARAMS
+    # Search params
+    k = request.form['k']
+    filter_bias = request.form['filter_bias']
+    # Phobert params
+    threshold = request.form['threshold']
+    use_history = request.form['use_history']
+    # Chat model params
+    max_tokens = request.form['max_tokens']
+    #-------------------------------------------
+    phobert = current_app.config['PHO_QUERYROUTER']
+    phobert.threshold = threshold
+    phobert.use_history = use_history
+
+    model = current_app.config['CHAT_MODEL']
+    model.max_tokens = max_tokens
+    
+    database = current_app.config['DATABASE']
+    database.k = k
+    database.filter_bias = filter_bias
+    return jsonify({'status': 'success'})
