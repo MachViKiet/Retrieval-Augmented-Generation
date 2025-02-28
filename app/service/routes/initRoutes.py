@@ -235,7 +235,7 @@ def generate():
     max_tokens = model.max_new_tokens
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
-    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context, max_new_tokens=max_tokens)
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context)
     if streaming:
         return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
     else:
