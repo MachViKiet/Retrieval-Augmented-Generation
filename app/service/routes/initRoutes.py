@@ -371,7 +371,7 @@ def create_collection():
     database.create_collection(name, description, metadata)
     return jsonify({'collection_name': name})
 
-@main.route("/update_params", methods=["POST"])
+@main.route("/params", methods=["POST"])
 @cross_origin()
 def update_params():
     ##PARAMS
@@ -395,3 +395,19 @@ def update_params():
     database.k = k
     database.filter_bias = filter_bias
     return jsonify({'status': 'success'})
+
+@main.route("/params", methods=["GET"])
+@cross_origin()
+def list_params():
+    ##PARAMS
+    phobert = current_app.config['PHO_QUERYROUTER']
+    model = current_app.config['CHAT_MODEL']
+    database = current_app.config['DATABASE']
+    #-------------------------------------------
+    return jsonify({
+        'threshold': phobert.threshold,
+        'use_history': phobert.use_history,
+        'max_tokens': model.max_tokens,
+        'k': database.k,
+        'filter_bias': database.filter_bias
+    })
