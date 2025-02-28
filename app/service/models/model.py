@@ -13,8 +13,9 @@ CACHE_DIR = os.path.normpath(
 )
 
 class ChatModel:
-    def __init__(self, model_id: str = "mistralai/mistral-large", device="cuda", provider="IBM"):
+    def __init__(self, model_id: str = "mistralai/mistral-large", device="cuda", provider="IBM", max_new_tokens=1500):
         self.provider = provider
+        self.max_new_tokens = max_new_tokens
         if provider == "IBM":
             from ibm_watsonx_ai.foundation_models import ModelInference
             from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
@@ -108,14 +109,14 @@ class ChatModel:
             if history is None or len(history) == 0:
                 prompt = prompts['NO_CONTEXT_NO_HISTORY']
                 print("Chosen prompt style: NO_CONTEXT_NO_HISTORY")
-                formatted_prompt = prompt.format(question=question)
+                formatted_prompt = prompt.format(question=question, user_profile=user_profile)
             else:
                 prompt = prompts['NO_CONTEXT_HISTORY']
                 print("Chosen prompt style: NO_CONTEXT_HISTORY")
                 conversation = ""
                 for pair in history:
                     conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['anwser'] #answer
-                formatted_prompt = prompt.format(history=conversation, question=question)
+                formatted_prompt = prompt.format(history=conversation, question=question, user_profile=user_profile)
         else:
             if history is None or len(history) == 0:
                 prompt = prompts['CONTEXT_NO_HISTORY']
@@ -134,8 +135,10 @@ class ChatModel:
         return self._generate(formatted_prompt, max_new_tokens, streaming)
 
 class PhoQueryRouter:
-    def __init__(self, model_dir: str = CACHE_DIR):
+    def __init__(self, model_dir: str = CACHE_DIR, threshold=0.5, use_history=True):
         self.model = pipeline('text-classification', model=model_dir + "/phobert_queryrouting")
+        self.threshold = threshold
+        self.use_history = use_history
 
     def classify(self, query):
         return self.model(query)
