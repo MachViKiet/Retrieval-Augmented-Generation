@@ -167,9 +167,15 @@ def search():
             search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k)
             search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
 
-            search_results = search_results + search_results_vanilla
-            source = source + source_vanilla
-            distances = distances + distances_vanilla
+            if search_results == -1:
+                search_results,source,distances = search_results_vanilla, source_vanilla, distances_vanilla
+            else:
+                filter_bias = 0.7
+                distances = [d*filter_bias for d in distances]
+
+                search_results = search_results + search_results_vanilla
+                source = source + source_vanilla
+                distances = distances + distances_vanilla
             results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
 
             distances.sort()
@@ -439,36 +445,44 @@ def dry_search():
     database = current_app.config['DATABASE']
     #----------------------------------
     database.load_collection(chosen_collection)
-    # output_fields = {
-    #     'student_handbook': ['title', 'article'],
-    #     chosen_collection: ['title', 'article']
-    # }
     output_fields = {
-        'student_handbook' : ['document_id'],
-        chosen_collection: ['document_id']
+        'student_handbook': ['title', 'article', 'document_id'],
+        chosen_collection: ['title', 'article', 'document_id']
     }
     
     if type(filter_expressions) == dict:
-        query_embeddings = encoder.embedding_function("query: " + query)
+        query_embeddings = encoder.embedding_function(query)
         try:
-            search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k, output_fields=output_fields)
-            search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
+            # search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k, output_fields=output_fields)
+            # search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
 
-            if search_results == -1:
-                search_results, source, distances = [], [], []
-            else:
-                filter_bias = 0.7
-                distances = [d*filter_bias for d in distances]
+            # if search_results == -1:
+            #     if search_results_vanilla == -1:
+            #         database.search_threshold = 2
+            #         search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
+            #         database.search_threshold = 1.1
+            #     search_results, source, distances = [], [], []
+            # else:
+            #     filter_bias = 0.7
+            #     distances = [d*filter_bias for d in distances]
 
-            search_results = search_results + search_results_vanilla
-            source = source + source_vanilla
-            distances = distances + distances_vanilla
-            results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
+            # search_results = search_results + search_results_vanilla
+            # source = source + source_vanilla
+            # distances = distances + distances_vanilla
+            # results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
 
-            distances.sort()
-            distances = distances[:k]
-            search_results_final = [results[k][0] for k in distances]
-            source_final = [results[k][1] for k in distances]
+            # distances.sort()
+            # distances = distances[:k]
+            # search_results_final = [results[k][0] for k in distances]
+            # source_final = [results[k][1] for k in distances]
+            search_results_final, source_final = database.hybrid_search(
+                collection=chosen_collection, 
+                query_embeddings=[query_embeddings], 
+                k=k,
+                limit_per_req=4,
+                filters=[filter_expressions],
+                output_fields=output_fields
+            )
         except Exception as e:
             print("Error with filter search")
             print(e)
@@ -476,7 +490,7 @@ def dry_search():
     elif type(filter_expressions) == list: #Filter expressions contain rewritten queries - perform hybrid search
         search_results_final, source_final, _ = database.hybrid_search(
             collection=chosen_collection, 
-            query_embeddings=[encoder.embedding_function("query: " + list(q.keys())[0]) for q in filter_expressions], 
+            query_embeddings=[encoder.embedding_function(list(q.keys())[0]) for q in filter_expressions], 
             k=k,
             limit_per_req=4,
             filters=[list(q.values())[0] for q in filter_expressions],
@@ -484,14 +498,17 @@ def dry_search():
             )
     if search_results_final != -1:
         document_ids = [d.get('document_id') for d in search_results_final]
+        context = rag_utils.create_prompt_milvus(query, search_results_final)
     elif search_results_final == -2: #Error in hybrid search, revert to vanilla search
         search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k, output_fields=output_fields)
-        document_ids = [d.get('document_id') for d in search_results_final]
+        document_ids = [d.get('document_id') for d in search_results_vanilla]
+        context = rag_utils.create_prompt_milvus(query, search_results_vanilla)
     else:
         context = "No related documents found"
         source_final = []
     del encoder
     return jsonify({
         'document_ids': document_ids,
-        'source': source_final
+        'source': source_final,
+        'context': context
         })

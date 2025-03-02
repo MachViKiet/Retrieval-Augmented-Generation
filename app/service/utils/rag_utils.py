@@ -24,6 +24,7 @@ from pymilvus import(
     CollectionSchema,
     AnnSearchRequest,
     RRFRanker,
+    WeightedRanker,
     MilvusException
 )
 
@@ -124,6 +125,7 @@ class MilvusDB:
                                 token=token,
             )
         self.persistent_collections = []
+        self.search_threshold = os.getenv('SEARCH_THRESHOLD', 1.1)
         self._handler = connections._fetch_handler('default')
         # Create pydantic representation of collections schemas
         from pydantic import create_model
@@ -222,6 +224,8 @@ class MilvusDB:
                                                                                                     # for different collections
             )[0]
             for r in search_results:
+                if r.distance > self.search_threshold:
+                    continue
                 results[r.distance] = (r.entity, c)
         if len(results) == 0:
              #No matching documents
@@ -240,7 +244,8 @@ class MilvusDB:
         '''Perform hybrid search among the currently loaded collections. Using filter expressions to for metadata filtering'''
         results = {}
         source = []
-        reranker = RRFRanker()
+        #reranker = RRFRanker()
+        reranker= WeightedRanker(0.6, 0.9)
         if search_params is None:
             search_params = {
                 "metric_type": "L2",
@@ -277,12 +282,13 @@ class MilvusDB:
             return -1, -1, -1
         #Sort by distance and return only k results
         distances = list(results.keys())
-        distances.sort()
+        distances.sort(reverse=True)
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
-        source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
-        return sorted_list, source, distances
+        #source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
+        source = [{'collection_name': results[i][1], 'distance': i, 'title': results[i][0].get('title')} for i in distances]
+        return sorted_list, source
     
     def create_collection(name, description, metadata):
         fields = []
@@ -420,7 +426,7 @@ def metadata_extraction_v2(query, model, collection_name, pydantic_schema=None):
     '''Extract metadata from user query given a schema using a LLM call
     schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
 
-    prompt = prompt = """Extract metadata from the user's query using the provided schema.
+    prompt = """Extract metadata from the user's query using the provided schema.
 If not found, write empty string or empty list.\
 Always leave the article field empty.
 User's query: {query}
