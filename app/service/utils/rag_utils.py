@@ -24,6 +24,7 @@ from pymilvus import(
     CollectionSchema,
     AnnSearchRequest,
     RRFRanker,
+    WeightedRanker,
     MilvusException
 )
 
@@ -112,7 +113,7 @@ class MongoDB:
         pass
 
 class MilvusDB:
-    def __init__(self, host,port,password,user,uri,token,server_pem_path=None,server_name='localhost', k=4, filter_bias=0.7) -> None:
+    def __init__(self, host,port,password,user,uri,token,server_pem_path=None,server_name='localhost', k=4, filter_bias=0.4) -> None:
         
         if host != "":
             connections.connect(alias = 'default',
@@ -246,6 +247,7 @@ class MilvusDB:
         results = {}
         source = []
         reranker = RRFRanker()
+        reranker = WeightedRanker(1 - self.filter_bias, 0.9)
         if search_params is None:
             search_params = {
                 "metric_type": "L2",
@@ -282,7 +284,7 @@ class MilvusDB:
             return -1, -1, -1
         #Sort by distance and return only k results
         distances = list(results.keys())
-        distances.sort()
+        distances.sort(reverse=True)
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
