@@ -166,28 +166,36 @@ def search():
     #     chosen_collection: ['title', 'article']
     # }
     if type(filter_expressions) == dict:
-        query_embeddings = encoder.embedding_function("query: " + query)
+        query_embeddings = encoder.embedding_function(query)
         try:
-            search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k)
-            search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
+            # search_results, source, distances = database.similarity_search(chosen_collection, query_embeddings, filters=filter_expressions, k=k)
+            # search_results_vanilla, source_vanilla, distances_vanilla = database.similarity_search(chosen_collection, query_embeddings, k=k)
 
-            if search_results == -1:
-                search_results = search_results_vanilla
-                source = source_vanilla
-                distances = distances_vanilla
-            else:
-                filter_bias = database.filter_bias
-                distances = [d * filter_bias for d in distances] #Apply bias for filtered search by lowering the distance
+            # if search_results == -1:
+            #     search_results = search_results_vanilla
+            #     source = source_vanilla
+            #     distances = distances_vanilla
+            # else:
+            #     filter_bias = database.filter_bias
+            #     distances = [d * filter_bias for d in distances] #Apply bias for filtered search by lowering the distance
 
-                search_results = search_results + search_results_vanilla
-                source = source + source_vanilla
-                distances = distances + distances_vanilla
-            results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
+            #     search_results = search_results + search_results_vanilla
+            #     source = source + source_vanilla
+            #     distances = distances + distances_vanilla
+            # results = {k: (article, s) for k, article, s in zip(distances, search_results, source)}
 
-            distances.sort()
-            distances = distances[:k]
-            search_results_final = [results[k][0] for k in distances]
-            source_final = [results[k][1] for k in distances]
+            # distances.sort()
+            # distances = distances[:k]
+            # search_results_final = [results[k][0] for k in distances]
+            # source_final = [results[k][1] for k in distances]
+
+            search_results_final, source_final = database.hybrid_search(
+                collection=chosen_collection, 
+                query_embeddings=[query_embeddings], 
+                k=k,
+                limit_per_req=4,
+                filters=[filter_expressions],
+            )
         except Exception as e:
             print("Error with filter search")
             print(e)
@@ -200,7 +208,7 @@ def search():
     elif type(filter_expressions) == list: #Filter expressions contain rewritten queries - perform hybrid search
         search_results_final, source_final, _ = database.hybrid_search(
             collection=chosen_collection, 
-            query_embeddings=[encoder.embedding_function("query: " + list(q.keys())[0]) for q in filter_expressions], 
+            query_embeddings=[encoder.embedding_function(list(q.keys())[0]) for q in filter_expressions], 
             k=k,
             limit_per_req=4,
             filters=[list(q.values())[0] for q in filter_expressions]
