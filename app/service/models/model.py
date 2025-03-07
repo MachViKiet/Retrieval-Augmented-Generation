@@ -3,7 +3,8 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 from dotenv import load_dotenv
 from .prompts import prompts
-from flask import Response, stream_with_context
+from utils import query_routing
+from flask import Response, stream_with_context, current_app
 
 load_dotenv('../.env')
 
@@ -134,11 +135,54 @@ class ChatModel:
         #formatted_prompt = prompt.format(context=context, question=question)
         return self._generate(formatted_prompt, max_new_tokens, streaming)
 
-class PhoQueryRouter:
-    def __init__(self, model_dir: str = CACHE_DIR, threshold=0.5, use_history=True):
-        self.model = pipeline('text-classification', model=model_dir + "/phobert_queryrouting")
+class QueryRouter:
+    def __init__(self, model_dir: str = CACHE_DIR, threshold=0.5, use_history=True, provider='local', model_id=None, database=None):
+        if provider == 'local':
+            self.model = pipeline('text-classification', model=model_dir + "/phobert_queryrouting")
+            
+        elif provider.lower() == 'openai':
+            import openai
+            client = openai.OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
+            self.model = client
+            self.model_id = model_id if model_id is not None else "gpt-4o"
+            # Creating prompt for query routing
+            assert database is not None, "Database object must be provided for query routing"
+            collections = database._handler.list_collections()
+            descriptions = [database.describe_collection(col)['description'] for col in collections]
+            describe_collections_prompt = "".join([f"{col}: {desc}\n" for col, desc in zip(collections, descriptions)])
+            self.prompt = f"""You are given the conversation between a user and a chatbot. Your task is to classify the conversation into one of the following topics:
+{describe_collections_prompt}Note that the conversation might span across multiple topics, ONLY answer with the latest topic. Do not provide an explanation, only the topic name."""
+            self.collections = collections
+        else:
+            self.model = pipeline('text-classification', model=model_dir + "/phobert_queryrouting")
+        #Setting parameters
         self.threshold = threshold
         self.use_history = use_history
+        self.provider = provider
 
     def classify(self, query):
-        return self.model(query)
+        if self.provider.lower() == 'local':
+            segmented_query = query_routing.segment_vietnamese(query)
+            if type(segmented_query) is list:
+                segmented_conversation = " ".join(segmented_query)
+            else:
+                segmented_conversation = segmented_query
+            prediction = self.model(segmented_conversation)[0]
+            chosen_collection = prediction['label']
+            print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
+            if prediction['score'] > self.threshold:
+                return chosen_collection
+            else: #Low confidence
+                return -1
+
+        elif self.provider.lower() == 'openai':
+            response = self.model.chat.completions.create(
+                model=self.model_id,
+                messages=[{"role": "system", "content": self.prompt}, {"role": "user", "content": query}],
+                stream=False,
+            ).choices[0].message.content.lower()
+            print("Query Routing: " + response + "\n")
+            if response in self.collections:
+                return response
+            else: #Unable to classify
+                return -1

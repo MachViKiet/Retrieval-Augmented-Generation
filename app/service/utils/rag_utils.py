@@ -289,7 +289,7 @@ class MilvusDB:
         sorted_list = [results[i][0] for i in distances]
         #Return the collection name of the source document
         source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
-        return sorted_list, source, distances
+        return sorted_list, source
     
     def create_collection(name, description, metadata):
         fields = []

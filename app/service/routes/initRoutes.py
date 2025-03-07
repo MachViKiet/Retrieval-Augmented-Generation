@@ -10,7 +10,7 @@ import json
 import requests
 from requests.auth import HTTPBasicAuth
 
-from models.model import ChatModel, PhoQueryRouter
+from models.model import ChatModel, QueryRouter
 from utils import rag_utils, query_routing
 
 main = Blueprint("main", __name__)
@@ -65,38 +65,31 @@ def determine_collection():
     query = request.form['query']
     history = json.loads(request.form['history']) # Conversation history
     # threshold = 0.5
-    #pho_queryrouter = PhoQueryRouter()
-    pho_queryrouter = current_app.config['PHO_QUERYROUTER']
     #----------------------------------
+    queryrouter = current_app.config['QUERYROUTER']
     conversation = ""
     for h in history:
         conversation += h['question'] + ". "
     conversation += query
-    if pho_queryrouter.use_history: #Determine using conversation history
-        segmented_query = query_routing.segment_vietnamese(conversation + query)
-        if type(segmented_query) is list:
-            segmented_conversation = " ".join(segmented_query)
-        else:
-            segmented_conversation = segmented_query
-        prediction = pho_queryrouter.classify(segmented_conversation)[0]
-        chosen_collection = prediction['label']
-        print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
+    if queryrouter.use_history: #Determine using conversation history
+        # segmented_query = query_routing.segment_vietnamese(conversation + query)
+        # if type(segmented_query) is list:
+        #     segmented_conversation = " ".join(segmented_query)
+        # else:
+        #     segmented_conversation = segmented_query
+        # prediction = pho_queryrouter.classify(segmented_conversation)[0]
+        # chosen_collection = prediction['label']
+        # print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
 
-        if prediction['score'] >= pho_queryrouter.threshold: 
-            return jsonify({'collection': chosen_collection})
-        
-    #Determine using only the current message
-    segmented_query = query_routing.segment_vietnamese(query)
-    if type(segmented_query) is list:
-        segmented_conversation = " ".join(segmented_query)
+        # if prediction['score'] >= pho_queryrouter.threshold: 
+        #     return jsonify({'collection': chosen_collection})
+        prediction = queryrouter.classify(conversation)
     else:
-        segmented_conversation = segmented_query
-    prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
-    chosen_collection = prediction['label']
-    print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
-    if prediction['score'] < pho_queryrouter.threshold: #Still unsure, return empty collection
-        chosen_collection = ""
-    return jsonify({'collection': chosen_collection})
+        prediction = queryrouter.classify(query)
+    if prediction != -1:
+        return jsonify({'collection': prediction})
+    else:
+        return jsonify({'collection': ""})
 
 @main.route("/generate/extract_meta", methods=['POST'])
 @cross_origin()

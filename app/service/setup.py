@@ -5,7 +5,7 @@ from routes import initRoutes
 from errorHandler import InvalidDataError
 from flask_cors import CORS
 
-from models.model import ChatModel, PhoQueryRouter
+from models.model import ChatModel, QueryRouter
 from utils import rag_utils, query_routing
 
 # Load environment variables from .env file
@@ -66,9 +66,6 @@ def createApp():
     encoder = rag_utils.Encoder(provider=os.getenv("EMBED_PROVIDER", "local"))
     app.config["ENCODER"] = encoder
     print("Encoder loaded.")
-    pho_queryrouter = PhoQueryRouter()
-    app.config["PHO_QUERYROUTER"] = pho_queryrouter
-    print("Query Router loaded.")
     database = rag_utils.MilvusDB(
         host=os.getenv('MILVUS_HOST', ""), port=os.getenv('MILVUS_PORT', ""),
         user=os.getenv('MILVUS_USERNAME', ""), password=os.getenv('MILVUS_PASSWORD', ""),
@@ -77,6 +74,9 @@ def createApp():
     database.load_collection('student_handbook', persist=True)
     app.config["DATABASE"] = database
     print("Database loaded.")
+    queryrouter = QueryRouter(provider=os.getenv("QUERYROUTER_PROVIDER", "local"), model_id=os.getenv("QUERYROUTER_MODEL_ID"), database=database)
+    app.config["QUERYROUTER"] = queryrouter
+    print("Query Router loaded.")
     # return jsonify({})
     print("All assets loaded.")
     return app
