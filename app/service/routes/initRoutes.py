@@ -367,42 +367,10 @@ def enhance_document():
 @main.route("/dry_search", methods=["POST"])
 @cross_origin()
 def dry_search():
-    #------------------DETERMINE COLLECTION------------------
-    ##PARAMS
-    query = request.form['query']
-    history = [] # Conversation history
-    threshold = 0.5
-    #pho_queryrouter = PhoQueryRouter()
-    pho_queryrouter = current_app.config['PHO_QUERYROUTER']
-    #----------------------------------
-    conversation = ""
-    for h in history:
-        conversation += h['question'] + ". "
-    conversation += query
-    segmented_query = query_routing.segment_vietnamese(conversation + query)
-    if type(segmented_query) is list:
-        segmented_conversation = " ".join(segmented_query)
-    else:
-        segmented_conversation = segmented_query
-    prediction = pho_queryrouter.classify(segmented_conversation)[0]
-    chosen_collection = prediction['label']
-    print("Query Routing: " + chosen_collection + " ----- Score: " + str(prediction['score']) + "\n")
-
-    if prediction['score'] < threshold: #Unsure
-        segmented_query = query_routing.segment_vietnamese(query)
-        if type(segmented_query) is list:
-            segmented_conversation = " ".join(segmented_query)
-        else:
-            segmented_conversation = segmented_query
-        prediction = pho_queryrouter.classify(query_routing.segment_vietnamese(segmented_conversation))[0] #Only guessing from the current message
-        chosen_collection = prediction['label']
-        # if prediction['score'] < threshold: #Still unsure, return empty collection
-        #     chosen_collection = ""
-    # database.load_collection(chosen_collection, persist=True)
     #-------------------EXTRACT METADATA-------------------
     ##PARAMS
     query = request.form['query']
-    
+    chosen_collection = request.form['chosen_collection']
     history = [] # Conversation history
     n_new_queries = 2
     model = current_app.config['CHAT_MODEL']
