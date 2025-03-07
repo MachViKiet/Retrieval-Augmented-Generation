@@ -139,7 +139,7 @@ class QueryRouter:
     def __init__(self, model_dir: str = CACHE_DIR, threshold=0.5, use_history=True, provider='local', model_id=None, database=None):
         if provider == 'local':
             self.model = pipeline('text-classification', model=model_dir + "/phobert_queryrouting")
-            
+
         elif provider.lower() == 'openai':
             import openai
             client = openai.OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
@@ -148,6 +148,8 @@ class QueryRouter:
             # Creating prompt for query routing
             assert database is not None, "Database object must be provided for query routing"
             collections = database._handler.list_collections()
+            # Remove student_handbook from collections
+            collections.remove('student_handbook')
             descriptions = [database.describe_collection(col)['description'] for col in collections]
             describe_collections_prompt = "".join([f"{col}: {desc}\n" for col, desc in zip(collections, descriptions)])
             self.prompt = f"""You are given the conversation between a user and a chatbot. Your task is to classify the conversation into one of the following topics:
