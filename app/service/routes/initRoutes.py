@@ -279,6 +279,8 @@ def insert_file():
     #-------------------------------------------
     #Save chunks to local storage
     if secure_filename(filename):
+        title = metadata['title']
+        chunks = ["Title: " + title + "\nArticle: " + c for c in chunks]
         with open(os.getenv('AIRFLOW_TEMP_FOLDER') + '/' + filename, 'w+', encoding='utf-8') as f:
             json.dump(chunks, f)
             r = requests.post(f"http://{os.getenv('AIRFLOW_HOST')}:{os.getenv('AIRFLOW_PORT')}/api/v1/dags/{os.getenv('AIRFLOW_DAGID_INSERT')}/dagRuns", json={
