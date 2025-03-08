@@ -55,7 +55,7 @@ class ChatModel:
             # print(response.text)
 
     def _generate(self, prompt, max_new_tokens=1000, history=None, streaming=False, response_schema=None):
-        if self.provider == "IBM":
+        if self.provider.lower() == "ibm":
             params = {GenParams.MAX_NEW_TOKENS: max_new_tokens}
             if not streaming:
                 response = self.model.generate_text(prompt, params=params)
@@ -63,7 +63,7 @@ class ChatModel:
                 return response
             else:
                 return self.model.generate_text_stream(prompt, params=params)
-        elif self.provider == "OpenAI":
+        elif self.provider.lower() == "openai":
             if response_schema is not None:
                 response = self.model.beta.chat.completions.parse(
                     model=self.model_id,
@@ -92,7 +92,7 @@ class ChatModel:
                         if chunk.choices[0].delta.content is not None:
                             yield f"{chunk.choices[0].delta.content}"
                 return stream_with_context(gen(response))
-        elif self.provider == "Google":
+        elif self.provider.lower() == "google":
             import google.generativeai as genai
             params = genai.GenerationConfig(max_output_tokens=max_new_tokens)
             if not streaming:
