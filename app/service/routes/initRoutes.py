@@ -392,7 +392,7 @@ def update_params():
     phobert.use_history = use_history
 
     model = current_app.config['CHAT_MODEL']
-    model.max_tokens = max_tokens
+    model.max_tokens = max_new_tokens
     
     database = current_app.config['DATABASE']
     database.k = k
@@ -410,7 +410,7 @@ def list_params():
     return jsonify({
         'threshold': phobert.threshold,
         'use_history': phobert.use_history,
-        'max_tokens': model.max_tokens,
+        'max_tokens': model.max_new_tokens,
         'k': database.k,
         'filter_bias': database.filter_bias
     })
