@@ -374,6 +374,16 @@ def create_collection():
     database.create_collection(name, description, metadata)
     return jsonify({'collection_name': name})
 
+@main.route("/collection", methods=["PATCH"])
+def drop_collection():
+    collection_name = request.form['collection_name']
+    database = current_app.config['DATABASE']
+    status, msg = database.drop_collection(collection_name)
+    if status:
+        return jsonify({'status': 'success'})
+    else:
+        return jsonify({'status': 'failed', 'message': msg}), 500
+
 @main.route("/params", methods=["POST"])
 @cross_origin()
 def update_params():

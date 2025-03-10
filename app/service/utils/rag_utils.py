@@ -310,6 +310,13 @@ class MilvusDB:
         collection = Collection(name, schema)
         return True
 
+    def drop_collection(name):
+        try:
+            Collection(name).drop()
+        except MilvusException as e:
+            return False, e.message
+        return True, "Success"
+    
     def delete_document(self, collection_name, document_id):
         try:
             Collection(collection_name).delete(expr=f"document_id == '{document_id}'")
