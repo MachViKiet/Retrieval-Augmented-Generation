@@ -387,7 +387,7 @@ def update_params():
     # Chat model params
     max_tokens = request.form['max_tokens']
     #-------------------------------------------
-    phobert = current_app.config['PHO_QUERYROUTER']
+    phobert = current_app.config['QUERYROUTER']
     phobert.threshold = threshold
     phobert.use_history = use_history
 
@@ -403,7 +403,7 @@ def update_params():
 @cross_origin()
 def list_params():
     ##PARAMS
-    phobert = current_app.config['PHO_QUERYROUTER']
+    phobert = current_app.config['QUERYROUTER']
     model = current_app.config['CHAT_MODEL']
     database = current_app.config['DATABASE']
     #-------------------------------------------
