@@ -392,7 +392,7 @@ def update_params():
     phobert.use_history = use_history
 
     model = current_app.config['CHAT_MODEL']
-    model.max_tokens = max_new_tokens
+    model.max_new_tokens = max_tokens
     
     database = current_app.config['DATABASE']
     database.k = k
