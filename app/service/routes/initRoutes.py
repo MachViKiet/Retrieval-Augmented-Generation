@@ -360,7 +360,7 @@ def create_collection():
     metadata = {
         "title": {"description": "", "datatype": "string", "params": {"max_length": 700}},
         "article": {"description": "", "datatype": "string", "params": {"max_length": 5000}},
-        "embedding": {"description": "", "datatype": "vector", "params": {"dim": 1024}},
+        "embedding": {"description": "", "datatype": "vector", "params": {"dim": 3072}}, #1024
         "url": {"description": "", "datatype": "string", "params": {"max_length": 300}},
         "chunk_id": {"description": "", "datatype": "int", "params": {}},
         "created_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
