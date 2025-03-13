@@ -27,28 +27,27 @@ function AccountManager() {
   }, [])
 
   return (
-    <UnknowPage/>
-    // <Box sx ={{ width: '100%', height: '100%', padding: 2 }}>
-    //   <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 1.2 }}>
-    //     <Typography variant='h1' 
-    //       sx = {{ fontSize: '1.8rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
-    //         <PersonPinOutlinedIcon fontSize='large'/> Danh Sách Người Dùng </Typography>
-    //   </Box>
-    //   <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 400px)', height: '100%',  width: '100%', background: 'transparent' }}>
-    //     <MuiTable useData = {useData([])}/>
-    //   </Box>
+    // <UnknowPage/>
+    <Box sx ={{ width: '100%', height: '100%', padding: 2 }}>
+      <Box sx = {{ display: 'flex', gap: 1, alignItems:'center', paddingBottom: 1.2 }}>
+        <Typography variant='h1' 
+          sx = {{ fontSize: '1.8rem', fontFamily: 'Roboto', fontWeight: '900', width: 'fit-content', color: theme => theme.palette.mode == 'dark' ? '#fff' : theme.palette.primary.main }}>
+            <PersonPinOutlinedIcon fontSize='large'/> Danh Sách Người Dùng </Typography>
+      </Box>
+      <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 400px)', height: '100%',  width: '100%', background: 'transparent' }}>
+        <MuiTable useData = {useData([])}/>
+      </Box>
 
-    //   <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 180px)', height: '100%',  width: '100%', background: 'transparent' }}>
-    //     <MuiTable useData = {useData([])}/>
-    //   </Box>
-    // </Box>
+      <Box sx={{ paddingBottom: 2, maxHeight: 'calc(100vh - 180px)', height: '100%',  width: '100%', background: 'transparent' }}>
+        <MuiTable useData = {useData([])}/>
+      </Box>
+    </Box>
   )
 }
 
 export default AccountManager
 
 const useData = (documents) => {
-  const { id } = '421524';
 
   function createData(id = Math.floor(Math.random() * 72658721) , name= null, chunkNumber= null, upload_date= null, updated_date= null, chunkMethod= null, enable= null, parsingStatus= null, action= null) {
     return { id, name, chunkNumber, upload_date, updated_date, chunkMethod, enable, parsingStatus, action };
@@ -65,9 +64,6 @@ const useData = (documents) => {
     return createData(_id, document_name, amount_chunking, formatTime(created_at ? created_at : createdAt), formatTime(updated_at ? updated_at : updatedAt), methods, isactive,state, ['delete'] )
   })
 
-  const condition = (params) => { return ['processed', 'pending', 'failed'].includes(params.row.parsingStatus) }
-  // const condition = () => true
-  const getLinkToDocument = (params) => { return `/knowledge_bases/${id}/${params.row.id}`}
 
   const columns = [
     { 

@@ -16,14 +16,23 @@ import {
 } from '../../controllers/profile'
 
 import roleAuthorization from '../../controllers/auth/roleAuthorization'
+import { getAll } from '~/controllers/user/getUser'
 
 
 router.get(
   '/',
   requireAuth,
-  roleAuthorization(['user', 'administrator', 'student', 'researcher']),
+  roleAuthorization(['user', 'administrator', 'student', 'acadamic_administrator']),
   trimRequest.all,
   getProfile
+)
+
+router.get(
+  '/getAll',
+  requireAuth,
+  roleAuthorization(['administrator']),
+  trimRequest.all,
+  getAll
 )
 
 router.get('/verifyToken', requireAuth, trimRequest.all, verifyToken)
@@ -31,7 +40,7 @@ router.get('/verifyToken', requireAuth, trimRequest.all, verifyToken)
 router.patch(
   '/',
   requireAuth,
-  roleAuthorization(['user', 'administrator', 'student', 'researcher']),
+  roleAuthorization(['user', 'administrator', 'acadamic_administrator', 'student', 'researcher']),
   trimRequest.all,
   validateUpdateProfile,
   updateProfile

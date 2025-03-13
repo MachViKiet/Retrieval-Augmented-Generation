@@ -99,7 +99,7 @@ function Datasets() {
   const token = useSelector(state => state.auth.token)
   const [collectionWithDocuments, setCollectionWithDocuments] = useState(null)
 
-  const { processHandler, noticeHandler, subDashboard, setUrlBack } = useOutletContext();
+  const { processHandler, noticeHandler, subDashboard, dashboard, setUrlBack } = useOutletContext();
   const [loadTable, setLoadTable] = useState(false)
 
   const socket = getSocket();
@@ -108,6 +108,7 @@ function Datasets() {
     document.title = 'Chatbot - Quản Lý Tri Thức - Tài Liệu'
 
     subDashboard.navigate.active(452)
+    dashboard.navigate.active(346)
     subDashboard.addActions( [
       { _id: 452, title: "Tập Dữ Liệu", icon: <DescriptionOutlinedIcon/>, link: "/knowledge_bases/" + id }
       // { _id: 564, title: "Thử Nghiệm", icon: <BugReportOutlinedIcon/>, link: "/knowledge_bases/retrieval_testing/" + id },
