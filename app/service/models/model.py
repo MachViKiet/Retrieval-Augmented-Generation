@@ -72,6 +72,7 @@ class ChatModel:
                 )
                 return response.choices[0].message.parsed
             if not streaming:
+                # print("Non-streaming response")
                 response = self.model.chat.completions.create(
                     model=self.model_id,
                     messages=[{"role": "system", "content": prompt}],
@@ -81,15 +82,17 @@ class ChatModel:
                 text = response.choices[0].message.content
                 return text
             else:
-                response = self.model.chat.completions.create(
-                    model=self.model_id,
-                    messages=[{"role": "system", "content": prompt}],
-                    stream=streaming,
-                    max_completion_tokens=max_new_tokens,
-                )
+                # print("Streaming response")
                 def gen():
+                    response = self.model.chat.completions.create(
+                        model=self.model_id,
+                        messages=[{"role": "system", "content": prompt}],
+                        stream=streaming,
+                        max_completion_tokens=max_new_tokens,
+                    )
                     for chunk in response:
-                        yield f"{chunk.choices[0].delta.content}"
+                        if chunk.choices[0].delta.content is not None:
+                            yield chunk.choices[0].delta.content
                 return stream_with_context(gen())
         elif self.provider.lower() == "google":
             import google.generativeai as genai
@@ -132,7 +135,7 @@ class ChatModel:
 
         # formatted_prompt = prompt.replace("\n", "<eos>")
         #formatted_prompt = prompt.format(context=context, question=question)
-        return self._generate(formatted_prompt, max_new_tokens, streaming)
+        return self._generate(formatted_prompt, max_new_tokens, streaming=streaming)
 
 class QueryRouter:
     def __init__(self, model_dir: str = CACHE_DIR, threshold=0.5, use_history=True, provider='local', model_id=None, database=None):
