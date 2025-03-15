@@ -14,6 +14,7 @@ router.use('/api/', require('./profile'))
 router.use('/api/', require('./conservation'))
 router.use('/api/collections', require('./collection'))
 router.use('/api/documents', require('./document'))
+router.use('/api/admin/chatbot/', require('./administrator/chatbot'))
 
 /*
  * Setup routes for index
