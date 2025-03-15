@@ -26,6 +26,51 @@ export function Dashboard() {
   }, [])
 
   useEffect(() => {
+    const dataChatGPT_format = (data) => {
+      let totalInputTokens = 0
+      let totalOutputTokens = 0
+      let totalInputCachedTokens = 0
+      let totalNumModelRequests = 0
+      let totalTokenInDate = []
+      let dateLabel = []
+      let inputTokens = []
+      let outputTokens = []
+      let inputCachedTokens = []
+      let numModelRequests = []
+
+      data['data'].forEach(bucket => {
+          dateLabel.push(formatTime_Date_Month(bucket.start_time))
+          if(bucket['results'].length == 0) {
+            inputTokens.push(0)
+            outputTokens.push(0)
+            inputCachedTokens.push(0)
+            numModelRequests.push(0)
+            totalTokenInDate.push(0)
+            return
+          }
+          bucket.results.forEach(result => {
+              totalInputTokens += result.input_tokens
+              totalOutputTokens += result.output_tokens
+              totalInputCachedTokens += result.input_cached_tokens
+              totalNumModelRequests += result.num_model_requests
+
+              inputTokens.push(result.input_tokens)
+              outputTokens.push(result.output_tokens)
+              inputCachedTokens.push(result.input_cached_tokens)
+              numModelRequests.push(result.num_model_requests)
+              totalTokenInDate.push(totalInputTokens + totalOutputTokens + totalInputCachedTokens + totalNumModelRequests)
+          })
+      })
+
+      return {
+        data: data['data'].map((data) => ({...data, ...data['results'][0]})),
+        total_input_request_tokens: totalInputTokens,
+        total_output_request_tokens: totalOutputTokens,
+        total_cached_request_tokens: totalInputCachedTokens,
+        total_requests: totalNumModelRequests,
+        dateLabel, inputTokens, outputTokens, inputCachedTokens, numModelRequests, totalTokenInDate
+      }
+    }
     const getGPTData = async () => {
       // const ChatGPT_Event = processHandler.add('#chatgpt')
       let chatGPTDataResponse = {
@@ -39,6 +84,7 @@ export function Dashboard() {
           await usageCompletion(chatGPTDataResponse.next_page)
           .then((data) => {
             chatGPTDataResponse = { data : [...chatGPTDataResponse.data, ...data['data'] ], has_more: data['has_more'], next_page: data['next_page']}
+            setDataChatGPT(dataChatGPT_format(chatGPTDataResponse))
           })
           .catch((e) => {
             console.log(e)
@@ -56,65 +102,58 @@ export function Dashboard() {
       }
       // processHandler.remove('#chatgpt', ChatGPT_Event)
       return chatGPTDataResponse
-
     }
 
-    getGPTData().then((data) => {
-      if(data) {
-        setDataChatGPT(() => {
-          let totalInputTokens = 0
-          let totalOutputTokens = 0
-          let totalInputCachedTokens = 0
-          let totalNumModelRequests = 0
-          let totalTokenInDate = []
-          let dateLabel = []
-          let inputTokens = []
-          let outputTokens = []
-          let inputCachedTokens = []
-          let numModelRequests = []
+    getGPTData()
+    // .then((data) => {
+    //   if(data) {
+    //     setDataChatGPT(() => {
+    //       let totalInputTokens = 0
+    //       let totalOutputTokens = 0
+    //       let totalInputCachedTokens = 0
+    //       let totalNumModelRequests = 0
+    //       let totalTokenInDate = []
+    //       let dateLabel = []
+    //       let inputTokens = []
+    //       let outputTokens = []
+    //       let inputCachedTokens = []
+    //       let numModelRequests = []
     
-          data['data'].forEach(bucket => {
-              dateLabel.push(formatTime_Date_Month(bucket.start_time))
-              if(bucket['results'].length == 0) {
-                inputTokens.push(0)
-                outputTokens.push(0)
-                inputCachedTokens.push(0)
-                numModelRequests.push(0)
-                totalTokenInDate.push(0)
-                return
-              }
-              bucket.results.forEach(result => {
-                  totalInputTokens += result.input_tokens
-                  totalOutputTokens += result.output_tokens
-                  totalInputCachedTokens += result.input_cached_tokens
-                  totalNumModelRequests += result.num_model_requests
+    //       data['data'].forEach(bucket => {
+    //           dateLabel.push(formatTime_Date_Month(bucket.start_time))
+    //           if(bucket['results'].length == 0) {
+    //             inputTokens.push(0)
+    //             outputTokens.push(0)
+    //             inputCachedTokens.push(0)
+    //             numModelRequests.push(0)
+    //             totalTokenInDate.push(0)
+    //             return
+    //           }
+    //           bucket.results.forEach(result => {
+    //               totalInputTokens += result.input_tokens
+    //               totalOutputTokens += result.output_tokens
+    //               totalInputCachedTokens += result.input_cached_tokens
+    //               totalNumModelRequests += result.num_model_requests
     
-                  inputTokens.push(result.input_tokens)
-                  outputTokens.push(result.output_tokens)
-                  inputCachedTokens.push(result.input_cached_tokens)
-                  numModelRequests.push(result.num_model_requests)
-                  totalTokenInDate.push(totalInputTokens + totalOutputTokens + totalInputCachedTokens + totalNumModelRequests)
-              })
-          })
+    //               inputTokens.push(result.input_tokens)
+    //               outputTokens.push(result.output_tokens)
+    //               inputCachedTokens.push(result.input_cached_tokens)
+    //               numModelRequests.push(result.num_model_requests)
+    //               totalTokenInDate.push(totalInputTokens + totalOutputTokens + totalInputCachedTokens + totalNumModelRequests)
+    //           })
+    //       })
 
-          return {
-            data: data['data'].map((data) => ({...data, ...data['results'][0]})),
-            total_input_request_tokens: totalInputTokens,
-            total_output_request_tokens: totalOutputTokens,
-            total_cached_request_tokens: totalInputCachedTokens,
-            total_requests: totalNumModelRequests,
-            dateLabel, inputTokens, outputTokens, inputCachedTokens, numModelRequests, totalTokenInDate
-          }
-        })
-        setInterval(async () => {
-          await getGPTData()
-        }, 4000)
-      }
-    })
-
-    useProfile.getDashboard(token).then((dataAPI) => {
-      // setData(dataAPI)
-    })
+    //       return {
+    //         data: data['data'].map((data) => ({...data, ...data['results'][0]})),
+    //         total_input_request_tokens: totalInputTokens,
+    //         total_output_request_tokens: totalOutputTokens,
+    //         total_cached_request_tokens: totalInputCachedTokens,
+    //         total_requests: totalNumModelRequests,
+    //         dateLabel, inputTokens, outputTokens, inputCachedTokens, numModelRequests, totalTokenInDate
+    //       }
+    //     })
+    //   }
+    // })
 
   }, [token])
 
