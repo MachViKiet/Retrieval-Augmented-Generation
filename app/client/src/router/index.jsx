@@ -26,14 +26,14 @@ import AppLayout from '~/layouts/AppLayout'
 import VerifyEmail from '~/pages/VerifyEmail';
 import Loading from '~/components/Page/Loading'
 
-// import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
+import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
 // import AuthLayout from '~/layouts/AuthLayout'
-// import Dashboard from '~/pages/Dashboard/Dashboard';
-// import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator';
+import Dashboard from '~/pages/Dashboard/Dashboard';
+import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator';
 // import AppLayout from '~/layouts/AppLayout';
-const Dashboard = React.lazy(() => import('~/pages/Dashboard/Dashboard'))
-const AdminChat = React.lazy(() => import('~/pages/Dashboard/ChatGenerator'))
-const UserChat = React.lazy(() => import('~/pages/User/ChatGenerator'))
+// const Dashboard = React.lazy(() => import('~/pages/Dashboard/Dashboard'))
+// const AdminChat = React.lazy(() => import('~/pages/Dashboard/ChatGenerator'))
+// const UserChat = React.lazy(() => import('~/pages/User/ChatGenerator'))
 const DatasetDetail = React.lazy(() => import( '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Dataset'))
 const Datasets = React.lazy(() => import( '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail'))
 const AccountManager = React.lazy(() => import( '~/pages/Dashboard/AccountManager'))

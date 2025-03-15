@@ -180,23 +180,23 @@ export function Dashboard() {
       {
         outerRadius: 80,
         data: [
-          { label: 'Hệ Thống Thông Tin', value: 12, color: '#1E3A8A' },
-          { label: 'Khoa Học Máy Tính', value: 5, color: '#3B82F6' },
-          { label: 'Mạng Máy Tính', value: 1, color: '#60A5FA' },
-          { label: 'Kỹ Thuật Phần Mềm', value: 10, color: '#93C5FD' },
-          { label: 'Thị Giác Máy Tính', value: 2, color: '#D1E7FF' },
-          { label: 'Công Nghệ Thông Tin', value: 30, color: '#B0B0B0' }
+          { label: 'Hệ Thống Thông Tin', value: 34, color: '#1E3A8A' },
+          { label: 'Khoa Học Máy Tính', value: 14, color: '#3B82F6' },
+          { label: 'Mạng Máy Tính', value: 0, color: '#60A5FA' },
+          { label: 'Kỹ Thuật Phần Mềm', value: 0, color: '#93C5FD' },
+          { label: 'Thị Giác Máy Tính', value: 0, color: '#D1E7FF' },
+          { label: 'Công Nghệ Thông Tin', value: 477, color: '#B0B0B0' }
         ],
         highlightScope: { fade: 'global', highlight: 'item' },
         faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
         arcLabel: (params) => {
           const data = [
-            { label: 'Hệ Thống Thông Tin', value: 12, color: '#1E3A8A' },
-            { label: 'Khoa Học Máy Tính', value: 5, color: '#3B82F6' },
-            { label: 'Mạng Máy Tính', value: 1, color: '#60A5FA' },
-            { label: 'Kỹ Thuật Phần Mềm', value: 10, color: '#93C5FD' },
-            { label: 'Thị Giác Máy Tính', value: 2, color: '#D1E7FF' },
-            { label: 'Công Nghệ Thông Tin', value: 30, color: '#B0B0B0' }
+            { label: 'Hệ Thống Thông Tin', value: 34, color: '#1E3A8A' },
+            { label: 'Khoa Học Máy Tính', value: 14, color: '#3B82F6' },
+            { label: 'Mạng Máy Tính', value: 0, color: '#60A5FA' },
+            { label: 'Kỹ Thuật Phần Mềm', value: 0, color: '#93C5FD' },
+            { label: 'Thị Giác Máy Tính', value: 0, color: '#D1E7FF' },
+            { label: 'Công Nghệ Thông Tin', value: 477, color: '#B0B0B0' }
           ]
           const percent = params.value / data.map((item) => item.value).reduce((a, b) => a + b, 0);;
           if(percent * 100 < 10) return '' 
@@ -211,23 +211,23 @@ export function Dashboard() {
       {
         outerRadius: 80,
         data: [
-          { label: 'K20', value: 1, color: '#1E3A8A' },
-          { label: 'K21', value: 30, color: '#3B82F6' },
-          { label: 'K22', value: 10, color: '#60A5FA' },
-          { label: 'K23', value: 10, color: '#93C5FD' },
-          { label: 'K24', value: 2, color: '#D1E7FF' },
-          { label: 'Không Có Thông Tin', value: 53, color: '#B0B0B0' }
+          { label: 'K20', value: 43, color: '#1E3A8A' },
+          { label: 'K21', value: 5, color: '#3B82F6' },
+          { label: 'K22', value: 0, color: '#60A5FA' },
+          { label: 'K23', value: 0, color: '#93C5FD' },
+          { label: 'K24', value: 0, color: '#D1E7FF' },
+          { label: 'Không Có Thông Tin', value: 447, color: '#B0B0B0' }
         ],
         highlightScope: { fade: 'global', highlight: 'item' },
         faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
         arcLabel: (params) => {
           const data = [
-            { label: 'K20', value: 1, color: '#1E3A8A' },
-            { label: 'K21', value: 30, color: '#3B82F6' },
-            { label: 'K22', value: 10, color: '#60A5FA' },
-            { label: 'K23', value: 10, color: '#93C5FD' },
-            { label: 'K24', value: 2, color: '#D1E7FF' },
-            { label: 'Không Có Thông Tin', value: 53, color: '#B0B0B0' }
+            { label: 'K20', value: 43, color: '#1E3A8A' },
+            { label: 'K21', value: 5, color: '#3B82F6' },
+            { label: 'K22', value: 0, color: '#60A5FA' },
+            { label: 'K23', value: 0, color: '#93C5FD' },
+            { label: 'K24', value: 0, color: '#D1E7FF' },
+            { label: 'Không Có Thông Tin', value: 447, color: '#B0B0B0' }
           ]
           const percent = params.value / data.map((item) => item.value).reduce((a, b) => a + b, 0);;
           if(percent * 100 < 15) return '' 
@@ -242,17 +242,17 @@ export function Dashboard() {
       {
         outerRadius: 80,
         data: [
-          { label: 'Nam', value: 12, color: '#1E3A8A' },
-          { label: 'Nữ', value: 5, color: '#3B82F6' },
-          { label: 'Không có thông tin', value: 17, color: '#B0B0B0' },
+          { label: 'Nam', value: 140, color: '#1E3A8A' },
+          { label: 'Nữ', value: 0, color: '#3B82F6' },
+          { label: 'Không có thông tin', value: 385, color: '#B0B0B0' },
         ],
         highlightScope: { fade: 'global', highlight: 'item' },
         faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
         arcLabel: (params) => {
           const data = [
-            { label: 'Nam', value: 12, color: '#1E3A8A' },
-            { label: 'Nữ', value: 5, color: '#3B82F6' },
-            { label: 'Không có thông tin', value: 17, color: '#B0B0B0' },
+            { label: 'Nam', value: 140, color: '#1E3A8A' },
+            { label: 'Nữ', value: 0, color: '#3B82F6' },
+            { label: 'Không có thông tin', value: 385, color: '#B0B0B0' },
           ]
           const percent = params.value / data.map((item) => item.value).reduce((a, b) => a + b, 0);;
           if(percent * 100 < 10) return '' 
@@ -589,21 +589,17 @@ import { LineChart } from '@mui/x-charts/LineChart';
 const MockData_LineChart = {
   series: [
     {
-      data: [0, 1, 5, 40, 60, 70],
-      label: 'Số lượt truy cập theo tháng'
+      data: [2, 14, 104],
+      label: 'Tổng số người dùng trong tháng'
     },
     {
-      data: [0, 10, 10, 90, 130, 190],
-      label: 'Người sử dụng theo tháng'
+      data: [0, 121, 404],
+      label: 'Số lượt hỏi đáp trong tháng'
     }
   ],
   yAxis: [{ id: 'leftAxisId' }, { id: 'rightAxisId' }],
   rightAxis: null,
   xAxis: [{ scaleType: 'point', data: [
-    'Tháng 9/2024',
-    'Tháng 10/2024',
-    'Tháng 11/2024',
-    'Tháng 12/2024',
     'Tháng 1/2025',
     'Tháng 2/2025',
     'Tháng 3/2025'
@@ -635,23 +631,23 @@ const MockData_PieChart = {
     {
       outerRadius: 80,
       data: [
-        { label: 'Rất hài lòng', value: 10, color: '#1E3A8A' },
-        { label: 'Hài Lòng', value: 4, color: '#3B82F6' },
-        { label: 'Tạm Chấp Nhận', value: 1, color: '#60A5FA' },
-        { label: 'Không Hài Lòng', value: 2, color: '#93C5FD' },
-        { label: 'Rất Tệ', value: 2, color: '#D1E7FF' },
-        { label: 'Không có phản hồi', value: 30, color: '#B0B0B0' },
+        { label: 'Rất hài lòng', value: 57, color: '#1E3A8A' },
+        { label: 'Hài Lòng', value: 10, color: '#3B82F6' },
+        { label: 'Tạm Chấp Nhận', value: 14, color: '#60A5FA' },
+        { label: 'Không Hài Lòng', value: 8, color: '#93C5FD' },
+        { label: 'Rất Tệ', value: 10, color: '#D1E7FF' },
+        { label: 'Không có phản hồi', value: 424, color: '#B0B0B0' },
       ],
       highlightScope: { fade: 'global', highlight: 'item' },
       faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
       arcLabel: (params) => {
         const data = [
-          { label: 'Rất hài lòng', value: 10, color: '#1E3A8A' },
-          { label: 'Hài Lòng', value: 4, color: '#3B82F6' },
-          { label: 'Tạm Chấp Nhận', value: 1, color: '#60A5FA' },
-          { label: 'Không Hài Lòng', value: 2, color: '#93C5FD' },
-          { label: 'Rất Tệ', value: 2, color: '#D1E7FF' },
-          { label: 'Không có phản hồi', value: 30, color: '#B0B0B0' },
+          { label: 'Rất hài lòng', value: 57, color: '#1E3A8A' },
+          { label: 'Hài Lòng', value: 10, color: '#3B82F6' },
+          { label: 'Tạm Chấp Nhận', value: 14, color: '#60A5FA' },
+          { label: 'Không Hài Lòng', value: 8, color: '#93C5FD' },
+          { label: 'Rất Tệ', value: 10, color: '#D1E7FF' },
+          { label: 'Không có phản hồi', value: 424, color: '#B0B0B0' },
         ]
         const percent = params.value / data.map((item) => item.value).reduce((a, b) => a + b, 0);;
         if(percent * 100 < 10) return '' 

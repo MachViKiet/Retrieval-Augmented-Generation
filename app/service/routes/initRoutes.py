@@ -237,8 +237,15 @@ def generate():
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
     answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context)
+    
+    # if streaming:
+        # return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
+        
     if streaming:
-        return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
+        def generate_stream():
+            for part in answer:
+                yield part  # Yield từng phần của câu trả lời
+        return Response(generate_stream(), content_type='text/plain;charset=utf-8')
     else:
         return jsonify({'answer': answer})
 

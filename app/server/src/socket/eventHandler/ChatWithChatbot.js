@@ -242,19 +242,25 @@ export const ChatWithChatBot = async (socket) => {
       let result = ''
 
       const point_5 = (new Date()).getTime()
-      while (!done) {
-        const { value, done: doneReading } = await reader.read()
-        done = doneReading
-        result += decoder.decode(value, { stream: true })
-        socket.emit('/ChatWithChatBot/streamMessages', {
-          ...objectConservation,
-          'isProcess': true,
-          'stream_state': true,
-          duration: startTime - new Date().getTime(),
-          create_at: getTime(),
-          messages: result
-        })
-      }
+      
+      do {
+        // const { value, done: doneReading } = await reader.read()
+        const gpt = await reader.read()
+
+        done = gpt.done
+        if(gpt.value) {
+          result += decoder.decode(gpt.value, { stream: true })
+
+          socket.emit('/ChatWithChatBot/streamMessages', {
+            ...objectConservation,
+            'isProcess': true,
+            'stream_state': true,
+            duration: startTime - new Date().getTime(),
+            create_at: getTime(),
+            messages: result
+          })
+        }
+      } while (!done)
 
       socket.emit('/ChatWithChatBot/EndStream', {
         ...objectConservation,
