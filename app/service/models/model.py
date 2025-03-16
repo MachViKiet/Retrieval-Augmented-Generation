@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from .prompts import prompts
 from utils import query_routing
 from flask import Response, stream_with_context, current_app
+import json
 
 load_dotenv('../.env')
 
@@ -180,13 +181,41 @@ class QueryRouter:
                 return -1
 
         elif self.provider.lower() == 'openai':
+            # response = self.model.chat.completions.create(
+            #     model=self.model_id,
+            #     messages=[{"role": "system", "content": self.prompt}, {"role": "user", "content": query}],
+            #     stream=False,
+            # ).choices[0].message.content.lower()
+            response_schema = {
+                "type": "json_schema",
+                "json_schema": {
+                "name": "collection_schema",
+                "strict": True,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                    "collection": {
+                        "type": "string",
+                        "enum": self.collections,
+                        "description": "The id of the collection, must be one of the specified options."
+                    }
+                    },
+                    "required": [
+                    "collection"
+                    ],
+                    "additionalProperties": False
+                }
+                }}
             response = self.model.chat.completions.create(
-                model=self.model_id,
-                messages=[{"role": "system", "content": self.prompt}, {"role": "user", "content": query}],
-                stream=False,
-            ).choices[0].message.content.lower()
-            print("Query Routing: " + response + "\n")
-            if response in self.collections:
-                return response
+                    model=self.model_id,
+                    response_format=response_schema,
+                    messages=[{"role": "system", "content": [{"type": "text", "text": self.prompt}]},
+                              {"role": "user", "content": [{"type": "text", "text": query}]}
+                              ],
+                ).choices[0].message.content
+            response = json.loads(response)
+            print("Query Routing: " + response['collection'] + "\n")
+            if response['collection'] in self.collections:
+                return response['collection']
             else: #Unable to classify
                 return -1
