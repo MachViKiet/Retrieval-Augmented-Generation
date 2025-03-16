@@ -291,7 +291,8 @@ class MilvusDB:
         source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
         return sorted_list, source
     
-    def create_collection(name, long_name, description, metadata):
+    def create_collection(self, name, long_name, description, metadata):
+        name = "_" + name #Add underscore to the name
         fields = []
         for key, value in metadata.items():
             if value['datatype'] == 'int':
@@ -313,6 +314,7 @@ class MilvusDB:
         nfkd_form = unicodedata.normalize('NFKD', long_name)
         long_name = "".join([c for c in nfkd_form if not unicodedata.combining(c)])
         long_name = long_name.replace(' ', '_')
+        long_name = long_name.replace("đ", "d").replace("Đ", "D")
 
         utility.create_alias(
             collection_name=name,

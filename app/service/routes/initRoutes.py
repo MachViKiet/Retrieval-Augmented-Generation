@@ -87,7 +87,7 @@ def determine_collection():
     else:
         prediction = queryrouter.classify(query)
     if prediction != -1:
-        return jsonify({'collection': prediction})
+        return jsonify({'collection': prediction.removeprefix('_')})
     else:
         return jsonify({'collection': ""})
 
@@ -97,6 +97,8 @@ def extract_metadata():
     ##PARAMS
     query = request.form['query']
     chosen_collection = request.form['chosen_collection']
+    if chosen_collection not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        chosen_collection = "_" + chosen_collection
     schema = ['school_year', 'in_effect', 'created_at', 'updated_at']
     history = json.loads(request.form['history']) # Conversation history
     n_new_queries = 2
@@ -143,6 +145,8 @@ def search():
     ##PARAMS
     query = request.args.get('query') # Tin nhắn người dùng
     chosen_collection = request.args.get('chosen_collection') #Context từ api search
+    if chosen_collection not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        chosen_collection = "_" + chosen_collection
     try:
         filter_expressions = json.loads(request.args.get('filter_expressions')) #
     except json.JSONDecodeError:
@@ -229,6 +233,8 @@ def generate():
     streaming = request.form['streaming'].lower() == "true"  #True or False 
     history = json.loads(request.form['history']) # Conversation history
     theme = request.form['collection_name'] # Collection name
+    if theme not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        theme = "_" + theme
     user_profile = request.form['user_profile'] # User profile
     # max_tokens = 1500 
     model = current_app.config['CHAT_MODEL']
@@ -271,6 +277,8 @@ def get_file():
 def get_collection_schema():
     ##PARAMS
     collection_name = request.args.get('collection_name')
+    if collection_name not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        collection_name = "_" + collection_name
     database = current_app.config['DATABASE']
     #-------------------------------------------
     schema = database.get_collection_schema(collection_name, readable=True)
@@ -282,6 +290,8 @@ def insert_file():
     ##PARAMS
     chunks = json.loads(request.form['chunks'])
     collection_name = request.form['collection_name']
+    if chosen_collection not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        chosen_collection = "_" + chosen_collection
     filename = request.form['filename']    
     metadata = json.loads(request.form['metadata'])
     
@@ -318,6 +328,8 @@ def delete_file():
     ##PARAMS
     document_id = request.form['document_id']
     collection_name = request.form['collection_name']
+    if collection_name not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        collection_name = "_" + collection_name
     database = current_app.config['DATABASE']
     #-------------------------------------------
     status, msg = database.delete_document(document_id=document_id, collection_name=collection_name)
@@ -342,6 +354,8 @@ def enhance_document():
     ##PARAMS
     article = request.form['article']
     collection_name = request.form['collection_name']
+    if collection_name not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        collection_name = "_" + collection_name
     model = current_app.config['CHAT_MODEL']
     database = current_app.config['DATABASE']
     #-------------------------------------------
@@ -390,6 +404,8 @@ def create_collection():
 @main.route("/collection", methods=["PATCH"])
 def drop_collection():
     collection_name = request.form['collection_name']
+    if collection_name not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        collection_name = "_" + collection_name
     database = current_app.config['DATABASE']
     status, msg = database.drop_collection(collection_name)
     if status:
