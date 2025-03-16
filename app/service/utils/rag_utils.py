@@ -14,7 +14,6 @@ import json
 import ast
 
 from pymilvus import(
-    Milvus,
     IndexType,
     Status,
     connections,
@@ -25,7 +24,8 @@ from pymilvus import(
     AnnSearchRequest,
     RRFRanker,
     WeightedRanker,
-    MilvusException
+    MilvusException,
+    utility
 )
 
 CACHE_DIR = os.path.normpath(
@@ -291,7 +291,7 @@ class MilvusDB:
         source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
         return sorted_list, source
     
-    def create_collection(name, description, metadata):
+    def create_collection(name, long_name, description, metadata):
         fields = []
         for key, value in metadata.items():
             if value['datatype'] == 'int':
@@ -299,15 +299,25 @@ class MilvusDB:
             elif value['datatype'] == 'float':
                 fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.FLOAT, **value['params']))
             elif value['datatype'] == 'string':
-                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.STRING, **value['params']))
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.VARCHAR, **value['params']))
             elif value['datatype'] == 'list':
-                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.ARRAY, **value['params']))
+                fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.ARRAY, **value['params'])) #Broken, need to expand params
             elif value['datatype'] == 'bool':
                 fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.BOOL, **value['params']))
             elif value['datatype'] == 'vector':
                 fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.FLOAT_VECTOR, **value['params']))
         schema = CollectionSchema(fields=fields, description=description)
         collection = Collection(name, schema)
+        #Replace spaces with _ in long_name, and remove accents
+        import unicodedata
+        nfkd_form = unicodedata.normalize('NFKD', long_name)
+        long_name = "".join([c for c in nfkd_form if not unicodedata.combining(c)])
+        long_name = long_name.replace(' ', '_')
+
+        utility.create_alias(
+            collection_name=name,
+            alias=long_name
+        )
         return True
 
     def drop_collection(name):

@@ -236,7 +236,10 @@ def generate():
     max_tokens = model.max_new_tokens
     #-------------------------------------------
     theme_context = database.describe_collection(theme)['description']
-    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context)
+    aliases = database.describe_collection(theme)['aliases']
+    if len(aliases) > 0:
+        theme = aliases[0]
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context, theme=theme)
     
     # if streaming:
         # return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
@@ -363,6 +366,7 @@ def enhance_document():
 def create_collection():
     ##PARAMS
     name = request.form['name']
+    long_name = request.form['long_name']
     description = request.form['description']
     metadata = {
         "title": {"description": "", "datatype": "string", "params": {"max_length": 700}},
@@ -373,12 +377,14 @@ def create_collection():
         "created_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
         "updated_at": {"description": "", "datatype": "string", "params": {"max_length": 50}},
         "is_active": {"description": "", "datatype": "bool", "params": {}}, #Float,int,string,list,bool
+        "document_id": {"description": "", "datatype": "string", "params": {"max_length": 50}},
+        "id": {"description": "", "datatype": "int", "params": {"is_primary": True, "auto_id": True}},
     }
     custom_meta = json.loads(request.form['metadata'])
     metadata.update(custom_meta)
     database = current_app.config['DATABASE']
     #-------------------------------------------
-    database.create_collection(name, description, metadata)
+    database.create_collection(name, long_name, description, metadata)
     return jsonify({'collection_name': name})
 
 @main.route("/collection", methods=["PATCH"])
