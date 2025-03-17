@@ -10,9 +10,10 @@ import { Typography } from '@mui/material';
 export default function NotifycationModal({ 
   modalHandler = null,
   title = null,
-  content = null
+  content = null,
+  propsContent = { content : null, props: null } 
 }) {
-
+  const ContentWithProps = propsContent.content || null
   return (
     <React.Fragment>
       <Dialog
@@ -28,7 +29,7 @@ export default function NotifycationModal({
         <DialogContent sx = {{ color: '#000' }}>
           <DialogContentText id="alert-dialog-description">
             <Typography variant='p' sx = {{ color: '#000' }}
-            >{content || 'Xin lỗi bạn, tính năng này chưa được hỗ trợ ☹️'}</Typography>
+            >{ content || <ContentWithProps onClose={modalHandler?.close} parent= {propsContent.props}/> || <p>'Xin lỗi bạn, tính năng này chưa được hỗ trợ ☹️'</p>}</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

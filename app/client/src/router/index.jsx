@@ -31,12 +31,12 @@ import Loading from '~/components/Page/Loading'
 // import Dashboard from '~/pages/Dashboard/Dashboard';
 // import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator';
 // import AppLayout from '~/layouts/AppLayout';
-const Dashboard = React.lazy(() => import('~/pages/Dashboard/Dashboard'))
-const AdminChat = React.lazy(() => import('~/pages/Dashboard/ChatGenerator'))
-const UserChat = React.lazy(() => import('~/pages/User/ChatGenerator'))
-const DatasetDetail = React.lazy(() => import( '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Dataset'))
-const Datasets = React.lazy(() => import( '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail'))
-const AccountManager = React.lazy(() => import( '~/pages/Dashboard/AccountManager'))
+import Dashboard from '~/pages/Dashboard/Dashboard'
+import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator'
+import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator'
+import DatasetDetail from  '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail/Dataset'
+import Datasets from  '~/pages/Dashboard/KnowledgeBase/KnowledeBaseDetail'
+import AccountManager from  '~/pages/Dashboard/AccountManager'
 
 // Define the routes
 const router = createBrowserRouter([

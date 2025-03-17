@@ -97,9 +97,9 @@ function AppLayout() {
     action: null
   })
 
-  const getModal = (title = '',content = '', actionName = '', action = null ) => {
+  const getModal = (title = '',content = null, actionName = '', action = null, propsContent = { content : null, props: null } ) => {
     setIsOpenModel(true)
-    setModalObject({ title, content, actionName, action })
+    setModalObject({ title, content, actionName, action, propsContent })
   }
 
   return <>
@@ -115,7 +115,7 @@ function AppLayout() {
         close: () => setIsOpenModel(false),
         action: modalObject?.action,
         actionName: modalObject?.actionName
-      }} title={modalObject?.title} content={modalObject?.content}/>
+      }} title={modalObject?.title} content={modalObject?.content} propsContent = {modalObject?.propsContent}/>
   </Box> </>
 
 }

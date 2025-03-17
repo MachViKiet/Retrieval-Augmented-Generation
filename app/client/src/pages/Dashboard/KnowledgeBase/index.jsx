@@ -25,6 +25,7 @@ function KnowledgeBase() {
   const PARENT_DIRECTION = '/knowledge_bases/'
   const token = useSelector(state => state.auth.token)
   const [Collections, setCollections] = useState(null)
+  const [newCollection, setNewCollection] = useState(null)
   const {processHandler, dashboard, noticeHandler, getModal } = useOutletContext();
 
   useEffect(() => {
@@ -41,6 +42,7 @@ function KnowledgeBase() {
       }).catch((err) => console.error('Lấy Danh Sách Collection Thất Bại !'))
     }
   }, [token])
+
 
   const getCollection = async (token) => {
     const getCollectionEvent = processHandler.add('#getCollection')
@@ -66,7 +68,10 @@ function KnowledgeBase() {
               Danh Sách Chủ Đề</Typography>
             <Box  sx ={{ marginRight: 2 }}>
               <Button startIcon = {<AddBoxOutlinedIcon/>} component="label" role={undefined} tabIndex={-1}
-                onClick={() => getModal('Tạo Mới Chủ Đề', <NewCollection_Modal/>, "Tạo Mới")}
+                onClick={() => getModal('Tạo Mới Chủ Đề', null , null, null , {
+                  content : NewCollection_Modal,
+                  props: { token, processHandler, noticeHandler, getCollection, setCollections }
+                })}
                 sx = {{ marginRight: 3, color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '10px' }} >
               Tạo mới chủ đề</Button>
             </Box>
@@ -148,55 +153,176 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 
-export const NewCollection_Modal = (props) => {
+export const NewCollection_Modal = ({onClose, parent}) => {
   const [newMetadata, setMetadata] = useState([])
+
+  const [newCollectionName, setCollectionName] = useState(null)
+  const [newCollectionDescription, setCollectionDescription] = useState(null)
+
+  const [notice, setNotice] = useState({})
+
+  useEffect(() => {
+    // setCollectionName(null)
+    // setCollectionDescription(null)
+    // setMetadata([])
+    // setNotice({})
+  },[])
+
+  const checkData = () => {
+    setNotice({})
+    let result = true
+    if(!newCollectionName) {
+      result = false,
+      setNotice(prev => ({...prev, newCollectionName: { error: 'Lưu ý: Vui lòng điền tên chủ đề!' }}))
+    }
+    if(!newCollectionDescription) {
+      result = false,
+      setNotice(prev => ({...prev, newCollectionDescription: { error: 'Lưu ý: Vui lòng điền mô tả chủ đề!' }}))
+    }
+    newMetadata.map((metadata, index) => {
+      if(!metadata?.name) {
+        result = false,
+        setNotice(prev => ({...prev, [index]: { metadata_name: {error: 'Vui lòng nhập tên cho metadata này!'} }}))
+      }
+      if(!metadata?.description) {
+        result = false,
+        setNotice(prev => ({...prev, [index]: { metadata_description: {error: 'Vui lòng nhập mô tả cho metadata này!' }}}))
+      }
+    })
+    return result
+  }
+
+  const changeNewMetadata = (newdata, index) => {
+    if (newdata?.datatype) {
+      const params = Object.entries(newdata)[0][1] == 'string' ? {'max_length': 200} : {}
+      setMetadata(prev => (prev.map((value, zIndex) => {
+        if(zIndex != index) return value;
+        return { ...value, ...newdata, params: params}
+      })))
+      return
+    }
+
+    setMetadata(prev => (prev.map((value, zIndex) => {
+      if(zIndex != index) return value;
+      return { ...value, ...newdata}
+    })))
+  }
+
+  const submit = async () => {
+    let format = {
+      name: '',
+      description: '',
+      metadata: {}
+    }
+
+    if(!checkData()) return
+
+    format = {...format, name: newCollectionName, description: newCollectionDescription}
+
+    let metadata_format = {}
+    newMetadata.map((value) => {
+      metadata_format = {...metadata_format, 
+        [value.name]: {
+          description: value?.description,
+          datatype: value?.datatype,
+          params: value?.params
+      }}
+    })
+
+    const eventCollection = parent.processHandler.add("#Create_collection")
+    await useCollection.createCollection(parent.token, { ...format, metadata: metadata_format})
+    .then(() => {
+      parent.noticeHandler.add({         
+        status: 'success',
+        message: 'Tạo collection thành công!' })
+      if(parent.token){
+        parent.getCollection(parent.token).then((collections) => {
+          parent.setCollections(collections)
+        }).catch((err) => console.error('Lấy Danh Sách Collection Thất Bại !'))
+      }
+    })
+    .catch((e) => {
+      console.log(e)
+      parent.noticeHandler.add({         
+        status: 'error',
+        message: 'Có lỗi xảy ra khi lấy collection!' })
+    })
+    .finally(() => parent.processHandler.remove("#Create_collection", eventCollection) )
+
+    onClose()
+
+    console.log('Dữ liệu gởi đi: ', { ...format, metadata: metadata_format})
+  }
 
   return <Box sx = {{  display: 'flex', flexDirection: 'column', gap: 2 }}>
     <Typography> Cho phép người quản trị hoặc nhà phát triển định nghĩa và thêm các chủ đề mới vào hệ thống chatbot, từ đó mở rộng phạm vi kiến thức và khả năng phản hồi của nó.</Typography>
-    <TextField sx = {TEXTFIELD_STYLE} fullWidth label="Tên chủ đề" id="collection_name" placeholder='Nội Dung Nổi Bật Trong Năm 2025?'/>
-    <TextField sx = {TEXTFIELD_STYLE} fullWidth multiline rows={3} id="collection_description" label="Mô Tả Chủ Đề"
-      placeholder={`Chủ đề nổi bật được sinh viên quan tâm năm 2025 bao gồm ...`}/>
+    <TextField value={newCollectionName || ''} 
+      onChange={(e) => setCollectionName(e.target.value)}
+      sx = {TEXTFIELD_STYLE} fullWidth label="Tên chủ đề (tiếng việt)" id="collection_name" placeholder='Nội Dung Nổi Bật Trong Năm 2025?'/>
+    <Typography sx = {{ width: '100%', textAlign: 'end', color: 'red' }}>{notice?.newCollectionName?.error}</Typography>
+
+    <TextField value={newCollectionDescription || ''}  multiline rows={3} 
+      onChange={(e) => e.target.value.length < 100 && setCollectionDescription(e.target.value)}
+      sx = {TEXTFIELD_STYLE} fullWidth label="Mô Tả Chủ Đề" id="collection_description" placeholder={`Chủ đề nổi bật được sinh viên quan tâm năm 2025 bao gồm ...`}/>
+    <Typography sx = {{ width: '100%', textAlign: 'end', color: 'red' }}>{notice?.newCollectionDescription?.error}</Typography>
     
     <Box sx ={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Typography variant='h6'>Thêm metadata</Typography>
+      <Typography variant='h6' component={'h6'}>Thêm metadata</Typography>
       <IconButton
-        onClick={() => {setMetadata(prev => [...prev, {}])}} 
+        onClick={() => {setMetadata(prev => [...prev, {datatype: 'string', params: {'max_length': 200}}])}} 
        sx = {{ background:'#cccccc6e' }} ><AddOutlinedIcon sx = {{color:'#000'}}/></IconButton>
     </Box>
-    <Box sx = {{ width: '100%', minHeight: '60px', borderRadius: '5px', display: 'flex', flexDirection:'column', gap: 1.5 }}>
-      {newMetadata.map(() => {
+    <Typography>Định nghĩa mô tả dữ liệu giúp cải thiện hiệu quả tìm kiếm dữ liệu sau này. </Typography>
+
+    <Box sx = {{ width: '100%', minHeight: '10px', borderRadius: '5px', display: 'flex', flexDirection:'column', gap: 1.5 }}>
+      {newMetadata.map((value, index) => {
         return (
-      <Box sx = {{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+      <Box key = { index*928509245 } sx = {{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+
         <Box sx = {{ display: 'flex', alignItems: 'center' }}>
-          <TextField sx = {TEXTFIELD_STYLE} fullWidth label="Tên Dữ Liệu" id="metadata_name" placeholder='Ngày Tạo'/>
+          <TextField value={value?.name || ''} onChange={e => {
+            if(e.target.value.length > 50) return;
+            changeNewMetadata({name: e.target.value}, index)
+          }}
+            sx = {TEXTFIELD_STYLE} fullWidth label={`Tên Dữ Liệu ${index + 1}`} id="metadata_name" placeholder='Tên gợi nhớ metadata'/>
           <MoreVertOutlinedIcon/>
-          <Select
-            label="Loại dữ liệu"
-            value={'String'} sx = {TEXTFIELD_STYLE} 
-          >
-            <MenuItem value="String">
+          <Select label="Loại dữ liệu" value={value?.datatype} onChange={e => { changeNewMetadata({datatype: e.target.value}, index)}}
+            sx = {TEXTFIELD_STYLE}>
+            <MenuItem value="string">
               <em>Chuỗi Ký Tự</em>
             </MenuItem>
-            <MenuItem value="Bool">
+            <MenuItem value="bool">
               <em>True/False</em>
             </MenuItem>
-            <MenuItem value="Int">
+            <MenuItem value="int">
               <em>Số Nguyên</em>
             </MenuItem>
-            <MenuItem value="Float">
+            <MenuItem value="float">
               <em>Số Thập Phân</em>
             </MenuItem>
           </Select>
         </Box>
+        <Typography sx = {{ width: '100%', textAlign: 'end', color: 'red' }}>{notice[index]?.metadata_name?.error}</Typography>
+
         <Box sx = {{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TextField sx = {TEXTFIELD_STYLE} fullWidth label="Mô Tả Tài Liệu" id="metadata_description" placeholder='Ngày tài liệu được tạo'/>
-          <IconButton ><DeleteOutlineOutlinedIcon sx = {{color:'red'}}/></IconButton>
+          <TextField value={value?.description || ''} onChange={e => {
+            if(e.target.value.length > 500) return;
+            changeNewMetadata({description: e.target.value}, index)
+          }}  multiline maxRows={7}
+          sx = {TEXTFIELD_STYLE} fullWidth label={`Mô Tả Dữ Liệu ${index + 1}`} id="metadata_description" placeholder='Metadata này có ý nghĩa là gì?'/>
+          <IconButton
+            onClick={() => {setMetadata(prev => prev.filter((value, zIndex) => index != zIndex))}}
+           ><DeleteOutlineOutlinedIcon sx = {{color:'red'}}/></IconButton>
         </Box>
+        <Typography sx = {{ width: '100%', textAlign: 'end', color: 'red' }}>{notice[index]?.metadata_description?.error}</Typography>
         
-        <Box sx= {{ width: '100%', height: '2px', background: '#fff' }}></Box>
       </Box>
+      
         )
       })} 
     </Box>
+    <Button onClick={async () => await submit()}
+      sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '5px' }}
+      variant='contained'>Tạo mới chủ đề</Button>
   </Box>
 }
