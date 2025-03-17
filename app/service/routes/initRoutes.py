@@ -394,8 +394,15 @@ def create_collection():
         "document_id": {"description": "", "datatype": "string", "params": {"max_length": 50}},
         "id": {"description": "", "datatype": "int", "params": {"is_primary": True, "auto_id": True}},
     }
-    custom_meta = json.loads(request.form['metadata'])
-    metadata.update(custom_meta)
+
+    #print(request.form['metadata'][0])
+    # custom_meta = json.loads(request.form['metadata'])
+    # metadata.update(custom_meta)
+    
+    custom_metas = request.form['metadata']
+    for custom_meta in custom_metas:
+        metadata.update(custom_meta)
+        
     database = current_app.config['DATABASE']
     #-------------------------------------------
     database.create_collection(name, long_name, description, metadata)

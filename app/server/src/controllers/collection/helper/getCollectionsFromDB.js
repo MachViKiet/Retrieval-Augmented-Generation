@@ -8,7 +8,7 @@ export const getCollectionsFromDB = async () => {
 
   const result = await Collection.find({}).sort({ createdAt: 1 }).then((collections) => {
     if (!collections) {
-      return buildErrObject(422, 'NOT_FOUND')
+      throw buildErrObject(422, 'NOT_FOUND')
     }
     return collections
   }).catch((err) => {
