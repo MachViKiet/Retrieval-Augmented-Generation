@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from .prompts import prompts
 from utils import query_routing
 from flask import Response, stream_with_context, current_app
+import json
 
 load_dotenv('../.env')
 
@@ -72,6 +73,7 @@ class ChatModel:
                 )
                 return response.choices[0].message.parsed
             if not streaming:
+                # print("Non-streaming response")
                 response = self.model.chat.completions.create(
                     model=self.model_id,
                     messages=[{"role": "system", "content": prompt}],
@@ -81,17 +83,18 @@ class ChatModel:
                 text = response.choices[0].message.content
                 return text
             else:
-                response = self.model.chat.completions.create(
-                    model=self.model_id,
-                    messages=[{"role": "system", "content": prompt}],
-                    stream=streaming,
-                    max_completion_tokens=max_new_tokens,
-                )
-                def gen(response):
+                # print("Streaming response")
+                def gen():
+                    response = self.model.chat.completions.create(
+                        model=self.model_id,
+                        messages=[{"role": "system", "content": prompt}],
+                        stream=streaming,
+                        max_completion_tokens=max_new_tokens,
+                    )
                     for chunk in response:
                         if chunk.choices[0].delta.content is not None:
-                            yield f"{chunk.choices[0].delta.content}"
-                return stream_with_context(gen(response))
+                            yield chunk.choices[0].delta.content
+                return stream_with_context(gen())
         elif self.provider.lower() == "google":
             import google.generativeai as genai
             params = genai.GenerationConfig(max_output_tokens=max_new_tokens)
@@ -133,7 +136,7 @@ class ChatModel:
 
         # formatted_prompt = prompt.replace("\n", "<eos>")
         #formatted_prompt = prompt.format(context=context, question=question)
-        return self._generate(formatted_prompt, max_new_tokens, streaming)
+        return self._generate(formatted_prompt, max_new_tokens, streaming=streaming)
 
 class QueryRouter:
     def __init__(self, model_dir: str = CACHE_DIR, threshold=0.5, use_history=True, provider='local', model_id=None, database=None):
@@ -178,13 +181,41 @@ class QueryRouter:
                 return -1
 
         elif self.provider.lower() == 'openai':
+            # response = self.model.chat.completions.create(
+            #     model=self.model_id,
+            #     messages=[{"role": "system", "content": self.prompt}, {"role": "user", "content": query}],
+            #     stream=False,
+            # ).choices[0].message.content.lower()
+            response_schema = {
+                "type": "json_schema",
+                "json_schema": {
+                "name": "collection_schema",
+                "strict": True,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                    "collection": {
+                        "type": "string",
+                        "enum": self.collections,
+                        "description": "The id of the collection, must be one of the specified options."
+                    }
+                    },
+                    "required": [
+                    "collection"
+                    ],
+                    "additionalProperties": False
+                }
+                }}
             response = self.model.chat.completions.create(
-                model=self.model_id,
-                messages=[{"role": "system", "content": self.prompt}, {"role": "user", "content": query}],
-                stream=False,
-            ).choices[0].message.content.lower()
-            print("Query Routing: " + response + "\n")
-            if response in self.collections:
-                return response
+                    model=self.model_id,
+                    response_format=response_schema,
+                    messages=[{"role": "system", "content": [{"type": "text", "text": self.prompt}]},
+                              {"role": "user", "content": [{"type": "text", "text": query}]}
+                              ],
+                ).choices[0].message.content
+            response = json.loads(response)
+            print("Query Routing: " + response['collection'] + "\n")
+            if response['collection'] in self.collections:
+                return response['collection']
             else: #Unable to classify
                 return -1

@@ -26,11 +26,12 @@ import AppLayout from '~/layouts/AppLayout'
 import VerifyEmail from '~/pages/VerifyEmail';
 import Loading from '~/components/Page/Loading'
 
-// import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
+import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator';
 // import AuthLayout from '~/layouts/AuthLayout'
-// import Dashboard from '~/pages/Dashboard/Dashboard';
-// import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator';
+import Dashboard from '~/pages/Dashboard/Dashboard';
+import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator';
 // import AppLayout from '~/layouts/AppLayout';
+
 import Dashboard from '~/pages/Dashboard/Dashboard'
 import {ChatGenerator as AdminChat} from '~/pages/Dashboard/ChatGenerator'
 import {ChatGenerator as UserChat} from '~/pages/User/ChatGenerator'
