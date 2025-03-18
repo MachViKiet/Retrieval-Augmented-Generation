@@ -400,6 +400,7 @@ def create_collection():
     # metadata.update(custom_meta)
     
     custom_metas = request.form['metadata']
+    print(type(custom_metas))
     for custom_meta in custom_metas:
         metadata.update(custom_meta)
         
