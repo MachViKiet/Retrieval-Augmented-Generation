@@ -11,7 +11,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'
 import { getParams, postParams } from '~/apis/KHTN_Chatbot/params';
 import { useSelector } from 'react-redux';
-
 const TEXTFIELD_STYLE = {
   '--mui-palette-text-secondary': '#6d6d6d',
   '& .MuiInputBase-root':{
@@ -48,15 +47,13 @@ function ModelsManager() {
 
   const {processHandler, noticeHandler, dashboard, getModal } = useOutletContext()
   const token = useSelector(state => state.auth.token)
-  const role = useSelector(state => state.auth.user.role)
+  const role = useSelector(state => state.auth.user?.role)
 
   const [max_token_output, set_max_token_output] = useState(0)
   const [k_document, set_k_document] = useState(2)
   const [threshold, set_threshold] = useState(0)
   const [filter_bias, set_filter_bias] = useState(0)
   const [isHitoryInExtract, setHitoryInExtract] = useState(true)
-
-
 
   useEffect(() => {
     document.title = 'Chatbot - Trang Chủ'

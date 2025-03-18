@@ -12,6 +12,8 @@ import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useCollection } from '~/apis/Collection'
 import { formatTime } from '~/utils/GetTime'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import { DeleteOutlineOutlined } from '@mui/icons-material';
+
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.mode == 'dark' ? 'rgb(45, 50, 90)' : 'rgb(0, 81, 129)', width: '100%', 
@@ -112,6 +114,10 @@ function KnowledgeBase() {
                   {formatTime(collection.createdAt)}
                 </Typography>
             </Box>
+            <IconButton onClick={(event) => event.stopPropagation()}
+              sx = {{ position: 'absolute', right: '2px', bottom: '12px' }}>
+              <DeleteOutlineOutlined sx = {{ color: 'red' }}/>
+            </IconButton>
           </Box>
         ))}
 
