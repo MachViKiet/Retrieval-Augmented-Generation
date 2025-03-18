@@ -19,22 +19,15 @@ export const createNewCollection = async (req) => {
       type: `option`,
     }
     const collection = new Collection(collection_format) 
-    console.log({
-      name: id.toString(), 
-      long_name: req.body?.name,
-      description: req.body?.description,
-      metadata: req.body?.metadata || []
-    })
+
     const res = await chatbotService ('POST', 'collection', [], 
       { name: id.toString(), 
         long_name: req.body?.name,
         description: req.body?.description,
         metadata: req.body?.metadata
       }).then(async () => {
-      console.log('tạo thành công')
       const result = await collection.save()
         .catch((err) => { throw buildErrObject(422, err.message, 'Lỗi Ở Bước Save Collection' + err?.message) })
-      console.log({message: 'Cập nhật thành công', result: result})
       return {message: 'Cập nhật thành công'}
     }).catch((e) => {
       console.log(e)

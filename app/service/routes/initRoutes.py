@@ -399,10 +399,24 @@ def create_collection():
     # custom_meta = json.loads(request.form['metadata'])
     # metadata.update(custom_meta)
     
-    custom_metas = request.form['metadata']
-    print(type(custom_metas))
+    # custom_metas = request.form['metadata']
+    
+    # print(type(custom_metas))
+    # for custom_meta in custom_metas:
+    #     metadata.update(custom_meta)
+    
+    print('custom_metas (string): ', request.form['metadata'])
+    print('name (string): ', request.form['name'])
+    print('long_name (string): ', request.form['long_name'])
+    print('description (string): ', request.form['description'])
+    
+    custom_meta_array = json.loads(request.form['metadata'])
+    custom_metas = [json.loads(item) for item in custom_meta_array]
+
     for custom_meta in custom_metas:
         metadata.update(custom_meta)
+    
+    print('metadata (all): ', metadata)
         
     database = current_app.config['DATABASE']
     #-------------------------------------------
