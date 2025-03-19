@@ -107,32 +107,33 @@ class ChatModel:
                         yield f"{chunk.text}"
                 return stream_with_context(gen())
 
-    def generate(self, question: str, context: str = None, streaming=False, max_new_tokens=2048, k=3, history=None, theme=None, theme_context=None, user_profile=None):
+    def generate(self, question: str, context: str = None, streaming=False, max_new_tokens=2048, k=3, history=None, 
+                 theme=None, theme_context=None, theme_descriptions=None, user_profile=None):
 
         if context == None or context == "":
             if history is None or len(history) == 0:
                 prompt = prompts['NO_CONTEXT_NO_HISTORY']
                 print("Chosen prompt style: NO_CONTEXT_NO_HISTORY")
-                formatted_prompt = prompt.format(question=question, user_profile=user_profile)
+                formatted_prompt = prompt.format(question=question, user_profile=user_profile, theme_descriptions=theme_descriptions)
             else:
                 prompt = prompts['NO_CONTEXT_HISTORY']
                 print("Chosen prompt style: NO_CONTEXT_HISTORY")
                 conversation = ""
                 for pair in history:
                     conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['anwser'] #answer
-                formatted_prompt = prompt.format(history=conversation, question=question, user_profile=user_profile)
+                formatted_prompt = prompt.format(history=conversation, question=question, user_profile=user_profile, theme_descriptions=theme_descriptions)
         else:
             if history is None or len(history) == 0:
                 prompt = prompts['CONTEXT_NO_HISTORY']
                 print("Chosen prompt style: CONTEXT_NO_HISTORY")
-                formatted_prompt = prompt.format(context=context, question=question, theme=theme, theme_context=theme_context, user_profile=user_profile)
+                formatted_prompt = prompt.format(context=context, question=question, theme=theme, user_profile=user_profile, theme_descriptions=theme_descriptions)
             else:
                 prompt = prompts['CONTEXT_HISTORY_FULL']
                 print("Chosen prompt style: CONTEXT_HISTORY_FULL")
                 conversation = ""
                 for pair in history:
                     conversation = conversation + "\nUser: " + pair['question'] + "\nChatbot: " + pair['anwser']
-                formatted_prompt = prompt.format(context=context, history=conversation, question=question, theme=theme, theme_context=theme_context, user_profile=user_profile)
+                formatted_prompt = prompt.format(context=context, history=conversation, question=question, theme=theme, user_profile=user_profile, theme_descriptions=theme_descriptions)
 
         # formatted_prompt = prompt.replace("\n", "<eos>")
         #formatted_prompt = prompt.format(context=context, question=question)

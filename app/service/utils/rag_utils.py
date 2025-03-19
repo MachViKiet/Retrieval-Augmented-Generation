@@ -149,12 +149,29 @@ class MilvusDB:
                     fields[field] = (bool, ...)
             model = create_model(col, **fields)
             self.pydantic_collections[col] = model
+        # Create descriptions of themes (collections) in the database
+        self.themes_descriptions = ""
+        self.update_collection_descriptions()
 
     def _insert_document(self, collection_name, document, metadata):
         pass #DEPRECATED
 
-    def describe_collection(self, collection_name):
-        return Collection(collection_name).describe()
+    def update_collection_descriptions(self):
+        descriptions = ""
+        for col in self._handler.list_collections():
+            result = self.describe_collection(col, alias=True)
+            descriptions += f"{result[1]}: {result[0]['description']}\n"
+            # descriptions += f"{name}: {Collection(col).describe()['description']}\n"
+        self.themes_descriptions = descriptions
+        return True
+
+    def describe_collection(self, collection_name, alias=False):
+        if alias:
+            collection = Collection(collection_name)
+            collection_name = collection.aliases[0] if len(collection.aliases) > 0 else collection_name # Get alias if it exists
+            return collection.describe(), collection_name
+        else:
+            return Collection(collection_name).describe()
 
     def get_collection_schema(self, collection_name, readable=False, exclude_metadata=[]):
         schema = Collection(collection_name).describe()['fields']
@@ -320,6 +337,8 @@ class MilvusDB:
             collection_name=name,
             alias=long_name
         )
+        #Update theme descriptions
+        self.update_collection_descriptions()
         return True
 
     def drop_collection(name):

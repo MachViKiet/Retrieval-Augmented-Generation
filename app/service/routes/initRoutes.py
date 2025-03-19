@@ -241,11 +241,10 @@ def generate():
     database = current_app.config['DATABASE']
     max_tokens = model.max_new_tokens
     #-------------------------------------------
-    theme_context = database.describe_collection(theme)['description']
     aliases = database.describe_collection(theme)['aliases']
     if len(aliases) > 0:
         theme = aliases[0]
-    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context, theme=theme)
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme=theme, theme_descriptions=database.theme_descriptions)
     
     # if streaming:
         # return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
