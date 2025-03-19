@@ -290,8 +290,8 @@ def insert_file():
     ##PARAMS
     chunks = json.loads(request.form['chunks'])
     collection_name = request.form['collection_name']
-    if chosen_collection not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
-        chosen_collection = "_" + chosen_collection
+    if collection_name not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        collection_name = "_" + collection_name
     filename = request.form['filename']    
     metadata = json.loads(request.form['metadata'])
     
