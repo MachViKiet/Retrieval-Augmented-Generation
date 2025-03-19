@@ -241,11 +241,10 @@ def generate():
     database = current_app.config['DATABASE']
     max_tokens = model.max_new_tokens
     #-------------------------------------------
-    theme_context = database.describe_collection(theme)['description']
     aliases = database.describe_collection(theme)['aliases']
     if len(aliases) > 0:
         theme = aliases[0]
-    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme_context=theme_context, theme=theme)
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme=theme, themes_descriptions=database.themes_descriptions)
     
     # if streaming:
         # return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
@@ -290,8 +289,8 @@ def insert_file():
     ##PARAMS
     chunks = json.loads(request.form['chunks'])
     collection_name = request.form['collection_name']
-    if chosen_collection not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
-        chosen_collection = "_" + chosen_collection
+    if collection_name not in ['events', 'academic_affairs', 'scholarship', 'timetable', 'recruitment']:
+        collection_name = "_" + collection_name
     filename = request.form['filename']    
     metadata = json.loads(request.form['metadata'])
     
@@ -399,10 +398,24 @@ def create_collection():
     # custom_meta = json.loads(request.form['metadata'])
     # metadata.update(custom_meta)
     
-    custom_metas = request.form['metadata']
-    print(type(custom_metas))
+    # custom_metas = request.form['metadata']
+    
+    # print(type(custom_metas))
+    # for custom_meta in custom_metas:
+    #     metadata.update(custom_meta)
+    
+    print('custom_metas (string): ', request.form['metadata'])
+    print('name (string): ', request.form['name'])
+    print('long_name (string): ', request.form['long_name'])
+    print('description (string): ', request.form['description'])
+    
+    custom_meta_array = json.loads(request.form['metadata'])
+    custom_metas = [json.loads(item) for item in custom_meta_array]
+
     for custom_meta in custom_metas:
         metadata.update(custom_meta)
+    
+    print('metadata (all): ', metadata)
         
     database = current_app.config['DATABASE']
     #-------------------------------------------
