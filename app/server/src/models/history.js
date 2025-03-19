@@ -18,6 +18,10 @@ const HistorySchema = new mongoose.Schema(
       type: Array,
       default: []
     },
+    context: {
+      type: String,
+      default: null
+    },
     resource: {
       type: Object,
       default: {
@@ -45,8 +49,8 @@ const HistorySchema = new mongoose.Schema(
 )
 
 HistorySchema.pre('save', function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
+  this.updatedAt = Date.now()
+  next()
+})
 
 module.exports = mongoose.model('History', HistorySchema)

@@ -61,6 +61,10 @@ export const ChatWithChatBot = async (socket) => {
         chosen_collections = collection
         objectConservation = { ...objectConservation, 'resource': { type: 'manual' } }
       }
+      else if (message !== null && typeof message === 'object' && message?.resource?.chosen_collections) {
+        chosen_collections = message.resource.chosen_collections
+        objectConservation = { ...objectConservation, 'resource': { type: 'recommended' } }
+      }
       else {
         chosen_collections = await chatbot.determine_collection(message, conservationBefore).then((res) => {
           return res.collection
@@ -104,10 +108,17 @@ export const ChatWithChatBot = async (socket) => {
 
 
       // Step 2
+      let filter_expressions
+
       const start_point_2 = (new Date()).getTime()
-      const filter_expressions = await chatbot.extract_meta(message, chosen_collections, conservationBefore).then((res) => {
-        return res
-      }).catch((err) => { throw 'Lỗi ở bước extract_meta: ' + JSON.stringify(err) })
+      if (message !== null && typeof message === 'object' && message?.resource?.filter_expressions) {
+        filter_expressions = message.resource.filter_expressions
+        objectConservation = { ...objectConservation, 'resource': { type: 'recommended' } }
+      } else {
+        filter_expressions = await chatbot.extract_meta(message, chosen_collections, conservationBefore).then((res) => {
+          return res
+        }).catch((err) => { throw 'Lỗi ở bước extract_meta: ' + JSON.stringify(err) })
+      }
       const end_point_2 = (new Date()).getTime()
 
       resp = {
@@ -141,9 +152,18 @@ export const ChatWithChatBot = async (socket) => {
       const start_point_3 = (new Date()).getTime()
 
       // Step 3
-      const searchResult = await chatbot.search(message, chosen_collections, JSON.stringify(filter_expressions), chosen_collections).then((res) => {
-        return res
-      }).catch((err) => { throw 'Lỗi ở bước search: ' + JSON.stringify(err) })
+      let searchResult
+      if (message !== null && typeof message === 'object' && message?.context && message?.source) {
+        searchResult = {
+          context : message.resource?.context || 'Không có ngữ cảnh',
+          source : message.resource?.source || []
+        }
+        objectConservation = { ...objectConservation, 'resource': { type: 'recommended' } }
+      } else {
+        searchResult = await chatbot.search(message, chosen_collections, JSON.stringify(filter_expressions), chosen_collections).then((res) => {
+          return res
+        }).catch((err) => { throw 'Lỗi ở bước search: ' + JSON.stringify(err) })
+      }
       const end_point_3 = (new Date()).getTime()
 
       resp = {
@@ -182,9 +202,16 @@ export const ChatWithChatBot = async (socket) => {
       const start_point_4 = (new Date()).getTime()
 
       // Step 4
-      const finalResponse = await chatbot.generate(message, searchResult.context, true, conservationBefore, getProfileToString(socket.user), chosen_collections).then((res) => {
-        return res // StreamObject
-      }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
+      let finalResponse
+      if (message !== null && typeof message === 'object' && message?.question) {
+        finalResponse = await chatbot.generate(message.question, searchResult.context, true, conservationBefore, getProfileToString(socket.user), chosen_collections).then((res) => {
+          return res // StreamObject
+        }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
+      } else {
+        finalResponse = await chatbot.generate(message, searchResult.context, true, conservationBefore, getProfileToString(socket.user), chosen_collections).then((res) => {
+          return res // StreamObject
+        }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
+      }
       const end_point_4 = (new Date()).getTime()
 
       resp = {
@@ -242,13 +269,13 @@ export const ChatWithChatBot = async (socket) => {
       let result = ''
 
       const point_5 = (new Date()).getTime()
-      
+
       do {
         // const { value, done: doneReading } = await reader.read()
         const gpt = await reader.read()
 
         done = gpt.done
-        if(gpt.value) {
+        if (gpt.value) {
           result += decoder.decode(gpt.value, { stream: true })
 
           socket.emit('/ChatWithChatBot/streamMessages', {

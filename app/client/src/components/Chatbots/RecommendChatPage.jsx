@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Skeleton, Typography } from '@mui/material';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import { useSelector } from 'react-redux';
+import { useConservation } from '~/apis/Conservation';
 
 const Container_Style = {
     display: "flex",
@@ -31,14 +33,23 @@ export function RecommendChatPage({
     ChatAction = null,
     numPage = 0
 }) {
-    
-  const [page, setPage] = useState(0)
+
+  const token = useSelector(state => state.auth.token)
+  const [recommendedQuestions, setRecommendedQuestions] = useState(null)
 
   useEffect(() => {
-    setPage(0)
-  }, [numPage])
+    if(token && recommendedQuestions == null) {
+      useConservation.getRecommendedQuestions(token).then((_data) => {
+        setRecommendedQuestions(_data)
+      })
+    }
+  }, [token])
 
-    return loading ? (
+  // const mockData = ['Cho tôi biết danh sách học bổng khuyến học mới nhất.',
+  //   'Cách thức đóng học phí 2024 chương trình Chất Lượng Cao.',
+  //   'Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 'Giới Thiệu về bộ môn Hệ Thống Thông Tin']
+
+    return loading && recommendedQuestions == null ? (
     <Box className = "recommend_page">
         <Skeleton variant="rounded" width={'50%'} height={60} sx = {{ borderRadius: '10px', mb: 1 }} />
         <Skeleton variant="rounded" width={'70%'} height={40} sx = {{ borderRadius: '10px', mb: 1 }} />
@@ -83,9 +94,7 @@ export function RecommendChatPage({
 
 
         <Box sx = {{...Container_Style, gap: { md: 2, xs: 1 } }}>
-        {['Cho tôi biết danh sách học bổng khuyến học mới nhất.',
-        'Cách thức đóng học phí 2024 chương trình Chất Lượng Cao.',
-        'Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 'Giới Thiệu về bộ môn Hệ Thống Thông Tin'].map((question, index) => {
+        {recommendedQuestions && recommendedQuestions.map((question, index) => {
             return (
             <Box key = {index} sx = {{ 
                 flex:  { xs: "0 1 140px", md: "0 1 180px" },
@@ -95,7 +104,7 @@ export function RecommendChatPage({
                 height: { xs: "140px", md: "180px" }, width: '100%', borderRadius: '10px',
                 padding: 2, position: 'relative', textAlign: 'start',
                 ...BLOCK_STYLE }} onClick = {async () => { ChatAction && await ChatAction(question) }}>
-                    {index + 1}{'. '}{question}
+                    {index + 1}{'. '}{question.question}
                 <span style={{  position: 'absolute', bottom: '16px', right: '16px' }}> <TipsAndUpdatesOutlinedIcon/> </span>
                 </Box>
             </Box>

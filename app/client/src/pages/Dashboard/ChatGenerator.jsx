@@ -284,6 +284,7 @@ export function ChatGenerator() {
       })
       return 
     }
+    
     setMessageHandler(prev => ({...prev, isProcess: true }))
 
     try {

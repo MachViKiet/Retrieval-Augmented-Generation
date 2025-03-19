@@ -11,7 +11,8 @@ import {
   loadConservationList,
   loadHistoryInSession,
   removeConservationInDB,
-  updateConservationInDB
+  updateConservationInDB,
+  getRecommendedQuestions
 } from '../../controllers/conservation'
 
 router.post('/newChat', requireAuth, trimRequest.all, newChat)
@@ -19,5 +20,6 @@ router.get('/chatSession', requireAuth, trimRequest.all, loadConservationList)
 router.post('/historyInChatSession', requireAuth, trimRequest.all, loadHistoryInSession)
 router.delete('/removeChat', requireAuth, trimRequest.all, removeConservationInDB)
 router.post('/updateChat', requireAuth, trimRequest.all, updateConservationInDB)
+router.get('/recommendedQuestions', requireAuth, trimRequest.all, getRecommendedQuestions)
 
 module.exports = router
