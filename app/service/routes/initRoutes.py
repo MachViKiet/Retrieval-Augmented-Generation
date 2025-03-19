@@ -244,7 +244,7 @@ def generate():
     aliases = database.describe_collection(theme)['aliases']
     if len(aliases) > 0:
         theme = aliases[0]
-    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme=theme, theme_descriptions=database.theme_descriptions)
+    answer = model.generate(query, context, streaming, max_tokens, history=history, user_profile=user_profile, theme=theme, themes_descriptions=database.themes_descriptions)
     
     # if streaming:
         # return answer #Generator object, nếu không được thì thử thêm yield trước biến answer thử
