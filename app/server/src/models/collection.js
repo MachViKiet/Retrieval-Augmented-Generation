@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-// const validator = require('validator')
 
 const CollectionSchema = new mongoose.Schema(
   {
@@ -21,7 +20,7 @@ const CollectionSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['obliged', 'option'],
+      enum: ['obliged', 'option', 'upload'],
       default: 'option'
     },
     updatedAt: { type: Date, default: Date.now }
@@ -33,7 +32,7 @@ const CollectionSchema = new mongoose.Schema(
 )
 
 CollectionSchema.pre('save', function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
+  this.updatedAt = Date.now()
+  next()
+})
 module.exports = mongoose.model('Collection', CollectionSchema)
