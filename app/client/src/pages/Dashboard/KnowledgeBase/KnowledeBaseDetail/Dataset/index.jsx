@@ -171,34 +171,47 @@ function DatasetDetail() {
     const processDocumentEvent = processHandler.add('#processDocument')
     await useDocument.enhance(data, token).then(
       (data) => {
-        noticeHandler.add({
-          status: 'success',
-          message: 'Tạo Dữ Liệu Tự Động Thành Công!'
-        })
-        console.log('Dữ liệu được tạo: ',data)
-        console.log('Tài Liệu trước đó: ', documentWithChunk)
-
-        setDocumentWithChunk({...documentWithChunk, metadata: data.metadata, chunks: data.chunks.map((chunk) => {
-          return {
-            id: CreateID(),
-            chunk: chunk
+        if(token) {
+          try {
+            setDocumentWithChunk(data)
+            noticeHandler.add({
+              status: 'success',
+              message: 'Tạo Dữ Liệu Tự Động Thành Công!'
+            })
+          } catch (error) {
+            throw {
+              status: 'error',
+              message: 'Tạo Dữ Liệu Tự Động Thất Bại!'
+            }
           }
-        })})
+        }
 
-        DocumentUpdate({
-          id: id,
-          update: {
-            chunks: documentWithChunk?.chunks,
-            metadata: documentWithChunk?.metadata
-          }
-        })
+        // noticeHandler.add({
+        //   status: 'success',
+        //   message: 'Tạo Dữ Liệu Tự Động Thành Công!'
+        // })
+
+        // setDocumentWithChunk({...documentWithChunk, metadata: data.metadata, chunks: data.chunks.map((chunk) => {
+        //   return {
+        //     id: CreateID(),
+        //     chunk: chunk
+        //   }
+        // })})
+
+        // DocumentUpdate({
+        //   id: id,
+        //   update: {
+        //     chunks: documentWithChunk?.chunks,
+        //     metadata: documentWithChunk?.metadata
+        //   }
+        // })
 
       }
     )
     .catch(() => {
       noticeHandler.add({
         status: 'error',
-        message: 'Lỗi Khi Tạo Dữ Liệu'
+        message: 'Tạo Dữ Liệu Tự Động Thất Bại!'
       })
     })
     .finally(()=> processHandler.remove('#processDocument', processDocumentEvent))
