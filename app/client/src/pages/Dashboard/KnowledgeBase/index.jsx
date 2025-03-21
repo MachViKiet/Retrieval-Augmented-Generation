@@ -3,7 +3,7 @@ import Block from '~/components/Mui/Block'
 import Grid from '@mui/material/Grid2'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Button, IconButton, MenuItem, Select, Skeleton, TextField, Typography } from '@mui/material'
+import { Button, ClickAwayListener, IconButton, MenuItem, MenuList, Paper, Select, Skeleton, TextField, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -13,12 +13,14 @@ import { useCollection } from '~/apis/Collection'
 import { formatTime } from '~/utils/GetTime'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import { DeleteOutlineOutlined } from '@mui/icons-material';
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 const Header = styled(Box) (({theme}) => ({
   background: theme.palette.mode == 'dark' ? 'rgb(45, 50, 90)' : 'rgb(0, 81, 129)', width: '100%', 
+  display: 'flex', justifyContent: 'end',
   boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)', height: theme.spacing(6), 
-  position: 'absolute', right: 0, top: '0', borderRadius: '14px 14px 0 0 ', zIndex: 1, paddingLeft: theme.spacing(4) }))
+  position: 'absolute', right: 0, top: '0', borderRadius: '14px 14px 0 0 ', zIndex: 20, paddingLeft: theme.spacing(4) }))
 
 function KnowledgeBase() {
 
@@ -29,6 +31,9 @@ function KnowledgeBase() {
   const [Collections, setCollections] = useState(null)
   const [newCollection, setNewCollection] = useState(null)
   const {processHandler, dashboard, noticeHandler, getModal } = useOutletContext();
+
+  const [disableRipple, setDisableRipple] = useState(false)
+  const [chosenCollection, setChosenCollection] = useState(null)
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức'
@@ -60,6 +65,58 @@ function KnowledgeBase() {
     })
   }
 
+  const handleEnter = (index) => {
+    setDisableRipple(true)
+    setChosenCollection(index)
+    return true
+  }
+  const handleLeave = () => {
+    setDisableRipple(false)
+    setChosenCollection(null)
+    return true
+  }
+
+  const editCollection = async (event, collection) => {
+    noticeHandler.add({
+      status: 'warning',
+      message: 'Tính năng chưa hỗ trợ !'
+    })
+  }
+
+  const removeCollection = async (event, collection) => {
+    event.preventDefault()
+
+    if(collection.type != 'upload') {
+      noticeHandler.add({
+        status: 'warning',
+        message: 'Bạn không thể xóa chủ đề mặc định'
+      })
+      return
+    }
+    
+    const removeCollectionEvent = processHandler.add('#removeCollection')
+    token && await useCollection.removeCollection(token, {'collection_id':  collection._id })
+    .then(async () => {
+      if(token){
+        getCollection(token).then((collections) => {
+          setCollections(collections)
+        }).catch(() => console.error('Lấy Danh Sách Collection Thất Bại !'))
+      }
+    })
+    .catch(() => {
+      noticeHandler.add({
+        status: 'error',
+        message: 'Xóa Chủ Đề Thất Bại !'
+      })
+    })
+    .finally(() => processHandler.remove('#removeCollection', removeCollectionEvent))
+  }
+
+  const options = [
+    {title: 'Tùy Chỉnh', icon: <EditOutlinedIcon/>, color: 'green', action: editCollection},
+    {title: 'Xóa', icon: <DeleteOutlineOutlined/>, color: 'red', action: removeCollection}
+  ]
+
   return (
     <Block sx = {{ paddingX: 4, paddingTop: 4, paddingRight: 1 }}>
 
@@ -89,36 +146,58 @@ function KnowledgeBase() {
 
       <Grid container spacing={{ xs: 2, sm: 2, md: 4 }} columns={{ xs: 2, sm: 2, md: 4 }} 
         sx = {{ maxHeight: 'calc(100vh - 160px)', paddingY: '5px', paddingLeft: '2px', paddingBottom: 4, paddingRight: 2.5, overflow: 'auto', }}>
-        {Collections && Collections.map((collection) => (
-          <Box key={collection._id}
-            sx = {{ width: '200px', height: '200px', color: '#000', padding: 2, paddingTop: 7, borderRadius: '15px', position: 'relative', cursor: 'pointer',
-              background: theme => theme.palette.mode == 'dark'? '#fefefe' : '#71758936', boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
-              '&:active' : { transform: 'scale(0.9)' } }}
-            onClick = {() => nagative(PARENT_DIRECTION + collection._id)}>
+        {Collections && Collections.map((collection, zIndex) => (
+          <Box sx = {{position: 'relative'}}>
 
-            <Header/>
-            <Typography sx = {{fontSize:'1.125rem',width: 'fit-content', textAlign: 'start', fontWeight: '700'}}>
-              {collection.collection_name}</Typography>
-            
-            <Typography variant='p' component='p' 
-              sx = {{ paddingTop: '2px', fontSize: '0.725rem', fontWeight: '400', textAlign: 'left',  maxHeight: '160px', width: '170px',
-              whiteSpace: 'nowrap', textWrap: 'wrap', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical' }}>
-                {collection.collection_description}</Typography>
-            <Box sx = {{  position: 'absolute', height: '50px', display: 'flex', flexDirection: 'column', gap: 0.225, width: '100%', left: 0, bottom: 0, paddingX: 2 }}>
-                <Typography fontSize={'0.725rem !important'} sx = {{color: 'inherit', width: 'fit-content', textAlign: 'start', display: 'flex', gap: 1, alignItems: 'center',  justifyContent:'center'}}>
-                  <DescriptionOutlinedIcon sx={{ fontSize: 18 }}/>
-                  {collection.amount_document} Tài Liệu
-                </Typography>
-                <Typography fontSize={'0.725rem !important'} sx = {{color: 'inherit', width: 'fit-content' ,textAlign: 'start', display: 'flex', gap: 1, alignItems: 'center', justifyContent:'center'}}>
-                  <DateRangeOutlinedIcon sx={{ fontSize: 18 }}/>
-                  {formatTime(collection.createdAt)}
-                </Typography>
-            </Box>
-            <IconButton onClick={(event) => event.stopPropagation()}
-              sx = {{ position: 'absolute', right: '2px', bottom: '12px' }}>
-              <DeleteOutlineOutlined sx = {{ color: 'red' }}/>
-            </IconButton>
-          </Box>
+            <Header>
+              <IconButton disableRipple
+                onMouseEnter={() => handleEnter(zIndex)} onMouseLeave={handleLeave}>
+                <MoreVertIcon/>
+                { chosenCollection == zIndex && <Paper sx = {{ width: 'max-content', zIndex: 1300, position: 'absolute', top: '40px', right: '0', borderRadius: '4px', background: '#e1ebff'}}>
+                    <>
+                      {options.map((option) => (
+                        <Button
+                          startIcon= {option.icon}
+                          sx = {{ width: '100%', color: option?.color , fontSize:'0.825rem',width: 'fit-content', textAlign: 'start', fontWeight: '550'}}
+                          key={option}
+                          onClick={(event) => option.action(event, collection)}
+                        >
+                          {option.title}
+                        </Button>
+                      ))}
+                    </>
+                  </Paper>} 
+                </IconButton>
+              </Header>
+
+
+            <Button key={collection._id} disableRipple onClick = {() => !disableRipple && nagative(PARENT_DIRECTION + collection._id)}
+              sx = {{ 
+                display: 'flex', flexDirection: 'column', alignItems: 'start', justifyContent: 'start', width: '200px', height: '200px', color: '#000', padding: 2, paddingTop: 7, borderRadius: '15px', position: 'relative', cursor: 'pointer',
+                background: '#fefefe', 
+                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+                '&:active' : !disableRipple && { transform: 'scale(0.98)' } 
+              }}>
+
+              <Typography sx = {{fontSize:'1.125rem',width: 'fit-content', textAlign: 'start', fontWeight: '700'}}>
+                {collection.collection_name}</Typography>
+              
+              <Typography variant='p' component='p' 
+                sx = {{ paddingTop: '2px', fontSize: '0.725rem', fontWeight: '400', textAlign: 'left',  maxHeight: '160px', width: '170px',
+                whiteSpace: 'nowrap', textWrap: 'wrap', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: '3', WebkitBoxOrient: 'vertical' }}>
+                  {collection.collection_description}</Typography>
+              <Box sx = {{  position: 'absolute', height: '50px', display: 'flex', flexDirection: 'column', gap: 0.225, width: '100%', left: 0, bottom: 0, paddingX: 2 }}>
+                  <Typography fontSize={'0.725rem !important'} sx = {{color: 'inherit', width: 'fit-content', textAlign: 'start', display: 'flex', gap: 1, alignItems: 'center',  justifyContent:'center'}}>
+                    <DescriptionOutlinedIcon sx={{ fontSize: 18 }}/>
+                    {collection.amount_document} Tài Liệu
+                  </Typography>
+                  <Typography fontSize={'0.725rem !important'} sx = {{color: 'inherit', width: 'fit-content' ,textAlign: 'start', display: 'flex', gap: 1, alignItems: 'center', justifyContent:'center'}}>
+                    <DateRangeOutlinedIcon sx={{ fontSize: 18 }}/>
+                    {formatTime(collection.createdAt)}
+                  </Typography>
+              </Box>
+            </Button>
+          </Box> 
         ))}
 
         { !Collections && ['','','',''].map((_data, index) =>( <Skeleton key={ index * 82715 } variant="rounded" height={'200px'} width = {'200px'} sx = {{ marginBottom: 2, borderRadius: '15px' }} /> ))}

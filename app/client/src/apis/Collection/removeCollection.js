@@ -1,7 +1,8 @@
 const domain = import.meta.env.VITE_SERVER
 
-export const createCollection = async (token = null, formData = null) => {
-	const url = `${domain}/collections/new_collection`;
+export const removeCollection = async (token = null, formData = null) => {
+	const url = `${domain}/collections/remove_collection`;
+	console.log(formData)
 	const structure = {
 		method: 'POST',
 		headers: {
