@@ -86,6 +86,25 @@ function KnowledgeBase() {
   const removeCollection = async (event, collection) => {
     event.preventDefault()
 
+    const action = async (collection) => {
+      const removeCollectionEvent = processHandler.add('#removeCollection')
+      token && await useCollection.removeCollection(token, {'collection_id':  collection._id })
+      .then(async () => {
+        if(token){
+          getCollection(token).then((collections) => {
+            setCollections(collections)
+          }).catch(() => console.error('Lấy Danh Sách Collection Thất Bại !'))
+        }
+      })
+      .catch(() => {
+        noticeHandler.add({
+          status: 'error',
+          message: 'Xóa Chủ Đề Thất Bại !'
+        })
+      })
+      .finally(() => processHandler.remove('#removeCollection', removeCollectionEvent))
+    }
+
     if(collection.type != 'upload') {
       noticeHandler.add({
         status: 'warning',
@@ -93,23 +112,9 @@ function KnowledgeBase() {
       })
       return
     }
+
+    getModal('Xác Nhận Xóa Chủ Đề', 'Chủ Đề Này Đã Có Tài Liệu, Bạn Có Chắc Chắn Muốn Xóa Chủ Đề Này?', 'Xác Nhận', () => action(collection))
     
-    const removeCollectionEvent = processHandler.add('#removeCollection')
-    token && await useCollection.removeCollection(token, {'collection_id':  collection._id })
-    .then(async () => {
-      if(token){
-        getCollection(token).then((collections) => {
-          setCollections(collections)
-        }).catch(() => console.error('Lấy Danh Sách Collection Thất Bại !'))
-      }
-    })
-    .catch(() => {
-      noticeHandler.add({
-        status: 'error',
-        message: 'Xóa Chủ Đề Thất Bại !'
-      })
-    })
-    .finally(() => processHandler.remove('#removeCollection', removeCollectionEvent))
   }
 
   const options = [
