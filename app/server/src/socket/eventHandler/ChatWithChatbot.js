@@ -26,7 +26,7 @@ export const ChatWithChatBot = async (socket) => {
       '_id': message_id,
       'sender': socket.user._id,
       'session_id': current_session,
-      'question': message,
+      'question': typeof message === 'object' ? message.question : message,
       'anwser': null,
       'state': 'in progress',
       'create_at': getTime(),
@@ -153,10 +153,10 @@ export const ChatWithChatBot = async (socket) => {
 
       // Step 3
       let searchResult
-      if (message !== null && typeof message === 'object' && message?.context && message?.source) {
+      if (message !== null && typeof message === 'object' && message.resource.context && message?.source) {
         searchResult = {
           context : message.resource?.context || 'Không có ngữ cảnh',
-          source : message.resource?.source || []
+          source : message.source || []
         }
         objectConservation = { ...objectConservation, 'resource': { type: 'recommended' } }
       } else {
@@ -203,15 +203,11 @@ export const ChatWithChatBot = async (socket) => {
 
       // Step 4
       let finalResponse
-      if (message !== null && typeof message === 'object' && message?.question) {
-        finalResponse = await chatbot.generate(message.question, searchResult.context, true, conservationBefore, getProfileToString(socket.user), chosen_collections).then((res) => {
-          return res // StreamObject
-        }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
-      } else {
-        finalResponse = await chatbot.generate(message, searchResult.context, true, conservationBefore, getProfileToString(socket.user), chosen_collections).then((res) => {
-          return res // StreamObject
-        }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
-      }
+
+      finalResponse = await chatbot.generate(typeof message === 'object' ? message.question : message, searchResult.context, true, conservationBefore, getProfileToString(socket.user), chosen_collections).then((res) => {
+        return res // StreamObject
+      }).catch((err) => { throw 'Lỗi ở bước generate: ' + JSON.stringify(err) })
+
       const end_point_4 = (new Date()).getTime()
 
       resp = {

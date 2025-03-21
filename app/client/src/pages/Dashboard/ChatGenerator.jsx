@@ -289,7 +289,7 @@ export function ChatGenerator() {
 
     try {
       if(currentChatSession == null) {
-        session = await newChatAction({ name: message })
+        session = await newChatAction({ name: message?.question || message })
       } else {
         session = currentChatSession
       }
