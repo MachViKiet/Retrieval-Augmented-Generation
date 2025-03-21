@@ -461,7 +461,7 @@ def compile_filter_expression(metadata, loaded_collections: list):
     return expressions
 
 #------------------------------------#
-def metadata_extraction_v2(query, model, collection_name, pydantic_schema=None):
+def metadata_extraction_v2(query, model, collection_name, database, pydantic_schema=None):
     '''Extract metadata from user query given a schema using a LLM call
     schema: can be list (names of metadata attributes) or dict (name-description key-value pairs)'''
 
@@ -474,7 +474,8 @@ Schema:
 Always answer as a JSON object.
 Answer:
 """
-    fields = Collection(collection_name).describe()['fields']
+    # fields = Collection(collection_name).describe()['fields']
+    fields = database.get_collection_schema(collection_name, readable=False)
     # if type(schema) is list:
     #     schema = ",".join(schema)
     # elif type(schema) is dict:
