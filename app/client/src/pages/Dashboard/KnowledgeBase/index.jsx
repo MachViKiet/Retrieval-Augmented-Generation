@@ -34,6 +34,7 @@ function KnowledgeBase() {
 
   const [disableRipple, setDisableRipple] = useState(false)
   const [chosenCollection, setChosenCollection] = useState(null)
+  const role = useSelector(state => state.auth.user?.role)
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức'
@@ -155,7 +156,7 @@ function KnowledgeBase() {
           <Box sx = {{position: 'relative'}}>
 
             <Header>
-              <IconButton disableRipple
+              {role == 'administrator' && <IconButton disableRipple
                 onMouseEnter={() => handleEnter(zIndex)} onMouseLeave={handleLeave}>
                 <MoreVertIcon/>
                 { chosenCollection == zIndex && <Paper sx = {{ width: 'max-content', zIndex: 1300, position: 'absolute', top: '40px', right: '0', borderRadius: '4px', background: '#e1ebff'}}>
@@ -172,7 +173,7 @@ function KnowledgeBase() {
                       ))}
                     </>
                   </Paper>} 
-                </IconButton>
+                </IconButton> }
               </Header>
 
 
@@ -248,7 +249,7 @@ export const NewCollection_Modal = ({onClose, parent}) => {
 
   const [newCollectionName, setCollectionName] = useState(null)
   const [newCollectionDescription, setCollectionDescription] = useState(null)
-
+  const role = useSelector(state => state.auth.user?.role)
   const [notice, setNotice] = useState({})
 
   useEffect(() => {
@@ -426,8 +427,8 @@ export const NewCollection_Modal = ({onClose, parent}) => {
         )
       })} 
     </Box>
-    <Button onClick={async () => await submit()}
+    {role == 'administrator' && <Button onClick={async () => await submit()}
       sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '5px' }}
-      variant='contained'>Tạo mới chủ đề</Button>
+      variant='contained'>Tạo mới chủ đề</Button>}
   </Box>
 }
