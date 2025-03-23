@@ -18,10 +18,12 @@ code {
     padding: 0 7px
 }
 
-ol,
-li {
-    list-style: inside;
+.MuiBox-root > ul {
+    margin-left: 16px;
+    list-style-type: none;
+
 }
+
 
 .MuiBreadcrumbs-li{
     list-style: none;
@@ -33,6 +35,46 @@ li::marker {
 
 li > p, li > div {
     display: contents;
+}
+
+.MuiBox-root > ul {
+    margin-left: 6px;
+    list-style-type: none;
+    li  {
+        position: relative;
+        padding-left: 16px;
+    }
+    
+    li::before {
+        content: "-";
+        position: absolute;
+        left: 0;
+        color: #333;
+        font-weight: bold;
+    }
+}
+
+
+ul {
+    li {
+        ul  {
+            list-style-type: none;
+            li {
+                list-style-type: none;
+            }
+            li::before {
+                content: "👉 " !important;
+                position: absolute;
+                left: -5px !important;
+                color: #333;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+li strong {
+    font-weight: 600;
 }
 
 a {
@@ -64,6 +106,14 @@ h2{
 h3{
     font-weight: 700;
     font-size: 0.925rem;
+    line-height: 105%;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+h4{
+    font-weight: 600;
+    font-size: 0.825rem;
     line-height: 105%;
     padding-bottom: 5px;
     padding-top: 5px;

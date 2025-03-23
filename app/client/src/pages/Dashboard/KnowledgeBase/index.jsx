@@ -273,16 +273,31 @@ export const NewCollection_Modal = ({onClose, parent}) => {
       if(!metadata?.name) {
         result = false,
         setNotice(prev => ({...prev, [index]: { metadata_name: {error: 'Vui lòng nhập tên cho metadata này!'} }}))
+        return
       }
+
+      if (!validateInput(metadata?.name)) {
+        result = false,
+        setNotice(prev => ({...prev, [index]: { metadata_name: {error: 'Tên metadata không được chứa tiếng việt có dấu, khoảng trắng hoặc kí tự đặc biệt!'} }}))
+        return
+      }
+
       if(!metadata?.description) {
         result = false,
         setNotice(prev => ({...prev, [index]: { metadata_description: {error: 'Vui lòng nhập mô tả cho metadata này!' }}}))
+        return
       }
     })
     return result
   }
+  const regex = /^[a-zA-Z0-9_]+$/;
 
-  const changeNewMetadata = (newdata, index) => {
+  function validateInput(input) {
+    return regex.test(input);
+  }
+
+  const changeNewMetadata = (newdata, index, rules) => {
+
     if (newdata?.datatype) {
       const params = Object.entries(newdata)[0][1] == 'string' ? {'max_length': 200} : {}
       setMetadata(prev => (prev.map((value, zIndex) => {
