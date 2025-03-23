@@ -14,7 +14,6 @@ import json
 import ast
 
 from pymilvus import(
-    Milvus,
     IndexType,
     Status,
     connections,
@@ -245,7 +244,7 @@ class MilvusDB:
         results = {}
         source = []
         #reranker = RRFRanker()
-        reranker= WeightedRanker(0.6, 0.9)
+        reranker= WeightedRanker(0.7, 0.3)
         if search_params is None:
             search_params = {
                 "metric_type": "L2",
