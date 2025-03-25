@@ -326,6 +326,12 @@ class MilvusDB:
                 fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.FLOAT_VECTOR, **value['params']))
         schema = CollectionSchema(fields=fields, description=description)
         collection = Collection(name, schema)
+        index_params = {
+        'metric_type':'L2',
+        'index_type':"IVF_FLAT",
+        'params':{"nlist":2048}
+        }
+        collection.create_index(field_name='embedding', index_params=index_params)
         #Replace spaces with _ in long_name, and remove accents
         import unicodedata
         nfkd_form = unicodedata.normalize('NFKD', long_name)
