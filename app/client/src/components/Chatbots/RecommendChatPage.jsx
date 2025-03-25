@@ -49,7 +49,7 @@ export function RecommendChatPage({
   //   'Cách thức đóng học phí 2024 chương trình Chất Lượng Cao.',
   //   'Tôi có thể tra cứu điểm và bảng điểm ở đâu?', 'Giới Thiệu về bộ môn Hệ Thống Thông Tin']
 
-    return loading && recommendedQuestions == null ? (
+    return loading && recommendedQuestions == null? (
     <Box className = "recommend_page">
         <Skeleton variant="rounded" width={'50%'} height={60} sx = {{ borderRadius: '10px', mb: 1 }} />
         <Skeleton variant="rounded" width={'70%'} height={40} sx = {{ borderRadius: '10px', mb: 1 }} />
@@ -60,7 +60,7 @@ export function RecommendChatPage({
 
         <Box sx = {Container_Style} >
             { ['','',''].map((_data, index) => ( <Skeleton key={index*208752} variant="rounded" width={180} height={180} sx = {{ borderRadius: '10px', mb: 1 }} /> )) }
-        </Box>
+        </Box> 
 
         <Box sx ={{ width: '100%', height: 2 }}></Box>  
     </Box>

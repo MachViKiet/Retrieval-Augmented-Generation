@@ -34,6 +34,7 @@ function KnowledgeBase() {
 
   const [disableRipple, setDisableRipple] = useState(false)
   const [chosenCollection, setChosenCollection] = useState(null)
+  const role = useSelector(state => state.auth.user?.role)
 
   useEffect(() => {
     document.title = 'Chatbot - Quản Lý Tri Thức'
@@ -155,7 +156,7 @@ function KnowledgeBase() {
           <Box sx = {{position: 'relative'}}>
 
             <Header>
-              <IconButton disableRipple
+              {role == 'administrator' && <IconButton disableRipple
                 onMouseEnter={() => handleEnter(zIndex)} onMouseLeave={handleLeave}>
                 <MoreVertIcon/>
                 { chosenCollection == zIndex && <Paper sx = {{ width: 'max-content', zIndex: 1300, position: 'absolute', top: '40px', right: '0', borderRadius: '4px', background: '#e1ebff'}}>
@@ -172,7 +173,7 @@ function KnowledgeBase() {
                       ))}
                     </>
                   </Paper>} 
-                </IconButton>
+                </IconButton> }
               </Header>
 
 
@@ -248,7 +249,7 @@ export const NewCollection_Modal = ({onClose, parent}) => {
 
   const [newCollectionName, setCollectionName] = useState(null)
   const [newCollectionDescription, setCollectionDescription] = useState(null)
-
+  const role = useSelector(state => state.auth.user?.role)
   const [notice, setNotice] = useState({})
 
   useEffect(() => {
@@ -273,16 +274,31 @@ export const NewCollection_Modal = ({onClose, parent}) => {
       if(!metadata?.name) {
         result = false,
         setNotice(prev => ({...prev, [index]: { metadata_name: {error: 'Vui lòng nhập tên cho metadata này!'} }}))
+        return
       }
+
+      if (!validateInput(metadata?.name)) {
+        result = false,
+        setNotice(prev => ({...prev, [index]: { metadata_name: {error: 'Tên metadata không được chứa tiếng việt có dấu, khoảng trắng hoặc kí tự đặc biệt!'} }}))
+        return
+      }
+
       if(!metadata?.description) {
         result = false,
         setNotice(prev => ({...prev, [index]: { metadata_description: {error: 'Vui lòng nhập mô tả cho metadata này!' }}}))
+        return
       }
     })
     return result
   }
+  const regex = /^[a-zA-Z0-9_]+$/;
 
-  const changeNewMetadata = (newdata, index) => {
+  function validateInput(input) {
+    return regex.test(input);
+  }
+
+  const changeNewMetadata = (newdata, index, rules) => {
+
     if (newdata?.datatype) {
       const params = Object.entries(newdata)[0][1] == 'string' ? {'max_length': 200} : {}
       setMetadata(prev => (prev.map((value, zIndex) => {
@@ -411,8 +427,8 @@ export const NewCollection_Modal = ({onClose, parent}) => {
         )
       })} 
     </Box>
-    <Button onClick={async () => await submit()}
+    {role == 'administrator' && <Button onClick={async () => await submit()}
       sx = {{ color: '#fff', background: theme=> theme.palette.primary.main ,paddingX:2,paddingY: 1,boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.1)',borderRadius: '5px' }}
-      variant='contained'>Tạo mới chủ đề</Button>
+      variant='contained'>Tạo mới chủ đề</Button>}
   </Box>
 }
