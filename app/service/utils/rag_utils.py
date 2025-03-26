@@ -285,6 +285,7 @@ class MilvusDB:
         source = []
         reranker = RRFRanker()
         reranker = WeightedRanker(1 - self.filter_bias, 0.9)
+        persistent_collection_bias = 0.8 # Reduce impact of persistent collections
         if search_params is None:
             search_params = {
                 "metric_type": "L2",
@@ -314,7 +315,10 @@ class MilvusDB:
                 except MilvusException as e:
                     return -2, -2, -2 #Error in search
                 for r in search_results:
-                    results[r.distance] = (r.entity, c)
+                    if c in self.persistent_collections:
+                        results[r.distance * 0.8] = (r.entity, c)
+                    else:
+                        results[r.distance] = (r.entity, c)
         if len(results) == 0:
             #No matching documents
             print("No matching documents")
