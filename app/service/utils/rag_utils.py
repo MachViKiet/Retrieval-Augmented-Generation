@@ -341,8 +341,12 @@ class MilvusDB:
         self.update_collection_descriptions()
         return True
 
-    def drop_collection(name):
+    def drop_collection(self, name):
         try:
+            #Drop all aliases
+            aliases = Collection(name).aliases
+            for alias in aliases:
+                utility.drop_alias(alias)
             Collection(name).drop()
         except MilvusException as e:
             return False, e.message
