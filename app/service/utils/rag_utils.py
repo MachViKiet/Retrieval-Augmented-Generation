@@ -284,7 +284,7 @@ class MilvusDB:
         results = {}
         source = []
         reranker = RRFRanker()
-        reranker = WeightedRanker(1 - self.filter_bias, 0.9)
+        reranker = WeightedRanker(1 - self.filter_bias, self.filter_bias)
         persistent_collection_bias = 0.8 # Reduce impact of persistent collections
         if search_params is None:
             search_params = {
@@ -316,7 +316,7 @@ class MilvusDB:
                     return -2, -2, -2 #Error in search
                 for r in search_results:
                     if c in self.persistent_collections:
-                        results[r.distance * 0.8] = (r.entity, c)
+                        results[r.distance * 0.9] = (r.entity, c)
                     else:
                         results[r.distance] = (r.entity, c)
         if len(results) == 0:
@@ -328,6 +328,8 @@ class MilvusDB:
         distances.sort(reverse=True)
         distances = distances[:k]
         sorted_list = [results[i][0] for i in distances]
+        for i in distances:
+            print(i, results[i][1])
         #Return the collection name of the source document
         source = [{'collection_name': results[i][1], 'url': results[i][0].get('url'), 'title': results[i][0].get('title')} for i in distances]
         return sorted_list, source

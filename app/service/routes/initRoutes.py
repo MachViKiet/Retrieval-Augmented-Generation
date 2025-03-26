@@ -443,20 +443,20 @@ def update_params():
     filter_bias = request.form['filter_bias']
     # Phobert params
     threshold = request.form['threshold']
-    use_history = request.form['use_history']
+    use_history = request.form['use_history'].lower() == 'true'
     # Chat model params
     max_tokens = request.form['max_tokens']
     #-------------------------------------------
     phobert = current_app.config['QUERYROUTER']
-    phobert.threshold = threshold
+    phobert.threshold = float(threshold)
     phobert.use_history = use_history
 
     model = current_app.config['CHAT_MODEL']
-    model.max_new_tokens = max_tokens
+    model.max_new_tokens = int(max_tokens)
     
     database = current_app.config['DATABASE']
-    database.k = k
-    database.filter_bias = filter_bias
+    database.k = int(k)
+    database.filter_bias = float(filter_bias)
     return jsonify({'status': 'success'})
 
 @main.route("/params", methods=["GET"])
