@@ -377,6 +377,8 @@ class MilvusDB:
             Collection(name).drop()
         except MilvusException as e:
             return False, e.message
+        self.update_collection_descriptions()
+        self.pydantic_collections.pop(name, None)
         return True, "Success"
     
     def delete_document(self, collection_name, document_id):
