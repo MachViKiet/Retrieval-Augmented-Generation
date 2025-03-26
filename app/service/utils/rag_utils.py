@@ -164,6 +164,26 @@ class MilvusDB:
             # descriptions += f"{name}: {Collection(col).describe()['description']}\n"
         self.themes_descriptions = descriptions
         return True
+    
+    def update_pydantic_schema(self, collection_name):
+        # Update pydantic schema
+        from pydantic import create_model
+        schema = self.get_collection_schema(collection_name=collection_name, readable=True, exclude_metadata=['created_at', 'updated_at', 'document_id', 'title', 'updated_at', 'url', 'in_effect'])
+        fields = {"article": (str, ...)}
+        for field, attrs in schema.items():
+            if attrs['type'] == 'int':
+                fields[field] = (int, ...)
+            elif attrs['type'] == 'float':
+                fields[field] = (float, ...)
+            elif attrs['type'] == 'string':
+                fields[field] = (str, ...)
+            elif attrs['type'] == 'list':
+                fields[field] = (list[str], ...)
+            elif attrs['type'] == 'bool':
+                fields[field] = (bool, ...)
+        model = create_model(collection_name, **fields)
+        self.pydantic_collections[collection_name] = model
+        return True
 
     def describe_collection(self, collection_name, alias=False):
         if alias:
@@ -326,6 +346,12 @@ class MilvusDB:
                 fields.append(FieldSchema(name=key, description=value['description'], dtype=DataType.FLOAT_VECTOR, **value['params']))
         schema = CollectionSchema(fields=fields, description=description)
         collection = Collection(name, schema)
+        index_params = {
+        'metric_type':'L2',
+        'index_type':"IVF_FLAT",
+        'params':{"nlist":2048}
+        }
+        collection.create_index(field_name='embedding', index_params=index_params)
         #Replace spaces with _ in long_name, and remove accents
         import unicodedata
         nfkd_form = unicodedata.normalize('NFKD', long_name)
@@ -339,6 +365,7 @@ class MilvusDB:
         )
         #Update theme descriptions
         self.update_collection_descriptions()
+        self.update_pydantic_schema(name)
         return True
 
     def drop_collection(self, name):
