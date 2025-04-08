@@ -114,7 +114,7 @@ def extract_metadata():
     if is_old_extract: #OLD METADATA EXTRACTION
         extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection, database=database)
         if extracted_metadata != -1: #No metadata found
-            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection], database.persistent_collections)
         else:
             filter_expressions = {}
         return jsonify(filter_expressions)
@@ -123,7 +123,7 @@ def extract_metadata():
     if rewritten_queries == -1:
         extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection)
         if extracted_metadata != -1: #No metadata found
-            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+            filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection], database.persistent_collections)
         else:
             filter_expressions = {}
         return jsonify(filter_expressions)
@@ -132,7 +132,7 @@ def extract_metadata():
         for q in rewritten_queries:
             extracted_metadata = rag_utils.metadata_extraction_v2(q, model, chosen_collection)
             if extracted_metadata != -1: #No metadata found
-                expr = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection])
+                expr = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection], database.persistent_collections)
             else:
                 expr = {}
             filter_expressions.append({q: expr})
