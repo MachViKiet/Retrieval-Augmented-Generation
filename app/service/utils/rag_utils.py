@@ -127,6 +127,7 @@ class MilvusDB:
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
         self.search_threshold = os.getenv('SEARCH_THRESHOLD', 1.1)
+        self.latest_timespan_months = os.getenv('LATEST_TIMESPAN_MONTHS', 5)
         self.k = k
         self.filter_bias = filter_bias
         # Create pydantic representation of collections schemas
@@ -275,7 +276,7 @@ class MilvusDB:
         source = []
         reranker = RRFRanker()
         reranker = WeightedRanker(1 - self.filter_bias, self.filter_bias)
-        persistent_collection_bias = 0.8 # Reduce impact of persistent collections
+        persistent_collection_bias = 0.9 # Reduce impact of persistent collections
         if search_params is None:
             search_params = {
                 "metric_type": "L2",
@@ -294,11 +295,18 @@ class MilvusDB:
                     limit=limit_per_req,
                     expr=filter.get(c, None),
                 )) #Search with filters
+                if "created_at_unix" in filter.get(c, None): #If the filter has a date, use it to filter the results
+                    start_index = filter.get(c, None).find("created_at_unix")
+                    if start_index != -1:
+                        vanilla_expr = filter.get(c, None)[start_index:]
+                    else:
+                        vanilla_expr = None
                 reqs.append(AnnSearchRequest(
                     data=[q],
                     anns_field="embedding",
                     param=search_params,
                     limit=limit_per_req,
+                    expr=vanilla_expr,
                 )) #Search without filters
                 try:
                     search_results = Collection(c).hybrid_search(reqs, rerank=reranker, limit=k, output_fields=output_fields if type(output_fields) == list else output_fields[c])[0]
@@ -306,7 +314,7 @@ class MilvusDB:
                     return -2, -2, -2 #Error in search
                 for r in search_results:
                     if c in self.persistent_collections:
-                        results[r.distance * 0.9] = (r.entity, c)
+                        results[r.distance * persistent_collection_bias] = (r.entity, c)
                     else:
                         results[r.distance] = (r.entity, c)
         if len(results) == 0:
@@ -455,7 +463,7 @@ Answer:
         result = -1
     return result
 
-def compile_filter_expression(metadata, loaded_collections: list, persistent_collections: list = []):
+def compile_filter_expression(metadata, loaded_collections: list, persistent_collections: list = [], latest_timespan_months: int = 5):
     '''Read collections schemas to compile filtering expressions for Milvus'''
     expressions = {}
     for c in loaded_collections:
@@ -494,7 +502,7 @@ def compile_filter_expression(metadata, loaded_collections: list, persistent_col
             # Get the current date and time
             now = datetime.datetime.now()
             # Get the current timestamp in seconds since epoch minus 5 months
-            current_timestamp = int(now.timestamp()) - 2 * 30 * 24 * 60 * 60 #5 months in seconds
+            current_timestamp = int(now.timestamp()) - latest_timespan_months * 30 * 24 * 60 * 60 #5 months in seconds
             # Add the timestamp to the filter expression
             expressions[c] = "(" + expressions[c] + ")" + " && " "created_at_unix >= " + str(current_timestamp)
         else:
