@@ -477,12 +477,12 @@ def compile_filter_expression(metadata, loaded_collections: list, persistent_col
                 continue
             if attr == 'article': #Skip article TODO: FIX THIS FOR BETTER FLEXIBILITY
                 continue
-            meta_type = short_schema.get(attr, -1)
-            if meta_type == -1:
-                continue
-            if attr == 'latest' and val == True and c in persistent_collections: #If the user wants the latest articles
+            if attr == 'latest' and val == True and c not in persistent_collections: #If the user wants the latest articles
                 is_latest = True
                 print("SEARCH: Latest articles required")
+                continue
+            meta_type = short_schema.get(attr, -1)
+            if meta_type == -1:
                 continue
 
             if short_schema[attr] == DataType.INT8 or short_schema[attr] == DataType.INT16 or short_schema[attr] == DataType.INT32 or short_schema[attr] == DataType.INT64 or short_schema[attr] == DataType.FLOAT: #intege
@@ -498,13 +498,17 @@ def compile_filter_expression(metadata, loaded_collections: list, persistent_col
                 except ValueError:
                     expressions[c] += f"array_contains_any({attr}, {val}) || "
         if is_latest: #Filter expression requires latest articles
+            expressions[c] = expressions[c].removesuffix(' || ')
             import datetime
             # Get the current date and time
             now = datetime.datetime.now()
             # Get the current timestamp in seconds since epoch minus 5 months
             current_timestamp = int(now.timestamp()) - latest_timespan_months * 30 * 24 * 60 * 60 #5 months in seconds
             # Add the timestamp to the filter expression
-            expressions[c] = "(" + expressions[c] + ")" + " && " "created_at_unix >= " + str(current_timestamp)
+            if expressions[c] != "":
+                expressions[c] = "(" + expressions[c] + ")" + " && " + "created_at_unix >= " + str(current_timestamp)
+            else:
+                expressions[c] = "created_at_unix >= " + str(current_timestamp)
         else:
             # Reformat
             expressions[c] = expressions[c].removesuffix(' || ')

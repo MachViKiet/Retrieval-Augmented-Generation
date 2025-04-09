@@ -113,6 +113,7 @@ def extract_metadata():
     is_old_extract = True
     if is_old_extract: #OLD METADATA EXTRACTION
         extracted_metadata = rag_utils.metadata_extraction_v2(query, model, chosen_collection, database=database)
+        print(extracted_metadata)
         if extracted_metadata != -1: #No metadata found
             filter_expressions = rag_utils.compile_filter_expression(extracted_metadata, database.persistent_collections + [chosen_collection], database.persistent_collections, latest_timespan_months=database.latest_timespan_months)
         else:
