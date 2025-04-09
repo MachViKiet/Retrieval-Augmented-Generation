@@ -127,6 +127,7 @@ class MilvusDB:
         self.persistent_collections = []
         self._handler = connections._fetch_handler('default')
         self.search_threshold = os.getenv('SEARCH_THRESHOLD', 1.1)
+        self.latest_timespan_months = os.getenv('LATEST_TIMESPAN_MONTHS', 5)
         self.k = k
         self.filter_bias = filter_bias
         # Create pydantic representation of collections schemas
@@ -134,27 +135,10 @@ class MilvusDB:
         self.pydantic_collections = {}
         collections = self._handler.list_collections()
         for col in collections:
-            schema = self.get_collection_schema(col, readable=True, exclude_metadata=['created_at', 'updated_at', 'document_id', 'title', 'updated_at', 'url', 'in_effect'])
-            fields = {"article": (str, ...)}
-            for field, attrs in schema.items():
-                if attrs['type'] == 'int':
-                    fields[field] = (int, ...)
-                elif attrs['type'] == 'float':
-                    fields[field] = (float, ...)
-                elif attrs['type'] == 'string':
-                    fields[field] = (str, ...)
-                elif attrs['type'] == 'list':
-                    fields[field] = (list[str], ...)
-                elif attrs['type'] == 'bool':
-                    fields[field] = (bool, ...)
-            model = create_model(col, **fields)
-            self.pydantic_collections[col] = model
+            self.update_pydantic_schema(col) #Update pydantic schema for each collection
         # Create descriptions of themes (collections) in the database
         self.themes_descriptions = ""
         self.update_collection_descriptions()
-
-    def _insert_document(self, collection_name, document, metadata):
-        pass #DEPRECATED
 
     def update_collection_descriptions(self):
         descriptions = ""
@@ -169,7 +153,7 @@ class MilvusDB:
         # Update pydantic schema
         from pydantic import create_model
         schema = self.get_collection_schema(collection_name=collection_name, readable=True, exclude_metadata=['created_at', 'updated_at', 'document_id', 'title', 'updated_at', 'url', 'in_effect'])
-        fields = {"article": (str, ...)}
+        fields = {"article": (str, ...), "latest": (bool, ...)}
         for field, attrs in schema.items():
             if attrs['type'] == 'int':
                 fields[field] = (int, ...)
@@ -184,6 +168,13 @@ class MilvusDB:
         model = create_model(collection_name, **fields)
         self.pydantic_collections[collection_name] = model
         return True
+    
+    def update_json_schema(self, collection_name):
+        schema = self.get_collection_schema(collection_name=collection_name, readable=True, exclude_metadata=['created_at', 'updated_at', 'document_id', 'title', 'updated_at', 'url', 'in_effect'])
+        fields = {"article": {"type": "string", "description":"The content of the article"},
+                              "latest": {"type": "boolean", "description":"Whether the user's question requires the latest articles"}}
+        #TODO
+        pass
 
     def describe_collection(self, collection_name, alias=False):
         if alias:
@@ -285,7 +276,7 @@ class MilvusDB:
         source = []
         reranker = RRFRanker()
         reranker = WeightedRanker(1 - self.filter_bias, self.filter_bias)
-        persistent_collection_bias = 0.8 # Reduce impact of persistent collections
+        persistent_collection_bias = 0.9 # Reduce impact of persistent collections
         if search_params is None:
             search_params = {
                 "metric_type": "L2",
@@ -304,11 +295,17 @@ class MilvusDB:
                     limit=limit_per_req,
                     expr=filter.get(c, None),
                 )) #Search with filters
+                vanilla_expr = None
+                if "created_at_unix" in filter.get(c, None): #If the filter has a date, use it to filter the results
+                    start_index = filter.get(c, None).find("created_at_unix")
+                    if start_index != -1:
+                        vanilla_expr = filter.get(c, None)[start_index:]
                 reqs.append(AnnSearchRequest(
                     data=[q],
                     anns_field="embedding",
                     param=search_params,
                     limit=limit_per_req,
+                    expr=vanilla_expr,
                 )) #Search without filters
                 try:
                     search_results = Collection(c).hybrid_search(reqs, rerank=reranker, limit=k, output_fields=output_fields if type(output_fields) == list else output_fields[c])[0]
@@ -316,7 +313,7 @@ class MilvusDB:
                     return -2, -2, -2 #Error in search
                 for r in search_results:
                     if c in self.persistent_collections:
-                        results[r.distance * 0.9] = (r.entity, c)
+                        results[r.distance * persistent_collection_bias] = (r.entity, c)
                     else:
                         results[r.distance] = (r.entity, c)
         if len(results) == 0:
@@ -465,7 +462,7 @@ Answer:
         result = -1
     return result
 
-def compile_filter_expression(metadata, loaded_collections: list):
+def compile_filter_expression(metadata, loaded_collections: list, persistent_collections: list = [], latest_timespan_months: int = 5):
     '''Read collections schemas to compile filtering expressions for Milvus'''
     expressions = {}
     for c in loaded_collections:
@@ -474,10 +471,15 @@ def compile_filter_expression(metadata, loaded_collections: list):
         schema = Collection(c).describe()['fields']
         for s in schema:
             short_schema[s['name']] = s['type']
+        is_latest = False
         for attr, val in metadata.items():
             if val is None or val == "" or val == []: #Skip empty values
                 continue
             if attr == 'article': #Skip article TODO: FIX THIS FOR BETTER FLEXIBILITY
+                continue
+            if attr == 'latest' and val == True and c not in persistent_collections: #If the user wants the latest articles
+                is_latest = True
+                print("SEARCH: Latest articles required")
                 continue
             meta_type = short_schema.get(attr, -1)
             if meta_type == -1:
@@ -495,8 +497,21 @@ def compile_filter_expression(metadata, loaded_collections: list):
                         expressions[c] += f"array_contains_any({attr}, {val}) || "
                 except ValueError:
                     expressions[c] += f"array_contains_any({attr}, {val}) || "
-        # Reformat
-        expressions[c] = expressions[c].removesuffix(' || ')
+        if is_latest: #Filter expression requires latest articles
+            expressions[c] = expressions[c].removesuffix(' || ')
+            import datetime
+            # Get the current date and time
+            now = datetime.datetime.now()
+            # Get the current timestamp in seconds since epoch minus 5 months
+            current_timestamp = int(now.timestamp()) - latest_timespan_months * 30 * 24 * 60 * 60 #5 months in seconds
+            # Add the timestamp to the filter expression
+            if expressions[c] != "":
+                expressions[c] = "(" + expressions[c] + ")" + " && " + "created_at_unix >= " + str(current_timestamp)
+            else:
+                expressions[c] = "created_at_unix >= " + str(current_timestamp)
+        else:
+            # Reformat
+            expressions[c] = expressions[c].removesuffix(' || ')
     return expressions
 
 #------------------------------------#
@@ -506,7 +521,7 @@ def metadata_extraction_v2(query, model, collection_name, database, pydantic_sch
 
     prompt = prompt = """Extract metadata from the user's query using the provided schema.
 Do not include the metadata if not found.\
-Ignore the article attribute.
+Always leave article attribute as empty.
 User's query: {query}
 Schema:
 {schema}
@@ -525,6 +540,7 @@ Answer:
     for field in fields:
         schema[field['name']] = field['description']
     schema = "\n".join(k + ": " + v for k,v in schema.items())
+    schema += "latest: whether the user's question requires the latest articles.\n"
 
     full_prompt = prompt.format(query=query, schema=schema)
     if pydantic_schema is not None:
