@@ -295,12 +295,11 @@ class MilvusDB:
                     limit=limit_per_req,
                     expr=filter.get(c, None),
                 )) #Search with filters
+                vanilla_expr = None
                 if "created_at_unix" in filter.get(c, None): #If the filter has a date, use it to filter the results
                     start_index = filter.get(c, None).find("created_at_unix")
                     if start_index != -1:
                         vanilla_expr = filter.get(c, None)[start_index:]
-                    else:
-                        vanilla_expr = None
                 reqs.append(AnnSearchRequest(
                     data=[q],
                     anns_field="embedding",
@@ -483,6 +482,7 @@ def compile_filter_expression(metadata, loaded_collections: list, persistent_col
                 continue
             if attr == 'latest' and val == True and c in persistent_collections: #If the user wants the latest articles
                 is_latest = True
+                print("SEARCH: Latest articles required")
                 continue
 
             if short_schema[attr] == DataType.INT8 or short_schema[attr] == DataType.INT16 or short_schema[attr] == DataType.INT32 or short_schema[attr] == DataType.INT64 or short_schema[attr] == DataType.FLOAT: #intege
