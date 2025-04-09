@@ -493,8 +493,8 @@ def compile_filter_expression(metadata, loaded_collections: list, persistent_col
             import datetime
             # Get the current date and time
             now = datetime.datetime.now()
-            # Get the current timestamp in seconds since epoch
-            current_timestamp = int(now.timestamp())
+            # Get the current timestamp in seconds since epoch minus 5 months
+            current_timestamp = int(now.timestamp()) - 2 * 30 * 24 * 60 * 60 #5 months in seconds
             # Add the timestamp to the filter expression
             expressions[c] = "(" + expressions[c] + ")" + " && " "created_at_unix >= " + str(current_timestamp)
         else:
