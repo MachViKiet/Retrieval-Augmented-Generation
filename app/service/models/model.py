@@ -3,7 +3,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 from dotenv import load_dotenv
 from .prompts import prompts
-from utils import query_routing
+
 from flask import Response, stream_with_context, current_app
 import json
 
@@ -168,6 +168,7 @@ class QueryRouter:
 
     def classify(self, query):
         if self.provider.lower() == 'local':
+            from utils import query_routing
             segmented_query = query_routing.segment_vietnamese(query)
             if type(segmented_query) is list:
                 segmented_conversation = " ".join(segmented_query)
