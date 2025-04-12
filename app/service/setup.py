@@ -6,7 +6,7 @@ from errorHandler import InvalidDataError
 from flask_cors import CORS
 
 from models.model import ChatModel, QueryRouter
-from utils import rag_utils, query_routing
+from utils import rag_utils
 
 # Load environment variables from .env file
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
