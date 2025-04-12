@@ -11,7 +11,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from models.model import ChatModel, QueryRouter
-from utils import rag_utils, query_routing
+from utils import rag_utils
 
 main = Blueprint("main", __name__)
 os.chdir('../..')
