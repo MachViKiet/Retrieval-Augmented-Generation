@@ -2,14 +2,6 @@
 /* eslint-disable no-console */
 
 const users = [
-  // {
-  //   'name': 'Mạch Vĩ Kiệt',
-  //   'email': 'mvkiet21@clc.fitus.edu.vn'
-  // },
-  // {
-  //   'name': 'Nguyen Vu Minh Khoi',
-  //   'email': 'nvmkhoi21@clc.fitus.edu.vn'
-  // },
   {
     'name': 'Nguyen Duy Dang Khoa',
     'email': '21127078@student.hcmus.edu.vn'
@@ -393,14 +385,14 @@ const users = [
 ]
 
 // Hàm delay (nghỉ giữa các lần gửi)
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-var nodemailer = require('nodemailer')
+import { createTransport } from 'nodemailer'
 
-var transporter = nodemailer.createTransport({
+var transporter = createTransport({
   service: 'gmail',
   auth: {
-    user: 'mvkiet21@clc.fitus.edu.vn',
+    user: '',
     pass: 'uboy zuwd vpjf cyjl'
   }
 })
@@ -483,7 +475,7 @@ var mailOptions = {
         </div>
     </div>
 </body>
-</html>`}
+</html>` }
 
 // const subject = 'Dự án Chatbot FIT-HCMUS - Chia sẻ ý kiến của bạn!'
 // var mailOptions = {

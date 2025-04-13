@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const WebSocket = require('ws')
 
 const ws = new WebSocket('http://localhost:3000') // Replace with your WebSocket URL

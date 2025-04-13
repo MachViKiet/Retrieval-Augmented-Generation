@@ -31,6 +31,12 @@ client/package-lock.json
 server/package-lock.json
 server/.env
 service/.env
+
+.venv
+
+mongo_db/data/
+milvus/volumes/
+
 # Editor directories and files
 .vscode/*
 client/.vscode/*
