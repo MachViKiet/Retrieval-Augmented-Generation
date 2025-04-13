@@ -36,6 +36,7 @@ service/.env
 
 mongo_db/data/
 milvus/volumes/
+milvus/scripts/data/
 
 # Editor directories and files
 .vscode/*
