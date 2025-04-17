@@ -14,7 +14,7 @@ services:
       - "./mongo_db/data:/data/db"
     networks:
       - chatbot-network
-    restart: "unless-stopped"
+    restart: always
   
   # Service cho Milvus
   etcd:

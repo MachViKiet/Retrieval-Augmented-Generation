@@ -18,10 +18,8 @@ temp
 
 nohup.out
 
-client/.env
-client/.env
-client/.env
 server/__pycache__
+**/.env
 **/myenv
 /nohup.out
 
